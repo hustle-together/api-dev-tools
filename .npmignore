@@ -1,0 +1,26 @@
+# NPM Ignore - Don't publish these files
+
+# Git
+.git/
+.gitignore
+
+# Development
+node_modules/
+*.log
+.DS_Store
+
+# Tests (if we add them later)
+test/
+tests/
+*.test.js
+coverage/
+
+# Documentation drafts
+docs/
+NOTES.md
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo

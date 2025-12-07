@@ -1,0 +1,43 @@
+{
+  "name": "@mirror-factory/api-dev-tools",
+  "version": "1.0.0",
+  "description": "Interview-driven API development workflow for Claude Code - Automates research, testing, and documentation",
+  "main": "bin/cli.js",
+  "bin": {
+    "api-dev-tools": "./bin/cli.js"
+  },
+  "files": [
+    "bin/",
+    "commands/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node bin/cli.js --scope=project"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "api-development",
+    "tdd",
+    "test-driven-development",
+    "interview-driven",
+    "api-testing",
+    "documentation",
+    "workflow",
+    "automation"
+  ],
+  "author": "Mirror Factory",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mirror-factory/api-dev-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mirror-factory/api-dev-tools/issues"
+  },
+  "homepage": "https://github.com/mirror-factory/api-dev-tools#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
