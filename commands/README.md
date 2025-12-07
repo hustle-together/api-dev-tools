@@ -1,10 +1,37 @@
 # API Development Slash Commands
 
-**Comprehensive API development workflow for V2 implementation**
+**Comprehensive API development workflow with programmatic enforcement**
 
 ## Overview
 
 These slash commands implement an interview-driven, test-first methodology for API development. They automate the workflow described in the V2 Development Patterns and ensure consistent, high-quality API implementations.
+
+## Programmatic Enforcement (Hooks)
+
+This package includes **Python hooks** that provide real programmatic guarantees:
+
+| Hook | Trigger | Purpose |
+|------|---------|---------|
+| `enforce-research.py` | PreToolUse (Write/Edit) | Blocks API code writing until research is complete |
+| `track-tool-use.py` | PostToolUse (WebSearch/Context7) | Logs all research activity to state file |
+| `api-workflow-check.py` | Stop | Prevents stopping until required phases complete |
+
+### What Gets Enforced
+
+- **Research MUST happen first** - Cannot write API route code without completing research
+- **All research is logged** - WebSearch, WebFetch, Context7 calls tracked in state file
+- **Progress is visible** - Check `.claude/api-dev-state.json` anytime
+- **Workflow completion verified** - Cannot stop until TDD phases complete
+
+### Check Progress
+
+```bash
+# View current state
+cat .claude/api-dev-state.json | jq '.phases'
+
+# Or use the status command
+/api-status
+```
 
 ## Available Commands
 
@@ -227,20 +254,31 @@ These commands work alongside:
 pnpm test:run               # Verify tests pass
 ```
 
-## Installation Pattern (Future)
+## Installation
 
-Currently these commands are project-specific in `.claude/commands/`.
-
-**Future Goal:** Package as NPM tool like `@wbern/claude-instructions`:
+Install via NPX command:
 ```bash
-npx @mirror-factory/api-dev-tools --scope=project
+npx @hustle-together/api-dev-tools --scope=project
 ```
 
-This would:
-- Install commands automatically
-- Work across projects
-- Support customization via `<claude-commands-template>`
-- Auto-update with new features
+This installs:
+- **Commands** in `.claude/commands/` (slash commands)
+- **Hooks** in `.claude/hooks/` (Python enforcement scripts)
+- **Settings** in `.claude/settings.json` (hook registration)
+- **State template** in `.claude/api-dev-state.json` (progress tracking)
+
+### Team-Wide Installation
+
+Add to your project's `package.json`:
+```json
+{
+  "scripts": {
+    "postinstall": "npx @hustle-together/api-dev-tools --scope=project"
+  }
+}
+```
+
+Now `npm install` or `pnpm install` automatically installs the tools for all team members.
 
 ## References
 

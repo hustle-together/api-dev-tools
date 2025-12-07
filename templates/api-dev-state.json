@@ -1,0 +1,67 @@
+{
+  "version": "1.1.0",
+  "created_at": null,
+  "endpoint": null,
+  "library": null,
+  "research_queries": [],
+  "prompt_detections": [],
+  "phases": {
+    "scope": {
+      "status": "not_started",
+      "description": "Initial scope understanding"
+    },
+    "research_initial": {
+      "status": "not_started",
+      "sources": [],
+      "description": "Context7/WebSearch research for live documentation"
+    },
+    "interview": {
+      "status": "not_started",
+      "questions": [],
+      "description": "Structured interview about requirements"
+    },
+    "research_deep": {
+      "status": "not_started",
+      "sources": [],
+      "description": "Deep dive based on interview answers"
+    },
+    "schema_creation": {
+      "status": "not_started",
+      "schema_file": null,
+      "description": "Zod schema creation from research"
+    },
+    "environment_check": {
+      "status": "not_started",
+      "keys_verified": [],
+      "keys_missing": [],
+      "description": "API key and environment verification"
+    },
+    "tdd_red": {
+      "status": "not_started",
+      "test_file": null,
+      "test_count": 0,
+      "description": "Write failing tests first"
+    },
+    "tdd_green": {
+      "status": "not_started",
+      "implementation_file": null,
+      "description": "Minimal implementation to pass tests"
+    },
+    "tdd_refactor": {
+      "status": "not_started",
+      "description": "Code cleanup while keeping tests green"
+    },
+    "documentation": {
+      "status": "not_started",
+      "files_updated": [],
+      "description": "Update manifests, OpenAPI, examples"
+    }
+  },
+  "verification": {
+    "all_sources_fetched": false,
+    "schema_matches_docs": false,
+    "tests_cover_params": false,
+    "all_tests_passing": false,
+    "coverage_percent": null
+  }
+}

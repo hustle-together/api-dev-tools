@@ -1,6 +1,6 @@
 {
-  "name": "@mirror-factory/api-dev-tools",
-  "version": "1.0.0",
+  "name": "@hustle-together/api-dev-tools",
+  "version": "1.9.0",
   "description": "Interview-driven API development workflow for Claude Code - Automates research, testing, and documentation",
   "main": "bin/cli.js",
   "bin": {
@@ -9,6 +9,9 @@
   "files": [
     "bin/",
     "commands/",
+    "hooks/",
+    "templates/",
+    "demo/",
     "README.md",
     "LICENSE"
   ],
@@ -27,16 +30,16 @@
     "workflow",
     "automation"
   ],
-  "author": "Mirror Factory",
+  "author": "Hustle Together",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mirror-factory/api-dev-tools.git"
+    "url": "https://github.com/hustle-together/api-dev-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/mirror-factory/api-dev-tools/issues"
+    "url": "https://github.com/hustle-together/api-dev-tools/issues"
   },
-  "homepage": "https://github.com/mirror-factory/api-dev-tools#readme",
+  "homepage": "https://github.com/hustle-together/api-dev-tools#readme",
   "engines": {
     "node": ">=14.0.0"
   }

@@ -1,0 +1,1974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Dev Tools - Interview-Driven API Development Demo</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+  <style>
+    /* ============================================
+       90s RETRO TERMINAL AESTHETIC
+       Black & White, Monospace, Dashed Borders
+       ============================================ */
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --white: #e0e0e0;
+      --grey: #888;
+      --dark-grey: #444;
+      --black: #0a0a0a;
+      --glow: rgba(255, 255, 255, 0.3);
+    }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Courier New', Courier, monospace;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* Navigation */
+    .nav {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      display: flex;
+      gap: 10px;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: 1px dashed var(--grey);
+      color: var(--white);
+      padding: 8px 16px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .nav-btn:hover {
+      background: var(--white);
+      color: var(--black);
+      box-shadow: 0 0 15px var(--glow);
+    }
+
+    /* Progress indicator */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: var(--white);
+      width: 0%;
+      z-index: 1001;
+    }
+
+    /* Section base */
+    section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 80px 40px;
+      position: relative;
+    }
+
+    /* ASCII border decoration */
+    .ascii-border {
+      border: 1px dashed var(--grey);
+      padding: 50px;
+      position: relative;
+      max-width: 1000px;
+      width: 100%;
+    }
+
+    .ascii-border::before {
+      content: '+';
+      position: absolute;
+      top: -8px;
+      left: -8px;
+      color: var(--grey);
+    }
+
+    .ascii-border::after {
+      content: '+';
+      position: absolute;
+      bottom: -8px;
+      right: -8px;
+      color: var(--grey);
+    }
+
+    /* Typography */
+    h1 {
+      font-size: 2.5rem;
+      font-weight: normal;
+      letter-spacing: 4px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      font-weight: normal;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--grey);
+    }
+
+    /* Explanation blocks - THE KEY EDUCATIONAL ELEMENT */
+    .explanation {
+      background: rgba(255, 255, 255, 0.03);
+      border-left: 3px solid var(--grey);
+      padding: 25px 30px;
+      margin: 30px 0;
+      font-size: 1rem;
+      line-height: 1.9;
+      opacity: 0;
+    }
+
+    .explanation-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--grey);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .explanation-title::before {
+      content: '?';
+      width: 24px;
+      height: 24px;
+      border: 1px dashed var(--grey);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+    }
+
+    .explanation p {
+      margin-bottom: 15px;
+    }
+
+    .explanation p:last-child {
+      margin-bottom: 0;
+    }
+
+    .explanation strong {
+      color: var(--white);
+      font-weight: normal;
+      border-bottom: 1px dashed var(--grey);
+    }
+
+    /* Real example callout */
+    .real-example {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px dashed var(--white);
+      padding: 20px 25px;
+      margin: 20px 0;
+      position: relative;
+    }
+
+    .real-example::before {
+      content: 'REAL EXAMPLE';
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      background: var(--black);
+      padding: 0 10px;
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      color: var(--grey);
+    }
+
+    .real-example-content {
+      font-size: 0.95rem;
+    }
+
+    /* Cursor blink */
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      height: 20px;
+      background: var(--white);
+      animation: blink 1s infinite;
+      vertical-align: middle;
+      margin-left: 5px;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    /* Step numbers */
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+      border: 2px solid var(--white);
+      font-size: 1.5rem;
+      margin-right: 20px;
+      flex-shrink: 0;
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    /* ============================================
+       SECTION 1: TITLE
+       ============================================ */
+    #title {
+      text-align: center;
+    }
+
+    #title h1 {
+      font-size: 1.2rem;
+      letter-spacing: 3px;
+      opacity: 0;
+      color: var(--grey);
+    }
+
+    #title .package-name {
+      font-size: 2.2rem;
+      margin: 25px 0;
+      opacity: 0;
+    }
+
+    #title .version {
+      color: var(--grey);
+      font-size: 0.9rem;
+      opacity: 0;
+    }
+
+    .tagline {
+      color: var(--grey);
+      font-style: italic;
+      margin-top: 15px;
+      font-size: 1.1rem;
+    }
+
+    .intro-text {
+      max-width: 700px;
+      margin: 40px auto 0;
+      text-align: left;
+      font-size: 1rem;
+      line-height: 1.9;
+      opacity: 0;
+    }
+
+    .scroll-hint {
+      margin-top: 50px;
+      color: var(--grey);
+      font-size: 0.85rem;
+      opacity: 0;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(10px); }
+    }
+
+    /* ============================================
+       SECTION 2: THE PROBLEM - GAPS
+       ============================================ */
+    .gap-list {
+      list-style: none;
+      width: 100%;
+    }
+
+    .gap-item {
+      border: 1px dashed var(--dark-grey);
+      padding: 25px 30px;
+      margin-bottom: 20px;
+      opacity: 0;
+      transform: translateX(-30px);
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .gap-item:hover {
+      border-color: var(--white);
+      box-shadow: 0 0 25px rgba(255,255,255,0.1);
+    }
+
+    .gap-item::before {
+      content: 'X';
+      position: absolute;
+      left: -35px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--grey);
+      font-size: 1.2rem;
+    }
+
+    .gap-number {
+      color: var(--grey);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .gap-title {
+      font-size: 1.15rem;
+      margin: 8px 0;
+    }
+
+    .gap-desc {
+      color: var(--grey);
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+    }
+
+    .gap-example {
+      font-size: 0.85rem;
+      padding: 12px 15px;
+      background: rgba(255,255,255,0.03);
+      border-left: 2px solid var(--dark-grey);
+      margin-top: 10px;
+    }
+
+    .gap-example .bad {
+      color: var(--grey);
+      text-decoration: line-through;
+    }
+
+    .gap-example .good {
+      color: var(--white);
+    }
+
+    /* ============================================
+       SECTION 3: SOLUTION OVERVIEW
+       ============================================ */
+    .solution-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+      margin-top: 30px;
+    }
+
+    .solution-card {
+      border: 1px dashed var(--dark-grey);
+      padding: 30px 25px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+    }
+
+    .solution-card:hover {
+      border-color: var(--white);
+      box-shadow: 0 0 25px rgba(255,255,255,0.1);
+    }
+
+    .solution-icon {
+      font-size: 2rem;
+      margin-bottom: 15px;
+      display: block;
+    }
+
+    .solution-title {
+      font-size: 1rem;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .solution-desc {
+      font-size: 0.85rem;
+      color: var(--grey);
+      line-height: 1.6;
+    }
+
+    /* ============================================
+       SECTION 4: HOOK SYSTEM
+       ============================================ */
+    .hook-diagram {
+      width: 100%;
+      font-size: 0.9rem;
+    }
+
+    .flow-box {
+      border: 1px dashed var(--grey);
+      padding: 18px 30px;
+      margin: 12px 0;
+      text-align: center;
+      opacity: 0;
+      transition: all 0.3s;
+    }
+
+    .flow-box:hover {
+      background: rgba(255,255,255,0.05);
+      box-shadow: 0 0 20px var(--glow);
+    }
+
+    .flow-arrow {
+      text-align: center;
+      color: var(--grey);
+      font-size: 1.5rem;
+      opacity: 0;
+    }
+
+    .hook-group {
+      border: 2px dashed var(--white);
+      padding: 25px;
+      margin: 25px 0;
+      opacity: 0;
+    }
+
+    .hook-group h4 {
+      color: var(--grey);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+    }
+
+    .hook-file {
+      padding: 12px 20px;
+      margin: 8px 0;
+      border-left: 2px solid var(--grey);
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: all 0.3s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .hook-file:hover {
+      border-left-color: var(--white);
+      background: rgba(255,255,255,0.05);
+      padding-left: 25px;
+    }
+
+    .hook-file code {
+      color: var(--white);
+    }
+
+    .hook-purpose {
+      color: var(--grey);
+      font-size: 0.8rem;
+    }
+
+    .result-box {
+      display: flex;
+      gap: 40px;
+      justify-content: center;
+      margin-top: 25px;
+    }
+
+    .result-allowed, .result-blocked {
+      padding: 18px 35px;
+      border: 2px solid;
+      opacity: 0;
+      transition: all 0.3s;
+    }
+
+    .result-allowed {
+      border-color: var(--grey);
+    }
+
+    .result-blocked {
+      border-color: var(--white);
+    }
+
+    .result-allowed:hover, .result-blocked:hover {
+      transform: scale(1.05);
+    }
+
+    /* ============================================
+       SECTION 5: 10-PHASE WORKFLOW
+       ============================================ */
+    .phase-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 18px;
+      width: 100%;
+      margin-top: 30px;
+    }
+
+    .phase-box {
+      border: 1px dashed var(--dark-grey);
+      padding: 25px 15px;
+      text-align: center;
+      opacity: 0;
+      transform: scale(0.9);
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .phase-box:hover {
+      border-color: var(--white);
+      box-shadow: 0 0 25px rgba(255,255,255,0.15);
+      transform: scale(1.02);
+    }
+
+    .phase-box.active {
+      border-color: var(--white);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .phase-number {
+      font-size: 2.2rem;
+      color: var(--dark-grey);
+      margin-bottom: 10px;
+    }
+
+    .phase-box.active .phase-number {
+      color: var(--white);
+    }
+
+    .phase-name {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .phase-status {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-size: 0.7rem;
+      color: var(--grey);
+    }
+
+    .phase-connector {
+      grid-column: span 5;
+      text-align: center;
+      color: var(--grey);
+      font-size: 0.8rem;
+      opacity: 0;
+      padding: 10px 0;
+    }
+
+    .phase-desc {
+      font-size: 0.7rem;
+      color: var(--grey);
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
+    /* ============================================
+       SECTION 6: REAL WALKTHROUGH
+       ============================================ */
+    .walkthrough-step {
+      border: 1px dashed var(--dark-grey);
+      padding: 30px;
+      margin-bottom: 25px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .walkthrough-step.active {
+      border-color: var(--white);
+    }
+
+    .walkthrough-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .walkthrough-num {
+      width: 45px;
+      height: 45px;
+      border: 2px solid var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .walkthrough-title {
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .walkthrough-content {
+      padding-left: 65px;
+    }
+
+    .walkthrough-desc {
+      color: var(--grey);
+      margin-bottom: 15px;
+      line-height: 1.8;
+    }
+
+    .walkthrough-example {
+      background: #111;
+      padding: 15px 20px;
+      font-size: 0.85rem;
+      border-left: 3px solid var(--grey);
+    }
+
+    .walkthrough-example .label {
+      color: var(--grey);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    /* ============================================
+       SECTION 7: LIVE DEMO TERMINAL
+       ============================================ */
+    .terminal {
+      background: #0d0d0d;
+      border: 1px solid var(--grey);
+      padding: 25px;
+      width: 100%;
+      font-size: 0.85rem;
+      position: relative;
+    }
+
+    .terminal-header {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px dashed var(--dark-grey);
+    }
+
+    .terminal-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1px solid var(--grey);
+    }
+
+    .terminal-title {
+      margin-left: auto;
+      color: var(--grey);
+      font-size: 0.8rem;
+    }
+
+    .terminal-line {
+      padding: 8px 0;
+      opacity: 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .terminal-prompt {
+      color: var(--grey);
+      flex-shrink: 0;
+    }
+
+    .terminal-command {
+      color: var(--white);
+    }
+
+    .terminal-result {
+      padding-left: 25px;
+    }
+
+    .terminal-blocked {
+      color: var(--white);
+      border-left: 3px solid var(--white);
+      padding-left: 15px;
+      background: rgba(255,255,255,0.03);
+    }
+
+    .terminal-allowed {
+      color: var(--grey);
+      border-left: 3px solid var(--grey);
+      padding-left: 15px;
+    }
+
+    .terminal-logged {
+      color: var(--grey);
+      font-style: italic;
+    }
+
+    .terminal-comment {
+      color: var(--dark-grey);
+      font-size: 0.8rem;
+      padding-left: 25px;
+      margin-bottom: 5px;
+    }
+
+    /* ============================================
+       SECTION 8: STATE FILE
+       ============================================ */
+    .json-viewer {
+      background: #0d0d0d;
+      border: 1px solid var(--grey);
+      padding: 25px;
+      font-size: 0.85rem;
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .json-key {
+      color: var(--grey);
+    }
+
+    .json-value {
+      color: var(--white);
+    }
+
+    .json-string {
+      color: var(--grey);
+    }
+
+    .json-line {
+      opacity: 0;
+      padding: 3px 0;
+    }
+
+    .json-line.highlight {
+      background: rgba(255,255,255,0.08);
+      margin: 0 -25px;
+      padding-left: 25px;
+      padding-right: 25px;
+    }
+
+    .json-comment {
+      color: var(--dark-grey);
+      font-size: 0.75rem;
+      margin-left: 20px;
+    }
+
+    /* ============================================
+       SECTION 9: INSTALLATION
+       ============================================ */
+    .install-command {
+      background: #0d0d0d;
+      border: 1px solid var(--grey);
+      padding: 20px 30px;
+      font-size: 1.1rem;
+      margin: 30px 0;
+      text-align: center;
+    }
+
+    .install-command code {
+      color: var(--white);
+    }
+
+    .install-flow {
+      width: 100%;
+    }
+
+    .install-step {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      padding: 20px 0;
+      border-bottom: 1px dashed var(--dark-grey);
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .install-step:last-child {
+      border-bottom: none;
+    }
+
+    .install-icon {
+      width: 50px;
+      height: 50px;
+      border: 1px dashed var(--grey);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.2rem;
+    }
+
+    .install-content {
+      flex: 1;
+    }
+
+    .install-from {
+      color: var(--grey);
+      font-size: 0.9rem;
+    }
+
+    .install-arrow {
+      color: var(--grey);
+      flex-shrink: 0;
+      font-size: 1.2rem;
+    }
+
+    .install-to {
+      color: var(--white);
+      font-size: 0.95rem;
+    }
+
+    .install-note {
+      color: var(--grey);
+      font-size: 0.8rem;
+      margin-top: 5px;
+    }
+
+    /* ============================================
+       SECTION 10: CREDITS
+       ============================================ */
+    #credits {
+      text-align: center;
+    }
+
+    .credit-links {
+      display: flex;
+      gap: 30px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .credit-link {
+      border: 1px dashed var(--grey);
+      padding: 18px 35px;
+      text-decoration: none;
+      color: var(--white);
+      transition: all 0.3s;
+      opacity: 0;
+    }
+
+    .credit-link:hover {
+      background: var(--white);
+      color: var(--black);
+      box-shadow: 0 0 25px var(--glow);
+    }
+
+    .made-with {
+      margin-top: 50px;
+      color: var(--grey);
+      font-size: 0.95rem;
+      opacity: 0;
+      line-height: 1.8;
+    }
+
+    /* ============================================
+       SECTION INDICATORS
+       ============================================ */
+    .section-indicator {
+      position: fixed;
+      right: 25px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 1000;
+    }
+
+    .section-dot {
+      width: 10px;
+      height: 10px;
+      border: 1px solid var(--grey);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .section-dot:hover,
+    .section-dot.active {
+      background: var(--white);
+      box-shadow: 0 0 12px var(--glow);
+    }
+
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+    @media (max-width: 900px) {
+      .phase-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .phase-connector {
+        grid-column: span 2;
+      }
+
+      .solution-grid {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .ascii-border {
+        padding: 30px 20px;
+      }
+
+      .result-box {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .walkthrough-content {
+        padding-left: 0;
+        margin-top: 15px;
+      }
+
+      .install-step {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Progress Bar -->
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <button class="nav-btn" id="playBtn">AUTO PLAY</button>
+    <button class="nav-btn" id="resetBtn">RESTART</button>
+  </nav>
+
+  <!-- Section Indicators -->
+  <div class="section-indicator" id="sectionIndicator"></div>
+
+  <!-- ============================================
+       SECTION 1: WELCOME & INTRODUCTION
+       ============================================ -->
+  <section id="intro">
+    <div class="ascii-border">
+      <h1 id="titleText">INTERVIEW-DRIVEN API DEVELOPMENT</h1>
+      <div class="package-name" id="packageName">@hustle-together/api-dev-tools</div>
+      <div class="version" id="versionText">v1.9.0</div>
+      <p class="tagline">"Interview first, test first, document always"<span class="cursor"></span></p>
+
+      <div class="intro-text">
+        <p>
+          This tool helps you build APIs the right way by <strong>enforcing a structured workflow</strong>.
+          Instead of letting AI assistants jump straight to code, it ensures they first research,
+          then ask YOU questions with <strong>multiple-choice options</strong> based on what they found.
+        </p>
+        <p style="margin-top: 20px;">
+          <strong>Scroll down</strong> to see how it works, step by step, using a real example:
+          creating a <strong>Brandfetch API endpoint</strong> from scratch.
+        </p>
+      </div>
+
+      <div class="scroll-hint">[ SCROLL TO BEGIN ]</div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 2: THE PROBLEM - WHAT GOES WRONG
+       ============================================ -->
+  <section id="problems">
+    <div class="ascii-border">
+      <h2>THE PROBLEM</h2>
+      <h3>What Goes Wrong Without Structure</h3>
+
+      <div class="explanation">
+        <div class="explanation-title">Why This Matters</div>
+        <p>
+          When you ask an AI assistant to build an API, it often <strong>skips important steps</strong>.
+          It might use outdated information from its training data, make assumptions about what you want,
+          or claim tasks are complete without actually verifying them.
+        </p>
+        <p>
+          These are the <strong>5 most common gaps</strong> we've identified - and the problems they cause:
+        </p>
+      </div>
+
+      <ul class="gap-list">
+        <li class="gap-item">
+          <span class="gap-number">Gap 01</span>
+          <div class="gap-title">AI Doesn't Use Your Exact Words</div>
+          <div class="gap-desc">You say one thing, but the AI searches for something different.</div>
+          <div class="gap-example">
+            <span class="bad">You: "Use Vercel AI Gateway"</span><br>
+            <span class="bad">AI searches: "Vercel AI SDK" (wrong!)</span><br>
+            <span class="good">Should search: "Vercel AI Gateway" (your exact words)</span>
+          </div>
+        </li>
+        <li class="gap-item">
+          <span class="gap-number">Gap 02</span>
+          <div class="gap-title">No Proof Files Were Actually Changed</div>
+          <div class="gap-desc">AI says "I updated all the files" but never runs git diff to prove it.</div>
+          <div class="gap-example">
+            AI: "Migration complete! All 6 files updated."<br>
+            Reality: Only 4 files were changed, 2 were missed.
+          </div>
+        </li>
+        <li class="gap-item">
+          <span class="gap-number">Gap 03</span>
+          <div class="gap-title">Skipped Tests Go Uninvestigated</div>
+          <div class="gap-desc">AI sees "9 tests skipped" and says "that's expected" without checking why.</div>
+          <div class="gap-example">
+            Tests might be skipping because they check the wrong environment variables.
+          </div>
+        </li>
+        <li class="gap-item">
+          <span class="gap-number">Gap 04</span>
+          <div class="gap-title">Tasks Marked Done Without Verification</div>
+          <div class="gap-desc">AI declares "complete!" without checking if the code matches your requirements.</div>
+          <div class="gap-example">
+            You asked for "single API key" but code still uses 4 separate keys.
+          </div>
+        </li>
+        <li class="gap-item">
+          <span class="gap-number">Gap 05</span>
+          <div class="gap-title">Tests Don't Match Production Code</div>
+          <div class="gap-desc">Production code uses new patterns, but tests still check old patterns.</div>
+          <div class="gap-example">
+            <span class="bad">Production: AI_GATEWAY_API_KEY</span><br>
+            <span class="bad">Tests: OPENAI_API_KEY (outdated!)</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 3: THE SOLUTION - OVERVIEW
+       ============================================ -->
+  <section id="solution">
+    <div class="ascii-border">
+      <h2>THE SOLUTION</h2>
+      <h3>Programmatic Enforcement</h3>
+
+      <div class="explanation">
+        <div class="explanation-title">How We Fix This</div>
+        <p>
+          Instead of just <em>asking</em> the AI to follow a process (which it might ignore),
+          we use <strong>Python hooks</strong> that intercept every action and enforce rules.
+        </p>
+        <p>
+          Think of it like guardrails on a highway. The AI can still drive,
+          but it literally <strong>cannot</strong> skip important steps - the system blocks it.
+        </p>
+      </div>
+
+      <div class="solution-grid">
+        <div class="solution-card">
+          <span class="solution-icon">[R]</span>
+          <div class="solution-title">Research First</div>
+          <div class="solution-desc">
+            AI must search for live documentation before writing any code.
+            No more outdated training data.
+          </div>
+        </div>
+        <div class="solution-card">
+          <span class="solution-icon">[I]</span>
+          <div class="solution-title">Interview Required</div>
+          <div class="solution-desc">
+            AI must ask YOU questions and wait for answers.
+            No more assumptions about what you want.
+          </div>
+        </div>
+        <div class="solution-card">
+          <span class="solution-icon">[V]</span>
+          <div class="solution-title">Verification Built-In</div>
+          <div class="solution-desc">
+            System checks implementation matches interview.
+            Warns about mismatches before completing.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 4: HOW HOOKS WORK
+       ============================================ -->
+  <section id="hooks">
+    <div class="ascii-border">
+      <h2>HOW IT WORKS</h2>
+      <h3>The Hook System</h3>
+
+      <div class="explanation">
+        <div class="explanation-title">What Are Hooks?</div>
+        <p>
+          Hooks are small Python scripts that run <strong>automatically</strong> whenever
+          the AI tries to do something. They check conditions and can either
+          <strong>allow</strong> or <strong>block</strong> the action.
+        </p>
+        <p>
+          There are 3 types: <strong>PreToolUse</strong> (before an action),
+          <strong>PostToolUse</strong> (after an action), and <strong>Stop</strong> (when trying to finish).
+        </p>
+      </div>
+
+      <div class="hook-diagram">
+        <div class="flow-box">YOU: "Build me an AI chat API"</div>
+        <div class="flow-arrow">|</div>
+        <div class="flow-box">AI: Tries to write code</div>
+        <div class="flow-arrow">|</div>
+
+        <div class="hook-group">
+          <h4>PreToolUse Hooks (Before Writing Code)</h4>
+          <div class="hook-file">
+            <code>enforce-research.py</code>
+            <span class="hook-purpose">Must research first</span>
+          </div>
+          <div class="hook-file">
+            <code>enforce-interview.py</code>
+            <span class="hook-purpose">Must ask user questions</span>
+          </div>
+          <div class="hook-file">
+            <code>verify-implementation.py</code>
+            <span class="hook-purpose">Check term matching</span>
+          </div>
+        </div>
+
+        <div class="hook-group">
+          <h4>PostToolUse Hooks (After Actions)</h4>
+          <div class="hook-file">
+            <code>track-tool-use.py</code>
+            <span class="hook-purpose">Log all research activity</span>
+          </div>
+        </div>
+
+        <div class="hook-group">
+          <h4>Stop Hook (When Finishing)</h4>
+          <div class="hook-file">
+            <code>api-workflow-check.py</code>
+            <span class="hook-purpose">Verify all phases done + git diff</span>
+          </div>
+        </div>
+
+        <div class="flow-arrow">|</div>
+
+        <div class="result-box">
+          <div class="result-allowed">[ ALLOWED ]<br><small>All checks pass</small></div>
+          <div class="result-blocked">[ BLOCKED ]<br><small>Missing requirements</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 5: THE 10 PHASES
+       ============================================ -->
+  <section id="phases">
+    <div class="ascii-border">
+      <h2>THE WORKFLOW</h2>
+      <h3>10 Enforced Phases</h3>
+
+      <div class="explanation">
+        <div class="explanation-title">The Complete Process</div>
+        <p>
+          Every API goes through these 10 phases. The system tracks progress and won't let
+          the AI skip ahead. This ensures <strong>thorough, consistent results</strong> every time.
+        </p>
+      </div>
+
+      <div class="phase-grid">
+        <div class="phase-box" data-phase="1">
+          <div class="phase-status"></div>
+          <div class="phase-number">01</div>
+          <div class="phase-name">Scope</div>
+          <div class="phase-desc">Define what we're building</div>
+        </div>
+        <div class="phase-box" data-phase="2">
+          <div class="phase-status"></div>
+          <div class="phase-number">02</div>
+          <div class="phase-name">Research</div>
+          <div class="phase-desc">Find live documentation</div>
+        </div>
+        <div class="phase-box" data-phase="3">
+          <div class="phase-status"></div>
+          <div class="phase-number">03</div>
+          <div class="phase-name">Interview</div>
+          <div class="phase-desc">Ask user questions</div>
+        </div>
+        <div class="phase-box" data-phase="4">
+          <div class="phase-status"></div>
+          <div class="phase-number">04</div>
+          <div class="phase-name">Deep Research</div>
+          <div class="phase-desc">Based on interview answers</div>
+        </div>
+        <div class="phase-box" data-phase="5">
+          <div class="phase-status"></div>
+          <div class="phase-number">05</div>
+          <div class="phase-name">Schema</div>
+          <div class="phase-desc">Define request/response</div>
+        </div>
+
+        <div class="phase-connector">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</div>
+
+        <div class="phase-box" data-phase="6">
+          <div class="phase-status"></div>
+          <div class="phase-number">06</div>
+          <div class="phase-name">Environment</div>
+          <div class="phase-desc">Check API keys exist</div>
+        </div>
+        <div class="phase-box" data-phase="7">
+          <div class="phase-status"></div>
+          <div class="phase-number">07</div>
+          <div class="phase-name">TDD Red</div>
+          <div class="phase-desc">Write failing tests</div>
+        </div>
+        <div class="phase-box" data-phase="8">
+          <div class="phase-status"></div>
+          <div class="phase-number">08</div>
+          <div class="phase-name">TDD Green</div>
+          <div class="phase-desc">Make tests pass</div>
+        </div>
+        <div class="phase-box" data-phase="9">
+          <div class="phase-status"></div>
+          <div class="phase-number">09</div>
+          <div class="phase-name">Refactor</div>
+          <div class="phase-desc">Clean up the code</div>
+        </div>
+        <div class="phase-box" data-phase="10">
+          <div class="phase-status"></div>
+          <div class="phase-number">10</div>
+          <div class="phase-name">Documentation</div>
+          <div class="phase-desc">Update all docs</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 6: REAL EXAMPLE WALKTHROUGH
+       ============================================ -->
+  <section id="walkthrough">
+    <div class="ascii-border">
+      <h2>REAL EXAMPLE</h2>
+      <h3>Creating a Brandfetch API</h3>
+
+      <div class="explanation">
+        <div class="explanation-title">The Complete Flow</div>
+        <p>
+          Let's walk through what happens when you run <code>/api-create brandfetch</code>.
+          This shows the full interview-driven workflow, from research to implementation,
+          with <strong>structured questions based on real documentation</strong>.
+        </p>
+      </div>
+
+      <div class="walkthrough-step">
+        <div class="walkthrough-header">
+          <div class="walkthrough-num">1</div>
+          <div class="walkthrough-title">You Run the Command</div>
+        </div>
+        <div class="walkthrough-content">
+          <div class="walkthrough-desc">
+            You type the command to create a new Brandfetch API endpoint.
+            The workflow immediately begins.
+          </div>
+          <div class="walkthrough-example">
+            <div class="label">Your Command:</div>
+            /api-create brandfetch
+          </div>
+        </div>
+      </div>
+
+      <div class="walkthrough-step">
+        <div class="walkthrough-header">
+          <div class="walkthrough-num">2</div>
+          <div class="walkthrough-title">Research Phase (Automatic)</div>
+        </div>
+        <div class="walkthrough-content">
+          <div class="walkthrough-desc">
+            Before asking any questions, the AI is <strong>required</strong> to research.
+            It fetches live documentation from Context7 and searches the web.
+          </div>
+          <div class="walkthrough-example">
+            <div class="label">Research Logged to State File:</div>
+            - Context7: Brandfetch SDK docs → found logos, colors, fonts endpoints<br>
+            - WebSearch: "Brandfetch API rate limits 2025" → 5 req/second<br>
+            - WebSearch: "Brandfetch API response format" → JSON with asset URLs<br>
+            - Context7: Authentication → Bearer token required
+          </div>
+        </div>
+      </div>
+
+      <div class="walkthrough-step">
+        <div class="walkthrough-header">
+          <div class="walkthrough-num">3</div>
+          <div class="walkthrough-title">Structured Interview (Based on Research)</div>
+        </div>
+        <div class="walkthrough-content">
+          <div class="walkthrough-desc">
+            Now the AI asks YOU questions - but with <strong>multiple-choice options</strong>
+            derived from what it actually found in the documentation. No guessing!
+          </div>
+          <div class="walkthrough-example">
+            <div class="label">Question 1 (with options from research):</div>
+            "What's the primary purpose of this endpoint?"<br><br>
+            <strong>1.</strong> Brand lookup (get brand by domain)<br>
+            <strong>2.</strong> Logo extraction (get logo assets)<br>
+            <strong>3.</strong> Color palette extraction<br>
+            <strong>4.</strong> Full brand kit (all assets)<br>
+            <strong>5.</strong> Type something else...<br><br>
+            <em>You select: "4. Full brand kit (all assets)"</em>
+          </div>
+        </div>
+      </div>
+
+      <div class="walkthrough-step">
+        <div class="walkthrough-header">
+          <div class="walkthrough-num">4</div>
+          <div class="walkthrough-title">More Questions, All Tracked</div>
+        </div>
+        <div class="walkthrough-content">
+          <div class="walkthrough-desc">
+            Each question is tracked with your answer. These decisions are stored
+            in the state file and <strong>injected during implementation</strong> to ensure consistency.
+          </div>
+          <div class="walkthrough-example">
+            <div class="label">Decisions Captured:</div>
+            • Purpose: full_brand_kit<br>
+            • Response Format: JSON with asset URLs<br>
+            • API Key Handling: server environment variables only<br>
+            • Error Handling: detailed (error, code, details)<br>
+            • Required Params: domain (string)<br>
+            • Optional Params: include_colors, include_fonts
+          </div>
+        </div>
+      </div>
+
+      <div class="walkthrough-step">
+        <div class="walkthrough-header">
+          <div class="walkthrough-num">5</div>
+          <div class="walkthrough-title">Implementation (With Decision Reminders)</div>
+        </div>
+        <div class="walkthrough-content">
+          <div class="walkthrough-desc">
+            When the AI writes code, the hook <strong>injects your decisions</strong> as a reminder.
+            This ensures the implementation matches what you actually asked for.
+          </div>
+          <div class="walkthrough-example">
+            <div class="label">Injected on Every Write:</div>
+            ✅ Interview complete. REMEMBER THE USER'S DECISIONS:<br><br>
+            • Purpose: Full brand kit (all assets)<br>
+            • Response Format: JSON with asset URLs<br>
+            • API Key Handling: server environment variables only<br>
+            • Error Handling: detailed (error, code, details)<br><br>
+            <em>Your implementation MUST align with these choices.</em>
+          </div>
+        </div>
+      </div>
+
+      <div class="walkthrough-step">
+        <div class="walkthrough-header">
+          <div class="walkthrough-num">6</div>
+          <div class="walkthrough-title">TDD + Final Result</div>
+        </div>
+        <div class="walkthrough-content">
+          <div class="walkthrough-desc">
+            Tests are written first (TDD), then implementation, then docs.
+            Everything is tracked and verified against your interview decisions.
+          </div>
+          <div class="walkthrough-example">
+            <div class="label">Files Created:</div>
+            - src/lib/schemas/brandfetch.ts (Zod validation)<br>
+            - src/lib/__tests__/brandfetch.test.ts (tests first!)<br>
+            - src/app/api/v2/brandfetch/route.ts<br>
+            - Interview doc: src/v2/docs/endpoints/brandfetch.md<br>
+            - All tests passing ✓
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 7: TERMINAL SIMULATION
+       ============================================ -->
+  <section id="demo">
+    <div class="ascii-border">
+      <h2>LIVE SIMULATION</h2>
+      <h3>The Interview Flow</h3>
+
+      <div class="explanation">
+        <div class="explanation-title">Structured Questions in Action</div>
+        <p>
+          This simulates the interview phase. Notice how the AI uses
+          <strong>AskUserQuestion with options</strong> based on research findings.
+          Your answers are captured and used throughout implementation.
+        </p>
+      </div>
+
+      <div class="terminal">
+        <div class="terminal-header">
+          <div class="terminal-dot"></div>
+          <div class="terminal-dot"></div>
+          <div class="terminal-dot"></div>
+          <div class="terminal-title">claude-code session: /api-create brandfetch</div>
+        </div>
+
+        <div class="terminal-comment" data-step="0">// Step 1: Research phase starts automatically</div>
+        <div class="terminal-line" data-step="1">
+          <span class="terminal-prompt">claude></span>
+          <span class="terminal-command">mcp__context7__get-library-docs("brandfetch")</span>
+        </div>
+        <div class="terminal-line terminal-result" data-step="2">
+          <span class="terminal-logged">[LOGGED] Context7 source: brandfetch SDK documentation</span>
+        </div>
+
+        <div class="terminal-line" data-step="3">
+          <span class="terminal-prompt">claude></span>
+          <span class="terminal-command">WebSearch "Brandfetch API endpoints 2025"</span>
+        </div>
+        <div class="terminal-line terminal-result" data-step="4">
+          <span class="terminal-logged">[LOGGED] WebSearch: found /v2/brands, /v2/search, /v2/logos</span>
+        </div>
+
+        <div class="terminal-comment" data-step="5">// Step 2: Interview with structured options (from research)</div>
+        <div class="terminal-line" data-step="6">
+          <span class="terminal-prompt">claude></span>
+          <span class="terminal-command">AskUserQuestion(<br>
+            &nbsp;&nbsp;question: "What's the primary purpose?"<br>
+            &nbsp;&nbsp;options: [<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;{value: "lookup", label: "Brand lookup by domain"},<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;{value: "logos", label: "Logo extraction only"},<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;{value: "full_kit", label: "Full brand kit"},<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;{value: "custom", label: "Type something..."}<br>
+            &nbsp;&nbsp;]<br>
+          )</span>
+        </div>
+        <div class="terminal-line terminal-result" data-step="7">
+          <span class="terminal-allowed">[USER] Selected: "full_kit"<br>[TRACKED] decisions.purpose = "full_kit"</span>
+        </div>
+
+        <div class="terminal-line" data-step="8">
+          <span class="terminal-prompt">claude></span>
+          <span class="terminal-command">AskUserQuestion(<br>
+            &nbsp;&nbsp;question: "How should API keys be handled?"<br>
+            &nbsp;&nbsp;options: [<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;{value: "server_only", label: "Server env vars only"},<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;{value: "header", label: "Custom header override"},<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;{value: "both", label: "Both methods"},<br>
+            &nbsp;&nbsp;]<br>
+          )</span>
+        </div>
+        <div class="terminal-line terminal-result" data-step="9">
+          <span class="terminal-allowed">[USER] Selected: "server_only"<br>[TRACKED] decisions.api_key_handling = "server_only"</span>
+        </div>
+
+        <div class="terminal-comment" data-step="10">// Step 3: Interview complete, now writing code</div>
+        <div class="terminal-line" data-step="11">
+          <span class="terminal-prompt">claude></span>
+          <span class="terminal-command">Write src/app/api/v2/brandfetch/route.ts</span>
+        </div>
+        <div class="terminal-line terminal-result" data-step="12">
+          <span class="terminal-allowed">✅ Interview complete. REMEMBER THE USER'S DECISIONS:<br>
+          &nbsp;&nbsp;• Purpose: full_kit<br>
+          &nbsp;&nbsp;• API Key Handling: server_only<br>
+          ALLOWED: Writing file...</span>
+        </div>
+
+        <div class="terminal-comment" data-step="13">// Decisions are injected on EVERY write operation</div>
+        <div class="terminal-line" data-step="14">
+          <span class="terminal-prompt">claude></span>
+          <span class="terminal-command">Write src/lib/schemas/brandfetch.ts</span>
+        </div>
+        <div class="terminal-line terminal-result" data-step="15">
+          <span class="terminal-allowed">✅ REMEMBER THE USER'S DECISIONS:<br>
+          &nbsp;&nbsp;• Purpose: full_kit<br>
+          &nbsp;&nbsp;• API Key Handling: server_only<br>
+          ALLOWED: Writing schema file...</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 8: STATE FILE
+       ============================================ -->
+  <section id="state">
+    <div class="ascii-border">
+      <h2>TRACKING PROGRESS</h2>
+      <h3>The State File</h3>
+
+      <div class="explanation">
+        <div class="explanation-title">Everything Gets Recorded</div>
+        <p>
+          All progress is saved to <code>.claude/api-dev-state.json</code>.
+          This includes <strong>your interview decisions</strong>, which are injected
+          during implementation to ensure consistency.
+        </p>
+      </div>
+
+      <div class="json-viewer">
+        <div class="json-line"><span class="json-key">{</span></div>
+        <div class="json-line">  <span class="json-key">"endpoint":</span> <span class="json-string">"brandfetch"</span>,</div>
+        <div class="json-line">  <span class="json-key">"phases":</span> {</div>
+        <div class="json-line highlight">    <span class="json-key">"research_initial":</span> {</div>
+        <div class="json-line highlight">      <span class="json-key">"status":</span> <span class="json-value">"complete"</span>,</div>
+        <div class="json-line highlight">      <span class="json-key">"sources":</span> [<span class="json-string">"context7"</span>, <span class="json-string">"websearch"</span>, <span class="json-string">"websearch"</span>]</div>
+        <div class="json-line highlight">    },</div>
+        <div class="json-line highlight">    <span class="json-key">"interview":</span> {</div>
+        <div class="json-line highlight">      <span class="json-key">"status":</span> <span class="json-value">"complete"</span>,</div>
+        <div class="json-line highlight">      <span class="json-key">"user_question_count":</span> <span class="json-value">6</span>,</div>
+        <div class="json-line highlight">      <span class="json-key">"structured_question_count":</span> <span class="json-value">5</span>, <span class="json-comment">// Questions with options</span></div>
+        <div class="json-line highlight">      <span class="json-key">"decisions":</span> { <span class="json-comment">// YOUR CHOICES - INJECTED ON WRITES</span></div>
+        <div class="json-line highlight">        <span class="json-key">"purpose":</span> {<span class="json-key">"value":</span> <span class="json-string">"full_kit"</span>},</div>
+        <div class="json-line highlight">        <span class="json-key">"api_key_handling":</span> {<span class="json-key">"value":</span> <span class="json-string">"server_only"</span>},</div>
+        <div class="json-line highlight">        <span class="json-key">"response_format":</span> {<span class="json-key">"value":</span> <span class="json-string">"json"</span>},</div>
+        <div class="json-line highlight">        <span class="json-key">"error_handling":</span> {<span class="json-key">"value":</span> <span class="json-string">"detailed"</span>}</div>
+        <div class="json-line highlight">      },</div>
+        <div class="json-line highlight">      <span class="json-key">"questions":</span> [</div>
+        <div class="json-line highlight">        {<span class="json-key">"tool_used":</span> <span class="json-value">true</span>, <span class="json-key">"has_options":</span> <span class="json-value">true</span>, <span class="json-key">"user_response":</span> <span class="json-string">"full_kit"</span>},</div>
+        <div class="json-line highlight">        <span class="json-comment">// ... more questions tracked</span></div>
+        <div class="json-line highlight">      ]</div>
+        <div class="json-line highlight">    },</div>
+        <div class="json-line">    <span class="json-key">"tdd_red":</span> { <span class="json-key">"status":</span> <span class="json-value">"complete"</span> },</div>
+        <div class="json-line">    <span class="json-key">"tdd_green":</span> { <span class="json-key">"status":</span> <span class="json-value">"complete"</span> }</div>
+        <div class="json-line">  },</div>
+        <div class="json-line">  <span class="json-key">"files_created":</span> [</div>
+        <div class="json-line">    <span class="json-string">"src/lib/schemas/brandfetch.ts"</span>,</div>
+        <div class="json-line">    <span class="json-string">"src/app/api/v2/brandfetch/route.ts"</span>,</div>
+        <div class="json-line">    <span class="json-string">"src/v2/docs/endpoints/brandfetch.md"</span></div>
+        <div class="json-line">  ]</div>
+        <div class="json-line"><span class="json-key">}</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 9: INSTALLATION
+       ============================================ -->
+  <section id="install">
+    <div class="ascii-border">
+      <h2>GET STARTED</h2>
+      <h3>One Command Installation</h3>
+
+      <div class="explanation">
+        <div class="explanation-title">Easy Setup</div>
+        <p>
+          Run a single command to install everything. The installer copies slash commands,
+          Python hooks, and configures the system automatically.
+          <strong>Works with any project.</strong>
+        </p>
+      </div>
+
+      <div class="install-command">
+        <code>npx @hustle-together/api-dev-tools --scope=project</code>
+      </div>
+
+      <div class="install-flow">
+        <div class="install-step">
+          <div class="install-icon">21</div>
+          <div class="install-content">
+            <div class="install-from">Slash Commands</div>
+            <div class="install-note">/api-create, /api-interview, /red, /green, /refactor...</div>
+          </div>
+          <div class="install-arrow">---></div>
+          <div class="install-to">.claude/commands/</div>
+        </div>
+        <div class="install-step">
+          <div class="install-icon">5</div>
+          <div class="install-content">
+            <div class="install-from">Python Hooks</div>
+            <div class="install-note">enforce-research, enforce-interview, verify-implementation...</div>
+          </div>
+          <div class="install-arrow">---></div>
+          <div class="install-to">.claude/hooks/</div>
+        </div>
+        <div class="install-step">
+          <div class="install-icon">+</div>
+          <div class="install-content">
+            <div class="install-from">Settings Configuration</div>
+            <div class="install-note">Hook registration, permissions, matchers</div>
+          </div>
+          <div class="install-arrow">---></div>
+          <div class="install-to">.claude/settings.json</div>
+        </div>
+        <div class="install-step">
+          <div class="install-icon">*</div>
+          <div class="install-content">
+            <div class="install-from">MCP Servers</div>
+            <div class="install-note">Context7 (live docs), GitHub (issues/PRs)</div>
+          </div>
+          <div class="install-arrow">---></div>
+          <div class="install-to">claude mcp add</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 10: FINAL / LINKS
+       ============================================ -->
+  <section id="credits">
+    <div class="ascii-border" style="text-align: center;">
+      <h2>START BUILDING BETTER APIs</h2>
+
+      <div class="explanation" style="text-align: left;">
+        <div class="explanation-title">What You Get</div>
+        <p>
+          <strong>Structured workflow</strong> - No more skipped steps or assumptions<br>
+          <strong>Real enforcement</strong> - Hooks that actually block bad behavior<br>
+          <strong>Audit trail</strong> - Every action logged to state file<br>
+          <strong>Gap detection</strong> - Catches mismatches between requirements and code<br>
+          <strong>TDD built-in</strong> - Tests written before implementation
+        </p>
+      </div>
+
+      <div class="credit-links">
+        <a href="https://github.com/hustle-together/api-dev-tools" class="credit-link" target="_blank">VIEW ON GITHUB</a>
+        <a href="https://www.npmjs.com/package/@hustle-together/api-dev-tools" class="credit-link" target="_blank">INSTALL FROM NPM</a>
+      </div>
+
+      <div class="made-with">
+        <p>Made for developers who want AI assistants<br>that actually follow instructions.</p>
+        <p style="margin-top: 20px; color: var(--dark-grey);">
+          v1.9.0 | MIT License<br>
+          "Interview first, test first, document always"
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Register GSAP plugins
+    gsap.registerPlugin(ScrollTrigger, TextPlugin);
+
+    // ============================================
+    // CONFIGURATION
+    // ============================================
+    const sections = ['intro', 'problems', 'solution', 'hooks', 'phases', 'walkthrough', 'demo', 'state', 'install', 'credits'];
+    let isPlaying = false;
+
+    // ============================================
+    // SECTION INDICATORS
+    // ============================================
+    const indicatorContainer = document.getElementById('sectionIndicator');
+    sections.forEach((id, i) => {
+      const dot = document.createElement('div');
+      dot.className = 'section-dot';
+      dot.dataset.section = id;
+      dot.title = id.charAt(0).toUpperCase() + id.slice(1);
+      dot.addEventListener('click', () => {
+        document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+      });
+      indicatorContainer.appendChild(dot);
+    });
+
+    // Update active indicator on scroll
+    ScrollTrigger.create({
+      trigger: 'body',
+      start: 'top top',
+      end: 'bottom bottom',
+      onUpdate: (self) => {
+        const progress = self.progress;
+        const currentIndex = Math.min(Math.floor(progress * sections.length), sections.length - 1);
+        document.querySelectorAll('.section-dot').forEach((dot, i) => {
+          dot.classList.toggle('active', i === currentIndex);
+        });
+        document.getElementById('progressBar').style.width = `${progress * 100}%`;
+      }
+    });
+
+    // ============================================
+    // SECTION 1: INTRO ANIMATION
+    // ============================================
+    const introTL = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#intro',
+        start: 'top 80%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    introTL
+      .to('#intro h1', { opacity: 1, duration: 0.6 })
+      .to('#packageName', { opacity: 1, duration: 0.5 }, '-=0.3')
+      .to('#versionText', { opacity: 1, duration: 0.3 })
+      .to('.intro-text', { opacity: 1, duration: 0.6 }, '-=0.2')
+      .to('.scroll-hint', { opacity: 1, duration: 0.4 });
+
+    // ============================================
+    // SECTION 2: PROBLEMS ANIMATION
+    // ============================================
+    const problemsTL = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#problems',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    problemsTL.to('#problems .explanation', { opacity: 1, duration: 0.5 });
+
+    document.querySelectorAll('.gap-item').forEach((item, i) => {
+      problemsTL.to(item, {
+        opacity: 1,
+        x: 0,
+        duration: 0.4,
+        ease: 'power2.out'
+      }, i * 0.2 + 0.3);
+    });
+
+    // ============================================
+    // SECTION 3: SOLUTION ANIMATION
+    // ============================================
+    const solutionTL = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#solution',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    solutionTL.to('#solution .explanation', { opacity: 1, duration: 0.5 });
+
+    document.querySelectorAll('.solution-card').forEach((card, i) => {
+      solutionTL.to(card, {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: 'power2.out'
+      }, i * 0.15 + 0.3);
+    });
+
+    // ============================================
+    // SECTION 4: HOOKS ANIMATION
+    // ============================================
+    const hooksTL = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#hooks',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    hooksTL
+      .to('#hooks .explanation', { opacity: 1, duration: 0.5 })
+      .to('#hooks .flow-box', { opacity: 1, stagger: 0.2, duration: 0.3 })
+      .to('#hooks .flow-arrow', { opacity: 1, stagger: 0.1, duration: 0.2 }, '-=0.3')
+      .to('#hooks .hook-group', { opacity: 1, stagger: 0.25, duration: 0.4 })
+      .to('#hooks .hook-file', { opacity: 1, stagger: 0.08, duration: 0.2 })
+      .to('#hooks .result-allowed, #hooks .result-blocked', { opacity: 1, stagger: 0.15, duration: 0.3 });
+
+    // ============================================
+    // SECTION 5: PHASES ANIMATION
+    // ============================================
+    const phasesTL = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#phases',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    phasesTL.to('#phases .explanation', { opacity: 1, duration: 0.5 });
+
+    document.querySelectorAll('.phase-box').forEach((box, i) => {
+      phasesTL.to(box, {
+        opacity: 1,
+        scale: 1,
+        duration: 0.25,
+        ease: 'back.out(1.5)',
+        onComplete: () => {
+          box.classList.add('active');
+          box.querySelector('.phase-status').textContent = '[OK]';
+        }
+      }, i * 0.1 + 0.3);
+    });
+
+    phasesTL.to('.phase-connector', { opacity: 1, duration: 0.3 }, '-=0.8');
+
+    // ============================================
+    // SECTION 6: WALKTHROUGH ANIMATION
+    // ============================================
+    const walkthroughTL = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#walkthrough',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    walkthroughTL.to('#walkthrough .explanation', { opacity: 1, duration: 0.5 });
+
+    document.querySelectorAll('.walkthrough-step').forEach((step, i) => {
+      walkthroughTL.to(step, {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: 'power2.out'
+      }, i * 0.25 + 0.3);
+    });
+
+    // ============================================
+    // SECTION 7: DEMO TERMINAL ANIMATION
+    // ============================================
+    const demoTL = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#demo',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    demoTL.to('#demo .explanation', { opacity: 1, duration: 0.5 });
+
+    // Get all terminal elements in order
+    const terminalElements = document.querySelectorAll('#demo .terminal-comment, #demo .terminal-line');
+    terminalElements.forEach((el, i) => {
+      const delay = i * 0.25 + 0.5;
+      demoTL.to(el, {
+        opacity: 1,
+        duration: 0.3,
+        ease: 'power2.out'
+      }, delay);
+    });
+
+    // ============================================
+    // SECTION 8: STATE FILE ANIMATION
+    // ============================================
+    const stateTL = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#state',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    stateTL.to('#state .explanation', { opacity: 1, duration: 0.5 });
+
+    document.querySelectorAll('.json-line').forEach((line, i) => {
+      stateTL.to(line, {
+        opacity: 1,
+        duration: 0.12
+      }, i * 0.06 + 0.4);
+    });
+
+    // ============================================
+    // SECTION 9: INSTALL ANIMATION
+    // ============================================
+    const installTL = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#install',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    installTL.to('#install .explanation', { opacity: 1, duration: 0.5 });
+
+    document.querySelectorAll('.install-step').forEach((step, i) => {
+      installTL.to(step, {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: 'power2.out'
+      }, i * 0.2 + 0.4);
+    });
+
+    // ============================================
+    // SECTION 10: CREDITS ANIMATION
+    // ============================================
+    const creditsTL = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#credits',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    creditsTL
+      .to('#credits .explanation', { opacity: 1, duration: 0.5 })
+      .to('.credit-link', { opacity: 1, stagger: 0.15, duration: 0.4 })
+      .to('.made-with', { opacity: 1, duration: 0.5 });
+
+    // ============================================
+    // AUTO-PLAY BUTTON
+    // ============================================
+    document.getElementById('playBtn').addEventListener('click', () => {
+      if (!isPlaying) {
+        isPlaying = true;
+        document.getElementById('playBtn').textContent = 'PLAYING...';
+        document.getElementById('playBtn').style.background = 'var(--white)';
+        document.getElementById('playBtn').style.color = 'var(--black)';
+
+        let currentSection = 0;
+        const autoScroll = setInterval(() => {
+          if (currentSection < sections.length) {
+            document.getElementById(sections[currentSection]).scrollIntoView({
+              behavior: 'smooth'
+            });
+            currentSection++;
+          } else {
+            clearInterval(autoScroll);
+            isPlaying = false;
+            document.getElementById('playBtn').textContent = 'AUTO PLAY';
+            document.getElementById('playBtn').style.background = 'transparent';
+            document.getElementById('playBtn').style.color = 'var(--white)';
+          }
+        }, 5000);
+      }
+    });
+
+    // ============================================
+    // RESET BUTTON
+    // ============================================
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Reset animations
+      setTimeout(() => {
+        gsap.set('.explanation', { opacity: 0 });
+        gsap.set('.gap-item', { opacity: 0, x: -30 });
+        gsap.set('.solution-card', { opacity: 0, y: 20 });
+        gsap.set('.flow-box, .flow-arrow, .hook-group, .hook-file', { opacity: 0 });
+        gsap.set('.result-allowed, .result-blocked', { opacity: 0 });
+        gsap.set('.phase-box', { opacity: 0, scale: 0.9 });
+        gsap.set('.walkthrough-step', { opacity: 0, y: 20 });
+        gsap.set('.terminal-line, .terminal-comment', { opacity: 0 });
+        gsap.set('.json-line', { opacity: 0 });
+        gsap.set('.install-step', { opacity: 0, y: 20 });
+        gsap.set('.credit-link, .made-with', { opacity: 0 });
+        gsap.set('.intro-text, .scroll-hint', { opacity: 0 });
+
+        document.querySelectorAll('.phase-box').forEach(box => {
+          box.classList.remove('active');
+          box.querySelector('.phase-status').textContent = '';
+        });
+
+        ScrollTrigger.refresh();
+      }, 500);
+    });
+
+    // ============================================
+    // HOVER EFFECTS
+    // ============================================
+    document.querySelectorAll('.phase-box, .gap-item, .solution-card, .hook-file').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        gsap.to(el, {
+          boxShadow: '0 0 30px rgba(255,255,255,0.15)',
+          duration: 0.3
+        });
+      });
+      el.addEventListener('mouseleave', () => {
+        gsap.to(el, {
+          boxShadow: 'none',
+          duration: 0.3
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

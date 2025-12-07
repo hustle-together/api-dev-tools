@@ -4,6 +4,59 @@
 
 **Purpose:** View and update API implementation status, track progress, and manage V2 migration.
 
+## State File Integration
+
+This command reads from `.claude/api-dev-state.json` which is automatically updated by the enforcement hooks.
+
+### Reading Current State
+
+**FIRST: Read the state file to understand current progress:**
+
+```
+Tool: Read
+Path: .claude/api-dev-state.json
+```
+
+Parse the JSON and display a formatted status report showing:
+- Current endpoint being worked on
+- Phase completion status (scope, research, interview, TDD, docs)
+- Sources consulted during research
+- Timestamps for each phase
+- Verification status
+
+### Example State Display
+
+```
+📊 API Development Progress
+
+Endpoint: stream-text
+Library: vercel-ai-sdk
+Started: 2025-12-06T20:00:00Z
+
+PHASES:
+  ✅ Scope defined (20:00:30)
+  ✅ Initial research - 4 sources consulted (20:02:00)
+  🔄 Interview - in progress
+  ⬜ Deep research
+  ⬜ Schema creation
+  ⬜ Environment check
+  ⬜ TDD Red
+  ⬜ TDD Green
+  ⬜ TDD Refactor
+  ⬜ Documentation
+
+RESEARCH SOURCES:
+  • context7: @ai-sdk/core (20:01:00)
+  • websearch: "Vercel AI SDK streamText 2025" (20:01:30)
+  • webfetch: https://sdk.vercel.ai/docs (20:01:45)
+
+VERIFICATION:
+  ❌ All sources fetched: false
+  ❌ Schema matches docs: false
+  ❌ Tests cover params: false
+  ❌ All tests passing: false
+```
+
 ## What This Shows
 
 ### For Specific Endpoint

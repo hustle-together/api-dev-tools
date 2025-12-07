@@ -1,0 +1,367 @@
+#!/usr/bin/env python3
+"""
+Hook: PostToolUse for WebSearch, WebFetch, Context7 MCP
+Purpose: Track all research activity in the state file
+
+This hook runs AFTER Claude uses research tools (WebSearch, WebFetch, Context7).
+It logs each research action to api-dev-state.json for:
+  - Auditing what research was done
+  - Verifying prerequisites before allowing implementation
+  - Providing visibility to the user
+
+Returns:
+  - {"continue": true} - Always continues (logging only, no blocking)
+"""
+import json
+import sys
+from datetime import datetime
+from pathlib import Path
+
+# State file is in .claude/ directory (sibling to hooks/)
+STATE_FILE = Path(__file__).parent.parent / "api-dev-state.json"
+
+
+def main():
+    # Read hook input from stdin
+    try:
+        input_data = json.load(sys.stdin)
+    except json.JSONDecodeError:
+        # Can't parse, just continue
+        print(json.dumps({"continue": True}))
+        sys.exit(0)
+
+    tool_name = input_data.get("tool_name", "")
+    tool_input = input_data.get("tool_input", {})
+    tool_output = input_data.get("tool_output", {})
+
+    # Track research tools AND user questions
+    research_tools = ["WebSearch", "WebFetch", "mcp__context7"]
+    is_research_tool = any(t in tool_name for t in research_tools)
+    is_user_question = tool_name == "AskUserQuestion"
+
+    if not is_research_tool and not is_user_question:
+        print(json.dumps({"continue": True}))
+        sys.exit(0)
+
+    # Load or create state file
+    if STATE_FILE.exists():
+        try:
+            state = json.loads(STATE_FILE.read_text())
+        except json.JSONDecodeError:
+            state = create_initial_state()
+    else:
+        state = create_initial_state()
+
+    # Get phases
+    phases = state.setdefault("phases", {})
+
+    # Handle AskUserQuestion separately - track in interview phase
+    if is_user_question:
+        interview = phases.setdefault("interview", {
+            "status": "not_started",
+            "questions": [],
+            "user_question_count": 0,
+            "structured_question_count": 0,
+            "decisions": {}  # Track key decisions for consistency checking
+        })
+
+        # Track the question
+        questions = interview.setdefault("questions", [])
+        user_count = interview.get("user_question_count", 0) + 1
+        interview["user_question_count"] = user_count
+
+        # Check if this question has structured options (multiple-choice)
+        options = tool_input.get("options", [])
+        has_options = len(options) > 0
+
+        # Track structured questions count
+        if has_options:
+            structured_count = interview.get("structured_question_count", 0) + 1
+            interview["structured_question_count"] = structured_count
+
+        # IMPORTANT: Capture the user's response from tool_output
+        # PostToolUse runs AFTER the tool completes, so we have the response
+        user_response = None
+        selected_value = None
+
+        # tool_output contains the user's response
+        if isinstance(tool_output, str):
+            user_response = tool_output
+        elif isinstance(tool_output, dict):
+            user_response = tool_output.get("response", tool_output.get("result", str(tool_output)))
+
+        # Try to match response to an option value
+        if has_options and user_response:
+            response_lower = user_response.lower().strip()
+            for opt in options:
+                opt_value = opt.get("value", "").lower()
+                opt_label = opt.get("label", "").lower()
+                # Check if response matches value or label
+                if opt_value in response_lower or response_lower in opt_label or opt_label in response_lower:
+                    selected_value = opt.get("value")
+                    break
+
+        question_entry = {
+            "question": tool_input.get("question", ""),
+            "timestamp": datetime.now().isoformat(),
+            "tool_used": True,  # Proves AskUserQuestion was actually called
+            "has_options": has_options,
+            "options_count": len(options),
+            "options": [opt.get("label", opt.get("value", "")) for opt in options[:5]] if options else [],
+            "user_response": user_response[:500] if user_response else None,  # Capture actual response
+            "selected_value": selected_value  # Matched option value if applicable
+        }
+        questions.append(question_entry)
+
+        # Track key decisions in a summary dict for easy reference during implementation
+        decisions = interview.setdefault("decisions", {})
+        question_text = tool_input.get("question", "").lower()
+
+        # Categorize common decision types
+        if "provider" in question_text or "ai provider" in question_text:
+            decisions["provider"] = {"response": user_response, "value": selected_value}
+        elif "purpose" in question_text or "primary purpose" in question_text:
+            decisions["purpose"] = {"response": user_response, "value": selected_value}
+        elif "format" in question_text or "response format" in question_text:
+            decisions["response_format"] = {"response": user_response, "value": selected_value}
+        elif "parameter" in question_text and "required" in question_text:
+            decisions["required_params"] = {"response": user_response, "value": selected_value}
+        elif "parameter" in question_text and "optional" in question_text:
+            decisions["optional_params"] = {"response": user_response, "value": selected_value}
+        elif "error" in question_text:
+            decisions["error_handling"] = {"response": user_response, "value": selected_value}
+        elif "api key" in question_text or "key" in question_text:
+            decisions["api_key_handling"] = {"response": user_response, "value": selected_value}
+        elif "service" in question_text or "external" in question_text:
+            decisions["external_services"] = {"response": user_response, "value": selected_value}
+
+        # Update interview status
+        if interview.get("status") == "not_started":
+            interview["status"] = "in_progress"
+            interview["started_at"] = datetime.now().isoformat()
+
+        interview["last_activity"] = datetime.now().isoformat()
+
+        # Log for visibility
+        if has_options:
+            interview["last_structured_question"] = {
+                "question": tool_input.get("question", "")[:100],
+                "options_count": len(options),
+                "user_response": user_response[:100] if user_response else None,
+                "selected_value": selected_value,
+                "timestamp": datetime.now().isoformat()
+            }
+
+        # Save and exit
+        STATE_FILE.write_text(json.dumps(state, indent=2))
+        print(json.dumps({"continue": True}))
+        sys.exit(0)
+
+    # Get or create research phase (for research tools)
+    research = phases.setdefault("research_initial", {
+        "status": "in_progress",
+        "sources": [],
+        "started_at": datetime.now().isoformat()
+    })
+
+    # Update status if not started
+    if research.get("status") == "not_started":
+        research["status"] = "in_progress"
+        research["started_at"] = datetime.now().isoformat()
+
+    # Get sources list
+    sources = research.setdefault("sources", [])
+
+    # Create source entry based on tool type
+    timestamp = datetime.now().isoformat()
+
+    if "context7" in tool_name.lower():
+        source_entry = {
+            "type": "context7",
+            "tool": tool_name,
+            "input": sanitize_input(tool_input),
+            "timestamp": timestamp,
+            "success": True
+        }
+        # Extract library info if available
+        if "libraryName" in tool_input:
+            source_entry["library"] = tool_input["libraryName"]
+        if "libraryId" in tool_input:
+            source_entry["library_id"] = tool_input["libraryId"]
+
+    elif tool_name == "WebSearch":
+        source_entry = {
+            "type": "websearch",
+            "query": tool_input.get("query", ""),
+            "timestamp": timestamp,
+            "success": True
+        }
+
+    elif tool_name == "WebFetch":
+        source_entry = {
+            "type": "webfetch",
+            "url": tool_input.get("url", ""),
+            "timestamp": timestamp,
+            "success": True
+        }
+
+    else:
+        # Generic research tool
+        source_entry = {
+            "type": "other",
+            "tool": tool_name,
+            "timestamp": timestamp,
+            "success": True
+        }
+
+    # Add to sources list
+    sources.append(source_entry)
+
+    # Also add to research_queries for prompt verification
+    research_queries = state.setdefault("research_queries", [])
+    query_entry = {
+        "timestamp": timestamp,
+        "tool": tool_name,
+    }
+
+    # Extract query/term based on tool type
+    if tool_name == "WebSearch":
+        query_entry["query"] = tool_input.get("query", "")
+        query_entry["terms"] = extract_terms(tool_input.get("query", ""))
+    elif tool_name == "WebFetch":
+        query_entry["url"] = tool_input.get("url", "")
+        query_entry["terms"] = extract_terms_from_url(tool_input.get("url", ""))
+    elif "context7" in tool_name.lower():
+        query_entry["library"] = tool_input.get("libraryName", tool_input.get("libraryId", ""))
+        query_entry["terms"] = [tool_input.get("libraryName", "").lower()]
+
+    research_queries.append(query_entry)
+
+    # Keep only last 50 queries
+    state["research_queries"] = research_queries[-50:]
+
+    # Update last activity timestamp
+    research["last_activity"] = timestamp
+    research["source_count"] = len(sources)
+
+    # Check if we have enough sources to consider research "complete"
+    # More robust criteria:
+    # - At least 2 sources total (prevents single accidental search from completing)
+    # - At least one of: Context7 docs fetch, WebFetch of docs page
+    # - At least one search (WebSearch or Context7 resolve)
+    context7_count = sum(1 for s in sources if s.get("type") == "context7")
+    websearch_count = sum(1 for s in sources if s.get("type") == "websearch")
+    webfetch_count = sum(1 for s in sources if s.get("type") == "webfetch")
+    total_sources = len(sources)
+
+    # Minimum threshold: 2+ sources with at least one being docs-related
+    has_docs = webfetch_count >= 1 or context7_count >= 1
+    has_search = websearch_count >= 1 or context7_count >= 1
+    sufficient = total_sources >= 2 and has_docs and has_search
+
+    # Auto-complete research if sufficient sources
+    if sufficient:
+        if research.get("status") == "in_progress":
+            research["status"] = "complete"
+            research["completed_at"] = timestamp
+            research["completion_reason"] = "sufficient_sources"
+            research["completion_summary"] = {
+                "total_sources": total_sources,
+                "context7_calls": context7_count,
+                "web_searches": websearch_count,
+                "doc_fetches": webfetch_count
+            }
+
+    # Save state file
+    STATE_FILE.write_text(json.dumps(state, indent=2))
+
+    # Return success
+    print(json.dumps({"continue": True}))
+    sys.exit(0)
+
+
+def create_initial_state():
+    """Create initial state structure"""
+    return {
+        "version": "1.1.0",
+        "created_at": datetime.now().isoformat(),
+        "phases": {
+            "scope": {"status": "not_started"},
+            "research_initial": {"status": "not_started", "sources": []},
+            "interview": {"status": "not_started"},
+            "research_deep": {"status": "not_started", "sources": []},
+            "schema_creation": {"status": "not_started"},
+            "environment_check": {"status": "not_started"},
+            "tdd_red": {"status": "not_started"},
+            "tdd_green": {"status": "not_started"},
+            "tdd_refactor": {"status": "not_started"},
+            "documentation": {"status": "not_started"}
+        },
+        "verification": {
+            "all_sources_fetched": False,
+            "schema_matches_docs": False,
+            "tests_cover_params": False,
+            "all_tests_passing": False
+        },
+        "research_queries": [],
+        "prompt_detections": []
+    }
+
+
+def sanitize_input(tool_input):
+    """Remove potentially sensitive data from input before logging"""
+    sanitized = {}
+    for key, value in tool_input.items():
+        # Skip API keys or tokens
+        if any(sensitive in key.lower() for sensitive in ["key", "token", "secret", "password"]):
+            sanitized[key] = "[REDACTED]"
+        else:
+            sanitized[key] = value
+    return sanitized
+
+
+def extract_terms(query: str) -> list:
+    """Extract searchable terms from a query string."""
+    import re
+    # Remove common words and extract meaningful terms
+    stop_words = {"the", "a", "an", "is", "are", "was", "were", "be", "been",
+                  "how", "to", "do", "does", "what", "which", "for", "and", "or",
+                  "in", "on", "at", "with", "from", "this", "that", "it"}
+
+    # Extract words
+    words = re.findall(r'\b[\w@/-]+\b', query.lower())
+
+    # Filter and return
+    terms = [w for w in words if w not in stop_words and len(w) > 2]
+    return terms[:10]  # Limit to 10 terms
+
+
+def extract_terms_from_url(url: str) -> list:
+    """Extract meaningful terms from a URL."""
+    import re
+    from urllib.parse import urlparse
+
+    try:
+        parsed = urlparse(url)
+        # Get domain parts and path parts
+        domain_parts = parsed.netloc.replace("www.", "").split(".")
+        path_parts = [p for p in parsed.path.split("/") if p]
+
+        # Combine and filter
+        all_parts = domain_parts + path_parts
+        terms = []
+        for part in all_parts:
+            # Split by common separators
+            sub_parts = re.split(r'[-_.]', part.lower())
+            terms.extend(sub_parts)
+
+        # Filter short/common terms
+        stop_terms = {"com", "org", "io", "dev", "api", "docs", "www", "http", "https"}
+        terms = [t for t in terms if t not in stop_terms and len(t) > 2]
+        return terms[:10]
+    except Exception:
+        return []
+
+
+if __name__ == "__main__":
+    main()

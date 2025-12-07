@@ -8,7 +8,7 @@ Automates the complete API development lifecycle from understanding requirements
 
 ```bash
 # Install in your project
-npx @mirror-factory/api-dev-tools --scope=project
+npx @hustle-together/api-dev-tools --scope=project
 
 # Start developing an API
 /api-create my-endpoint
@@ -16,6 +16,7 @@ npx @mirror-factory/api-dev-tools --scope=project
 
 ## 📦 What This Installs
 
+### Slash Commands
 Five powerful slash commands for Claude Code:
 
 - **`/api-create [endpoint]`** - Complete automated workflow (Interview → Research → TDD → Docs)
@@ -23,6 +24,23 @@ Five powerful slash commands for Claude Code:
 - **`/api-research [library]`** - Deep research of external APIs/SDKs (finds ALL parameters)
 - **`/api-env [endpoint]`** - Check required API keys and environment setup
 - **`/api-status [endpoint]`** - Track implementation progress and phase completion
+
+### Enforcement Hooks
+Six Python hooks that provide **real programmatic guarantees**:
+
+- **`enforce-external-research.py`** - (v1.7.0) Detects external API questions and requires research before answering
+- **`enforce-research.py`** - Blocks API code writing until research is complete
+- **`enforce-interview.py`** - (v1.8.0+) Verifies structured questions with options were asked; (v1.9.0+) Injects decision reminders on writes
+- **`verify-implementation.py`** - Checks implementation matches interview requirements
+- **`track-tool-use.py`** - (v1.9.0+) Captures user decisions from AskUserQuestion; logs all research activity
+- **`api-workflow-check.py`** - Prevents stopping until required phases are complete + git diff verification
+
+### State Tracking
+- **`.claude/api-dev-state.json`** - Persistent state file tracking all workflow progress
+
+### MCP Servers (Auto-installed via `claude mcp add`)
+- **Context7** - Fetches LIVE documentation from library source code (not training data)
+- **GitHub** - Read/create issues, pull requests, and access repository data (requires `GITHUB_PERSONAL_ACCESS_TOKEN`)
 
 ## 🎯 Why Use This?
 
@@ -77,7 +95,7 @@ This single command:
 ### One-Time Installation
 ```bash
 cd your-project
-npx @mirror-factory/api-dev-tools --scope=project
+npx @hustle-together/api-dev-tools --scope=project
 ```
 
 ### Team-Wide Auto-Installation
@@ -86,7 +104,7 @@ Add to your project's `package.json`:
 ```json
 {
   "scripts": {
-    "postinstall": "npx @mirror-factory/api-dev-tools --scope=project"
+    "postinstall": "npx @hustle-together/api-dev-tools --scope=project"
   }
 }
 ```
@@ -291,11 +309,226 @@ Result: Brittle APIs, poor docs, hard to maintain
 Result: Robust APIs, comprehensive docs, easy to maintain
 ```
 
+## 🔒 Programmatic Enforcement (Hooks)
+
+Unlike pure markdown instructions that rely on Claude following directions, this package includes **real Python hooks** that enforce workflow compliance.
+
+### How Hooks Work
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  USER: "Add Vercel AI SDK"                                  │
+│                    ↓                                        │
+│  CLAUDE: Calls WebSearch for docs                           │
+│                    ↓                                        │
+│  HOOK: PostToolUse (track-tool-use.py)                      │
+│  → Logs search to api-dev-state.json                        │
+│                    ↓                                        │
+│  CLAUDE: Tries to Write route.ts                            │
+│                    ↓                                        │
+│  HOOK: PreToolUse (enforce-research.py)                     │
+│  → Checks: Has research been completed?                     │
+│  → If NO: BLOCKED with error message                        │
+│  → If YES: Allowed to proceed                               │
+│                    ↓                                        │
+│  CLAUDE: Tries to stop conversation                         │
+│                    ↓                                        │
+│  HOOK: Stop (api-workflow-check.py)                         │
+│  → Checks: Are all required phases complete?                │
+│  → If NO: BLOCKED with list of incomplete phases            │
+│  → If YES: Allowed to stop                                  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### What Gets Enforced
+
+| Action | Hook | Enforcement |
+|--------|------|-------------|
+| Claude calls WebSearch/WebFetch/Context7 | `track-tool-use.py` | Logged to state file |
+| Claude tries to write API code | `enforce-research.py` | **BLOCKED** if no research logged |
+| Claude tries to stop | `api-workflow-check.py` | **BLOCKED** if phases incomplete |
+
+### Check Progress Anytime
+
+```bash
+# View current state
+cat .claude/api-dev-state.json | jq '.phases'
+
+# Or use the status command
+/api-status
+```
+
+### State File Structure
+
+The `.claude/api-dev-state.json` file tracks:
+
+```json
+{
+  "endpoint": "stream-text",
+  "library": "vercel-ai-sdk",
+  "phases": {
+    "scope": { "status": "complete" },
+    "research_initial": {
+      "status": "complete",
+      "sources": [
+        { "type": "context7", "tool": "resolve_library_id" },
+        { "type": "websearch", "query": "Vercel AI SDK docs" },
+        { "type": "webfetch", "url": "https://sdk.vercel.ai" }
+      ]
+    },
+    "interview": { "status": "complete" },
+    "research_deep": { "status": "complete" },
+    "schema_creation": { "status": "in_progress" },
+    "tdd_red": { "status": "pending" },
+    "tdd_green": { "status": "pending" },
+    "tdd_refactor": { "status": "pending" },
+    "documentation": { "status": "pending" }
+  },
+  "verification": {
+    "all_sources_fetched": true,
+    "schema_matches_docs": false,
+    "tests_cover_params": false,
+    "all_tests_passing": false
+  }
+}
+```
+
+### Why This Matters
+
+**Without hooks (pure markdown instructions):**
+- Claude *might* skip research if confident
+- Claude *might* use outdated training data
+- No way to verify steps were actually completed
+
+**With hooks (programmatic enforcement):**
+- Research is **required** - can't write code without it
+- All research activity is **logged** - auditable trail
+- Workflow completion is **verified** - can't stop early
+
+## 🔍 Gap Detection & Verification (v1.6.0+)
+
+The workflow now includes automatic detection of common implementation gaps:
+
+### Gap 1: Exact Term Matching
+**Problem:** AI paraphrases user terminology instead of using exact terms for research.
+
+**Example:**
+- User says: "Use Vercel AI Gateway"
+- AI searches for: "Vercel AI SDK" (wrong!)
+
+**Fix:** `verify-implementation.py` extracts key terms from interview answers and warns if those exact terms weren't used in research queries.
+
+### Gap 2: File Change Tracking
+**Problem:** AI claims "all files updated" but doesn't verify which files actually changed.
+
+**Fix:** `api-workflow-check.py` runs `git diff --name-only` and compares against tracked `files_created`/`files_modified` in state. Warns about untracked changes.
+
+### Gap 3: Skipped Test Investigation
+**Problem:** AI accepts "9 tests skipped" without investigating why.
+
+**Fix:** `verification_warnings` in state file tracks issues that need review. Stop hook shows unaddressed warnings.
+
+### Gap 4: Implementation Verification
+**Problem:** AI marks task complete without verifying implementation matches interview.
+
+**Fix:** Stop hook checks that:
+- Route files exist if endpoints mentioned
+- Test files are tracked
+- Key terms from interview appear in implementation
+
+### Gap 5: Test/Production Alignment
+**Problem:** Test files check different environment variables than production code.
+
+**Example:**
+- Interview: "single gateway key"
+- Production: uses `AI_GATEWAY_API_KEY`
+- Test: still checks `OPENAI_API_KEY` (wrong!)
+
+**Fix:** `verify-implementation.py` warns when test files check env vars that don't match interview requirements.
+
+### Gap 6: Training Data Reliance (v1.7.0+)
+**Problem:** AI answers questions about external APIs from potentially outdated training data instead of researching first.
+
+**Example:**
+- User asks: "What providers does Vercel AI Gateway support?"
+- AI answers from memory: "Groq not in gateway" (WRONG!)
+- Reality: Groq has 4 models in the gateway (Llama variants)
+
+**Fix:** New `UserPromptSubmit` hook (`enforce-external-research.py`) that:
+1. Detects questions about external APIs/SDKs using pattern matching
+2. Injects context requiring research before answering
+3. Works for ANY API (Brandfetch, Stripe, Twilio, etc.) - not just specific ones
+4. Auto-allows WebSearch and Context7 without permission prompts
+
+```
+USER: "What providers does Brandfetch API support?"
+        ↓
+HOOK: Detects "Brandfetch", "API", "providers"
+        ↓
+INJECTS: "RESEARCH REQUIRED: Use Context7/WebSearch before answering"
+        ↓
+CLAUDE: Researches first → Gives accurate answer
+```
+
+### Gap 7: Interview Decisions Not Used During Implementation (v1.9.0+)
+**Problem:** AI asks good interview questions but then ignores the answers when writing code.
+
+**Example:**
+- Interview: User selected "server environment variables only" for API key handling
+- Implementation: AI writes code with custom header overrides (not what user wanted!)
+
+**Fix:** Two-part solution in `track-tool-use.py` and `enforce-interview.py`:
+
+1. **track-tool-use.py** now captures:
+   - The user's actual response from AskUserQuestion
+   - Matches responses to option values
+   - Stores decisions in categorized `decisions` dict (purpose, api_key_handling, etc.)
+
+2. **enforce-interview.py** now injects a decision summary on EVERY write:
+```
+✅ Interview complete. REMEMBER THE USER'S DECISIONS:
+
+• Primary Purpose: full_brand_kit
+• API Key Handling: server_only
+• Response Format: JSON with asset URLs
+• Error Handling: detailed (error, code, details)
+
+Your implementation MUST align with these choices.
+```
+
+This ensures the AI is constantly reminded of what the user actually wanted throughout the entire implementation phase.
+
 ## 🔧 Requirements
 
 - **Node.js** 14.0.0 or higher
+- **Python 3** (for enforcement hooks)
 - **Claude Code** (CLI tool for Claude)
 - **Project structure** with `.claude/commands/` support
+
+## 🔌 MCP Servers
+
+This package auto-configures two MCP servers:
+
+### Context7
+- **Live documentation lookup** from library source code
+- **Current API parameters** (not outdated training data)
+- **TypeScript type definitions** directly from packages
+
+When you research a library like `@ai-sdk/core`, Context7 fetches the actual current documentation rather than relying on Claude's training data which may be outdated.
+
+### GitHub
+- **Issue management** - Read and create GitHub issues
+- **Pull requests** - Create PRs with proper formatting
+- **Repository access** - Browse repo contents and metadata
+
+Required for `/pr` and `/issue` commands to work with GitHub MCP tools.
+
+**Setup:** Set `GITHUB_PERSONAL_ACCESS_TOKEN` in your environment:
+```bash
+export GITHUB_PERSONAL_ACCESS_TOKEN=ghp_your_token_here
+```
+
+The installer runs `claude mcp add` commands directly, which registers the servers in your Claude Code config (`~/.claude.json`). Restart Claude Code after installation for MCP tools to be available.
 
 ## 📖 Documentation
 
@@ -322,9 +555,9 @@ MIT License - Use freely in your projects
 
 ## 🔗 Links
 
-- **Repository:** https://github.com/mirror-factory/api-dev-tools
-- **Issues:** https://github.com/mirror-factory/api-dev-tools/issues
-- **NPM:** https://www.npmjs.com/package/@mirror-factory/api-dev-tools
+- **Repository:** https://github.com/hustle-together/api-dev-tools
+- **Issues:** https://github.com/hustle-together/api-dev-tools/issues
+- **NPM:** https://www.npmjs.com/package/@hustle-together/api-dev-tools
 
 ## 💬 Support
 

@@ -259,6 +259,83 @@ With thorough research:
 - ✅ Robust implementation
 - ✅ Better documentation
 
+---
+
+## Research-First Schema Design (MANDATORY)
+
+### The Anti-Pattern: Schema-First Development
+
+**NEVER DO THIS:**
+- ❌ Define interfaces based on assumptions before researching
+- ❌ Rely on training data for API capabilities
+- ❌ Say "I think it supports..." without verification
+- ❌ Build schemas from memory instead of documentation
+
+**Real Example of Failure:**
+- User asked: "What providers does Vercel AI Gateway support?"
+- AI answered from memory: "Groq not in gateway"
+- Reality: Groq has 4 models in the gateway (Llama variants)
+- Root cause: No research was done before answering
+
+### The Correct Pattern: Research-First
+
+**ALWAYS DO THIS:**
+
+**Step 1: Research the Source of Truth**
+- Use Context7 (`mcp__context7__resolve-library-id` + `get-library-docs`) for SDK docs
+- Use WebSearch for official provider documentation
+- Query APIs directly when possible (don't assume)
+- Check GitHub repositories for current implementation
+
+**Step 2: Build Schema FROM Research**
+- Interface fields emerge from discovered capabilities
+- Every field has a source (docs, SDK types, API response)
+- Don't guess - verify each capability
+- Document where each field came from
+
+**Step 3: Verify with Actual Calls**
+- Test capabilities before marking them supported
+- Investigate skipped tests - they're bugs, not features
+- No "should work" - prove it works
+- All tests must pass, not be skipped
+
+### Mandatory Checklist Before Answering ANY External API Question
+
+Before responding to questions about APIs, SDKs, or external services:
+
+```
+[ ] Did I use Context7 to get current documentation?
+[ ] Did I use WebSearch for official docs?
+[ ] Did I verify the information is current (not training data)?
+[ ] Am I stating facts from research, not memory?
+[ ] Have I cited my sources?
+```
+
+### Research Query Tracking
+
+All research is now tracked in `.claude/api-dev-state.json`:
+
+```json
+{
+  "research_queries": [
+    {
+      "timestamp": "2025-12-07T...",
+      "tool": "WebSearch",
+      "query": "Vercel AI Gateway Groq providers",
+      "terms": ["vercel", "gateway", "groq", "providers"]
+    },
+    {
+      "timestamp": "2025-12-07T...",
+      "tool": "mcp__context7__get-library-docs",
+      "library": "@ai-sdk/gateway",
+      "terms": ["@ai-sdk/gateway"]
+    }
+  ]
+}
+```
+
+This allows verification that specific topics were actually researched before answering.
+
 <claude-commands-template>
 ## Research Guidelines
 
