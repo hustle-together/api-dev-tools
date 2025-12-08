@@ -583,10 +583,30 @@
 
     /* Audio highlight effect for elements being narrated */
     .audio-highlighted {
-      box-shadow: 0 0 30px var(--accent-red-glow), 0 0 60px var(--accent-red-glow) !important;
+      outline: 2px solid var(--accent-red) !important;
+      outline-offset: 4px;
       border-color: var(--accent-red) !important;
-      transform: scale(1.02);
       transition: all 0.3s ease !important;
+    }
+
+    /* For container elements (cards, boxes), use glow effect */
+    .audio-highlighted.solution-card,
+    .audio-highlighted.phase-box,
+    .audio-highlighted.gap-item,
+    .audio-highlighted.phase-node {
+      box-shadow: 0 0 25px var(--accent-red-glow) !important;
+      outline: none !important;
+      transform: scale(1.02);
+    }
+
+    /* For text elements (headings, brand), use subtle underline/border */
+    .audio-highlighted h2,
+    h2.audio-highlighted,
+    .hustle-brand.audio-highlighted {
+      box-shadow: none !important;
+      outline: none !important;
+      border-bottom: 3px solid var(--accent-red) !important;
+      padding-bottom: 8px;
     }
 
     /* Progress indicator */
@@ -1713,7 +1733,7 @@
         <span class="hustle-word hustle-highlight">API-DEV-TOOLS</span>
       </div>
       <div class="package-name" id="packageName">@hustle-together/api-dev-tools</div>
-      <div class="version" id="versionText">v2.0.6</div>
+      <div class="version" id="versionText">v2.0.7</div>
       <p class="tagline">"Hustle together. Share resources. Build stronger."<span class="cursor"></span></p>
 
       <div class="intro-text">
@@ -2546,11 +2566,13 @@
     const phaseArrows = document.querySelectorAll('#introFlow .phase-connector-arrow');
 
     // Create a separate timeline for the lighting sequence that loops
-    const lightingTL = gsap.timeline({
+    // Store globally so we can pause during narration
+    window.introLightingTL = gsap.timeline({
       repeat: -1,
       repeatDelay: 1,
       delay: 3 // Wait for intro animation to complete
     });
+    const lightingTL = window.introLightingTL;
 
     phaseNodes.forEach((node, i) => {
       lightingTL
@@ -2840,10 +2862,20 @@
           currentHighlight = el;
           el.classList.add('audio-highlighted');
           el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          gsap.fromTo(el,
-            { boxShadow: '0 0 0px var(--accent-red-glow)' },
-            { boxShadow: '0 0 40px var(--accent-red-glow), 0 0 80px var(--accent-red-glow)', duration: 0.4, ease: 'power2.out' }
-          );
+
+          // Only apply box-shadow GSAP animation to container elements, not text
+          const isContainer = el.classList.contains('solution-card') ||
+                              el.classList.contains('phase-box') ||
+                              el.classList.contains('gap-item') ||
+                              el.classList.contains('phase-node') ||
+                              el.classList.contains('install-command');
+
+          if (isContainer) {
+            gsap.fromTo(el,
+              { boxShadow: '0 0 0px var(--accent-red-glow)' },
+              { boxShadow: '0 0 30px var(--accent-red-glow)', duration: 0.4, ease: 'power2.out' }
+            );
+          }
         }
       } catch (e) {
         console.warn('Could not highlight:', selector, e);
@@ -2931,6 +2963,14 @@
       playBtn.classList.add('active');
       playBtn.textContent = '⏸ STOP';
 
+      // Pause the intro lighting animation to avoid visual conflict
+      if (window.introLightingTL) {
+        window.introLightingTL.pause();
+        // Reset the phase nodes to clean state
+        document.querySelectorAll('#introFlow .phase-node').forEach(n => n.classList.remove('active'));
+        document.querySelectorAll('#introFlow .phase-connector-arrow').forEach(a => a.classList.remove('active'));
+      }
+
       // Scroll to top first
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -2975,6 +3015,11 @@
       removeHighlight();
       highlightIndex = 0;
       currentSectionIdx = 0;
+
+      // Resume the intro lighting animation
+      if (window.introLightingTL) {
+        window.introLightingTL.restart();
+      }
     }
 
     // Audio ended
