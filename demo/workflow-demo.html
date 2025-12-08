@@ -500,6 +500,82 @@
       box-shadow: 0 0 15px var(--accent-red-glow);
     }
 
+    .nav-btn.active {
+      background: var(--accent-red);
+      color: #fff;
+      border-color: var(--accent-red);
+    }
+
+    /* ============================================
+       AUDIO NARRATION PLAYER
+       ============================================ */
+    .audio-progress-container {
+      position: fixed;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      max-width: 600px;
+      background: rgba(0, 0, 0, 0.9);
+      border: 1px dashed var(--grey);
+      padding: 15px 20px;
+      z-index: 1001;
+      border-radius: 0;
+    }
+
+    .audio-time-display {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--grey);
+      margin-bottom: 10px;
+      font-family: 'Courier New', monospace;
+    }
+
+    .audio-progress-bar {
+      position: relative;
+      height: 6px;
+      background: var(--dark-grey);
+      cursor: pointer;
+    }
+
+    .audio-progress-fill {
+      height: 100%;
+      background: var(--accent-red);
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    .audio-section-markers {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .audio-section-marker {
+      position: absolute;
+      top: -3px;
+      width: 2px;
+      height: 12px;
+      background: var(--white);
+      opacity: 0.5;
+    }
+
+    .audio-section-marker:hover {
+      opacity: 1;
+    }
+
+    /* Audio highlight effect for elements being narrated */
+    .audio-highlighted {
+      box-shadow: 0 0 30px var(--accent-red-glow), 0 0 60px var(--accent-red-glow) !important;
+      border-color: var(--accent-red) !important;
+      transform: scale(1.02);
+      transition: all 0.3s ease !important;
+    }
+
     /* Progress indicator */
     .progress-bar {
       position: fixed;
@@ -1589,9 +1665,27 @@
 
   <!-- Navigation -->
   <nav class="nav">
+    <button class="nav-btn" id="narrateBtn">🔊 NARRATE</button>
     <button class="nav-btn" id="playBtn">AUTO PLAY</button>
     <button class="nav-btn" id="resetBtn">RESTART</button>
   </nav>
+
+  <!-- Audio Narration Player (hidden) -->
+  <audio id="narrationAudio" preload="auto">
+    <source src="audio/narration.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Audio Progress Bar -->
+  <div class="audio-progress-container" id="audioProgressContainer" style="display: none;">
+    <div class="audio-time-display">
+      <span id="audioCurrentTime">0:00</span>
+      <span id="audioTotalTime">0:00</span>
+    </div>
+    <div class="audio-progress-bar" id="audioProgressBar">
+      <div class="audio-progress-fill" id="audioProgressFill"></div>
+      <div class="audio-section-markers" id="audioSectionMarkers"></div>
+    </div>
+  </div>
 
   <!-- Section Indicators -->
   <div class="section-indicator" id="sectionIndicator"></div>
@@ -1606,7 +1700,7 @@
         <span class="hustle-word hustle-highlight">API-DEV-TOOLS</span>
       </div>
       <div class="package-name" id="packageName">@hustle-together/api-dev-tools</div>
-      <div class="version" id="versionText">v2.0.4</div>
+      <div class="version" id="versionText">v2.0.5</div>
       <p class="tagline">"Hustle together. Share resources. Build stronger."<span class="cursor"></span></p>
 
       <div class="intro-text">
@@ -2889,6 +2983,235 @@
         }
       });
     });
+
+    // ============================================
+    // AUDIO NARRATION CONTROLLER
+    // ============================================
+    const narrateBtn = document.getElementById('narrateBtn');
+    const narrationAudio = document.getElementById('narrationAudio');
+    const audioProgressContainer = document.getElementById('audioProgressContainer');
+    const audioProgressBar = document.getElementById('audioProgressBar');
+    const audioProgressFill = document.getElementById('audioProgressFill');
+    const audioCurrentTime = document.getElementById('audioCurrentTime');
+    const audioTotalTime = document.getElementById('audioTotalTime');
+    const audioSectionMarkers = document.getElementById('audioSectionMarkers');
+
+    let isNarrating = false;
+    let timingData = null;
+    let currentHighlight = null;
+    let highlightIndex = 0;
+    let sectionIndex = 0;
+
+    // Format seconds to MM:SS
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    // Load timing data
+    async function loadTimingData() {
+      if (timingData) return timingData;
+      try {
+        const response = await fetch('audio/narration-timing.json');
+        timingData = await response.json();
+
+        // Update total time display
+        if (audioTotalTime) {
+          audioTotalTime.textContent = formatTime(timingData.duration);
+        }
+
+        // Create section markers on progress bar
+        if (audioSectionMarkers && timingData.sections) {
+          timingData.sections.forEach((section, i) => {
+            if (i === 0) return; // Skip first section (intro at 0)
+            const marker = document.createElement('div');
+            marker.className = 'audio-section-marker';
+            marker.style.left = `${(section.timestamp / timingData.duration) * 100}%`;
+            marker.title = section.id.toUpperCase();
+            audioSectionMarkers.appendChild(marker);
+          });
+        }
+
+        console.log('Timing data loaded:', timingData.sections.length, 'sections,', timingData.highlights.length, 'highlights');
+        return timingData;
+      } catch (error) {
+        console.error('Failed to load timing data:', error);
+        return null;
+      }
+    }
+
+    // Apply highlight to an element
+    function applyHighlight(selector) {
+      // Remove previous highlight
+      removeHighlight();
+
+      try {
+        const el = document.querySelector(selector);
+        if (el) {
+          currentHighlight = el;
+          el.classList.add('audio-highlighted');
+
+          // Scroll element into view
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+          // GSAP enhancement
+          gsap.fromTo(el,
+            { boxShadow: '0 0 0px var(--accent-red-glow)' },
+            {
+              boxShadow: '0 0 40px var(--accent-red-glow), 0 0 80px var(--accent-red-glow)',
+              duration: 0.4,
+              ease: 'power2.out'
+            }
+          );
+        }
+      } catch (e) {
+        console.warn('Could not highlight:', selector, e);
+      }
+    }
+
+    // Remove current highlight
+    function removeHighlight() {
+      if (currentHighlight) {
+        currentHighlight.classList.remove('audio-highlighted');
+        gsap.to(currentHighlight, {
+          boxShadow: 'none',
+          duration: 0.3
+        });
+        currentHighlight = null;
+      }
+    }
+
+    // Scroll to section
+    function scrollToSection(sectionId) {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // Handle audio time update
+    function onTimeUpdate() {
+      if (!timingData) return;
+
+      const currentTime = narrationAudio.currentTime;
+
+      // Update progress bar
+      const progress = (currentTime / timingData.duration) * 100;
+      audioProgressFill.style.width = `${progress}%`;
+
+      // Update time display
+      if (audioCurrentTime) {
+        audioCurrentTime.textContent = formatTime(currentTime);
+      }
+
+      // Check for section changes
+      for (let i = timingData.sections.length - 1; i >= 0; i--) {
+        if (currentTime >= timingData.sections[i].timestamp) {
+          if (i !== sectionIndex) {
+            sectionIndex = i;
+            const section = timingData.sections[i];
+            console.log('Section:', section.id);
+            // Optionally scroll to section (only on major section changes)
+            // scrollToSection(section.id);
+          }
+          break;
+        }
+      }
+
+      // Check for highlight triggers
+      for (let i = highlightIndex; i < timingData.highlights.length; i++) {
+        const highlight = timingData.highlights[i];
+        if (currentTime >= highlight.timestamp) {
+          if (i !== highlightIndex || !currentHighlight) {
+            highlightIndex = i;
+            applyHighlight(highlight.selector);
+          }
+        } else {
+          break;
+        }
+      }
+    }
+
+    // Handle seek on progress bar click
+    function onProgressBarClick(e) {
+      if (!timingData || !narrationAudio.duration) return;
+
+      const rect = audioProgressBar.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const percentage = clickX / rect.width;
+      const seekTime = percentage * timingData.duration;
+
+      narrationAudio.currentTime = seekTime;
+
+      // Reset highlight tracking
+      highlightIndex = 0;
+      for (let i = 0; i < timingData.highlights.length; i++) {
+        if (timingData.highlights[i].timestamp <= seekTime) {
+          highlightIndex = i;
+        } else {
+          break;
+        }
+      }
+    }
+
+    // Start/Stop narration
+    async function toggleNarration() {
+      if (!isNarrating) {
+        // Start narration
+        await loadTimingData();
+
+        narrationAudio.play().then(() => {
+          isNarrating = true;
+          narrateBtn.classList.add('active');
+          narrateBtn.textContent = '⏸ STOP';
+          audioProgressContainer.style.display = 'block';
+
+          // Scroll to top for intro
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }).catch(err => {
+          console.error('Failed to play audio:', err);
+          alert('Could not play audio. Make sure narration.mp3 exists in the audio folder.');
+        });
+      } else {
+        // Stop narration
+        narrationAudio.pause();
+        narrationAudio.currentTime = 0;
+        isNarrating = false;
+        narrateBtn.classList.remove('active');
+        narrateBtn.textContent = '🔊 NARRATE';
+        audioProgressContainer.style.display = 'none';
+        removeHighlight();
+        highlightIndex = 0;
+        sectionIndex = 0;
+      }
+    }
+
+    // Audio ended
+    function onAudioEnded() {
+      isNarrating = false;
+      narrateBtn.classList.remove('active');
+      narrateBtn.textContent = '🔊 NARRATE';
+      audioProgressContainer.style.display = 'none';
+      removeHighlight();
+      highlightIndex = 0;
+      sectionIndex = 0;
+
+      // Scroll back to top
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 500);
+    }
+
+    // Event listeners
+    narrateBtn.addEventListener('click', toggleNarration);
+    narrationAudio.addEventListener('timeupdate', onTimeUpdate);
+    narrationAudio.addEventListener('ended', onAudioEnded);
+    audioProgressBar.addEventListener('click', onProgressBarClick);
+
+    // Preload timing data on page load
+    loadTimingData();
+
   </script>
 
 </body>
