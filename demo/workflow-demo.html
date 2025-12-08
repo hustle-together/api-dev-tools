@@ -721,19 +721,20 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 15px;
+      gap: 20px;
       margin-bottom: 15px;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       text-align: center;
     }
 
     .hustle-word {
-      font-size: 5rem;
+      font-size: 3.5rem;
       font-family: 'Fredoka', sans-serif;
       font-weight: 700;
-      letter-spacing: 4px;
+      letter-spacing: 3px;
       opacity: 0;
       transform: translateY(30px);
+      white-space: nowrap;
     }
 
     .hustle-highlight {
@@ -857,11 +858,12 @@
 
     @media (max-width: 768px) {
       .hustle-word {
-        font-size: 2.5rem;
-        letter-spacing: 4px;
+        font-size: 1.5rem;
+        letter-spacing: 2px;
       }
       .hustle-brand {
-        gap: 10px;
+        gap: 8px;
+        flex-wrap: wrap;
       }
       .phase-flow {
         gap: 10px;
@@ -1601,12 +1603,10 @@
     <div class="ascii-border">
       <div class="hustle-brand" id="hustleBrand">
         <span class="hustle-word">HUSTLE</span>
-        <span class="hustle-word hustle-highlight">API</span>
-        <span class="hustle-word hustle-highlight">DEV</span>
-        <span class="hustle-word">TOOLS</span>
+        <span class="hustle-word hustle-highlight">API-DEV-TOOLS</span>
       </div>
       <div class="package-name" id="packageName">@hustle-together/api-dev-tools</div>
-      <div class="version" id="versionText">v2.0.2</div>
+      <div class="version" id="versionText">v2.0.3</div>
       <p class="tagline">"Hustle together. Share resources. Build stronger."<span class="cursor"></span></p>
 
       <div class="intro-text">
