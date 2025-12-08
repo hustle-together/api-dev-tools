@@ -1,6 +1,6 @@
 {
   "name": "@hustle-together/api-dev-tools",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "Interview-driven API development workflow for Claude Code - Automates research, testing, and documentation",
   "main": "bin/cli.js",
   "bin": {
