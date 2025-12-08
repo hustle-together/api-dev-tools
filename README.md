@@ -549,6 +549,21 @@ This is the initial release. Feedback welcome!
 - Custom templates
 - Multi-language support
 
+## 🙏 Acknowledgments
+
+### @wbern/claude-instructions
+The TDD workflow commands (`/red`, `/green`, `/refactor`, `/cycle`) are based on the excellent [@wbern/claude-instructions](https://github.com/wbern/claude-instructions) package by **William Bernmalm**. This project extends those patterns with interview-driven API development, research enforcement hooks, and comprehensive state tracking.
+
+### Anthropic
+The interview methodology is inspired by [Anthropic's Interviewer approach](https://www.anthropic.com/news/anthropic-interviewer) for structured discovery.
+
+### Context7
+Special thanks to the [Context7](https://context7.com) team for providing live documentation lookup that makes research-first development possible.
+
+---
+
+Thank you to the Claude Code community for making AI-assisted development more rigorous!
+
 ## 📄 License
 
 MIT License - Use freely in your projects
