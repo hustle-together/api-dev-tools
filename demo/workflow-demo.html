@@ -667,7 +667,105 @@
     }
 
     /* ============================================
-       SECTION 4: HOOK SYSTEM
+       SECTION 4: RESEARCH GROUNDING
+       ============================================ */
+    #grounding .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .grounding-tools {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .grounding-tool {
+      border: 1px solid var(--border);
+      padding: 30px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .tool-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+
+    .tool-header i {
+      font-size: 1.5rem;
+      color: var(--accent);
+    }
+
+    .tool-header h3 {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 1rem;
+      color: var(--text);
+      margin: 0;
+    }
+
+    .tool-description {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    .tool-example {
+      background: var(--grey-dark);
+      padding: 15px;
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.8rem;
+      color: #f0f0f0;
+      margin-bottom: 15px;
+    }
+
+    .tool-example code {
+      color: var(--accent);
+      background: none;
+      padding: 0;
+    }
+
+    .tool-why {
+      font-size: 0.85rem;
+      color: var(--text);
+      background: rgba(186, 12, 47, 0.05);
+      padding: 12px 15px;
+      border-left: 3px solid var(--accent);
+      margin: 0;
+    }
+
+    .grounding-enforcement {
+      border: 2px solid var(--accent);
+      padding: 25px 30px;
+      background: var(--accent-light);
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .grounding-enforcement h4 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: var(--accent);
+      margin-bottom: 10px;
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.95rem;
+    }
+
+    .grounding-enforcement p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin: 0;
+    }
+
+    /* ============================================
+       SECTION 5: HOOK SYSTEM
        ============================================ */
     #hooks .section-header {
       text-align: center;
@@ -1552,12 +1650,12 @@
     .install-command {
       background: var(--grey-dark);
       border: 1px solid var(--border);
-      padding: 30px 50px;
+      padding: 25px 40px;
       font-family: 'SF Mono', 'Monaco', monospace;
       font-size: 1.1rem;
       color: #f0f0f0;
       display: inline-block;
-      margin: 40px 0;
+      margin: 25px 0 30px;
       opacity: 0;
       transform: translateY(20px);
     }
@@ -1821,6 +1919,18 @@
       .comparison-item {
         width: 100%;
       }
+
+      .grounding-tools {
+        grid-template-columns: 1fr;
+      }
+
+      .grounding-enforcement {
+        padding: 20px;
+      }
+
+      .grounding-enforcement h4 {
+        font-size: 0.9rem;
+      }
     }
   </style>
 </head>
@@ -2013,19 +2123,75 @@
         <div class="solution-card">
           <div class="solves-badge"><i class="fa-solid fa-arrow-right"></i> Solves: No Enforcement Mechanism</div>
           <h3><i class="fa-solid fa-ban"></i> Exit Code 2 Blocking</h3>
-          <p class="description">Hooks use <code>sys.exit(2)</code> to create hard blocks. Claude MUST respond to errors - cannot skip or ignore workflow requirements.</p>
+          <p class="description">Hooks use <code>sys.exit(2)</code> to block actions and show errors to Claude. Cannot proceed until workflow requirements are met.</p>
           <div class="hook-name">18 Python hooks across all phases</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Section 4: Hook System -->
+  <!-- Section 4: Research Grounding -->
+  <section id="grounding">
+    <div class="section-inner">
+      <div class="section-header">
+        <h2>Research Grounding</h2>
+        <p class="text-muted">Current documentation, not stale training data.</p>
+      </div>
+
+      <!-- Problem/Solution Framing -->
+      <div class="problem-solution-intro">
+        <div class="ps-problem">
+          <h3><i class="fa-solid fa-exclamation-triangle"></i> The Problem</h3>
+          <p>AI training data is months or years old. APIs change constantly - new endpoints, deprecated parameters, different authentication methods. <strong>Your implementation breaks on day one</strong> because it's based on outdated information.</p>
+        </div>
+        <div class="ps-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="ps-solution">
+          <h3><i class="fa-solid fa-magnifying-glass"></i> The Solution</h3>
+          <p>Require <strong>current documentation</strong> before any implementation. Two MCP tools provide live research: <strong>Context7</strong> for library docs and <strong>WebSearch</strong> for official API documentation.</p>
+        </div>
+      </div>
+
+      <div class="grounding-tools">
+        <div class="grounding-tool">
+          <div class="tool-header">
+            <i class="fa-solid fa-book"></i>
+            <h3>Context7 MCP</h3>
+          </div>
+          <p class="tool-description">Fetches current library documentation directly from source. Always up-to-date, always accurate.</p>
+          <div class="tool-example">
+            <code>mcp__context7__resolve-library-id</code><br>
+            <code>mcp__context7__get-library-docs</code>
+          </div>
+          <p class="tool-why"><strong>Why it matters:</strong> SDK and library docs change frequently. Context7 gives you the actual current API surface, not what Claude remembers from training.</p>
+        </div>
+
+        <div class="grounding-tool">
+          <div class="tool-header">
+            <i class="fa-solid fa-globe"></i>
+            <h3>WebSearch</h3>
+          </div>
+          <p class="tool-description">Searches the web for official documentation, recent changes, rate limits, and authentication requirements.</p>
+          <div class="tool-example">
+            <code>WebSearch: "[API] authentication 2024"</code><br>
+            <code>WebSearch: "[API] rate limits"</code>
+          </div>
+          <p class="tool-why"><strong>Why it matters:</strong> Official docs have info that SDKs don't expose. WebSearch finds deprecation notices, new features, and known issues.</p>
+        </div>
+      </div>
+
+      <div class="grounding-enforcement">
+        <h4><i class="fa-solid fa-lock"></i> Enforcement: enforce-research.py</h4>
+        <p>This hook blocks all Write/Edit operations on API files until research is complete. No documentation = no implementation.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: Hook System -->
   <section id="hooks">
     <div class="section-inner">
       <div class="section-header">
-        <h2>Unbreakable Workflow Enforcement</h2>
-        <p class="text-muted">The problem: AI can skip steps. The solution: hooks that physically block progress.</p>
+        <h2>Workflow Enforcement</h2>
+        <p class="text-muted">The problem: AI can skip steps. The solution: hooks that block progress until phases complete.</p>
       </div>
 
       <!-- Problem/Solution Framing -->
@@ -2037,7 +2203,7 @@
         <div class="ps-arrow"><i class="fa-solid fa-arrow-right"></i></div>
         <div class="ps-solution">
           <h3><i class="fa-solid fa-shield-halved"></i> The Solution</h3>
-          <p><strong>18 Python hooks</strong> that intercept Claude's actions and <strong>physically block</strong> operations that violate the workflow. Not suggestions - actual barriers that return errors Claude must address before continuing.</p>
+          <p><strong>18 Python hooks</strong> that intercept Claude's actions and <strong>block operations</strong> that violate the workflow. When blocked, Claude sees the error message and cannot proceed until the issue is resolved.</p>
         </div>
       </div>
 
@@ -2068,7 +2234,7 @@
         </div>
         <div class="callout-content">
           <h3>How It Works: Exit Code 2</h3>
-          <p>Claude Code has a special feature: when a hook returns <code>exit code 2</code>, it creates a <strong>blocking feedback loop</strong>. Claude MUST respond to the error - it cannot ignore it or proceed.</p>
+          <p>Claude Code hooks can return different exit codes. <code>Exit code 2</code> blocks the action and sends the error message (stderr) to Claude, who sees it as context for what went wrong.</p>
           <div class="callout-comparison">
             <div class="comparison-item">
               <div class="comparison-label">Exit 0</div>
@@ -2076,11 +2242,11 @@
             </div>
             <div class="comparison-item">
               <div class="comparison-label">Exit 1</div>
-              <div class="comparison-text">Block silently</div>
+              <div class="comparison-text">Non-blocking error (continues)</div>
             </div>
             <div class="comparison-item highlight">
               <div class="comparison-label">Exit 2</div>
-              <div class="comparison-text">Block + FORCE Claude to respond</div>
+              <div class="comparison-text">Block action + show error to Claude</div>
             </div>
           </div>
         </div>
@@ -2105,7 +2271,7 @@ Required actions:
   2. Use WebSearch for recent API changes
   3. Document findings in .claude/research/</span>
 
-<span class="dim">~/project $</span> <span class="success">Claude MUST respond - cannot ignore this error</span>
+<span class="dim">~/project $</span> <span class="success">Claude sees this error and cannot proceed until research is complete</span>
         </div>
       </div>
     </div>
@@ -2766,7 +2932,7 @@ Required actions:
           <p class="state-problem-text">AI asks "What format do you want?" then immediately answers itself. Your requirements never get captured. It claims to have "asked" but really just assumed.</p>
 
           <div class="state-solution-label"><i class="fa-solid fa-check-circle"></i> Solution: phase_exit_confirmed</div>
-          <p>Each phase requires <strong>explicit user confirmation</strong> before Claude can proceed:</p>
+          <p>State tracking detects when Claude asks an exit question AND the user responds affirmatively:</p>
 
           <ol class="process-steps">
             <li class="done">Claude asks exit question: "Ready to proceed?"</li>
@@ -2775,7 +2941,7 @@ Required actions:
             <li class="done">Sets: <code>phase_exit_confirmed: true</code></li>
           </ol>
 
-          <p class="state-why"><strong>Why it matters:</strong> Without <strong>both</strong> conditions, the phase stays incomplete. Claude <strong>cannot</strong> self-answer and skip your input.</p>
+          <p class="state-why"><strong>Why it matters:</strong> Hooks can check this flag before allowing phase transitions. If Claude tries to skip user input, the flag remains false and hooks can block progress.</p>
         </div>
 
         <div class="state-highlight-box">
@@ -3027,6 +3193,35 @@ Required actions:
         delay: i * 0.1,
         ease: 'power2.out'
       });
+    });
+
+    // Grounding tools animation
+    gsap.utils.toArray('.grounding-tool').forEach((tool, i) => {
+      gsap.to(tool, {
+        scrollTrigger: {
+          trigger: tool,
+          start: 'top 85%',
+          toggleActions: 'play none none reverse'
+        },
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        delay: i * 0.15,
+        ease: 'power2.out'
+      });
+    });
+
+    // Grounding enforcement animation
+    gsap.to('.grounding-enforcement', {
+      scrollTrigger: {
+        trigger: '.grounding-enforcement',
+        start: 'top 85%',
+        toggleActions: 'play none none reverse'
+      },
+      opacity: 1,
+      y: 0,
+      duration: 0.7,
+      ease: 'power2.out'
     });
 
     // Hook types animation
