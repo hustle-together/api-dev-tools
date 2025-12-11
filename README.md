@@ -607,7 +607,7 @@ Here's exactly what happens when you run `/api-create brandfetch`:
 │   ├── extract-parameters.ts          # Extract Zod params
 │   └── collect-test-results.ts        # Run tests → results
 │
-└── package.json                       # v3.5.0
+└── package.json                       # v3.6.0
 ```
 
 ---
