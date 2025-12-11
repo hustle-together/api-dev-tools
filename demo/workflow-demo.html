@@ -2031,7 +2031,54 @@
       position: absolute;
       width: 2px;
       height: 100%;
-      background: rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.4);
+      cursor: pointer;
+      pointer-events: auto;
+    }
+
+    .narration-progress .section-marker:hover {
+      background: var(--accent);
+    }
+
+    .narration-progress .section-marker .section-label {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      font-size: 0.65rem;
+      color: #888;
+      padding: 2px 4px;
+      background: rgba(0,0,0,0.7);
+      border-radius: 3px;
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+      margin-bottom: 4px;
+    }
+
+    .narration-progress .section-marker:hover .section-label {
+      opacity: 1;
+    }
+
+    /* Always visible section labels */
+    .narration-progress .section-labels {
+      position: absolute;
+      top: -18px;
+      left: 0;
+      right: 0;
+      height: 16px;
+      pointer-events: none;
+    }
+
+    .narration-progress .section-label-fixed {
+      position: absolute;
+      font-size: 0.6rem;
+      color: #666;
+      white-space: nowrap;
+      transform: translateX(-50%);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .narration-time {
@@ -4761,24 +4808,35 @@ Required actions:
           return;
         }
 
-        // Get the progress wrapper for accurate positioning
-        const progressWrapper = document.querySelector('.narration-progress');
-        if (!progressWrapper) {
-          console.log('seek: no progress wrapper');
+        if (!this.audio) {
+          console.log('seek: no audio element');
           return;
         }
 
-        const rect = progressWrapper.getBoundingClientRect();
+        // Get the progress track for accurate positioning
+        const progressTrack = document.querySelector('.narration-progress .progress-track');
+        if (!progressTrack) {
+          console.log('seek: no progress track');
+          return;
+        }
+
+        const rect = progressTrack.getBoundingClientRect();
         const percent = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
         const newTime = percent * this.timing.duration;
 
-        console.log('seek: setting time to', newTime, 'of', this.timing.duration);
-        this.audio.currentTime = newTime;
+        console.log('seek: setting time to', newTime.toFixed(1), 'of', this.timing.duration.toFixed(1));
 
         // Update UI immediately
         if (this.progressFill) this.progressFill.style.width = `${percent * 100}%`;
         if (this.handle) this.handle.style.left = `${percent * 100}%`;
         if (this.currentTimeEl) this.currentTimeEl.textContent = this.formatTime(newTime);
+
+        // Set audio time - wrap in try/catch in case audio isn't ready
+        try {
+          this.audio.currentTime = newTime;
+        } catch (e) {
+          console.warn('seek: could not set audio time', e);
+        }
 
         // Allow re-scroll to current section
         this.lastScrolledSection = null;
@@ -4824,12 +4882,61 @@ Required actions:
 
         this.sectionMarkers.innerHTML = '';
 
+        // Section display names
+        const sectionNames = {
+          intro: 'Intro',
+          problems: 'Problems',
+          solution: 'Solution',
+          phases: 'Phases',
+          demo: 'Demo',
+          installation: 'Install',
+          credits: 'Credits',
+          outro: 'Outro'
+        };
+
+        // Add markers with labels
         for (const section of this.timing.sections) {
           const marker = document.createElement('div');
           marker.className = 'section-marker';
-          marker.style.left = `${(section.timestamp / this.timing.duration) * 100}%`;
-          marker.title = section.id;
+          const percent = (section.timestamp / this.timing.duration) * 100;
+          marker.style.left = `${percent}%`;
+
+          // Add label inside marker (shows on hover)
+          const label = document.createElement('span');
+          label.className = 'section-label';
+          label.textContent = sectionNames[section.id] || section.id;
+          marker.appendChild(label);
+
+          // Click to seek to section
+          marker.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.audio.currentTime = section.timestamp;
+            this.lastScrolledSection = null;
+          });
+
           this.sectionMarkers.appendChild(marker);
+        }
+
+        // Add fixed labels above the bar
+        const labelsContainer = document.createElement('div');
+        labelsContainer.className = 'section-labels';
+
+        for (const section of this.timing.sections) {
+          const percent = (section.timestamp / this.timing.duration) * 100;
+          // Only show labels that aren't too close together (skip intro at 0)
+          if (percent > 5) {
+            const labelEl = document.createElement('span');
+            labelEl.className = 'section-label-fixed';
+            labelEl.style.left = `${percent}%`;
+            labelEl.textContent = sectionNames[section.id] || section.id;
+            labelsContainer.appendChild(labelEl);
+          }
+        }
+
+        // Insert labels container before the progress wrapper
+        const progressWrapper = document.querySelector('.narration-progress');
+        if (progressWrapper && !progressWrapper.querySelector('.section-labels')) {
+          progressWrapper.insertBefore(labelsContainer, progressWrapper.firstChild);
         }
       }
 
@@ -5009,23 +5116,23 @@ Required actions:
     <h4><i class="fa-solid fa-microphone"></i> Choose Voice</h4>
 
     <div class="voice-options">
-      <div class="voice-option voice-disabled" data-voice="male" title="Coming soon">
+      <div class="voice-option" data-voice="male" onclick="selectVoice(this)">
         <div class="voice-icon">
           <i class="fa-solid fa-user-tie"></i>
         </div>
         <div class="voice-info">
           <div class="voice-name">Aidan</div>
-          <div class="voice-desc">Coming soon</div>
+          <div class="voice-desc">Social media influencer</div>
         </div>
       </div>
 
-      <div class="voice-option voice-disabled" data-voice="female" title="Coming soon">
+      <div class="voice-option" data-voice="female" onclick="selectVoice(this)">
         <div class="voice-icon">
           <i class="fa-solid fa-user"></i>
         </div>
         <div class="voice-info">
           <div class="voice-name">Bella</div>
-          <div class="voice-desc">Coming soon</div>
+          <div class="voice-desc">Chatty social media influencer</div>
         </div>
       </div>
 
@@ -5058,136 +5165,136 @@ Required actions:
     // Embedded timing data (sections + highlights only, no word-level for file:// compatibility)
     const embeddedTimingData = {
       male: {
-        duration: 491.38,
+        duration: 487.109,
         sections: [
           { id: "intro", timestamp: 0 },
-          { id: "problems", timestamp: 45.545 },
-          { id: "solution", timestamp: 115.147 },
-          { id: "phases", timestamp: 159.323 },
-          { id: "demo", timestamp: 273.496 },
-          { id: "installation", timestamp: 397.618 },
-          { id: "credits", timestamp: 434.247 },
-          { id: "outro", timestamp: 463.852 }
+          { id: "problems", timestamp: 45.094 },
+          { id: "solution", timestamp: 112.153 },
+          { id: "phases", timestamp: 159.393 },
+          { id: "demo", timestamp: 274.831 },
+          { id: "installation", timestamp: 397.666 },
+          { id: "credits", timestamp: 431.509 },
+          { id: "outro", timestamp: 459.187 }
         ],
         highlights: [
-          { selector: "#hustleBrand", section: "intro", timestamp: 4.272 },
-          { selector: "[data-phase=\"research\"]", section: "intro", timestamp: 11.145 },
-          { selector: "[data-phase=\"interview\"]", section: "intro", timestamp: 18.912 },
-          { selector: "[data-phase=\"test\"]", section: "intro", timestamp: 25.24 },
-          { selector: "[data-phase=\"docs\"]", section: "intro", timestamp: 32.182 },
-          { selector: "#problems h2", section: "problems", timestamp: 45.545 },
-          { selector: ".gap-item:nth-child(1)", section: "problems", timestamp: 51.884 },
-          { selector: ".gap-item:nth-child(2)", section: "problems", timestamp: 63.703 },
-          { selector: ".gap-item:nth-child(3)", section: "problems", timestamp: 74.849 },
-          { selector: ".gap-item:nth-child(4)", section: "problems", timestamp: 84.938 },
-          { selector: ".gap-item:nth-child(5)", section: "problems", timestamp: 94.98 },
-          { selector: "#solution h2", section: "solution", timestamp: 115.147 },
-          { selector: ".hook-box:nth-child(1)", section: "solution", timestamp: 120.453 },
-          { selector: ".hook-box:nth-child(2)", section: "solution", timestamp: 129.137 },
-          { selector: ".hook-box:nth-child(3)", section: "solution", timestamp: 138.982 },
-          { selector: ".hook-box:nth-child(4)", section: "solution", timestamp: 145.937 },
-          { selector: "#phases h2", section: "phases", timestamp: 159.323 },
-          { selector: "[data-phase=\"0\"]", section: "phases", timestamp: 164.42 },
-          { selector: "[data-phase=\"1\"]", section: "phases", timestamp: 175.054 },
-          { selector: "[data-phase=\"2\"]", section: "phases", timestamp: 180.314 },
-          { selector: "[data-phase=\"3\"]", section: "phases", timestamp: 187.918 },
-          { selector: "[data-phase=\"4\"]", section: "phases", timestamp: 195.511 },
-          { selector: "[data-phase=\"5\"]", section: "phases", timestamp: 204.556 },
-          { selector: "[data-phase=\"6\"]", section: "phases", timestamp: 211.975 },
-          { selector: "[data-phase=\"7\"]", section: "phases", timestamp: 218.221 },
-          { selector: "[data-phase=\"8\"]", section: "phases", timestamp: 225.988 },
-          { selector: "[data-phase=\"9\"]", section: "phases", timestamp: 235.764 },
-          { selector: "[data-phase=\"10\"]", section: "phases", timestamp: 246.898 },
-          { selector: "[data-phase=\"11\"]", section: "phases", timestamp: 253.155 },
-          { selector: "[data-phase=\"12\"]", section: "phases", timestamp: 259.355 },
-          { selector: "#demo h2", section: "demo", timestamp: 273.496 },
-          { selector: "[data-step=\"0\"]", section: "demo", timestamp: 277.966 },
-          { selector: "[data-step=\"1\"]", section: "demo", timestamp: 285.199 },
-          { selector: "[data-step=\"2\"]", section: "demo", timestamp: 290.97 },
-          { selector: "[data-step=\"3\"]", section: "demo", timestamp: 301.047 },
-          { selector: "[data-step=\"4\"]", section: "demo", timestamp: 313.133 },
-          { selector: "[data-step=\"5\"]", section: "demo", timestamp: 317.986 },
-          { selector: "[data-step=\"7\"]", section: "demo", timestamp: 326.566 },
-          { selector: "[data-step=\"8\"]", section: "demo", timestamp: 334.217 },
-          { selector: "[data-step=\"9\"]", section: "demo", timestamp: 339.476 },
-          { selector: "[data-step=\"10\"]", section: "demo", timestamp: 344.062 },
-          { selector: "[data-step=\"11\"]", section: "demo", timestamp: 349.89 },
-          { selector: "[data-step=\"12\"]", section: "demo", timestamp: 357.773 },
-          { selector: "[data-step=\"13\"]", section: "demo", timestamp: 366.457 },
-          { selector: "[data-step=\"14\"]", section: "demo", timestamp: 379.066 },
-          { selector: "[data-step=\"15\"]", section: "demo", timestamp: 382.838 },
-          { selector: "[data-step=\"16\"]", section: "demo", timestamp: 389.352 },
-          { selector: "#installation h2", section: "installation", timestamp: 397.618 },
-          { selector: ".install-command", section: "installation", timestamp: 400.695 },
-          { selector: "#credits h2", section: "credits", timestamp: 434.247 },
-          { selector: "#intro", section: "outro", timestamp: 463.852 }
+          { selector: "#hustleBrand", section: "intro", timestamp: 4.551 },
+          { selector: "[data-phase=\"research\"]", section: "intro", timestamp: 11.436 },
+          { selector: "[data-phase=\"interview\"]", section: "intro", timestamp: 19.177 },
+          { selector: "[data-phase=\"test\"]", section: "intro", timestamp: 25.479 },
+          { selector: "[data-phase=\"docs\"]", section: "intro", timestamp: 32.411 },
+          { selector: "#problems h2", section: "problems", timestamp: 45.094 },
+          { selector: ".gap-item:nth-child(1)", section: "problems", timestamp: 51.278 },
+          { selector: ".gap-item:nth-child(2)", section: "problems", timestamp: 62.622 },
+          { selector: ".gap-item:nth-child(3)", section: "problems", timestamp: 73.698 },
+          { selector: ".gap-item:nth-child(4)", section: "problems", timestamp: 83.893 },
+          { selector: ".gap-item:nth-child(5)", section: "problems", timestamp: 93.671 },
+          { selector: "#solution h2", section: "solution", timestamp: 112.153 },
+          { selector: ".hook-box:nth-child(1)", section: "solution", timestamp: 117.639 },
+          { selector: ".hook-box:nth-child(2)", section: "solution", timestamp: 126.553 },
+          { selector: ".hook-box:nth-child(3)", section: "solution", timestamp: 136.167 },
+          { selector: ".hook-box:nth-child(4)", section: "solution", timestamp: 143.098 },
+          { selector: "#phases h2", section: "phases", timestamp: 159.393 },
+          { selector: "[data-phase=\"0\"]", section: "phases", timestamp: 162.738 },
+          { selector: "[data-phase=\"1\"]", section: "phases", timestamp: 173.231 },
+          { selector: "[data-phase=\"2\"]", section: "phases", timestamp: 178.496 },
+          { selector: "[data-phase=\"3\"]", section: "phases", timestamp: 185.729 },
+          { selector: "[data-phase=\"4\"]", section: "phases", timestamp: 192.928 },
+          { selector: "[data-phase=\"5\"]", section: "phases", timestamp: 202.311 },
+          { selector: "[data-phase=\"6\"]", section: "phases", timestamp: 209.46 },
+          { selector: "[data-phase=\"7\"]", section: "phases", timestamp: 215.792 },
+          { selector: "[data-phase=\"8\"]", section: "phases", timestamp: 223.025 },
+          { selector: "[data-phase=\"9\"]", section: "phases", timestamp: 231.805 },
+          { selector: "[data-phase=\"10\"]", section: "phases", timestamp: 244.055 },
+          { selector: "[data-phase=\"11\"]", section: "phases", timestamp: 249.954 },
+          { selector: "[data-phase=\"12\"]", section: "phases", timestamp: 256.153 },
+          { selector: "#demo h2", section: "demo", timestamp: 274.831 },
+          { selector: "[data-step=\"0\"]", section: "demo", timestamp: 278.528 },
+          { selector: "[data-step=\"1\"]", section: "demo", timestamp: 285.377 },
+          { selector: "[data-step=\"2\"]", section: "demo", timestamp: 291.576 },
+          { selector: "[data-step=\"3\"]", section: "demo", timestamp: 301.005 },
+          { selector: "[data-step=\"4\"]", section: "demo", timestamp: 312.487 },
+          { selector: "[data-step=\"5\"]", section: "demo", timestamp: 316.982 },
+          { selector: "[data-step=\"7\"]", section: "demo", timestamp: 325.578 },
+          { selector: "[data-step=\"8\"]", section: "demo", timestamp: 333.125 },
+          { selector: "[data-step=\"9\"]", section: "demo", timestamp: 338.289 },
+          { selector: "[data-step=\"10\"]", section: "demo", timestamp: 342.636 },
+          { selector: "[data-step=\"11\"]", section: "demo", timestamp: 348.316 },
+          { selector: "[data-step=\"12\"]", section: "demo", timestamp: 355.897 },
+          { selector: "[data-step=\"13\"]", section: "demo", timestamp: 364.176 },
+          { selector: "[data-step=\"14\"]", section: "demo", timestamp: 376.291 },
+          { selector: "[data-step=\"15\"]", section: "demo", timestamp: 379.954 },
+          { selector: "[data-step=\"16\"]", section: "demo", timestamp: 386.219 },
+          { selector: "#installation h2", section: "installation", timestamp: 397.666 },
+          { selector: ".install-command", section: "installation", timestamp: 400.177 },
+          { selector: "#credits h2", section: "credits", timestamp: 431.509 },
+          { selector: "#intro", section: "outro", timestamp: 459.187 }
         ],
-        words: [] // Word-level requires server, left empty for file:// mode
+        words: []
       },
       female: {
-        duration: 469.835,
+        duration: 450.093,
         sections: [
           { id: "intro", timestamp: 0 },
-          { id: "problems", timestamp: 45.488 },
-          { id: "solution", timestamp: 116.554 },
-          { id: "phases", timestamp: 162.286 },
-          { id: "demo", timestamp: 272.721 },
-          { id: "installation", timestamp: 387.022 },
-          { id: "credits", timestamp: 415.152 },
-          { id: "outro", timestamp: 443.26 }
+          { id: "problems", timestamp: 40.995 },
+          { id: "solution", timestamp: 108.948 },
+          { id: "phases", timestamp: 155.713 },
+          { id: "demo", timestamp: 255.568 },
+          { id: "installation", timestamp: 367.43 },
+          { id: "credits", timestamp: 399.148 },
+          { id: "outro", timestamp: 425.143 }
         ],
         highlights: [
-          { selector: "#hustleBrand", section: "intro", timestamp: 4.609 },
-          { selector: "[data-phase=\"research\"]", section: "intro", timestamp: 12.202 },
-          { selector: "[data-phase=\"interview\"]", section: "intro", timestamp: 20.701 },
-          { selector: "[data-phase=\"test\"]", section: "intro", timestamp: 26.982 },
-          { selector: "[data-phase=\"docs\"]", section: "intro", timestamp: 34.076 },
-          { selector: "#problems h2", section: "problems", timestamp: 45.488 },
-          { selector: ".gap-item:nth-child(1)", section: "problems", timestamp: 51.479 },
-          { selector: ".gap-item:nth-child(2)", section: "problems", timestamp: 63.322 },
-          { selector: ".gap-item:nth-child(3)", section: "problems", timestamp: 75.675 },
-          { selector: ".gap-item:nth-child(4)", section: "problems", timestamp: 86.635 },
-          { selector: ".gap-item:nth-child(5)", section: "problems", timestamp: 97.095 },
-          { selector: "#solution h2", section: "solution", timestamp: 116.554 },
-          { selector: ".hook-box:nth-child(1)", section: "solution", timestamp: 122.081 },
-          { selector: ".hook-box:nth-child(2)", section: "solution", timestamp: 131.427 },
-          { selector: ".hook-box:nth-child(3)", section: "solution", timestamp: 141.33 },
-          { selector: ".hook-box:nth-child(4)", section: "solution", timestamp: 148.331 },
-          { selector: "#phases h2", section: "phases", timestamp: 162.286 },
-          { selector: "[data-phase=\"0\"]", section: "phases", timestamp: 167.046 },
-          { selector: "[data-phase=\"1\"]", section: "phases", timestamp: 178.761 },
-          { selector: "[data-phase=\"2\"]", section: "phases", timestamp: 188.49 },
-          { selector: "[data-phase=\"3\"]", section: "phases", timestamp: 194.922 },
-          { selector: "[data-phase=\"4\"]", section: "phases", timestamp: 202.979 },
-          { selector: "[data-phase=\"5\"]", section: "phases", timestamp: 212.604 },
-          { selector: "[data-phase=\"6\"]", section: "phases", timestamp: 219.257 },
-          { selector: "[data-phase=\"7\"]", section: "phases", timestamp: 225.677 },
-          { selector: "[data-phase=\"8\"]", section: "phases", timestamp: 232.051 },
-          { selector: "[data-phase=\"9\"]", section: "phases", timestamp: 239.412 },
-          { selector: "[data-phase=\"10\"]", section: "phases", timestamp: 250.534 },
-          { selector: "[data-phase=\"11\"]", section: "phases", timestamp: 255.619 },
-          { selector: "[data-phase=\"12\"]", section: "phases", timestamp: 260.299 },
-          { selector: "#demo h2", section: "demo", timestamp: 272.721 },
-          { selector: "[data-step=\"0\"]", section: "demo", timestamp: 276.971 },
-          { selector: "[data-step=\"1\"]", section: "demo", timestamp: 283.344 },
-          { selector: "[data-step=\"2\"]", section: "demo", timestamp: 293.05 },
-          { selector: "[data-step=\"3\"]", section: "demo", timestamp: 302.304 },
-          { selector: "[data-step=\"4\"]", section: "demo", timestamp: 315.342 },
-          { selector: "[data-step=\"5\"]", section: "demo", timestamp: 319.684 },
-          { selector: "[data-step=\"7\"]", section: "demo", timestamp: 326.093 },
-          { selector: "[data-step=\"8\"]", section: "demo", timestamp: 333.546 },
-          { selector: "[data-step=\"9\"]", section: "demo", timestamp: 338.84 },
-          { selector: "[data-step=\"10\"]", section: "demo", timestamp: 343.322 },
-          { selector: "[data-step=\"11\"]", section: "demo", timestamp: 347.803 },
-          { selector: "[data-step=\"12\"]", section: "demo", timestamp: 354.909 },
-          { selector: "[data-step=\"13\"]", section: "demo", timestamp: 362.629 },
-          { selector: "[data-step=\"14\"]", section: "demo", timestamp: 373.635 },
-          { selector: "[data-step=\"15\"]", section: "demo", timestamp: 377.246 },
-          { selector: "[data-step=\"16\"]", section: "demo", timestamp: 381.495 },
-          { selector: "#installation h2", section: "installation", timestamp: 387.022 },
-          { selector: ".install-command", section: "installation", timestamp: 389.367 },
-          { selector: "#credits h2", section: "credits", timestamp: 415.152 },
-          { selector: "#intro", section: "outro", timestamp: 443.26 }
+          { selector: "#hustleBrand", section: "intro", timestamp: 4.748 },
+          { selector: "[data-phase=\"research\"]", section: "intro", timestamp: 10.147 },
+          { selector: "[data-phase=\"interview\"]", section: "intro", timestamp: 17.148 },
+          { selector: "[data-phase=\"test\"]", section: "intro", timestamp: 22.998 },
+          { selector: "[data-phase=\"docs\"]", section: "intro", timestamp: 29.346 },
+          { selector: "#problems h2", section: "problems", timestamp: 40.995 },
+          { selector: ".gap-item:nth-child(1)", section: "problems", timestamp: 46.611 },
+          { selector: ".gap-item:nth-child(2)", section: "problems", timestamp: 58.294 },
+          { selector: ".gap-item:nth-child(3)", section: "problems", timestamp: 69.86 },
+          { selector: ".gap-item:nth-child(4)", section: "problems", timestamp: 80.078 },
+          { selector: ".gap-item:nth-child(5)", section: "problems", timestamp: 89.461 },
+          { selector: "#solution h2", section: "solution", timestamp: 108.948 },
+          { selector: ".hook-box:nth-child(1)", section: "solution", timestamp: 113.914 },
+          { selector: ".hook-box:nth-child(2)", section: "solution", timestamp: 122.529 },
+          { selector: ".hook-box:nth-child(3)", section: "solution", timestamp: 131.81 },
+          { selector: ".hook-box:nth-child(4)", section: "solution", timestamp: 138.693 },
+          { selector: "#phases h2", section: "phases", timestamp: 155.713 },
+          { selector: "[data-phase=\"0\"]", section: "phases", timestamp: 158.759 },
+          { selector: "[data-phase=\"1\"]", section: "phases", timestamp: 168.974 },
+          { selector: "[data-phase=\"2\"]", section: "phases", timestamp: 173.59 },
+          { selector: "[data-phase=\"3\"]", section: "phases", timestamp: 180.474 },
+          { selector: "[data-phase=\"4\"]", section: "phases", timestamp: 187.156 },
+          { selector: "[data-phase=\"5\"]", section: "phases", timestamp: 195.739 },
+          { selector: "[data-phase=\"6\"]", section: "phases", timestamp: 202.656 },
+          { selector: "[data-phase=\"7\"]", section: "phases", timestamp: 208.372 },
+          { selector: "[data-phase=\"8\"]", section: "phases", timestamp: 215.105 },
+          { selector: "[data-phase=\"9\"]", section: "phases", timestamp: 222.822 },
+          { selector: "[data-phase=\"10\"]", section: "phases", timestamp: 233.687 },
+          { selector: "[data-phase=\"11\"]", section: "phases", timestamp: 238.67 },
+          { selector: "[data-phase=\"12\"]", section: "phases", timestamp: 244.336 },
+          { selector: "#demo h2", section: "demo", timestamp: 255.568 },
+          { selector: "[data-step=\"0\"]", section: "demo", timestamp: 258.981 },
+          { selector: "[data-step=\"1\"]", section: "demo", timestamp: 265.296 },
+          { selector: "[data-step=\"2\"]", section: "demo", timestamp: 270.78 },
+          { selector: "[data-step=\"3\"]", section: "demo", timestamp: 279.429 },
+          { selector: "[data-step=\"4\"]", section: "demo", timestamp: 290.227 },
+          { selector: "[data-step=\"5\"]", section: "demo", timestamp: 294.276 },
+          { selector: "[data-step=\"7\"]", section: "demo", timestamp: 302.057 },
+          { selector: "[data-step=\"8\"]", section: "demo", timestamp: 309.003 },
+          { selector: "[data-step=\"9\"]", section: "demo", timestamp: 313.436 },
+          { selector: "[data-step=\"10\"]", section: "demo", timestamp: 317.585 },
+          { selector: "[data-step=\"11\"]", section: "demo", timestamp: 322.851 },
+          { selector: "[data-step=\"12\"]", section: "demo", timestamp: 329.818 },
+          { selector: "[data-step=\"13\"]", section: "demo", timestamp: 337.231 },
+          { selector: "[data-step=\"14\"]", section: "demo", timestamp: 348.662 },
+          { selector: "[data-step=\"15\"]", section: "demo", timestamp: 352.077 },
+          { selector: "[data-step=\"16\"]", section: "demo", timestamp: 357.709 },
+          { selector: "#installation h2", section: "installation", timestamp: 367.43 },
+          { selector: ".install-command", section: "installation", timestamp: 369.708 },
+          { selector: "#credits h2", section: "credits", timestamp: 399.148 },
+          { selector: "#intro", section: "outro", timestamp: 425.143 }
         ],
         words: []
       },
