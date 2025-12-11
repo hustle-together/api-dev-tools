@@ -1,6 +1,6 @@
 {
   "name": "@hustle-together/api-dev-tools",
-  "version": "3.6.0",
+  "version": "1.0.0",
   "description": "Interview-driven, research-first API development workflow with continuous verification loops for Claude Code",
   "main": "bin/cli.js",
   "bin": {

@@ -2,11 +2,16 @@
 /**
  * Generate narration audio with word-level timestamps using ElevenLabs API
  *
- * Usage: ELEVENLABS_API_KEY=your_key node generate-narration.js
+ * Usage: ELEVENLABS_API_KEY=your_key node generate-narration.js [voice]
+ *
+ * Voice options:
+ *   - male (Aidan) - Social media influencer
+ *   - female (Bella) - Chatty social media influencer
+ *   - santa (Jerry) - Jolly Santa Claus
  *
  * Output:
- *   - narration.mp3 - The audio file
- *   - narration-timing.json - Word timestamps with highlight triggers
+ *   - narration-{voice}.mp3 - The audio file
+ *   - narration-{voice}-timing.json - Word timestamps with highlight triggers
  */
 
 const fs = require('fs');
@@ -14,14 +19,33 @@ const path = require('path');
 
 // ElevenLabs API configuration
 const API_BASE = 'https://api.elevenlabs.io/v1';
-const VOICE_ID = 'pNInz6obpgDQGcFmaJgB'; // Adam - deep, professional voice
 const MODEL_ID = 'eleven_turbo_v2_5'; // Fast, high-quality model
+
+// Voice options
+const VOICES = {
+  male: { id: 'EOVAuWqgSZN2Oel78Psj', name: 'Aidan' },
+  female: { id: '4RZ84U1b4WCqpu57LvIq', name: 'Bella' },
+  santa: { id: 'MDLAMJ0jxkpYkjXbmG4t', name: 'Jerry' }
+};
+
+// Get voice from command line argument (default: male)
+const voiceArg = process.argv[2] || 'male';
+const selectedVoice = VOICES[voiceArg];
+
+if (!selectedVoice) {
+  console.error(`Unknown voice: ${voiceArg}`);
+  console.error('Available voices: male, female, santa');
+  process.exit(1);
+}
+
+const VOICE_ID = selectedVoice.id;
+const VOICE_NAME = voiceArg;
 
 // The narration script with section markers and highlight triggers
 // Format: [SECTION:id] marks a new section, [HIGHLIGHT:element-selector] marks what to highlight
 const NARRATION_SCRIPT = `
 [SECTION:intro]
-Welcome to Hustle API Dev Tools, version three point oh.
+Welcome to Hustle API Dev Tools, version one point oh.
 
 [HIGHLIGHT:#hustleBrand]
 This package enforces a structured, twelve-phase workflow for AI-assisted API development.
@@ -59,7 +83,7 @@ Gap four: No verification after tests pass. The AI writes code that passes tests
 [HIGHLIGHT:.gap-item:nth-child(5)]
 Gap five: Context dilution. After many turns, the AI forgets project structure, documentation locations, and workflow requirements.
 
-These gaps compound. Version three solves all of them with loop-back architecture and continuous re-grounding.
+These gaps compound. Version one solves all of them with loop-back architecture and continuous re-grounding.
 
 [SECTION:solution]
 [HIGHLIGHT:#solution h2]
@@ -81,7 +105,7 @@ This isn't about limiting AI. It's about holding it to the same standards we hol
 
 [SECTION:phases]
 [HIGHLIGHT:#phases h2]
-The workflow now has twelve phases. Two new ones in version three.
+The workflow now has twelve phases.
 
 [HIGHLIGHT:[data-phase="0"]]
 Phase zero: Disambiguation. When you say Vercel AI, do you mean the SDK or the Gateway? We clarify before researching.
@@ -185,7 +209,7 @@ Run npx @hustle-together/api-dev-tools. That's it.
 
 The CLI copies slash commands, Python hooks, and settings. It creates the research cache folder and updates your CLAUDE.md with workflow documentation.
 
-Version three adds automatic CLAUDE.md updates so Claude understands the workflow in your project.
+The CLI adds automatic CLAUDE.md updates so Claude understands the workflow in your project.
 
 Your project is now enforced. Every API follows the twelve-phase workflow.
 
@@ -203,7 +227,7 @@ Thank you to the Claude Code community. Together, we're making AI development be
 
 [SECTION:outro]
 [HIGHLIGHT:#intro]
-Hustle API Dev Tools version three. Twelve phases. Loop-back architecture. Continuous verification.
+Hustle API Dev Tools version one. Twelve phases. Loop-back architecture. Continuous verification.
 
 Research first. Questions FROM findings. Verify after green. Document always.
 
@@ -391,13 +415,15 @@ async function main() {
 
   if (!apiKey) {
     console.error('Error: ELEVENLABS_API_KEY environment variable is required');
-    console.error('Usage: ELEVENLABS_API_KEY=your_key node generate-narration.js');
+    console.error('Usage: ELEVENLABS_API_KEY=your_key node generate-narration.js [voice]');
     process.exit(1);
   }
 
+  console.log(`\n=== Generating narration with ${selectedVoice.name} (${VOICE_NAME}) ===\n`);
+
   const outputDir = __dirname;
-  const audioPath = path.join(outputDir, 'narration.mp3');
-  const timingPath = path.join(outputDir, 'narration-timing.json');
+  const audioPath = path.join(outputDir, `narration-${VOICE_NAME}.mp3`);
+  const timingPath = path.join(outputDir, `narration-${VOICE_NAME}-timing.json`);
 
   // Extract plain text for TTS
   const plainText = extractPlainText(NARRATION_SCRIPT);

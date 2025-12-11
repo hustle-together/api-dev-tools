@@ -2086,6 +2086,211 @@
       display: none;
     }
 
+    /* Voice selector panel */
+    .voice-selector {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #1a1a1a;
+      border: 2px solid var(--accent);
+      border-radius: 8px;
+      padding: 20px;
+      z-index: 1000;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+      display: none;
+      flex-direction: column;
+      gap: 15px;
+      min-width: 280px;
+    }
+
+    .voice-selector.visible {
+      display: flex;
+    }
+
+    .voice-selector h4 {
+      margin: 0;
+      color: #fff;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .voice-selector-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: transparent;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    .voice-selector-close:hover {
+      color: #fff;
+    }
+
+    .voice-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .voice-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 15px;
+      background: #252525;
+      border: 2px solid transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #fff;
+    }
+
+    .voice-option:hover {
+      background: #333;
+      border-color: #444;
+    }
+
+    .voice-option.selected {
+      border-color: var(--accent);
+      background: rgba(186, 12, 47, 0.15);
+    }
+
+    .voice-option .voice-icon {
+      font-size: 1.5rem;
+      width: 40px;
+      text-align: center;
+    }
+
+    .voice-option .voice-info {
+      flex: 1;
+    }
+
+    .voice-option .voice-name {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .voice-option .voice-desc {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 2px;
+    }
+
+    /* Disabled voice option */
+    .voice-option.voice-disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .voice-option.voice-disabled .voice-desc {
+      color: #666;
+      font-style: italic;
+    }
+
+    /* Christmas themed Santa option */
+    .voice-option.santa-option {
+      background: linear-gradient(135deg, #2a1a1a 0%, #1a1a1a 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .voice-option.santa-option::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #c41e3a, #ffffff, #c41e3a, #ffffff);
+      background-size: 200% 100%;
+      animation: christmas-lights 2s linear infinite;
+    }
+
+    @keyframes christmas-lights {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 200% 0%; }
+    }
+
+    .voice-option.santa-option:hover {
+      background: linear-gradient(135deg, #3a2525 0%, #252525 100%);
+    }
+
+    .voice-option.santa-option .voice-icon {
+      position: relative;
+      color: #228b22;
+    }
+
+    .snowflakes {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .snowflake {
+      position: absolute;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 10px;
+      animation: snowfall 3s linear infinite;
+    }
+
+    .snowflake:nth-child(1) { left: 10%; animation-delay: 0s; }
+    .snowflake:nth-child(2) { left: 30%; animation-delay: 0.5s; }
+    .snowflake:nth-child(3) { left: 50%; animation-delay: 1s; }
+    .snowflake:nth-child(4) { left: 70%; animation-delay: 1.5s; }
+    .snowflake:nth-child(5) { left: 90%; animation-delay: 2s; }
+
+    @keyframes snowfall {
+      0% { transform: translateY(-10px) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(60px) rotate(360deg); opacity: 0; }
+    }
+
+    .voice-selector-play {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 5px;
+      transition: all 0.2s;
+    }
+
+    .voice-selector-play:hover {
+      background: #d41030;
+      transform: translateY(-1px);
+    }
+
+    .voice-selector-play:disabled {
+      background: #444;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .voice-note {
+      font-size: 0.75rem;
+      color: #666;
+      text-align: center;
+      margin-top: 5px;
+    }
+
     /* Highlight animation for elements when narration mentions them */
     .narration-highlight {
       transition: all 0.3s ease;
@@ -2138,7 +2343,7 @@
   <!-- Section 1: Hero -->
   <section id="hero">
     <div class="section-inner">
-      <div class="hero-badge">v3.6.0 - Exit Code 2 Enforcement</div>
+      <div class="hero-badge">v1.0.0 - Exit Code 2 Enforcement</div>
 
       <h1 class="hero-title">
         API Dev Tools
@@ -4188,7 +4393,44 @@ Required actions:
         }
       });
     });
+  </script>
 
+  <!-- Narration Floating Bar (must be in DOM before NarrationController script runs) -->
+  <div id="narration-bar" class="narration-bar hidden">
+    <div class="narration-controls">
+      <button id="narration-play" class="narration-btn" title="Play/Pause">
+        <i class="fa-solid fa-play"></i>
+      </button>
+
+      <div class="narration-progress">
+        <div class="progress-track">
+          <div class="progress-fill"></div>
+          <div class="progress-handle" id="narration-handle"></div>
+          <div class="section-markers" id="section-markers"></div>
+        </div>
+      </div>
+
+      <div class="narration-time">
+        <span id="narration-current">0:00</span>
+        <span>/</span>
+        <span id="narration-duration">0:00</span>
+      </div>
+
+      <button id="narration-mute" class="narration-btn" title="Mute/Unmute">
+        <i class="fa-solid fa-volume-high"></i>
+      </button>
+
+      <button id="narration-close" class="narration-btn" title="Close">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div id="narration-subtitles" class="narration-subtitles">
+      Click play to start the narrated tour...
+    </div>
+  </div>
+
+  <script>
     // ============================================
     // NARRATION CONTROLLER
     // Audio sync with subtitles, page scroll, and element highlighting
@@ -4220,7 +4462,7 @@ Required actions:
         this.init();
       }
 
-      async init() {
+      async init(embeddedTiming = null) {
         // Get DOM elements
         this.bar = document.getElementById('narration-bar');
         this.playBtn = document.getElementById('narration-play');
@@ -4238,43 +4480,99 @@ Required actions:
         this.audio = new Audio(this.audioUrl);
         this.audio.preload = 'metadata';
 
-        try {
-          // Load timing data
-          const response = await fetch(this.timingUrl);
-          if (!response.ok) {
-            console.warn('Narration timing file not found. Run generate-narration.js to create audio.');
-            this.subtitles.textContent = 'Narration audio not yet generated. Coming soon!';
+        // Use embedded timing if provided, otherwise try to fetch
+        if (embeddedTiming) {
+          this.timing = embeddedTiming;
+        } else {
+          try {
+            // Try to fetch timing data (works with http://, not file://)
+            const response = await fetch(this.timingUrl);
+            if (!response.ok) {
+              console.warn('Narration timing file not found.');
+              this.subtitles.textContent = 'Click the Narrated Tour button to begin...';
+              this.setupEventListeners();
+              return;
+            }
+            this.timing = await response.json();
+          } catch (err) {
+            // Fetch failed (likely file:// CORS) - that's OK, will load timing when voice is selected
+            console.log('Timing will be loaded when voice is selected (file:// mode)');
+            this.subtitles.textContent = 'Click the Narrated Tour button to begin...';
+            this.setupEventListeners();
             return;
           }
-          this.timing = await response.json();
-
-          // Set duration display
-          this.durationEl.textContent = this.formatTime(this.timing.duration);
-
-          // Add section markers to progress bar
-          this.addSectionMarkers();
-
-          // Set up event listeners
-          this.setupEventListeners();
-
-          console.log('Narration controller initialized:', {
-            duration: this.timing.duration,
-            sections: this.timing.sections.length,
-            highlights: this.timing.highlights.length,
-            words: this.timing.words.length
-          });
-        } catch (err) {
-          console.warn('Could not load narration timing:', err);
-          this.subtitles.textContent = 'Narration audio not yet generated. Coming soon!';
         }
+
+        // Set duration display
+        this.durationEl.textContent = this.formatTime(this.timing.duration);
+
+        // Add section markers to progress bar
+        this.addSectionMarkers();
+
+        // Set up event listeners
+        this.setupEventListeners();
+
+        console.log('Narration controller initialized:', {
+          duration: this.timing.duration,
+          sections: this.timing.sections.length,
+          highlights: this.timing.highlights.length,
+          words: this.timing.words ? this.timing.words.length : 0
+        });
       }
 
       setupEventListeners() {
         // Play/pause button
-        this.playBtn.addEventListener('click', () => this.togglePlay());
+        if (this.playBtn) {
+          this.playBtn.addEventListener('click', () => this.togglePlay());
+        }
 
         // Mute button
-        this.muteBtn.addEventListener('click', () => this.toggleMute());
+        if (this.muteBtn) {
+          this.muteBtn.addEventListener('click', () => this.toggleMute());
+        }
+
+        // Audio event listeners (will be re-attached when voice changes)
+        this.attachAudioListeners();
+
+        // Progress bar click to seek - use the entire progress wrapper
+        const progressWrapper = document.querySelector('.narration-progress');
+        if (progressWrapper) {
+          progressWrapper.addEventListener('click', (e) => {
+            // Don't seek if clicking on the handle (that's for dragging)
+            if (e.target === this.handle) return;
+            this.seek(e);
+          });
+        }
+
+        // Handle drag for scrubbing
+        if (this.handle) {
+          this.handle.addEventListener('mousedown', (e) => this.startDrag(e));
+          this.handle.addEventListener('touchstart', (e) => this.startDrag(e), { passive: false });
+        }
+        document.addEventListener('mousemove', (e) => this.onDrag(e));
+        document.addEventListener('mouseup', () => this.endDrag());
+        document.addEventListener('touchmove', (e) => this.onDrag(e), { passive: false });
+        document.addEventListener('touchend', () => this.endDrag());
+
+        // Launch button - only add if element exists (it may be loaded later)
+        if (this.launchBtn) {
+          this.launchBtn.addEventListener('click', () => this.show());
+        }
+
+        // Close button - always get fresh reference
+        const closeBtn = document.getElementById('narration-close');
+        if (closeBtn) {
+          closeBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Close button clicked');
+            this.hide();
+          });
+        }
+      }
+
+      attachAudioListeners() {
+        if (!this.audio) return;
 
         // Audio time update
         this.audio.addEventListener('timeupdate', () => this.onTimeUpdate());
@@ -4282,27 +4580,8 @@ Required actions:
         // Audio ended
         this.audio.addEventListener('ended', () => {
           this.isPlaying = false;
-          this.playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+          if (this.playBtn) this.playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
         });
-
-        // Progress bar click to seek
-        this.progressTrack.addEventListener('click', (e) => this.seek(e));
-
-        // Handle drag for scrubbing
-        this.handle.addEventListener('mousedown', (e) => this.startDrag(e));
-        document.addEventListener('mousemove', (e) => this.onDrag(e));
-        document.addEventListener('mouseup', () => this.endDrag());
-
-        // Touch support for mobile
-        this.handle.addEventListener('touchstart', (e) => this.startDrag(e));
-        document.addEventListener('touchmove', (e) => this.onDrag(e));
-        document.addEventListener('touchend', () => this.endDrag());
-
-        // Launch button
-        this.launchBtn.addEventListener('click', () => this.show());
-
-        // Close button
-        document.getElementById('narration-close').addEventListener('click', () => this.hide());
       }
 
       togglePlay() {
@@ -4349,6 +4628,31 @@ Required actions:
 
       updateSubtitles(currentTime) {
         const words = this.timing.words;
+
+        // If no word-level timing (file:// mode), show section-based text instead
+        if (!words || words.length === 0) {
+          // Find current section and show its name
+          const sections = this.timing.sections;
+          let currentSection = sections[0];
+          for (const section of sections) {
+            if (currentTime >= section.timestamp) {
+              currentSection = section;
+            }
+          }
+          const sectionNames = {
+            intro: 'Welcome to Hustle API Dev Tools...',
+            problems: 'The problems with AI API development...',
+            solution: 'The solution: Python hooks enforcement...',
+            phases: 'The 12-phase workflow...',
+            demo: 'Live demo: Creating a Brandfetch endpoint...',
+            installation: 'Installation is one command...',
+            credits: 'Credits and acknowledgments...',
+            outro: 'Hustle API Dev Tools v1...'
+          };
+          this.subtitles.textContent = sectionNames[currentSection?.id] || 'Playing...';
+          return;
+        }
+
         const windowSize = 10; // Show ~10 words at a time
 
         // Find the current word
@@ -4452,18 +4756,29 @@ Required actions:
       }
 
       seek(event) {
-        if (!this.timing) return;
+        if (!this.timing) {
+          console.log('seek: no timing data');
+          return;
+        }
 
-        const rect = this.progressTrack.getBoundingClientRect();
+        // Get the progress wrapper for accurate positioning
+        const progressWrapper = document.querySelector('.narration-progress');
+        if (!progressWrapper) {
+          console.log('seek: no progress wrapper');
+          return;
+        }
+
+        const rect = progressWrapper.getBoundingClientRect();
         const percent = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
         const newTime = percent * this.timing.duration;
 
+        console.log('seek: setting time to', newTime, 'of', this.timing.duration);
         this.audio.currentTime = newTime;
 
         // Update UI immediately
-        this.progressFill.style.width = `${percent * 100}%`;
-        this.handle.style.left = `${percent * 100}%`;
-        this.currentTimeEl.textContent = this.formatTime(newTime);
+        if (this.progressFill) this.progressFill.style.width = `${percent * 100}%`;
+        if (this.handle) this.handle.style.left = `${percent * 100}%`;
+        if (this.currentTimeEl) this.currentTimeEl.textContent = this.formatTime(newTime);
 
         // Allow re-scroll to current section
         this.lastScrolledSection = null;
@@ -4519,16 +4834,21 @@ Required actions:
       }
 
       show() {
-        this.bar.classList.remove('hidden');
-        this.launchBtn.classList.add('hidden');
+        if (this.bar) this.bar.classList.remove('hidden');
+        // launchBtn may be null if called before DOM is ready - get it fresh
+        const launchBtn = document.getElementById('narration-launch');
+        if (launchBtn) launchBtn.classList.add('hidden');
       }
 
       hide() {
-        this.bar.classList.add('hidden');
-        this.launchBtn.classList.remove('hidden');
-        this.audio.pause();
+        if (this.bar) this.bar.classList.add('hidden');
+        const launchBtn = document.getElementById('narration-launch');
+        if (launchBtn) launchBtn.classList.remove('hidden');
+        if (this.audio) {
+          this.audio.pause();
+        }
         this.isPlaying = false;
-        this.playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+        if (this.playBtn) this.playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
 
         // Clear any active highlights
         document.querySelectorAll('.narration-highlight').forEach(el => {
@@ -4542,12 +4862,137 @@ Required actions:
         const secs = Math.floor(seconds % 60);
         return `${mins}:${secs.toString().padStart(2, '0')}`;
       }
+
+      async loadVoice(audioUrl, timingUrl) {
+        // Stop current playback
+        if (this.isPlaying) {
+          this.audio.pause();
+          this.isPlaying = false;
+          this.playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+        }
+
+        // Clear highlights
+        document.querySelectorAll('.narration-highlight').forEach(el => {
+          el.classList.remove('narration-highlight');
+          gsap.set(el, { scale: 1, boxShadow: 'none' });
+        });
+
+        // Load new audio
+        this.audioUrl = audioUrl;
+        this.timingUrl = timingUrl;
+        this.audio = new Audio(audioUrl);
+        this.audio.preload = 'metadata';
+
+        try {
+          // Load new timing data
+          const response = await fetch(timingUrl);
+          if (!response.ok) {
+            console.warn('Timing file not found:', timingUrl);
+            this.subtitles.textContent = 'Audio not yet generated for this voice.';
+            return;
+          }
+          this.timing = await response.json();
+
+          // Update duration
+          this.durationEl.textContent = this.formatTime(this.timing.duration);
+
+          // Reset progress
+          this.progressFill.style.width = '0%';
+          this.handle.style.left = '0%';
+          this.currentTimeEl.textContent = '0:00';
+          this.lastScrolledSection = null;
+
+          // Rebuild section markers
+          this.addSectionMarkers();
+
+          // Re-attach event listeners to new audio
+          this.audio.addEventListener('timeupdate', () => this.onTimeUpdate());
+          this.audio.addEventListener('ended', () => {
+            this.isPlaying = false;
+            this.playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+          });
+
+          this.subtitles.textContent = 'Click play to start the narrated tour...';
+          console.log('Voice loaded:', audioUrl);
+        } catch (err) {
+          console.warn('Could not load voice timing:', err);
+          this.subtitles.textContent = 'Audio not yet generated for this voice.';
+        }
+      }
+
+      // Load voice with pre-loaded timing data (no fetch needed - works with file://)
+      // Returns a promise that resolves when audio is ready to play
+      loadVoiceWithTiming(audioUrl, timingData) {
+        return new Promise((resolve, reject) => {
+          console.log('loadVoiceWithTiming START:', audioUrl);
+
+          // Stop current playback
+          if (this.audio && this.isPlaying) {
+            this.audio.pause();
+            this.isPlaying = false;
+            if (this.playBtn) this.playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+          }
+
+          // Clear highlights
+          console.log('Clearing highlights...');
+          document.querySelectorAll('.narration-highlight').forEach(el => {
+            el.classList.remove('narration-highlight');
+            gsap.set(el, { scale: 1, boxShadow: 'none' });
+          });
+
+          // Load new audio
+          console.log('Creating new Audio element...');
+          this.audioUrl = audioUrl;
+          this.audio = new Audio(audioUrl);
+          this.audio.preload = 'auto';
+
+          // Use embedded timing data directly (no fetch!)
+          console.log('Setting timing data...');
+          this.timing = timingData;
+
+          // Update duration
+          console.log('Updating duration display...');
+          if (this.durationEl) this.durationEl.textContent = this.formatTime(this.timing.duration);
+
+          // Reset progress
+          console.log('Resetting progress...');
+          if (this.progressFill) this.progressFill.style.width = '0%';
+          if (this.handle) this.handle.style.left = '0%';
+          if (this.currentTimeEl) this.currentTimeEl.textContent = '0:00';
+          this.lastScrolledSection = null;
+
+          // Rebuild section markers
+          console.log('Adding section markers...');
+          this.addSectionMarkers();
+
+          // Re-attach event listeners to new audio
+          console.log('Attaching audio event listeners...');
+          this.attachAudioListeners();
+
+          // Wait for audio to be ready
+          this.audio.addEventListener('canplaythrough', () => {
+            console.log('Audio ready to play:', audioUrl);
+            if (this.subtitles) this.subtitles.textContent = 'Ready to play...';
+            resolve();
+          }, { once: true });
+
+          this.audio.addEventListener('error', (e) => {
+            console.error('Audio load error:', e);
+            if (this.subtitles) this.subtitles.textContent = 'Error loading audio.';
+            reject(e);
+          }, { once: true });
+
+          console.log('Setting subtitle text...');
+          if (this.subtitles) this.subtitles.textContent = 'Loading audio...';
+          console.log('loadVoiceWithTiming waiting for audio to load...');
+        });
+      }
     }
 
     // Initialize narration controller after DOM is ready
     const narrationController = new NarrationController(
-      'audio/narration.mp3',
-      'audio/narration-timing.json'
+      'audio/narration-male.mp3',
+      'audio/narration-male-timing.json'
     );
   </script>
 
@@ -4556,39 +5001,316 @@ Required actions:
     <i class="fa-solid fa-headphones"></i> Narrated Tour
   </button>
 
-  <!-- Narration Floating Bar -->
-  <div id="narration-bar" class="narration-bar hidden">
-    <div class="narration-controls">
-      <button id="narration-play" class="narration-btn" title="Play/Pause">
-        <i class="fa-solid fa-play"></i>
-      </button>
+  <!-- Voice Selector Panel -->
+  <div id="voice-selector" class="voice-selector">
+    <button class="voice-selector-close" onclick="document.getElementById('voice-selector').classList.remove('visible'); document.getElementById('narration-launch').classList.remove('hidden');">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <h4><i class="fa-solid fa-microphone"></i> Choose Voice</h4>
 
-      <div class="narration-progress">
-        <div class="progress-track">
-          <div class="progress-fill"></div>
-          <div class="progress-handle" id="narration-handle"></div>
-          <div class="section-markers" id="section-markers"></div>
+    <div class="voice-options">
+      <div class="voice-option voice-disabled" data-voice="male" title="Coming soon">
+        <div class="voice-icon">
+          <i class="fa-solid fa-user-tie"></i>
+        </div>
+        <div class="voice-info">
+          <div class="voice-name">Aidan</div>
+          <div class="voice-desc">Coming soon</div>
         </div>
       </div>
 
-      <div class="narration-time">
-        <span id="narration-current">0:00</span>
-        <span>/</span>
-        <span id="narration-duration">0:00</span>
+      <div class="voice-option voice-disabled" data-voice="female" title="Coming soon">
+        <div class="voice-icon">
+          <i class="fa-solid fa-user"></i>
+        </div>
+        <div class="voice-info">
+          <div class="voice-name">Bella</div>
+          <div class="voice-desc">Coming soon</div>
+        </div>
       </div>
 
-      <button id="narration-mute" class="narration-btn" title="Mute/Unmute">
-        <i class="fa-solid fa-volume-high"></i>
-      </button>
-
-      <button id="narration-close" class="narration-btn" title="Close">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
+      <div class="voice-option santa-option selected" data-voice="santa" onclick="selectVoice(this)">
+        <div class="snowflakes">
+          <span class="snowflake">❄</span>
+          <span class="snowflake">❄</span>
+          <span class="snowflake">❄</span>
+          <span class="snowflake">❄</span>
+          <span class="snowflake">❄</span>
+        </div>
+        <div class="voice-icon">
+          <i class="fa-solid fa-tree"></i>
+        </div>
+        <div class="voice-info">
+          <div class="voice-name">Santa</div>
+          <div class="voice-desc">Festive holiday narrator</div>
+        </div>
+      </div>
     </div>
 
-    <div id="narration-subtitles" class="narration-subtitles">
-      Click play to start the narrated tour...
-    </div>
+    <button class="voice-selector-play" onclick="startNarration()">
+      <i class="fa-solid fa-play"></i> Start Tour
+    </button>
+
+    <p class="voice-note">Select a voice to begin the narrated tour</p>
   </div>
+
+  <script>
+    // Embedded timing data (sections + highlights only, no word-level for file:// compatibility)
+    const embeddedTimingData = {
+      male: {
+        duration: 491.38,
+        sections: [
+          { id: "intro", timestamp: 0 },
+          { id: "problems", timestamp: 45.545 },
+          { id: "solution", timestamp: 115.147 },
+          { id: "phases", timestamp: 159.323 },
+          { id: "demo", timestamp: 273.496 },
+          { id: "installation", timestamp: 397.618 },
+          { id: "credits", timestamp: 434.247 },
+          { id: "outro", timestamp: 463.852 }
+        ],
+        highlights: [
+          { selector: "#hustleBrand", section: "intro", timestamp: 4.272 },
+          { selector: "[data-phase=\"research\"]", section: "intro", timestamp: 11.145 },
+          { selector: "[data-phase=\"interview\"]", section: "intro", timestamp: 18.912 },
+          { selector: "[data-phase=\"test\"]", section: "intro", timestamp: 25.24 },
+          { selector: "[data-phase=\"docs\"]", section: "intro", timestamp: 32.182 },
+          { selector: "#problems h2", section: "problems", timestamp: 45.545 },
+          { selector: ".gap-item:nth-child(1)", section: "problems", timestamp: 51.884 },
+          { selector: ".gap-item:nth-child(2)", section: "problems", timestamp: 63.703 },
+          { selector: ".gap-item:nth-child(3)", section: "problems", timestamp: 74.849 },
+          { selector: ".gap-item:nth-child(4)", section: "problems", timestamp: 84.938 },
+          { selector: ".gap-item:nth-child(5)", section: "problems", timestamp: 94.98 },
+          { selector: "#solution h2", section: "solution", timestamp: 115.147 },
+          { selector: ".hook-box:nth-child(1)", section: "solution", timestamp: 120.453 },
+          { selector: ".hook-box:nth-child(2)", section: "solution", timestamp: 129.137 },
+          { selector: ".hook-box:nth-child(3)", section: "solution", timestamp: 138.982 },
+          { selector: ".hook-box:nth-child(4)", section: "solution", timestamp: 145.937 },
+          { selector: "#phases h2", section: "phases", timestamp: 159.323 },
+          { selector: "[data-phase=\"0\"]", section: "phases", timestamp: 164.42 },
+          { selector: "[data-phase=\"1\"]", section: "phases", timestamp: 175.054 },
+          { selector: "[data-phase=\"2\"]", section: "phases", timestamp: 180.314 },
+          { selector: "[data-phase=\"3\"]", section: "phases", timestamp: 187.918 },
+          { selector: "[data-phase=\"4\"]", section: "phases", timestamp: 195.511 },
+          { selector: "[data-phase=\"5\"]", section: "phases", timestamp: 204.556 },
+          { selector: "[data-phase=\"6\"]", section: "phases", timestamp: 211.975 },
+          { selector: "[data-phase=\"7\"]", section: "phases", timestamp: 218.221 },
+          { selector: "[data-phase=\"8\"]", section: "phases", timestamp: 225.988 },
+          { selector: "[data-phase=\"9\"]", section: "phases", timestamp: 235.764 },
+          { selector: "[data-phase=\"10\"]", section: "phases", timestamp: 246.898 },
+          { selector: "[data-phase=\"11\"]", section: "phases", timestamp: 253.155 },
+          { selector: "[data-phase=\"12\"]", section: "phases", timestamp: 259.355 },
+          { selector: "#demo h2", section: "demo", timestamp: 273.496 },
+          { selector: "[data-step=\"0\"]", section: "demo", timestamp: 277.966 },
+          { selector: "[data-step=\"1\"]", section: "demo", timestamp: 285.199 },
+          { selector: "[data-step=\"2\"]", section: "demo", timestamp: 290.97 },
+          { selector: "[data-step=\"3\"]", section: "demo", timestamp: 301.047 },
+          { selector: "[data-step=\"4\"]", section: "demo", timestamp: 313.133 },
+          { selector: "[data-step=\"5\"]", section: "demo", timestamp: 317.986 },
+          { selector: "[data-step=\"7\"]", section: "demo", timestamp: 326.566 },
+          { selector: "[data-step=\"8\"]", section: "demo", timestamp: 334.217 },
+          { selector: "[data-step=\"9\"]", section: "demo", timestamp: 339.476 },
+          { selector: "[data-step=\"10\"]", section: "demo", timestamp: 344.062 },
+          { selector: "[data-step=\"11\"]", section: "demo", timestamp: 349.89 },
+          { selector: "[data-step=\"12\"]", section: "demo", timestamp: 357.773 },
+          { selector: "[data-step=\"13\"]", section: "demo", timestamp: 366.457 },
+          { selector: "[data-step=\"14\"]", section: "demo", timestamp: 379.066 },
+          { selector: "[data-step=\"15\"]", section: "demo", timestamp: 382.838 },
+          { selector: "[data-step=\"16\"]", section: "demo", timestamp: 389.352 },
+          { selector: "#installation h2", section: "installation", timestamp: 397.618 },
+          { selector: ".install-command", section: "installation", timestamp: 400.695 },
+          { selector: "#credits h2", section: "credits", timestamp: 434.247 },
+          { selector: "#intro", section: "outro", timestamp: 463.852 }
+        ],
+        words: [] // Word-level requires server, left empty for file:// mode
+      },
+      female: {
+        duration: 469.835,
+        sections: [
+          { id: "intro", timestamp: 0 },
+          { id: "problems", timestamp: 45.488 },
+          { id: "solution", timestamp: 116.554 },
+          { id: "phases", timestamp: 162.286 },
+          { id: "demo", timestamp: 272.721 },
+          { id: "installation", timestamp: 387.022 },
+          { id: "credits", timestamp: 415.152 },
+          { id: "outro", timestamp: 443.26 }
+        ],
+        highlights: [
+          { selector: "#hustleBrand", section: "intro", timestamp: 4.609 },
+          { selector: "[data-phase=\"research\"]", section: "intro", timestamp: 12.202 },
+          { selector: "[data-phase=\"interview\"]", section: "intro", timestamp: 20.701 },
+          { selector: "[data-phase=\"test\"]", section: "intro", timestamp: 26.982 },
+          { selector: "[data-phase=\"docs\"]", section: "intro", timestamp: 34.076 },
+          { selector: "#problems h2", section: "problems", timestamp: 45.488 },
+          { selector: ".gap-item:nth-child(1)", section: "problems", timestamp: 51.479 },
+          { selector: ".gap-item:nth-child(2)", section: "problems", timestamp: 63.322 },
+          { selector: ".gap-item:nth-child(3)", section: "problems", timestamp: 75.675 },
+          { selector: ".gap-item:nth-child(4)", section: "problems", timestamp: 86.635 },
+          { selector: ".gap-item:nth-child(5)", section: "problems", timestamp: 97.095 },
+          { selector: "#solution h2", section: "solution", timestamp: 116.554 },
+          { selector: ".hook-box:nth-child(1)", section: "solution", timestamp: 122.081 },
+          { selector: ".hook-box:nth-child(2)", section: "solution", timestamp: 131.427 },
+          { selector: ".hook-box:nth-child(3)", section: "solution", timestamp: 141.33 },
+          { selector: ".hook-box:nth-child(4)", section: "solution", timestamp: 148.331 },
+          { selector: "#phases h2", section: "phases", timestamp: 162.286 },
+          { selector: "[data-phase=\"0\"]", section: "phases", timestamp: 167.046 },
+          { selector: "[data-phase=\"1\"]", section: "phases", timestamp: 178.761 },
+          { selector: "[data-phase=\"2\"]", section: "phases", timestamp: 188.49 },
+          { selector: "[data-phase=\"3\"]", section: "phases", timestamp: 194.922 },
+          { selector: "[data-phase=\"4\"]", section: "phases", timestamp: 202.979 },
+          { selector: "[data-phase=\"5\"]", section: "phases", timestamp: 212.604 },
+          { selector: "[data-phase=\"6\"]", section: "phases", timestamp: 219.257 },
+          { selector: "[data-phase=\"7\"]", section: "phases", timestamp: 225.677 },
+          { selector: "[data-phase=\"8\"]", section: "phases", timestamp: 232.051 },
+          { selector: "[data-phase=\"9\"]", section: "phases", timestamp: 239.412 },
+          { selector: "[data-phase=\"10\"]", section: "phases", timestamp: 250.534 },
+          { selector: "[data-phase=\"11\"]", section: "phases", timestamp: 255.619 },
+          { selector: "[data-phase=\"12\"]", section: "phases", timestamp: 260.299 },
+          { selector: "#demo h2", section: "demo", timestamp: 272.721 },
+          { selector: "[data-step=\"0\"]", section: "demo", timestamp: 276.971 },
+          { selector: "[data-step=\"1\"]", section: "demo", timestamp: 283.344 },
+          { selector: "[data-step=\"2\"]", section: "demo", timestamp: 293.05 },
+          { selector: "[data-step=\"3\"]", section: "demo", timestamp: 302.304 },
+          { selector: "[data-step=\"4\"]", section: "demo", timestamp: 315.342 },
+          { selector: "[data-step=\"5\"]", section: "demo", timestamp: 319.684 },
+          { selector: "[data-step=\"7\"]", section: "demo", timestamp: 326.093 },
+          { selector: "[data-step=\"8\"]", section: "demo", timestamp: 333.546 },
+          { selector: "[data-step=\"9\"]", section: "demo", timestamp: 338.84 },
+          { selector: "[data-step=\"10\"]", section: "demo", timestamp: 343.322 },
+          { selector: "[data-step=\"11\"]", section: "demo", timestamp: 347.803 },
+          { selector: "[data-step=\"12\"]", section: "demo", timestamp: 354.909 },
+          { selector: "[data-step=\"13\"]", section: "demo", timestamp: 362.629 },
+          { selector: "[data-step=\"14\"]", section: "demo", timestamp: 373.635 },
+          { selector: "[data-step=\"15\"]", section: "demo", timestamp: 377.246 },
+          { selector: "[data-step=\"16\"]", section: "demo", timestamp: 381.495 },
+          { selector: "#installation h2", section: "installation", timestamp: 387.022 },
+          { selector: ".install-command", section: "installation", timestamp: 389.367 },
+          { selector: "#credits h2", section: "credits", timestamp: 415.152 },
+          { selector: "#intro", section: "outro", timestamp: 443.26 }
+        ],
+        words: []
+      },
+      santa: {
+        duration: 523.006,
+        sections: [
+          { id: "intro", timestamp: 0 },
+          { id: "problems", timestamp: 52.082 },
+          { id: "solution", timestamp: 126.827 },
+          { id: "phases", timestamp: 178.492 },
+          { id: "demo", timestamp: 300.21 },
+          { id: "installation", timestamp: 428.315 },
+          { id: "credits", timestamp: 462.658 },
+          { id: "outro", timestamp: 495.885 }
+        ],
+        highlights: [
+          { selector: "#hustleBrand", section: "intro", timestamp: 5.677 },
+          { selector: "[data-phase=\"research\"]", section: "intro", timestamp: 13.723 },
+          { selector: "[data-phase=\"interview\"]", section: "intro", timestamp: 22.953 },
+          { selector: "[data-phase=\"test\"]", section: "intro", timestamp: 30.441 },
+          { selector: "[data-phase=\"docs\"]", section: "intro", timestamp: 38.463 },
+          { selector: "#problems h2", section: "problems", timestamp: 52.082 },
+          { selector: ".gap-item:nth-child(1)", section: "problems", timestamp: 59.083 },
+          { selector: ".gap-item:nth-child(2)", section: "problems", timestamp: 70.983 },
+          { selector: ".gap-item:nth-child(3)", section: "problems", timestamp: 83.684 },
+          { selector: ".gap-item:nth-child(4)", section: "problems", timestamp: 94.83 },
+          { selector: ".gap-item:nth-child(5)", section: "problems", timestamp: 105.929 },
+          { selector: "#solution h2", section: "solution", timestamp: 126.827 },
+          { selector: ".hook-box:nth-child(1)", section: "solution", timestamp: 133.944 },
+          { selector: ".hook-box:nth-child(2)", section: "solution", timestamp: 144.741 },
+          { selector: ".hook-box:nth-child(3)", section: "solution", timestamp: 155.945 },
+          { selector: ".hook-box:nth-child(4)", section: "solution", timestamp: 163.445 },
+          { selector: "#phases h2", section: "phases", timestamp: 178.492 },
+          { selector: "[data-phase=\"0\"]", section: "phases", timestamp: 181.94 },
+          { selector: "[data-phase=\"1\"]", section: "phases", timestamp: 193.236 },
+          { selector: "[data-phase=\"2\"]", section: "phases", timestamp: 198.844 },
+          { selector: "[data-phase=\"3\"]", section: "phases", timestamp: 206.46 },
+          { selector: "[data-phase=\"4\"]", section: "phases", timestamp: 214.54 },
+          { selector: "[data-phase=\"5\"]", section: "phases", timestamp: 224.746 },
+          { selector: "[data-phase=\"6\"]", section: "phases", timestamp: 232.582 },
+          { selector: "[data-phase=\"7\"]", section: "phases", timestamp: 239.932 },
+          { selector: "[data-phase=\"8\"]", section: "phases", timestamp: 248.697 },
+          { selector: "[data-phase=\"9\"]", section: "phases", timestamp: 257.811 },
+          { selector: "[data-phase=\"10\"]", section: "phases", timestamp: 270.953 },
+          { selector: "[data-phase=\"11\"]", section: "phases", timestamp: 277.292 },
+          { selector: "[data-phase=\"12\"]", section: "phases", timestamp: 284.293 },
+          { selector: "#demo h2", section: "demo", timestamp: 300.21 },
+          { selector: "[data-step=\"0\"]", section: "demo", timestamp: 304.831 },
+          { selector: "[data-step=\"1\"]", section: "demo", timestamp: 312.285 },
+          { selector: "[data-step=\"2\"]", section: "demo", timestamp: 318.844 },
+          { selector: "[data-step=\"3\"]", section: "demo", timestamp: 328.805 },
+          { selector: "[data-step=\"4\"]", section: "demo", timestamp: 342.285 },
+          { selector: "[data-step=\"5\"]", section: "demo", timestamp: 347.486 },
+          { selector: "[data-step=\"7\"]", section: "demo", timestamp: 356.484 },
+          { selector: "[data-step=\"8\"]", section: "demo", timestamp: 365.18 },
+          { selector: "[data-step=\"9\"]", section: "demo", timestamp: 371.298 },
+          { selector: "[data-step=\"10\"]", section: "demo", timestamp: 376.685 },
+          { selector: "[data-step=\"11\"]", section: "demo", timestamp: 381.898 },
+          { selector: "[data-step=\"12\"]", section: "demo", timestamp: 389.805 },
+          { selector: "[data-step=\"13\"]", section: "demo", timestamp: 398.779 },
+          { selector: "[data-step=\"14\"]", section: "demo", timestamp: 410.784 },
+          { selector: "[data-step=\"15\"]", section: "demo", timestamp: 414.592 },
+          { selector: "[data-step=\"16\"]", section: "demo", timestamp: 420.397 },
+          { selector: "#installation h2", section: "installation", timestamp: 428.315 },
+          { selector: ".install-command", section: "installation", timestamp: 431.043 },
+          { selector: "#credits h2", section: "credits", timestamp: 462.658 },
+          { selector: "#intro", section: "outro", timestamp: 495.885 }
+        ],
+        words: []
+      }
+    };
+
+    // Voice audio file mapping
+    const voiceFiles = {
+      male: { audio: 'audio/narration-male.mp3' },
+      female: { audio: 'audio/narration-female.mp3' },
+      santa: { audio: 'audio/narration-santa.mp3' }
+    };
+
+    let selectedVoice = 'santa';
+
+    function selectVoice(element) {
+      document.querySelectorAll('.voice-option').forEach(opt => opt.classList.remove('selected'));
+      element.classList.add('selected');
+      selectedVoice = element.dataset.voice;
+    }
+
+    async function startNarration() {
+      console.log('=== startNarration called ===');
+      console.log('selectedVoice:', selectedVoice);
+      const voice = voiceFiles[selectedVoice];
+      const timing = embeddedTimingData[selectedVoice];
+      console.log('voice:', voice);
+      console.log('timing:', timing);
+
+      // Hide voice selector and show narration bar
+      document.getElementById('voice-selector').classList.remove('visible');
+      document.getElementById('narration-launch').classList.add('hidden');
+      narrationController.show();
+
+      if (voice && timing) {
+        console.log('Calling loadVoiceWithTiming...');
+        try {
+          // Wait for audio to be ready before playing
+          await narrationController.loadVoiceWithTiming(voice.audio, timing);
+          console.log('loadVoiceWithTiming completed, auto-playing...');
+          // Auto-play after loading
+          narrationController.togglePlay();
+        } catch (err) {
+          console.error('Error in loadVoiceWithTiming:', err);
+        }
+      } else {
+        console.error('voice or timing is falsy!', { voice, timing });
+      }
+    }
+
+    // Override launch button to show voice selector
+    document.getElementById('narration-launch').addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.classList.add('hidden');
+      document.getElementById('voice-selector').classList.add('visible');
+    });
+  </script>
 </body>
 </html>
