@@ -1,0 +1,5008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hustle API Dev Tools - Build APIs the Right Way</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.14.1/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.14.1/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.14.1/TextPlugin.min.js"></script>
+  <style>
+    /* ============================================
+       DARK THEME WITH RED ACCENTS & ANIMATED GRID
+       90s terminal aesthetic with glow effects
+       ============================================ */
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* Dark theme colors */
+      --black: #0a0a0a;
+      --darker-grey: #111;
+      --dark-grey: #1a1a1a;
+      --card-bg: #0d0d0d;
+      --border-color: #333;
+      --grey: #888;
+      --white: #f0f0f0;
+      /* Main accent - Hustle red */
+      --accent-red: #ba0c2f;
+      --accent-red-glow: rgba(186, 12, 47, 0.4);
+      /* Claude Code section only - orange */
+      --claude-orange: #f97316;
+      --claude-orange-glow: rgba(249, 115, 22, 0.4);
+    }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Courier New', monospace;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ============================================
+       ANIMATED BACKGROUND GRID
+       ============================================ */
+    .background-pattern {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.4;
+    }
+
+    .grid-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .grid-line {
+      stroke: var(--accent-red);
+      stroke-width: 0.5;
+      fill: none;
+      opacity: 0.4;
+    }
+
+    /* Floating particles */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--accent-red);
+      border-radius: 50%;
+      opacity: 0;
+      box-shadow: 0 0 6px var(--accent-red-glow);
+    }
+
+    /* Particle shape variations */
+    .particle.square {
+      border-radius: 0;
+      width: 6px;
+      height: 6px;
+    }
+
+    .particle.plus {
+      width: 8px;
+      height: 2px;
+      background: var(--accent-red);
+      border-radius: 0;
+    }
+
+    .particle.plus::before {
+      content: '';
+      position: absolute;
+      width: 2px;
+      height: 8px;
+      background: var(--accent-red);
+      left: 3px;
+      top: -3px;
+    }
+
+    .particle.x-shape {
+      width: 8px;
+      height: 2px;
+      background: var(--accent-red);
+      border-radius: 0;
+      transform: rotate(45deg);
+    }
+
+    .particle.x-shape::before {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 2px;
+      background: var(--accent-red);
+      transform: rotate(90deg);
+    }
+
+    .particle.line {
+      width: 12px;
+      height: 1px;
+      border-radius: 0;
+    }
+
+    .particle.line-v {
+      width: 1px;
+      height: 12px;
+      border-radius: 0;
+    }
+
+    .particle.circle-outline {
+      background: transparent;
+      border: 1px solid var(--accent-red);
+      width: 8px;
+      height: 8px;
+    }
+
+    .particle.triangle {
+      width: 0;
+      height: 0;
+      background: transparent;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-bottom: 7px solid var(--accent-red);
+      border-radius: 0;
+    }
+
+    /* Cursor glow effect */
+    .cursor-glow {
+      position: fixed;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--accent-red-glow) 0%, rgba(186, 12, 47, 0.15) 30%, transparent 70%);
+      pointer-events: none;
+      z-index: -1;
+      transform: translate(-50%, -50%);
+      opacity: 0.7;
+    }
+
+    /* Scanlines overlay */
+    .scanlines {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.05) 2px,
+        rgba(0, 0, 0, 0.05) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.2;
+    }
+
+    /* Corner decorations */
+    .corner-decoration {
+      position: fixed;
+      width: 100px;
+      height: 100px;
+      border: 1px dashed var(--accent-red);
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.4;
+    }
+
+    .corner-decoration.top-left {
+      top: 20px;
+      left: 20px;
+      border-right: none;
+      border-bottom: none;
+    }
+
+    .corner-decoration.top-right {
+      top: 20px;
+      right: 20px;
+      border-left: none;
+      border-bottom: none;
+    }
+
+    .corner-decoration.bottom-left {
+      bottom: 20px;
+      left: 20px;
+      border-right: none;
+      border-top: none;
+    }
+
+    .corner-decoration.bottom-right {
+      bottom: 20px;
+      right: 20px;
+      border-left: none;
+      border-top: none;
+    }
+
+    /* ============================================
+       NAVIGATION
+       ============================================ */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 20px 40px;
+      background: rgba(10, 10, 10, 0.9);
+      border-bottom: 1px dashed var(--border-color);
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--grey);
+      padding: 8px 16px;
+      font-family: inherit;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .nav-btn:hover {
+      border-color: var(--accent-red);
+      color: var(--accent-red);
+      box-shadow: 0 0 10px var(--accent-red-glow);
+    }
+
+    .nav-btn.active {
+      background: var(--accent-red);
+      border-color: var(--accent-red);
+      color: var(--white);
+    }
+
+    .nav-btn.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .nav-btn.disabled:hover {
+      border-color: var(--border-color);
+      color: var(--grey);
+      box-shadow: none;
+    }
+
+    /* ============================================
+       AUDIO PLAYER
+       ============================================ */
+    .audio-progress-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(10, 10, 10, 0.95);
+      border-top: 1px dashed var(--border-color);
+      padding: 15px 40px;
+      z-index: 1001;
+    }
+
+    .audio-time-display {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--grey);
+      margin-bottom: 8px;
+    }
+
+    .audio-progress-bar {
+      position: relative;
+      height: 12px;
+      background: var(--darker-grey);
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+    }
+
+    .audio-progress-fill {
+      height: 100%;
+      background: var(--accent-red);
+      width: 0%;
+      transition: width 0.1s linear;
+      pointer-events: none;
+      box-shadow: 0 0 10px var(--accent-red-glow);
+    }
+
+    .audio-section-markers {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .audio-section-marker {
+      position: absolute;
+      top: -2px;
+      width: 3px;
+      height: 16px;
+      background: var(--white);
+      opacity: 0.5;
+      pointer-events: none; /* Don't intercept clicks - let them pass to progress bar */
+      margin-left: -1px;
+    }
+
+    /* Chapter buttons */
+    .chapter-buttons {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .chapter-btn {
+      padding: 6px 12px;
+      font-size: 0.65rem;
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--grey);
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+    }
+
+    .chapter-btn:hover {
+      border-color: var(--accent-red);
+      color: var(--accent-red);
+    }
+
+    .chapter-btn.active {
+      background: var(--accent-red);
+      border-color: var(--accent-red);
+      color: var(--white);
+      box-shadow: 0 0 10px var(--accent-red-glow);
+    }
+
+    /* Voice Modal */
+    .voice-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .voice-modal-overlay.active {
+      display: flex;
+    }
+
+    .voice-modal {
+      background: var(--darker-grey);
+      border: 2px solid var(--border-color);
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+    }
+
+    .voice-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px dashed var(--border-color);
+    }
+
+    .voice-modal-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--white);
+    }
+
+    .voice-modal-close {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--grey);
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .voice-modal-close:hover {
+      background: var(--accent-red);
+      border-color: var(--accent-red);
+      color: var(--white);
+    }
+
+    .voice-option {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border-color);
+      background: var(--card-bg);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .voice-option:hover {
+      border-color: var(--accent-red);
+    }
+
+    .voice-option.selected {
+      border-color: var(--accent-red);
+      background: rgba(186, 12, 47, 0.1);
+      box-shadow: 0 0 15px var(--accent-red-glow);
+    }
+
+    .voice-play-btn {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border-color);
+      background: transparent;
+      color: var(--grey);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .voice-play-btn:hover {
+      background: var(--accent-red);
+      border-color: var(--accent-red);
+      color: var(--white);
+    }
+
+    .voice-info { flex: 1; }
+
+    .voice-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--white);
+    }
+
+    .voice-desc {
+      font-size: 0.8rem;
+      color: var(--grey);
+    }
+
+    .voice-select-btn {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--grey);
+      padding: 6px 12px;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+
+    .voice-option.selected .voice-select-btn {
+      background: var(--accent-red);
+      border-color: var(--accent-red);
+      color: var(--white);
+    }
+
+    .voice-modal-footer {
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px dashed var(--border-color);
+      text-align: center;
+    }
+
+    .voice-modal-note {
+      font-size: 0.8rem;
+      color: var(--grey);
+      margin-bottom: 15px;
+    }
+
+    .voice-confirm-btn {
+      background: var(--accent-red);
+      border: 1px solid var(--accent-red);
+      color: var(--white);
+      padding: 12px 30px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .voice-confirm-btn:hover {
+      background: transparent;
+      box-shadow: 0 0 15px var(--accent-red-glow);
+    }
+
+    /* Audio highlight effect */
+    .audio-highlighted {
+      outline: 2px solid var(--accent-red) !important;
+      outline-offset: 4px;
+      transition: all 0.3s ease !important;
+      box-shadow: 0 0 20px var(--accent-red-glow) !important;
+    }
+
+    .audio-highlighted.solution-card,
+    .audio-highlighted.phase-box,
+    .audio-highlighted.gap-item,
+    .audio-highlighted.phase-node {
+      outline: none !important;
+      border-color: var(--accent-red) !important;
+      background: rgba(186, 12, 47, 0.15) !important;
+      box-shadow: 0 0 25px var(--accent-red-glow) !important;
+    }
+
+    /* Progress indicator */
+    .progress-bar {
+      position: fixed;
+      top: 61px;
+      left: 0;
+      height: 2px;
+      background: var(--accent-red);
+      width: 0%;
+      z-index: 1001;
+      box-shadow: 0 0 10px var(--accent-red-glow);
+    }
+
+    /* ============================================
+       SECTIONS & CONTENT
+       ============================================ */
+    section {
+      /* Account for fixed header (60px) and audio player bottom bar (120px) */
+      min-height: calc(100vh - 180px);
+      max-height: calc(100vh - 100px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 80px 40px 60px;
+      position: relative;
+      overflow-y: auto;
+    }
+
+    /* When audio is playing, reduce section height to fit */
+    body.audio-playing section {
+      min-height: calc(100vh - 240px);
+      max-height: calc(100vh - 160px);
+      padding: 60px 40px 40px;
+    }
+
+    .ascii-border {
+      border: 1px dashed var(--border-color);
+      padding: 50px;
+      position: relative;
+      max-width: 900px;
+      width: 100%;
+      background: rgba(10, 10, 10, 0.8);
+    }
+
+    .ascii-border::before,
+    .ascii-border::after {
+      content: '+';
+      position: absolute;
+      color: var(--border-color);
+      font-size: 1rem;
+    }
+
+    .ascii-border::before {
+      top: -8px;
+      left: -8px;
+    }
+
+    .ascii-border::after {
+      bottom: -8px;
+      right: -8px;
+    }
+
+    /* Typography */
+    h1 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: var(--white);
+    }
+
+    h2 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: var(--white);
+    }
+
+    h3 {
+      font-size: 1rem;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--grey);
+    }
+
+    /* Explanation blocks */
+    .explanation {
+      background: var(--darker-grey);
+      border: 1px dashed var(--border-color);
+      border-left: 3px solid var(--accent-red);
+      padding: 25px 30px;
+      margin: 30px 0;
+      font-size: 1rem;
+      line-height: 1.8;
+      opacity: 0;
+    }
+
+    .explanation-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent-red);
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    .explanation-title::before {
+      content: '// ';
+      color: var(--grey);
+    }
+
+    .explanation p {
+      margin-bottom: 15px;
+      color: var(--grey);
+    }
+
+    .explanation p:last-child {
+      margin-bottom: 0;
+    }
+
+    .explanation strong {
+      color: var(--white);
+      font-weight: 600;
+    }
+
+    /* Real example callout */
+    .real-example {
+      background: var(--darker-grey);
+      border: 2px solid var(--border-color);
+      padding: 20px 25px;
+      margin: 20px 0;
+      position: relative;
+    }
+
+    .real-example::before {
+      content: 'REAL EXAMPLE';
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      background: var(--card-bg);
+      padding: 0 10px;
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      color: var(--accent-red);
+      border: 1px solid var(--border-color);
+    }
+
+    .real-example-content {
+      font-size: 0.95rem;
+    }
+
+    /* Cursor blink */
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      height: 20px;
+      background: var(--accent-red);
+      animation: blink 1s infinite;
+      vertical-align: middle;
+      margin-left: 5px;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    /* Step numbers */
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+      border: 2px solid var(--accent-red);
+      font-size: 1.5rem;
+      margin-right: 20px;
+      flex-shrink: 0;
+      color: var(--accent-red);
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    /* ============================================
+       SECTION 1: TITLE
+       ============================================ */
+    #title {
+      text-align: center;
+    }
+
+    #title h1 {
+      font-size: 1.2rem;
+      letter-spacing: 3px;
+      opacity: 0;
+      color: var(--grey);
+    }
+
+    #title .package-name {
+      font-size: 2.2rem;
+      margin: 25px 0;
+      opacity: 0;
+    }
+
+    #title .version {
+      color: var(--grey);
+      font-size: 0.9rem;
+      opacity: 0;
+    }
+
+    .tagline {
+      color: var(--grey);
+      font-style: italic;
+      margin-top: 15px;
+      font-size: 1.1rem;
+    }
+
+    /* ============================================
+       HUSTLE BRAND TITLE - Matching Home Page Style
+       ============================================ */
+    .hustle-brand {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 15px;
+      flex-wrap: nowrap;
+      text-align: center;
+    }
+
+    .hustle-word {
+      font-size: 3.5rem;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      letter-spacing: 3px;
+      opacity: 0;
+      transform: translateY(30px);
+      white-space: nowrap;
+    }
+
+    .hustle-highlight {
+      color: var(--accent-red);
+      text-shadow: 0 0 20px var(--accent-red-glow);
+    }
+
+    .text-red {
+      color: var(--accent-red);
+      font-weight: 600;
+    }
+
+    /* Intro section centering */
+    #intro {
+      text-align: center;
+    }
+
+    #intro .ascii-border {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .package-name {
+      text-align: center;
+    }
+
+    .version {
+      text-align: center;
+    }
+
+    .tagline {
+      text-align: center;
+    }
+
+    .scroll-hint {
+      text-align: center;
+    }
+
+    /* ============================================
+       PHASE FLOW - LIGHTING UP SEQUENCE (boxy)
+       ============================================ */
+    .phase-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 50px;
+      flex-wrap: wrap;
+      opacity: 0;
+    }
+
+    .phase-node {
+      position: relative;
+      border: 2px solid var(--border-color);
+      background: var(--darker-grey);
+      padding: 20px 25px;
+      text-align: center;
+      min-width: 100px;
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .phase-node .phase-glow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border: 2px solid var(--accent-red);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .phase-node.active {
+      border-color: var(--accent-red);
+      background: rgba(186, 12, 47, 0.2);
+      box-shadow: 0 0 20px var(--accent-red-glow);
+    }
+
+    .phase-node.active .phase-glow {
+      opacity: 1;
+    }
+
+    .phase-node.active .phase-icon {
+      color: var(--accent-red);
+    }
+
+    .phase-node.active .phase-label {
+      color: var(--white);
+    }
+
+    .phase-icon {
+      display: block;
+      font-size: 1.6rem;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: var(--grey);
+      transition: all 0.3s ease;
+    }
+
+    .phase-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--grey);
+      transition: all 0.3s ease;
+      font-weight: bold;
+    }
+
+    .phase-connector-arrow {
+      color: var(--border-color);
+      font-size: 1.2rem;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .phase-connector-arrow.active {
+      color: var(--accent-red);
+    }
+
+    @media (max-width: 768px) {
+      .hustle-word {
+        font-size: 1.5rem;
+        letter-spacing: 2px;
+      }
+      .hustle-brand {
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .phase-flow {
+        gap: 10px;
+      }
+      .phase-node {
+        padding: 15px 18px;
+        min-width: 70px;
+      }
+      .phase-icon {
+        font-size: 1.4rem;
+      }
+      .phase-connector-arrow {
+        font-size: 1rem;
+      }
+    }
+
+    .intro-text {
+      max-width: 700px;
+      margin: 40px auto 0;
+      text-align: left;
+      font-size: 1rem;
+      line-height: 1.9;
+      opacity: 0;
+    }
+
+    .scroll-hint {
+      margin-top: 50px;
+      color: var(--grey);
+      font-size: 0.85rem;
+      opacity: 0;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(10px); }
+    }
+
+    /* ============================================
+       SECTION 2: THE PROBLEM - GAPS - boxy cards
+       ============================================ */
+    .gap-list {
+      list-style: none;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .gap-item {
+      border: 2px solid var(--border-color);
+      background: var(--darker-grey);
+      padding: 20px 25px;
+      opacity: 0;
+      transform: translateX(-30px);
+      transition: all 0.2s;
+      position: relative;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .gap-item:hover {
+      border-color: var(--accent-red);
+      transform: translateX(5px);
+    }
+
+    .gap-icon {
+      font-size: 2rem;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .gap-content {
+      flex: 1;
+    }
+
+    .gap-number {
+      color: var(--accent-red);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: bold;
+    }
+
+    .gap-title {
+      font-size: 1.1rem;
+      margin: 8px 0;
+    }
+
+    .gap-desc {
+      color: var(--grey);
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+
+    .gap-example {
+      font-size: 0.85rem;
+      padding: 12px 15px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-left: 3px solid var(--accent-red);
+      margin-top: 12px;
+    }
+
+    .gap-example .bad {
+      color: var(--grey);
+      text-decoration: line-through;
+    }
+
+    .gap-example .good {
+      color: var(--accent-red);
+      font-weight: bold;
+    }
+
+    /* ============================================
+       SECTION 3: SOLUTION OVERVIEW - boxy grid
+       ============================================ */
+    .solution-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .solution-card {
+      border: 2px solid var(--border-color);
+      background: var(--darker-grey);
+      padding: 35px 25px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.2s;
+    }
+
+    .solution-card:hover {
+      border-color: var(--accent-red);
+      transform: translateY(-3px);
+    }
+
+    .solution-icon {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      display: block;
+    }
+
+    .solution-title {
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--white);
+      font-weight: 600;
+    }
+
+    .solution-desc {
+      font-size: 0.85rem;
+      color: var(--grey);
+      line-height: 1.6;
+    }
+
+    /* ============================================
+       SECTION 4: HOOK SYSTEM - clean boxy flow
+       ============================================ */
+    .hook-diagram {
+      width: 100%;
+      font-size: 0.9rem;
+    }
+
+    .flow-box {
+      border: 2px solid var(--border-color);
+      background: var(--darker-grey);
+      padding: 18px 30px;
+      margin: 12px 0;
+      text-align: center;
+      opacity: 0;
+      transition: all 0.2s;
+    }
+
+    .flow-box:hover {
+      border-color: var(--accent-red);
+      transform: translateX(5px);
+    }
+
+    .flow-arrow {
+      text-align: center;
+      color: var(--accent-red);
+      font-size: 1.5rem;
+      opacity: 0;
+    }
+
+    .hook-group {
+      border: 2px dashed var(--border-color);
+      background: var(--darker-grey);
+      padding: 25px;
+      margin: 25px 0;
+      opacity: 0;
+    }
+
+    .hook-group h4 {
+      color: var(--accent-red);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    .hook-file {
+      padding: 12px 20px;
+      margin: 8px 0;
+      border: 1px solid var(--border-color);
+      border-left: 3px solid var(--grey);
+      background: var(--card-bg);
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: all 0.2s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .hook-file:hover {
+      border-left-color: var(--accent-red);
+      border-color: var(--accent-red);
+    }
+
+    .hook-file code {
+      color: var(--white);
+      font-weight: 500;
+    }
+
+    .hook-purpose {
+      color: var(--grey);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+    }
+
+    .result-box {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      margin-top: 25px;
+    }
+
+    .result-allowed, .result-blocked {
+      padding: 18px 35px;
+      border: 2px solid;
+      background: var(--card-bg);
+      opacity: 0;
+      transition: all 0.2s;
+      font-weight: bold;
+    }
+
+    .result-allowed {
+      border-color: var(--grey);
+      color: var(--grey);
+    }
+
+    .result-blocked {
+      border-color: var(--accent-red);
+      color: var(--accent-red);
+    }
+
+    .result-allowed:hover, .result-blocked:hover {
+      transform: scale(1.03);
+    }
+
+    /* ============================================
+       SECTION 5: 10-PHASE WORKFLOW - boxy grid
+       ============================================ */
+    .phase-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 15px;
+      width: 100%;
+      margin-top: 30px;
+    }
+
+    .phase-box {
+      border: 2px solid var(--border-color);
+      background: var(--darker-grey);
+      padding: 25px 15px;
+      text-align: center;
+      opacity: 0;
+      transform: scale(0.9);
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .phase-box:hover {
+      border-color: var(--accent-red);
+      transform: scale(1.02);
+    }
+
+    .phase-box.active {
+      border-color: var(--accent-red);
+      background: rgba(186, 12, 47, 0.2);
+      box-shadow: 0 0 20px var(--accent-red-glow);
+    }
+
+    .phase-number {
+      font-size: 2rem;
+      color: var(--grey);
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .phase-box.active .phase-number {
+      color: var(--accent-red);
+    }
+
+    .phase-name {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: bold;
+    }
+
+    .phase-status {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-size: 0.65rem;
+      color: var(--grey);
+    }
+
+    .phase-connector {
+      grid-column: span 5;
+      text-align: center;
+      color: var(--grey);
+      font-size: 0.8rem;
+      opacity: 0;
+      padding: 10px 0;
+    }
+
+    .phase-desc {
+      font-size: 0.65rem;
+      color: var(--grey);
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
+    /* ============================================
+       SECTION 6: REAL WALKTHROUGH - boxy steps
+       ============================================ */
+    .walkthrough-step {
+      border: 2px solid var(--border-color);
+      background: var(--darker-grey);
+      padding: 30px;
+      margin-bottom: 20px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .walkthrough-step.active {
+      border-color: var(--accent-red);
+    }
+
+    .walkthrough-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .walkthrough-num {
+      width: 45px;
+      height: 45px;
+      border: 2px solid var(--accent-red);
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+      color: var(--accent-red);
+      font-weight: bold;
+    }
+
+    .walkthrough-title {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .walkthrough-content {
+      padding-left: 65px;
+    }
+
+    .walkthrough-desc {
+      color: var(--grey);
+      margin-bottom: 15px;
+      line-height: 1.8;
+    }
+
+    .walkthrough-example {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 15px 20px;
+      font-size: 0.85rem;
+      border-left: 3px solid var(--accent-red);
+    }
+
+    .walkthrough-example .label {
+      color: var(--accent-red);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    /* ============================================
+       SECTION 7: LIVE DEMO TERMINAL - boxy style
+       ============================================ */
+    .terminal {
+      background: var(--card-bg);
+      border: 2px solid var(--border-color);
+      padding: 25px;
+      width: 100%;
+      font-size: 0.85rem;
+      position: relative;
+    }
+
+    .terminal-header {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px dashed var(--border-color);
+    }
+
+    .terminal-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 0;
+      border: 2px solid var(--border-color);
+    }
+
+    .terminal-dot:first-child {
+      border-color: var(--accent-red);
+      background: var(--accent-red);
+    }
+
+    .terminal-title {
+      margin-left: auto;
+      color: var(--grey);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .terminal-line {
+      padding: 8px 0;
+      opacity: 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .terminal-prompt {
+      color: var(--accent-red);
+      flex-shrink: 0;
+      font-weight: bold;
+    }
+
+    .terminal-command {
+      color: var(--white);
+    }
+
+    .terminal-result {
+      padding-left: 25px;
+    }
+
+    .terminal-blocked {
+      color: var(--accent-red);
+      border-left: 3px solid var(--accent-red);
+      padding-left: 15px;
+      background: rgba(186, 12, 47, 0.1);
+    }
+
+    .terminal-allowed {
+      color: #22c55e;
+      border-left: 3px solid #22c55e;
+      padding-left: 15px;
+    }
+
+    .terminal-logged {
+      color: var(--grey);
+      font-style: italic;
+    }
+
+    .terminal-comment {
+      color: var(--grey);
+      font-size: 0.75rem;
+      padding-left: 25px;
+      margin-bottom: 5px;
+    }
+
+    /* ============================================
+       CLAUDE CODE TERMINAL SIMULATION
+       With side panel for explanations
+       ============================================ */
+    .claude-code-container {
+      display: flex;
+      gap: 20px;
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .claude-code-terminal {
+      flex: 2;
+      background: #1e1e1e;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(249, 115, 22, 0.2);
+    }
+
+    .claude-code-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: #2d2d2d;
+      border-bottom: 1px solid #3d3d3d;
+    }
+
+    .claude-code-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .claude-code-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .claude-code-dot.red { background: #ff5f56; }
+    .claude-code-dot.yellow { background: #ffbd2e; }
+    .claude-code-dot.green { background: #27ca40; }
+
+    .claude-code-title {
+      flex: 1;
+      text-align: center;
+      color: #888;
+      font-size: 0.85rem;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+    }
+
+    .claude-code-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: rgba(249, 115, 22, 0.15);
+      border: 1px solid var(--claude-orange);
+      border-radius: 4px;
+      color: var(--claude-orange);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .claude-code-badge::before {
+      content: '◉';
+      animation: pulse-orange 1.5s infinite;
+    }
+
+    @keyframes pulse-orange {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .claude-code-body {
+      padding: 20px;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Courier New', monospace;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      max-height: 600px;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      position: relative;
+    }
+
+    .claude-msg {
+      margin-bottom: 16px;
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    .claude-msg.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: all 0.3s ease;
+    }
+
+    .claude-msg-role {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .claude-msg-role.ai {
+      color: var(--claude-orange);
+    }
+
+    .claude-msg-role.user {
+      color: #3b82f6;
+    }
+
+    .claude-msg-role.system {
+      color: #22c55e;
+    }
+
+    .claude-msg-icon {
+      font-size: 1rem;
+    }
+
+    .claude-msg-name {
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 0.75rem;
+    }
+
+    .claude-msg-content {
+      padding-left: 28px;
+      color: #e0e0e0;
+    }
+
+    .claude-msg-content code {
+      background: rgba(249, 115, 22, 0.15);
+      color: var(--claude-orange);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.85em;
+    }
+
+    .claude-tool-call {
+      margin: 8px 0;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid #3d3d3d;
+      border-radius: 6px;
+      border-left: 3px solid var(--claude-orange);
+    }
+
+    .claude-tool-name {
+      color: var(--claude-orange);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .claude-tool-result {
+      color: #888;
+      font-size: 0.85rem;
+    }
+
+    .claude-user-choice {
+      margin: 12px 0;
+      padding: 12px;
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 6px;
+    }
+
+    .claude-choice-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      margin: 4px 0;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .claude-choice-option:hover {
+      background: rgba(59, 130, 246, 0.2);
+    }
+
+    .claude-choice-option.selected {
+      background: rgba(59, 130, 246, 0.3);
+      border: 1px solid #3b82f6;
+    }
+
+    .claude-choice-marker {
+      width: 18px;
+      height: 18px;
+      border: 2px solid #888;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .claude-choice-option.selected .claude-choice-marker {
+      border-color: #3b82f6;
+      background: #3b82f6;
+    }
+
+    .claude-choice-option.selected .claude-choice-marker::after {
+      content: '✓';
+      color: white;
+      font-size: 0.7rem;
+    }
+
+    /* ASCII Art Startup Screen */
+    .ascii-startup {
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Courier New', monospace;
+      font-size: 11px;
+      line-height: 1.3;
+      color: var(--claude-orange);
+      white-space: pre;
+      margin: 0;
+      padding: 16px;
+      opacity: 0;
+      display: none;
+    }
+
+    .ascii-startup.visible {
+      opacity: 1;
+      display: block;
+    }
+
+    .ascii-startup .welcome-text {
+      color: #e5e5e5;
+    }
+
+    .ascii-startup .tips-text {
+      color: #888;
+    }
+
+    .ascii-startup .model-text {
+      color: var(--claude-orange);
+    }
+
+    .ascii-startup .path-text {
+      color: #666;
+    }
+
+    /* Prompt Line */
+    .claude-prompt-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.2);
+      border-top: 1px solid #3d3d3d;
+      opacity: 0;
+    }
+
+    .claude-prompt-line.visible {
+      opacity: 1;
+    }
+
+    .claude-prompt {
+      color: var(--claude-orange);
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    .claude-input {
+      color: #e5e5e5;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+    }
+
+    .claude-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 16px;
+      background: var(--claude-orange);
+      animation: blink-cursor 1s infinite;
+      margin-left: 2px;
+      vertical-align: middle;
+    }
+
+    @keyframes blink-cursor {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    /* Loading Dots Animation */
+    .loading-dots {
+      display: inline-flex;
+      gap: 4px;
+      padding: 8px 16px;
+      margin: 8px 0;
+    }
+
+    .loading-dots span {
+      width: 8px;
+      height: 8px;
+      background: var(--claude-orange);
+      border-radius: 50%;
+      animation: pulse-dot 1.2s infinite ease-in-out;
+    }
+
+    .loading-dots span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .loading-dots span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes pulse-dot {
+      0%, 80%, 100% {
+        opacity: 0.3;
+        transform: scale(0.8);
+      }
+      40% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Thinking indicator */
+    .claude-thinking {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 28px;
+      color: #888;
+      font-style: italic;
+      opacity: 0;
+    }
+
+    .claude-thinking.visible {
+      opacity: 1;
+    }
+
+    /* Loop-back message styling */
+    .claude-msg.loop-back .claude-msg-content {
+      border-left: 3px solid #f59e0b;
+      padding-left: 12px;
+      background: rgba(245, 158, 11, 0.1);
+      border-radius: 0 6px 6px 0;
+      padding: 8px 12px;
+    }
+
+    .loop-back-badge {
+      display: inline-block;
+      background: rgba(245, 158, 11, 0.2);
+      color: #f59e0b;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      margin-bottom: 8px;
+    }
+
+    /* Gap found styling */
+    .gap-found {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 6px;
+      padding: 12px;
+      margin: 8px 0;
+    }
+
+    .gap-found-title {
+      color: #ef4444;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    /* Explanation Side Panel */
+    .explanation-panel {
+      flex: 1;
+      min-width: 300px;
+      background: var(--darker-grey);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .explanation-panel-header {
+      padding: 12px 16px;
+      background: rgba(249, 115, 22, 0.1);
+      border-bottom: 1px solid var(--border-color);
+      font-weight: 600;
+      color: var(--claude-orange);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .explanation-panel-body {
+      padding: 16px;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    .explanation-step {
+      padding: 16px;
+      margin-bottom: 12px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 6px;
+      border-left: 3px solid var(--border-color);
+      opacity: 0.5;
+      transition: all 0.3s ease;
+    }
+
+    .explanation-step.active {
+      opacity: 1;
+      border-left-color: var(--claude-orange);
+      background: rgba(249, 115, 22, 0.05);
+    }
+
+    .explanation-step-phase {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .explanation-step-num {
+      width: 24px;
+      height: 24px;
+      background: var(--border-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--grey);
+    }
+
+    .explanation-step.active .explanation-step-num {
+      background: var(--claude-orange);
+      color: white;
+    }
+
+    .explanation-step-name {
+      font-weight: 600;
+      color: var(--grey);
+      font-size: 0.85rem;
+    }
+
+    .explanation-step.active .explanation-step-name {
+      color: var(--white);
+    }
+
+    .explanation-step-desc {
+      color: var(--grey);
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+
+    .explanation-step.active .explanation-step-desc {
+      color: #aaa;
+    }
+
+    .explanation-step-why {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--border-color);
+      font-size: 0.75rem;
+      color: var(--claude-orange);
+      font-style: italic;
+    }
+
+    @media (max-width: 1000px) {
+      .claude-code-container {
+        flex-direction: column;
+      }
+      .explanation-panel {
+        min-width: unset;
+      }
+    }
+
+    /* ============================================
+       SECTION 8: STATE FILE - boxy JSON viewer
+       ============================================ */
+    .json-viewer {
+      background: var(--card-bg);
+      border: 2px solid var(--border-color);
+      padding: 25px;
+      font-size: 0.85rem;
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .json-key {
+      color: var(--accent-red);
+      font-weight: 600;
+    }
+
+    .json-value {
+      color: var(--white);
+    }
+
+    .json-string {
+      color: var(--grey);
+    }
+
+    .json-line {
+      opacity: 0;
+      padding: 3px 0;
+    }
+
+    .json-line.highlight {
+      background: rgba(186, 12, 47, 0.1);
+      margin: 0 -25px;
+      padding-left: 25px;
+      padding-right: 25px;
+      border-left: 3px solid var(--accent-red);
+    }
+
+    .json-comment {
+      color: var(--grey);
+      font-size: 0.7rem;
+      margin-left: 20px;
+      text-transform: uppercase;
+    }
+
+    /* ============================================
+       SECTION 9: INSTALLATION - boxy style
+       ============================================ */
+    .install-command {
+      background: var(--darker-grey);
+      border: 2px solid var(--accent-red);
+      padding: 25px 35px;
+      font-size: 1.1rem;
+      margin: 30px 0;
+      text-align: center;
+      box-shadow: 0 0 20px var(--accent-red-glow);
+    }
+
+    .install-command code {
+      color: var(--accent-red);
+      font-weight: bold;
+    }
+
+    .install-flow {
+      width: 100%;
+    }
+
+    .install-step {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      padding: 20px;
+      margin-bottom: 15px;
+      border: 2px solid var(--border-color);
+      background: var(--darker-grey);
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .install-step:last-child {
+      margin-bottom: 0;
+    }
+
+    .install-icon {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.8rem;
+    }
+
+    .install-content {
+      flex: 1;
+    }
+
+    .install-from {
+      color: var(--white);
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .install-arrow {
+      color: var(--accent-red);
+      flex-shrink: 0;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .install-to {
+      color: var(--white);
+      font-size: 0.9rem;
+      font-weight: 500;
+      min-width: 180px;
+      text-align: right;
+      font-family: 'JetBrains Mono', 'SF Mono', monospace;
+    }
+
+    .install-note {
+      color: var(--grey);
+      font-size: 0.75rem;
+      margin-top: 5px;
+    }
+
+    /* ============================================
+       SECTION 10: CREDITS - boxy style
+       ============================================ */
+    #credits {
+      text-align: center;
+    }
+
+    .credit-links {
+      display: flex;
+      gap: 20px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .credit-link {
+      border: 2px solid var(--border-color);
+      background: var(--darker-grey);
+      padding: 18px 35px;
+      text-decoration: none;
+      color: var(--white);
+      transition: all 0.2s;
+      opacity: 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.85rem;
+    }
+
+    .credit-link:hover {
+      background: var(--accent-red);
+      color: var(--white);
+      border-color: var(--accent-red);
+      box-shadow: 0 0 15px var(--accent-red-glow);
+    }
+
+    .made-with {
+      margin-top: 50px;
+      color: var(--grey);
+      font-size: 0.9rem;
+      opacity: 0;
+      line-height: 1.8;
+    }
+
+    /* ============================================
+       SECTION INDICATORS - square boxy dots
+       ============================================ */
+    .section-indicator {
+      position: fixed;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 1000;
+    }
+
+    .section-dot {
+      width: 10px;
+      height: 10px;
+      border: 2px solid var(--border-color);
+      border-radius: 0;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--card-bg);
+    }
+
+    .section-dot:hover,
+    .section-dot.active {
+      background: var(--accent-red);
+      border-color: var(--accent-red);
+      box-shadow: 0 0 8px var(--accent-red-glow);
+    }
+
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+    @media (max-width: 900px) {
+      .phase-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .phase-connector {
+        grid-column: span 2;
+      }
+
+      .solution-grid {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .ascii-border {
+        padding: 30px 20px;
+      }
+
+      .result-box {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .walkthrough-content {
+        padding-left: 0;
+        margin-top: 15px;
+      }
+
+      .install-step {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Animated Background Grid -->
+  <div class="background-pattern">
+    <svg class="grid-svg" id="gridSvg">
+      <defs>
+        <pattern id="smallGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 40" class="grid-line" stroke-dasharray="2,4"/>
+        </pattern>
+        <pattern id="grid" width="200" height="200" patternUnits="userSpaceOnUse">
+          <rect width="200" height="200" fill="url(#smallGrid)"/>
+          <path d="M 200 0 L 0 0 0 200" class="grid-line" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect id="gridRect" width="100%" height="100%" fill="url(#grid)"/>
+    </svg>
+  </div>
+
+  <!-- Floating Particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Cursor Glow Effect -->
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <!-- Scanlines Overlay -->
+  <div class="scanlines"></div>
+
+  <!-- Corner Decorations -->
+  <div class="corner-decoration top-left"></div>
+  <div class="corner-decoration top-right"></div>
+  <div class="corner-decoration bottom-left"></div>
+  <div class="corner-decoration bottom-right"></div>
+
+  <!-- Progress Bar -->
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <button class="nav-btn" id="playBtn">▶ AUTO PLAY</button>
+    <button class="nav-btn" id="audioToggleBtn" title="Toggle narration audio">🔊 WITH AUDIO</button>
+    <button class="nav-btn" id="voiceSelectBtn" title="Choose narrator voice">🎙 VOICE</button>
+    <button class="nav-btn" id="resetBtn">↺ RESTART</button>
+  </nav>
+
+  <!-- Voice Preview Modal -->
+  <div class="voice-modal-overlay" id="voiceModalOverlay">
+    <div class="voice-modal">
+      <div class="voice-modal-header">
+        <div class="voice-modal-title">Choose Narrator Voice</div>
+        <button class="voice-modal-close" id="voiceModalClose">×</button>
+      </div>
+
+      <div class="voice-options">
+        <div class="voice-option selected" data-voice="adam" data-file="audio/narration-adam.mp3" data-timing="audio/narration-adam-timing.json" data-duration="370.8">
+          <button class="voice-play-btn" data-preview="audio/narration-adam.mp3">▶</button>
+          <div class="voice-info">
+            <div class="voice-name">Adam</div>
+            <div class="voice-desc">Deep, professional (~6 min)</div>
+          </div>
+          <button class="voice-select-btn">Selected</button>
+        </div>
+
+        <div class="voice-option" data-voice="mark" data-file="audio/narration-mark.mp3" data-timing="audio/narration-mark-timing.json" data-duration="338.7">
+          <button class="voice-play-btn" data-preview="audio/previews/preview-mark.mp3">▶</button>
+          <div class="voice-info">
+            <div class="voice-name">Mark</div>
+            <div class="voice-desc">Warm, conversational (~5.5 min)</div>
+          </div>
+          <button class="voice-select-btn">Select</button>
+        </div>
+
+        <div class="voice-option" data-voice="hope" data-file="audio/narration-hope.mp3" data-timing="audio/narration-hope-timing.json" data-duration="305.2">
+          <button class="voice-play-btn" data-preview="audio/previews/preview-hope.mp3">▶</button>
+          <div class="voice-info">
+            <div class="voice-name">Hope</div>
+            <div class="voice-desc">Bright, energetic (~5 min)</div>
+          </div>
+          <button class="voice-select-btn">Select</button>
+        </div>
+
+        <div class="voice-option" data-voice="creature" data-file="audio/narration-creature.mp3" data-timing="audio/narration-creature-timing.json" data-duration="466.6">
+          <button class="voice-play-btn" data-preview="audio/previews/preview-creature.mp3">▶</button>
+          <div class="voice-info">
+            <div class="voice-name">Creature</div>
+            <div class="voice-desc">Unique, character voice (~7.5 min)</div>
+          </div>
+          <button class="voice-select-btn">Select</button>
+        </div>
+
+        <div class="voice-option" data-voice="gaming" data-file="audio/narration-gaming.mp3" data-timing="audio/narration-gaming-timing.json" data-duration="644.1">
+          <button class="voice-play-btn" data-preview="audio/previews/preview-gaming.mp3">▶</button>
+          <div class="voice-info">
+            <div class="voice-name">Gaming</div>
+            <div class="voice-desc">Dynamic, enthusiastic (~10.5 min)</div>
+          </div>
+          <button class="voice-select-btn">Select</button>
+        </div>
+      </div>
+
+      <div class="voice-modal-footer">
+        <div class="voice-modal-note">All voices have full narration with synchronized highlights.</div>
+        <button class="voice-confirm-btn" id="voiceConfirmBtn">Confirm Selection</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio Narration Player (hidden) -->
+  <audio id="narrationAudio" preload="auto">
+    <source src="audio/narration-adam.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Audio Progress Bar -->
+  <div class="audio-progress-container" id="audioProgressContainer" style="display: none;">
+    <div class="chapter-buttons" id="chapterButtons">
+      <!-- Chapter buttons populated dynamically from timing data -->
+    </div>
+    <div class="audio-time-display">
+      <span id="audioCurrentTime">0:00</span>
+      <span id="audioTotalTime">0:00</span>
+    </div>
+    <div class="audio-progress-bar" id="audioProgressBar">
+      <div class="audio-progress-fill" id="audioProgressFill"></div>
+      <div class="audio-section-markers" id="audioSectionMarkers"></div>
+    </div>
+  </div>
+
+  <!-- Section Indicators -->
+  <div class="section-indicator" id="sectionIndicator"></div>
+
+  <!-- ============================================
+       SECTION 1: WELCOME & INTRODUCTION
+       ============================================ -->
+  <section id="intro">
+    <div class="ascii-border">
+      <div class="hustle-brand" id="hustleBrand">
+        <span class="hustle-word">HUSTLE</span>
+        <span class="hustle-word hustle-highlight">API-DEV-TOOLS</span>
+      </div>
+      <div class="package-name" id="packageName">@hustle-together/api-dev-tools</div>
+      <div class="version" id="versionText">v2.0.8</div>
+      <p class="tagline">"Hustle together. Share resources. Build stronger."<span class="cursor"></span></p>
+
+      <div class="intro-text">
+        <p>
+          <strong>Enforced workflows</strong> for AI-assisted API development.
+          Research first. Interview second. <span class="text-red">No shortcuts.</span>
+        </p>
+      </div>
+
+      <!-- Visual Quick Overview - Phases Light Up -->
+      <div class="phase-flow" id="introFlow">
+        <div class="phase-node" data-phase="research">
+          <span class="phase-icon">R</span>
+          <span class="phase-label">Research</span>
+          <div class="phase-glow"></div>
+        </div>
+        <span class="phase-connector-arrow">→</span>
+        <div class="phase-node" data-phase="interview">
+          <span class="phase-icon">?</span>
+          <span class="phase-label">Interview</span>
+          <div class="phase-glow"></div>
+        </div>
+        <span class="phase-connector-arrow">→</span>
+        <div class="phase-node" data-phase="test">
+          <span class="phase-icon">T</span>
+          <span class="phase-label">Test</span>
+          <div class="phase-glow"></div>
+        </div>
+        <span class="phase-connector-arrow">→</span>
+        <div class="phase-node" data-phase="code">
+          <span class="phase-icon">C</span>
+          <span class="phase-label">Code</span>
+          <div class="phase-glow"></div>
+        </div>
+        <span class="phase-connector-arrow">→</span>
+        <div class="phase-node" data-phase="docs">
+          <span class="phase-icon">D</span>
+          <span class="phase-label">Docs</span>
+          <div class="phase-glow"></div>
+        </div>
+      </div>
+
+      <div class="scroll-hint">[ SCROLL TO BEGIN ]</div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 2: THE PROBLEM - WHAT GOES WRONG
+       ============================================ -->
+  <section id="problems">
+    <div class="ascii-border">
+      <h2>THE PROBLEM</h2>
+      <h3>LLMs Make Their Own Decisions</h3>
+
+      <div class="explanation">
+        <div class="explanation-title">Why This Matters</div>
+        <p>
+          LLMs are powerful but <strong>ungrounded</strong>. Without structure, they default to training data,
+          make assumptions, and forget context. These are the <strong>3 critical gaps</strong> that compound:
+        </p>
+      </div>
+
+      <ul class="gap-list">
+        <li class="gap-item">
+          <span class="gap-icon">🔍</span>
+          <div class="gap-content">
+            <span class="gap-number">Gap 01</span>
+            <div class="gap-title">AI Doesn't Use Your Exact Words</div>
+            <div class="gap-desc">You say one thing, but the AI searches for something different. Wrong library. Wrong documentation.</div>
+            <div class="gap-example">
+              <span class="bad">You: "Use Brandfetch API"</span><br>
+              <span class="bad">AI searches: "brand fetch library" (wrong!)</span><br>
+              <span class="good">Solution: Phase 0 disambiguation before research</span>
+            </div>
+          </div>
+        </li>
+        <li class="gap-item">
+          <span class="gap-icon">🧠</span>
+          <div class="gap-content">
+            <span class="gap-number">Gap 02</span>
+            <div class="gap-title">Memory-Based Implementation</div>
+            <div class="gap-desc">After research, the AI forgets what it learned and implements from training data instead.</div>
+            <div class="gap-example">
+              AI researches Brandfetch v2 API, then implements v1 patterns from memory.<br>
+              <span class="good">Solution: Phase 9 verification re-reads docs after implementation</span>
+            </div>
+          </div>
+        </li>
+        <li class="gap-item">
+          <span class="gap-icon">💨</span>
+          <div class="gap-content">
+            <span class="gap-number">Gap 03</span>
+            <div class="gap-title">Context Dilution</div>
+            <div class="gap-desc">After many turns, the AI forgets project structure, documentation locations, and your decisions.</div>
+            <div class="gap-example">
+              Turn 50: "What API key should I use?" (you already told it 40 turns ago)<br>
+              <span class="good">Solution: Re-grounding every 7 turns via hooks</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 3: THE SOLUTION - OVERVIEW
+       ============================================ -->
+  <section id="solution">
+    <div class="ascii-border">
+      <h2>THE SOLUTION</h2>
+      <h3>Programmatic Enforcement</h3>
+
+      <div class="explanation">
+        <div class="explanation-title">How We Fix This</div>
+        <p>
+          Instead of just <em>asking</em> the AI to follow a process (which it might ignore),
+          we use <strong>Python hooks</strong> that intercept every action and enforce rules.
+        </p>
+        <p>
+          Think of it like guardrails on a highway. The AI can still drive,
+          but it literally <strong>cannot</strong> skip important steps - the system blocks it.
+        </p>
+      </div>
+
+      <div class="solution-grid">
+        <div class="solution-card">
+          <span class="solution-icon">📚</span>
+          <div class="solution-title">Research First</div>
+          <div class="solution-desc">
+            AI must search for live documentation before writing any code.
+            No more outdated training data.
+          </div>
+        </div>
+        <div class="solution-card">
+          <span class="solution-icon">💬</span>
+          <div class="solution-title">Interview Required</div>
+          <div class="solution-desc">
+            AI must ask YOU questions and wait for answers.
+            No more assumptions about what you want.
+          </div>
+        </div>
+        <div class="solution-card">
+          <span class="solution-icon">✅</span>
+          <div class="solution-title">Verification Built-In</div>
+          <div class="solution-desc">
+            System checks implementation matches interview.
+            Warns about mismatches before completing.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 4: HOW HOOKS WORK
+       ============================================ -->
+  <section id="hooks">
+    <div class="ascii-border">
+      <h2>HOW IT WORKS</h2>
+      <h3>The Hook System</h3>
+
+      <div class="explanation">
+        <div class="explanation-title">What Are Hooks?</div>
+        <p>
+          Hooks are small Python scripts that run <strong>automatically</strong> whenever
+          the AI tries to do something. They check conditions and can either
+          <strong>allow</strong> or <strong>block</strong> the action.
+        </p>
+        <p>
+          There are 3 types: <strong>PreToolUse</strong> (before an action),
+          <strong>PostToolUse</strong> (after an action), and <strong>Stop</strong> (when trying to finish).
+        </p>
+      </div>
+
+      <div class="hook-diagram">
+        <div class="flow-box">YOU: "Build me an AI chat API"</div>
+        <div class="flow-arrow">|</div>
+        <div class="flow-box">AI: Tries to write code</div>
+        <div class="flow-arrow">|</div>
+
+        <div class="hook-group">
+          <h4>PreToolUse Hooks (Before Writing Code)</h4>
+          <div class="hook-file">
+            <code>enforce-research.py</code>
+            <span class="hook-purpose">Must research first</span>
+          </div>
+          <div class="hook-file">
+            <code>enforce-interview.py</code>
+            <span class="hook-purpose">Must ask user questions</span>
+          </div>
+          <div class="hook-file">
+            <code>verify-implementation.py</code>
+            <span class="hook-purpose">Check term matching</span>
+          </div>
+        </div>
+
+        <div class="hook-group">
+          <h4>PostToolUse Hooks (After Actions)</h4>
+          <div class="hook-file">
+            <code>track-tool-use.py</code>
+            <span class="hook-purpose">Log all research activity</span>
+          </div>
+        </div>
+
+        <div class="hook-group">
+          <h4>Stop Hook (When Finishing)</h4>
+          <div class="hook-file">
+            <code>api-workflow-check.py</code>
+            <span class="hook-purpose">Verify all phases done + git diff</span>
+          </div>
+        </div>
+
+        <div class="flow-arrow">|</div>
+
+        <div class="result-box">
+          <div class="result-allowed">[ ALLOWED ]<br><small>All checks pass</small></div>
+          <div class="result-blocked">[ BLOCKED ]<br><small>Missing requirements</small></div>
+        </div>
+      </div>
+
+      <!-- Exit Code 2 Enforcement Demo -->
+      <div class="enforcement-demo" style="margin-top: 48px; padding: 32px; background: #0a0a0a; border: 2px solid var(--accent-red); border-radius: 8px;">
+        <h3 style="color: var(--accent-red); margin-bottom: 24px; font-family: 'JetBrains Mono', monospace;">
+          🚫 EXIT CODE 2: HARD BLOCKING (v3.6.0)
+        </h3>
+
+        <div class="explanation" style="margin-bottom: 24px;">
+          <div class="explanation-title">Active Enforcement vs Passive Denial</div>
+          <p>
+            In v3.6.0, hooks use <strong>exit code 2</strong> instead of JSON denial. This creates an
+            <strong>active feedback loop</strong> - Claude must respond to the error and try something different.
+          </p>
+        </div>
+
+        <!-- Demo: Trying to skip research -->
+        <div style="margin-bottom: 32px;">
+          <div style="color: #888; font-size: 0.85rem; margin-bottom: 8px;">SCENARIO: AI tries to write code without researching first</div>
+          <div class="hook-error-demo" style="background: #111; border-left: 4px solid var(--accent-red); padding: 16px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; overflow-x: auto;">
+            <div style="color: #666; margin-bottom: 8px;">$ claude hook: enforce-research.py</div>
+            <pre style="color: #ef4444; margin: 0; white-space: pre-wrap;">BLOCKED: API development state not initialized.
+
+Before writing API implementation code, you must:
+  1. Run /api-create [endpoint-name] to start the workflow
+  OR
+  2. Run /api-research [library-name] to research dependencies
+
+This ensures you're working with current documentation, not outdated training data.</pre>
+            <div style="color: #666; margin-top: 8px;">exit code: 2</div>
+          </div>
+        </div>
+
+        <!-- Demo: Trying to skip interview -->
+        <div style="margin-bottom: 32px;">
+          <div style="color: #888; font-size: 0.85rem; margin-bottom: 8px;">SCENARIO: AI tries to write schema without completing interview</div>
+          <div class="hook-error-demo" style="background: #111; border-left: 4px solid var(--accent-red); padding: 16px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; overflow-x: auto;">
+            <div style="color: #666; margin-bottom: 8px;">$ claude hook: enforce-interview.py</div>
+            <pre style="color: #ef4444; margin: 0; white-space: pre-wrap;">BLOCKED: Interview phase not complete.
+
+Current status: in_progress
+AskUserQuestion calls: 2
+Structured questions: 1
+
+═══════════════════════════════════════════════════════════
+  USE STRUCTURED QUESTIONS WITH OPTIONS
+═══════════════════════════════════════════════════════════
+
+Based on your research, ask questions using AskUserQuestion with
+the 'options' parameter to provide multiple-choice selections:
+
+Example based on your research:
+  "Which of these should be the primary focus?"
+  1. Full Brand Kit
+  2. Logo Only
+  3. Colors and Fonts
+  4. Type something else...
+
+You need at least 3 structured questions with options.
+Current: 1</pre>
+            <div style="color: #666; margin-top: 8px;">exit code: 2</div>
+          </div>
+        </div>
+
+        <!-- Demo: Trying to complete without all phases -->
+        <div style="margin-bottom: 32px;">
+          <div style="color: #888; font-size: 0.85rem; margin-bottom: 8px;">SCENARIO: AI tries to stop before completing all phases</div>
+          <div class="hook-error-demo" style="background: #111; border-left: 4px solid var(--accent-red); padding: 16px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; overflow-x: auto;">
+            <div style="color: #666; margin-bottom: 8px;">$ claude hook: api-workflow-check.py</div>
+            <pre style="color: #ef4444; margin: 0; white-space: pre-wrap;">BLOCKED: Workflow incomplete.
+
+❌ REQUIRED phases incomplete:
+  - TDD Green phase (in_progress)
+  - Documentation updates (not_started)
+
+⚠️ Gap 2: Files changed but not tracked:
+  - src/lib/schemas/brandfetch.ts
+
+⚠️ Gap 4: Implementation verification:
+  - No test files tracked in files_created
+
+To continue:
+  1. Complete required phases above
+  2. Use /api-status to see detailed progress
+  3. Run `git diff --name-only` to verify changes</pre>
+            <div style="color: #666; margin-top: 8px;">exit code: 2</div>
+          </div>
+        </div>
+
+        <!-- Demo: Implementation mismatch -->
+        <div>
+          <div style="color: #888; font-size: 0.85rem; margin-bottom: 8px;">SCENARIO: AI implementation doesn't match interview decisions</div>
+          <div class="hook-error-demo" style="background: #111; border-left: 4px solid var(--accent-red); padding: 16px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; overflow-x: auto;">
+            <div style="color: #666; margin-bottom: 8px;">$ claude hook: verify-implementation.py</div>
+            <pre style="color: #ef4444; margin: 0; white-space: pre-wrap;">BLOCKED: Implementation verification failed.
+
+⚠️ Gap 1 Warning: User-specified terms not found in research:
+   Terms from interview: ['Vercel AI Gateway']
+   These EXACT terms should have been searched.
+
+⚠️ Gap 5 Warning: Test may be checking wrong environment variables.
+   Interview mentioned: gateway/single key pattern
+   Test checks: ['OPENAI_API_KEY', 'ANTHROPIC_API_KEY']
+   Consider: Should test check AI_GATEWAY_API_KEY instead?
+
+REQUIRED ACTIONS:
+  1. Re-research using the EXACT terms from the interview
+  2. Ensure test files check the correct environment variables
+  3. Verify implementation matches user's stated requirements
+
+Review .claude/api-dev-state.json for full details.</pre>
+            <div style="color: #666; margin-top: 8px;">exit code: 2</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px; padding: 16px; background: rgba(34, 197, 94, 0.1); border-left: 4px solid #22c55e; border-radius: 4px;">
+          <strong style="color: #22c55e;">Result:</strong> Claude Code MUST respond to these errors. It cannot ignore them and proceed.
+          The AI is forced to adjust its approach and complete the required steps.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 5: THE 10 PHASES
+       ============================================ -->
+  <section id="phases">
+    <div class="ascii-border">
+      <h2>THE WORKFLOW</h2>
+      <h3>12 Enforced Phases (v3.6.0)</h3>
+
+      <div class="explanation">
+        <div class="explanation-title">The Complete Process</div>
+        <p>
+          Every API goes through these 12 phases. The system tracks progress and won't let
+          the AI skip ahead. Hooks now use <strong>exit code 2</strong> for hard blocking!
+        </p>
+      </div>
+
+      <div class="phase-grid">
+        <div class="phase-box glow-border" data-phase="0">
+          <div class="phase-status"></div>
+          <div class="phase-number">00</div>
+          <div class="phase-name">Disambiguate</div>
+          <div class="phase-desc">Clarify ambiguous terms</div>
+          <span class="phase-arrow">→</span>
+        </div>
+        <div class="phase-box glow-border" data-phase="1">
+          <div class="phase-status"></div>
+          <div class="phase-number">01</div>
+          <div class="phase-name">Scope</div>
+          <div class="phase-desc">Define what we're building</div>
+          <span class="phase-arrow">→</span>
+        </div>
+        <div class="phase-box glow-border" data-phase="2">
+          <div class="phase-status"></div>
+          <div class="phase-number">02</div>
+          <div class="phase-name">Research</div>
+          <div class="phase-desc">Find live documentation</div>
+          <span class="phase-arrow">→</span>
+        </div>
+        <div class="phase-box glow-border" data-phase="3">
+          <div class="phase-status"></div>
+          <div class="phase-number">03</div>
+          <div class="phase-name">Interview</div>
+          <div class="phase-desc">Questions FROM research</div>
+          <span class="phase-arrow">→</span>
+        </div>
+        <div class="phase-box glow-border" data-phase="4">
+          <div class="phase-status"></div>
+          <div class="phase-number">04</div>
+          <div class="phase-name">Deep Research</div>
+          <div class="phase-desc">Adaptive, not shotgun</div>
+          <span class="phase-arrow">→</span>
+        </div>
+        <div class="phase-box glow-border" data-phase="5">
+          <div class="phase-status"></div>
+          <div class="phase-number">05</div>
+          <div class="phase-name">Schema</div>
+          <div class="phase-desc">Define request/response</div>
+        </div>
+
+        <div class="phase-connector">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</div>
+
+        <div class="phase-box glow-border" data-phase="6">
+          <div class="phase-status"></div>
+          <div class="phase-number">06</div>
+          <div class="phase-name">Environment</div>
+          <div class="phase-desc">Check API keys exist</div>
+          <span class="phase-arrow">→</span>
+        </div>
+        <div class="phase-box glow-border" data-phase="7">
+          <div class="phase-status"></div>
+          <div class="phase-number">07</div>
+          <div class="phase-name">TDD Red</div>
+          <div class="phase-desc">Write failing tests</div>
+          <span class="phase-arrow">→</span>
+        </div>
+        <div class="phase-box glow-border" data-phase="8">
+          <div class="phase-status"></div>
+          <div class="phase-number">08</div>
+          <div class="phase-name">TDD Green</div>
+          <div class="phase-desc">Make tests pass</div>
+          <span class="phase-arrow">→</span>
+        </div>
+        <div class="phase-box glow-border" data-phase="9" style="border-color: var(--claude-orange);">
+          <div class="phase-status"></div>
+          <div class="phase-number">09</div>
+          <div class="phase-name">Verify</div>
+          <div class="phase-desc">Re-research, find gaps</div>
+          <span class="phase-arrow">→</span>
+        </div>
+        <div class="phase-box glow-border" data-phase="10">
+          <div class="phase-status"></div>
+          <div class="phase-number">10</div>
+          <div class="phase-name">Refactor</div>
+          <div class="phase-desc">Clean up the code</div>
+          <span class="phase-arrow">→</span>
+        </div>
+        <div class="phase-box glow-border" data-phase="11">
+          <div class="phase-status"></div>
+          <div class="phase-number">11</div>
+          <div class="phase-name">Documentation</div>
+          <div class="phase-desc">Update all docs</div>
+          <span class="phase-arrow">→</span>
+        </div>
+        <div class="phase-box glow-border" data-phase="12">
+          <div class="phase-status"></div>
+          <div class="phase-number">12</div>
+          <div class="phase-name">Complete</div>
+          <div class="phase-desc">Final verification</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 6: LIVE DEMO - CLAUDE CODE TERMINAL
+       Full 12-phase v3.0 workflow simulation
+       ============================================ -->
+  <section id="demo">
+    <div class="ascii-border" style="max-width: 1400px;">
+      <h2>LIVE SIMULATION</h2>
+      <h3>12-Phase Workflow (v3.6.0)</h3>
+
+      <div class="explanation">
+        <div class="explanation-title">The Complete v3.6.0 Flow</div>
+        <p>
+          Watch the full <strong>/api-create brandfetch</strong> command in action.
+          The side panel explains each step as it happens. Notice how <strong>hooks enforce</strong>
+          each phase transition - research findings drive the interview questions, interview
+          decisions are injected during implementation, and verification catches gaps.
+        </p>
+      </div>
+
+      <div class="claude-code-container">
+        <!-- Claude Code Terminal (Left) -->
+        <div class="claude-code-terminal" id="claudeTerminal">
+          <div class="claude-code-header">
+            <div class="claude-code-dots">
+              <div class="claude-code-dot red"></div>
+              <div class="claude-code-dot yellow"></div>
+              <div class="claude-code-dot green"></div>
+            </div>
+            <div class="claude-code-title">~/my-project</div>
+            <div class="claude-code-badge">CLAUDE CODE</div>
+          </div>
+
+          <!-- ASCII Art Startup Screen -->
+          <pre class="ascii-startup" id="asciiStartup">
+<span style="color: var(--claude-orange);">╭─────────────────────────────────────────────────────────────────────────────╮</span>
+<span style="color: var(--claude-orange);">│</span>                             <span style="color: var(--claude-orange);">│</span> <span class="tips-text">Tips for getting started</span>                   <span style="color: var(--claude-orange);">│</span>
+<span style="color: var(--claude-orange);">│</span>   <span class="welcome-text">Welcome back, Developer!</span>  <span style="color: var(--claude-orange);">│</span> <span class="tips-text">Run /init to create a CLAUDE.md file...</span>    <span style="color: var(--claude-orange);">│</span>
+<span style="color: var(--claude-orange);">│</span>                             <span style="color: var(--claude-orange);">│</span> <span class="tips-text">Try /api-create to start a new endpoint</span>    <span style="color: var(--claude-orange);">│</span>
+<span style="color: var(--claude-orange);">│</span>         <span style="color: var(--claude-orange);">▗ ▗   ▖ ▖</span>           <span style="color: var(--claude-orange);">│</span> <span class="tips-text">────────────────────────────────────────</span>    <span style="color: var(--claude-orange);">│</span>
+<span style="color: var(--claude-orange);">│</span>                             <span style="color: var(--claude-orange);">│</span> <span class="tips-text">Recent activity</span>                            <span style="color: var(--claude-orange);">│</span>
+<span style="color: var(--claude-orange);">│</span>           <span style="color: var(--claude-orange);">▘▘ ▝▝</span>             <span style="color: var(--claude-orange);">│</span> <span class="tips-text">  api/v2/search - completed</span>                <span style="color: var(--claude-orange);">│</span>
+<span style="color: var(--claude-orange);">│</span>                             <span style="color: var(--claude-orange);">│</span> <span class="tips-text">  api/v2/analyze - 8 tests passing</span>         <span style="color: var(--claude-orange);">│</span>
+<span style="color: var(--claude-orange);">│</span>   <span class="model-text">Opus 4.5 · Claude Max</span>    <span style="color: var(--claude-orange);">│</span>                                            <span style="color: var(--claude-orange);">│</span>
+<span style="color: var(--claude-orange);">│</span>      <span class="path-text">~/my-project</span>          <span style="color: var(--claude-orange);">│</span>                                            <span style="color: var(--claude-orange);">│</span>
+<span style="color: var(--claude-orange);">╰─────────────────────────────────────────────────────────────────────────────╯</span>
+          </pre>
+
+          <!-- Prompt Line (shows before messages) -->
+          <div class="claude-prompt-line" id="promptLine">
+            <span class="claude-prompt">❯</span>
+            <span class="claude-input" id="promptInput"></span>
+            <span class="claude-cursor"></span>
+          </div>
+
+          <div class="claude-code-body" id="claudeBody">
+            <!-- Loading dots (shown between messages) -->
+            <div class="loading-dots" id="loadingDots" style="display: none;">
+              <span></span><span></span><span></span>
+            </div>
+
+            <!-- Phase 0: User Command -->
+            <div class="claude-msg" data-phase="0" data-step="0">
+              <div class="claude-msg-role user">
+                <span class="claude-msg-icon">👤</span>
+                <span class="claude-msg-name">USER</span>
+              </div>
+              <div class="claude-msg-content">
+                <code>/api-create brandfetch</code>
+              </div>
+            </div>
+
+            <!-- Phase 1: Scope Confirmation -->
+            <div class="claude-msg" data-phase="1" data-step="1">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                I understand you want to create an API endpoint for <strong>Brandfetch</strong> - a service for fetching brand assets (logos, colors, fonts) by domain.
+                <br><br>Is this correct? <span style="color: #22c55e;">✓ Yes</span>
+              </div>
+            </div>
+
+            <!-- Phase 2: Initial Research -->
+            <div class="claude-msg" data-phase="2" data-step="2">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Starting research... I need to find the real documentation before asking questions.
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">mcp__context7__get-library-docs</div>
+                  <div class="claude-tool-result">"brandfetch" → Found SDK docs, /v2/brands endpoint, auth method</div>
+                </div>
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">WebSearch</div>
+                  <div class="claude-tool-result">"Brandfetch API rate limits 2025" → 5 req/second</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- User Loop-back: Request more research -->
+            <div class="claude-msg loop-back" data-phase="2" data-step="3">
+              <div class="claude-msg-role user">
+                <span class="claude-msg-icon">👤</span>
+                <span class="claude-msg-name">USER</span>
+              </div>
+              <div class="claude-msg-content">
+                <span class="loop-back-badge">↩ LOOP BACK</span>
+                Can you also check what error responses look like?
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="2" data-step="4">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Good catch! Researching error handling...
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">WebSearch</div>
+                  <div class="claude-tool-result">"Brandfetch API error codes" → 401, 404, 429 with JSON error format</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase 3: Interview (Extensive - 5+ questions) -->
+            <div class="claude-msg" data-phase="3" data-step="5">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Based on my research, I found these capabilities. <strong>Question 1/5:</strong> What's the primary purpose?
+                <div class="claude-user-choice">
+                  <div class="claude-choice-option">
+                    <div class="claude-choice-marker"></div>
+                    <span>Brand lookup by domain</span>
+                  </div>
+                  <div class="claude-choice-option">
+                    <div class="claude-choice-marker"></div>
+                    <span>Logo extraction only</span>
+                  </div>
+                  <div class="claude-choice-option selected">
+                    <div class="claude-choice-marker"></div>
+                    <span>Full brand kit (logos, colors, fonts)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="3" data-step="6">
+              <div class="claude-msg-role user">
+                <span class="claude-msg-icon">👤</span>
+                <span class="claude-msg-name">USER</span>
+              </div>
+              <div class="claude-msg-content">
+                <span style="color: #3b82f6;">Selected: Full brand kit (logos, colors, fonts)</span>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="3" data-step="7">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                <strong>Question 2/5:</strong> How should <strong>API keys</strong> be handled?
+                <div class="claude-user-choice">
+                  <div class="claude-choice-option selected">
+                    <div class="claude-choice-marker"></div>
+                    <span>Server environment variables only</span>
+                  </div>
+                  <div class="claude-choice-option">
+                    <div class="claude-choice-marker"></div>
+                    <span>Custom header override (X-Brandfetch-Key)</span>
+                  </div>
+                  <div class="claude-choice-option">
+                    <div class="claude-choice-marker"></div>
+                    <span>Both methods</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="3" data-step="8">
+              <div class="claude-msg-role user">
+                <span class="claude-msg-icon">👤</span>
+                <span class="claude-msg-name">USER</span>
+              </div>
+              <div class="claude-msg-content">
+                <span style="color: #3b82f6;">Selected: Server environment variables only</span>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="3" data-step="9">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                <strong>Question 3/5:</strong> What <strong>caching strategy</strong> should we use?
+                <div class="claude-user-choice">
+                  <div class="claude-choice-option">
+                    <div class="claude-choice-marker"></div>
+                    <span>No caching</span>
+                  </div>
+                  <div class="claude-choice-option">
+                    <div class="claude-choice-marker"></div>
+                    <span>Short cache (5 minutes)</span>
+                  </div>
+                  <div class="claude-choice-option selected">
+                    <div class="claude-choice-marker"></div>
+                    <span>Long cache (24 hours) - brands rarely change</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="3" data-step="10">
+              <div class="claude-msg-role user">
+                <span class="claude-msg-icon">👤</span>
+                <span class="claude-msg-name">USER</span>
+              </div>
+              <div class="claude-msg-content">
+                <span style="color: #3b82f6;">Selected: Long cache (24 hours)</span>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="3" data-step="11">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                <strong>Question 4/5:</strong> How should we handle <strong>errors</strong>?
+                <div class="claude-user-choice">
+                  <div class="claude-choice-option">
+                    <div class="claude-choice-marker"></div>
+                    <span>Throw exceptions (let caller handle)</span>
+                  </div>
+                  <div class="claude-choice-option selected">
+                    <div class="claude-choice-marker"></div>
+                    <span>Return error objects with status codes</span>
+                  </div>
+                  <div class="claude-choice-option">
+                    <div class="claude-choice-marker"></div>
+                    <span>Fallback to empty brand object</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="3" data-step="12">
+              <div class="claude-msg-role user">
+                <span class="claude-msg-icon">👤</span>
+                <span class="claude-msg-name">USER</span>
+              </div>
+              <div class="claude-msg-content">
+                <span style="color: #3b82f6;">Selected: Return error objects with status codes</span>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="3" data-step="13">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                <strong>Question 5/5:</strong> Should we expose <strong>rate limit headers</strong>?
+                <div class="claude-user-choice">
+                  <div class="claude-choice-option">
+                    <div class="claude-choice-marker"></div>
+                    <span>No - handle internally</span>
+                  </div>
+                  <div class="claude-choice-option selected">
+                    <div class="claude-choice-marker"></div>
+                    <span>Yes - X-RateLimit-Remaining, X-RateLimit-Reset</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="3" data-step="14">
+              <div class="claude-msg-role user">
+                <span class="claude-msg-icon">👤</span>
+                <span class="claude-msg-name">USER</span>
+              </div>
+              <div class="claude-msg-content">
+                <span style="color: #3b82f6;">Selected: Yes - expose rate limit headers</span>
+              </div>
+            </div>
+
+            <!-- Phase 4: Deep Research -->
+            <div class="claude-msg" data-phase="4" data-step="15">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Based on your selections, I'll research more specifically:
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">WebSearch</div>
+                  <div class="claude-tool-result">"Brandfetch full brand response format" → JSON with logos[], colors[], fonts[]</div>
+                </div>
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">WebSearch</div>
+                  <div class="claude-tool-result">"Brandfetch rate limit headers" → X-RateLimit-Limit, X-RateLimit-Remaining</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase 5: Schema -->
+            <div class="claude-msg" data-phase="5" data-step="16">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Creating Zod schema based on research + interview decisions...
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">Write</div>
+                  <div class="claude-tool-result">src/lib/schemas/brandfetch.ts → BrandRequestSchema, BrandResponseSchema, BrandErrorSchema</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase 6: Environment -->
+            <div class="claude-msg" data-phase="6" data-step="17">
+              <div class="claude-msg-role system">
+                <span class="claude-msg-icon">⚙️</span>
+                <span class="claude-msg-name">HOOK</span>
+              </div>
+              <div class="claude-msg-content">
+                <strong style="color: var(--claude-orange);">check-env.py:</strong> Checking required environment variables...<br>
+                <span style="color: #22c55e;">✓ BRANDFETCH_API_KEY found in .env.local</span>
+              </div>
+            </div>
+
+            <!-- Phase 7: TDD Red -->
+            <div class="claude-msg" data-phase="7" data-step="18">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Writing failing tests first (TDD Red)...
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">Write</div>
+                  <div class="claude-tool-result">src/lib/__tests__/brandfetch.test.ts (15 test cases)</div>
+                </div>
+                <div style="margin-top: 8px; color: #888; font-size: 0.85rem;">
+                  Tests cover: full brand kit, caching, error objects, rate limit headers
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase 8: TDD Green -->
+            <div class="claude-msg" data-phase="8" data-step="19">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Implementing to pass tests...
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">Write</div>
+                  <div class="claude-tool-result">src/app/api/v2/brandfetch/route.ts</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="8" data-step="20">
+              <div class="claude-msg-role system">
+                <span class="claude-msg-icon">⚙️</span>
+                <span class="claude-msg-name">HOOK</span>
+              </div>
+              <div class="claude-msg-content">
+                <strong style="color: var(--claude-orange);">enforce-interview.py:</strong> REMEMBER USER DECISIONS:<br>
+                • Purpose: full_brand_kit<br>
+                • API Key Handling: server_only<br>
+                • Caching: 24_hours<br>
+                • Error Handling: return_error_objects<br>
+                • Rate Limits: expose_headers
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="8" data-step="21">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                <span style="color: #22c55e;">✓ All 15 tests passing!</span>
+              </div>
+            </div>
+
+            <!-- Phase 9: Verify - GAP FOUND! -->
+            <div class="claude-msg" data-phase="9" data-step="22">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Re-reading docs to verify implementation matches...
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">mcp__context7__get-library-docs</div>
+                  <div class="claude-tool-result">"brandfetch" → Comparing implementation to docs...</div>
+                </div>
+                <div class="gap-found">
+                  <div class="gap-found-title">⚠️ GAP DETECTED</div>
+                  Missing <code>include_fonts</code> query parameter documented in v2 API
+                </div>
+              </div>
+            </div>
+
+            <!-- Loop back to fix gap -->
+            <div class="claude-msg loop-back" data-phase="9" data-step="23">
+              <div class="claude-msg-role system">
+                <span class="claude-msg-icon">🔄</span>
+                <span class="claude-msg-name">HOOK</span>
+              </div>
+              <div class="claude-msg-content">
+                <span class="loop-back-badge">↩ LOOP BACK TO PHASE 7</span>
+                <strong style="color: var(--claude-orange);">verify-implementation.py:</strong> Gap found! Returning to TDD Red phase to add missing test...
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="7" data-step="24">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Adding test for include_fonts parameter...
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">Edit</div>
+                  <div class="claude-tool-result">src/lib/__tests__/brandfetch.test.ts → Added test case #16</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="8" data-step="25">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Updating implementation for include_fonts...
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">Edit</div>
+                  <div class="claude-tool-result">src/app/api/v2/brandfetch/route.ts → Added include_fonts query param</div>
+                </div>
+                <span style="color: #22c55e;">✓ All 16 tests passing!</span>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="9" data-step="26">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Re-verifying implementation...
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">mcp__context7__get-library-docs</div>
+                  <div class="claude-tool-result">"brandfetch" → All documented features now implemented</div>
+                </div>
+                <span style="color: #22c55e;">✓ Verification complete - no gaps remaining</span>
+              </div>
+            </div>
+
+            <!-- Phase 10-12: Refactor, Docs, Complete -->
+            <div class="claude-msg" data-phase="10" data-step="27">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Refactoring code (tests still pass)...
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">Edit</div>
+                  <div class="claude-tool-result">Extracted caching logic to utils, improved type safety</div>
+                </div>
+                <span style="color: #22c55e;">✓ 16/16 tests passing</span>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="11" data-step="28">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Updating documentation...
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">Write</div>
+                  <div class="claude-tool-result">api-tests-manifest.json → Added /api/v2/brandfetch entry</div>
+                </div>
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">Edit</div>
+                  <div class="claude-tool-result">openapi.yaml → Added brandfetch endpoint schema</div>
+                </div>
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">Write</div>
+                  <div class="claude-tool-result">.claude/research/brandfetch/ → Cached research for future sessions</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="12" data-step="29">
+              <div class="claude-msg-role system">
+                <span class="claude-msg-icon">✅</span>
+                <span class="claude-msg-name">COMPLETE</span>
+              </div>
+              <div class="claude-msg-content">
+                <span style="color: #22c55e; font-weight: 600;">All 12 phases complete! Brandfetch API ready.</span><br><br>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 0.85rem;">
+                  <div>📁 Files created: <strong>5</strong></div>
+                  <div>✅ Tests passing: <strong>16/16</strong></div>
+                  <div>🔄 Loop-backs: <strong>2</strong></div>
+                  <div>📋 Interview decisions: <strong>5</strong></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Explanation Panel (Right) -->
+        <div class="explanation-panel" id="explanationPanel">
+          <div class="explanation-panel-header">
+            Phase Explanation
+          </div>
+          <div class="explanation-panel-body">
+            <div class="explanation-step active" data-phase="0">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">0</div>
+                <div class="explanation-step-name">User Command</div>
+              </div>
+              <div class="explanation-step-desc">
+                The user triggers the full 12-phase workflow with a single command.
+              </div>
+              <div class="explanation-step-why">
+                This starts the entire interview-driven development process.
+              </div>
+            </div>
+
+            <div class="explanation-step" data-phase="1">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">1</div>
+                <div class="explanation-step-name">Scope Confirmation</div>
+              </div>
+              <div class="explanation-step-desc">
+                Claude confirms understanding of what we're building before doing anything.
+              </div>
+              <div class="explanation-step-why">
+                Prevents building the wrong thing. Loop back if unclear.
+              </div>
+            </div>
+
+            <div class="explanation-step" data-phase="2">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">2</div>
+                <div class="explanation-step-name">Initial Research</div>
+              </div>
+              <div class="explanation-step-desc">
+                Claude researches REAL documentation using Context7 and WebSearch. No training data assumptions!
+              </div>
+              <div class="explanation-step-why">
+                Questions will be generated FROM these findings - not generic templates.
+              </div>
+              <div class="explanation-step-hook" style="margin-top: 8px; padding: 8px; background: rgba(239, 68, 68, 0.1); border-radius: 4px; font-size: 0.8rem;">
+                <strong style="color: #ef4444;">🔒 enforce-research.py</strong> — Blocks any code writing if this phase incomplete
+              </div>
+            </div>
+
+            <div class="explanation-step" data-phase="3">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">3</div>
+                <div class="explanation-step-name">Interview</div>
+              </div>
+              <div class="explanation-step-desc">
+                Claude asks structured questions with options derived from research. User selects, answers tracked.
+              </div>
+              <div class="explanation-step-why">
+                Every decision is recorded and injected during implementation.
+              </div>
+              <div class="explanation-step-hook" style="margin-top: 8px; padding: 8px; background: rgba(239, 68, 68, 0.1); border-radius: 4px; font-size: 0.8rem;">
+                <strong style="color: #ef4444;">🔒 enforce-interview.py</strong> — Blocks schema/TDD if &lt;5 questions or self-answered
+              </div>
+            </div>
+
+            <div class="explanation-step" data-phase="4">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">4</div>
+                <div class="explanation-step-name">Deep Research</div>
+              </div>
+              <div class="explanation-step-desc">
+                Based on interview answers, Claude proposes targeted follow-up searches.
+              </div>
+              <div class="explanation-step-why">
+                Adaptive research - not shotgun. Only what's relevant to YOUR choices.
+              </div>
+            </div>
+
+            <div class="explanation-step" data-phase="5">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">5</div>
+                <div class="explanation-step-name">Schema Design</div>
+              </div>
+              <div class="explanation-step-desc">
+                Zod schemas created based on research + interview decisions.
+              </div>
+              <div class="explanation-step-why">
+                Types before code. Schema drives tests and implementation.
+              </div>
+            </div>
+
+            <div class="explanation-step" data-phase="6">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">6</div>
+                <div class="explanation-step-name">Environment</div>
+              </div>
+              <div class="explanation-step-desc">
+                Verify API keys exist and are configured correctly.
+              </div>
+              <div class="explanation-step-why">
+                Catches config issues BEFORE writing code.
+              </div>
+            </div>
+
+            <div class="explanation-step" data-phase="7">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">7</div>
+                <div class="explanation-step-name">TDD Red</div>
+              </div>
+              <div class="explanation-step-desc">
+                Write failing tests first. Define success BEFORE implementation.
+              </div>
+              <div class="explanation-step-why">
+                No implementation until tests exist. Enforced by hooks.
+              </div>
+              <div class="explanation-step-hook" style="margin-top: 8px; padding: 8px; background: rgba(239, 68, 68, 0.1); border-radius: 4px; font-size: 0.8rem;">
+                <strong style="color: #ef4444;">🔒 enforce-tdd-red.py</strong> — Blocks route.ts until test file exists
+              </div>
+            </div>
+
+            <div class="explanation-step" data-phase="8">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">8</div>
+                <div class="explanation-step-name">TDD Green</div>
+              </div>
+              <div class="explanation-step-desc">
+                Write minimal code to pass tests. Interview decisions injected by hook!
+              </div>
+              <div class="explanation-step-why">
+                Hook reminds Claude of YOUR decisions on every write.
+              </div>
+              <div class="explanation-step-hook" style="margin-top: 8px; padding: 8px; background: rgba(34, 197, 94, 0.1); border-radius: 4px; font-size: 0.8rem;">
+                <strong style="color: #22c55e;">💉 enforce-interview.py</strong> — Injects user decisions into context on every write
+              </div>
+            </div>
+
+            <div class="explanation-step" data-phase="9">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">9</div>
+                <div class="explanation-step-name">Verify</div>
+              </div>
+              <div class="explanation-step-desc">
+                Re-read original docs, compare to implementation. Find gaps!
+              </div>
+              <div class="explanation-step-why">
+                Catches memory-based errors. Loops back if gaps found.
+              </div>
+              <div class="explanation-step-hook" style="margin-top: 8px; padding: 8px; background: rgba(239, 68, 68, 0.1); border-radius: 4px; font-size: 0.8rem;">
+                <strong style="color: #ef4444;">🔒 verify-implementation.py</strong> — Blocks if terms from interview not found in research
+              </div>
+            </div>
+
+            <div class="explanation-step" data-phase="10">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">10</div>
+                <div class="explanation-step-name">Refactor</div>
+              </div>
+              <div class="explanation-step-desc">
+                Clean up code while tests stay green.
+              </div>
+              <div class="explanation-step-why">
+                Safe improvements - tests prove nothing broke.
+              </div>
+            </div>
+
+            <div class="explanation-step" data-phase="11">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">11</div>
+                <div class="explanation-step-name">Documentation</div>
+              </div>
+              <div class="explanation-step-desc">
+                Update OpenAPI spec, test manifest, research cache.
+              </div>
+              <div class="explanation-step-why">
+                No "complete" without docs. Stop hook enforces this.
+              </div>
+            </div>
+
+            <div class="explanation-step" data-phase="12">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">12</div>
+                <div class="explanation-step-name">Completion</div>
+              </div>
+              <div class="explanation-step-desc">
+                All phases verified. API is ready for use!
+              </div>
+              <div class="explanation-step-why">
+                Stop hook verifies all phases complete + git diff tracking.
+              </div>
+              <div class="explanation-step-hook" style="margin-top: 8px; padding: 8px; background: rgba(239, 68, 68, 0.1); border-radius: 4px; font-size: 0.8rem;">
+                <strong style="color: #ef4444;">🔒 api-workflow-check.py</strong> — Blocks stop if any required phase incomplete (exit 2)
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 8: STATE FILE
+       ============================================ -->
+  <section id="state">
+    <div class="ascii-border">
+      <h2>TRACKING PROGRESS</h2>
+      <h3>The State File</h3>
+
+      <div class="explanation">
+        <div class="explanation-title">Why This Matters</div>
+        <p>
+          All progress is saved to <code>.claude/api-dev-state.json</code>.
+          This solves three critical problems:
+        </p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 16px;">
+          <div style="background: rgba(249, 115, 22, 0.1); border-left: 3px solid var(--claude-orange); padding: 12px; border-radius: 4px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.5rem;">🎯</span>
+              <strong style="color: var(--claude-orange);">Re-Grounding</strong>
+            </div>
+            <p style="margin: 8px 0 0; font-size: 0.85rem; color: #aaa;">Hooks inject your decisions into every file write, preventing the AI from "forgetting" what you asked for.</p>
+          </div>
+          <div style="background: rgba(249, 115, 22, 0.1); border-left: 3px solid var(--claude-orange); padding: 12px; border-radius: 4px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.5rem;">💾</span>
+              <strong style="color: var(--claude-orange);">Session Persistence</strong>
+            </div>
+            <p style="margin: 8px 0 0; font-size: 0.85rem; color: #aaa;">Come back tomorrow and pick up where you left off. The state file remembers research, interview answers, and progress.</p>
+          </div>
+          <div style="background: rgba(249, 115, 22, 0.1); border-left: 3px solid var(--claude-orange); padding: 12px; border-radius: 4px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.5rem;">🔄</span>
+              <strong style="color: var(--claude-orange);">Loop-Back Tracking</strong>
+            </div>
+            <p style="margin: 8px 0 0; font-size: 0.85rem; color: #aaa;">When verification finds gaps, we know exactly which phase to return to. No lost context.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="json-viewer">
+        <div class="json-line"><span class="json-key">{</span></div>
+        <div class="json-line">  <span class="json-key">"endpoint":</span> <span class="json-string">"brandfetch"</span>,</div>
+        <div class="json-line">  <span class="json-key">"phases":</span> {</div>
+        <div class="json-line highlight">    <span class="json-key">"research_initial":</span> {</div>
+        <div class="json-line highlight">      <span class="json-key">"status":</span> <span class="json-value">"complete"</span>,</div>
+        <div class="json-line highlight">      <span class="json-key">"sources":</span> [<span class="json-string">"context7"</span>, <span class="json-string">"websearch"</span>, <span class="json-string">"websearch"</span>]</div>
+        <div class="json-line highlight">    },</div>
+        <div class="json-line highlight">    <span class="json-key">"interview":</span> {</div>
+        <div class="json-line highlight">      <span class="json-key">"status":</span> <span class="json-value">"complete"</span>,</div>
+        <div class="json-line highlight">      <span class="json-key">"user_question_count":</span> <span class="json-value">6</span>,</div>
+        <div class="json-line highlight">      <span class="json-key">"structured_question_count":</span> <span class="json-value">5</span>, <span class="json-comment">// Questions with options</span></div>
+        <div class="json-line highlight">      <span class="json-key">"decisions":</span> { <span class="json-comment">// YOUR CHOICES - INJECTED ON WRITES</span></div>
+        <div class="json-line highlight">        <span class="json-key">"purpose":</span> {<span class="json-key">"value":</span> <span class="json-string">"full_kit"</span>},</div>
+        <div class="json-line highlight">        <span class="json-key">"api_key_handling":</span> {<span class="json-key">"value":</span> <span class="json-string">"server_only"</span>},</div>
+        <div class="json-line highlight">        <span class="json-key">"response_format":</span> {<span class="json-key">"value":</span> <span class="json-string">"json"</span>},</div>
+        <div class="json-line highlight">        <span class="json-key">"error_handling":</span> {<span class="json-key">"value":</span> <span class="json-string">"detailed"</span>}</div>
+        <div class="json-line highlight">      },</div>
+        <div class="json-line highlight">      <span class="json-key">"questions":</span> [</div>
+        <div class="json-line highlight">        {<span class="json-key">"tool_used":</span> <span class="json-value">true</span>, <span class="json-key">"has_options":</span> <span class="json-value">true</span>, <span class="json-key">"user_response":</span> <span class="json-string">"full_kit"</span>},</div>
+        <div class="json-line highlight">        <span class="json-comment">// ... more questions tracked</span></div>
+        <div class="json-line highlight">      ]</div>
+        <div class="json-line highlight">    },</div>
+        <div class="json-line">    <span class="json-key">"tdd_red":</span> { <span class="json-key">"status":</span> <span class="json-value">"complete"</span> },</div>
+        <div class="json-line">    <span class="json-key">"tdd_green":</span> { <span class="json-key">"status":</span> <span class="json-value">"complete"</span> }</div>
+        <div class="json-line">  },</div>
+        <div class="json-line">  <span class="json-key">"files_created":</span> [</div>
+        <div class="json-line">    <span class="json-string">"src/lib/schemas/brandfetch.ts"</span>,</div>
+        <div class="json-line">    <span class="json-string">"src/app/api/v2/brandfetch/route.ts"</span>,</div>
+        <div class="json-line">    <span class="json-string">"src/v2/docs/endpoints/brandfetch.md"</span></div>
+        <div class="json-line">  ]</div>
+        <div class="json-line"><span class="json-key">}</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 9: INSTALLATION
+       ============================================ -->
+  <section id="install">
+    <div class="ascii-border">
+      <h2>GET STARTED</h2>
+      <h3>One Command Installation</h3>
+
+      <div class="explanation">
+        <div class="explanation-title">Easy Setup</div>
+        <p>
+          Run a single command to install everything. The installer copies slash commands,
+          Python hooks, and configures the system automatically.
+          <strong>Works with any project.</strong>
+        </p>
+      </div>
+
+      <div class="install-command">
+        <code>npx @hustle-together/api-dev-tools --scope=project</code>
+      </div>
+
+      <div class="install-flow">
+        <div class="install-step">
+          <div class="install-icon">📝</div>
+          <div class="install-content">
+            <div class="install-from">24 Slash Commands</div>
+            <div class="install-note">/api-create, /api-interview, /api-verify, /red, /green, /refactor...</div>
+          </div>
+          <div class="install-arrow">→</div>
+          <div class="install-to">.claude/commands/</div>
+        </div>
+        <div class="install-step">
+          <div class="install-icon">🐍</div>
+          <div class="install-content">
+            <div class="install-from">18 Python Hooks</div>
+            <div class="install-note">enforce-research, enforce-interview, verify-implementation, periodic-reground...</div>
+          </div>
+          <div class="install-arrow">→</div>
+          <div class="install-to">.claude/hooks/</div>
+        </div>
+        <div class="install-step">
+          <div class="install-icon">⚙️</div>
+          <div class="install-content">
+            <div class="install-from">Settings Configuration</div>
+            <div class="install-note">Hook registration, permissions, matchers</div>
+          </div>
+          <div class="install-arrow">→</div>
+          <div class="install-to">.claude/settings.json</div>
+        </div>
+        <div class="install-step">
+          <div class="install-icon">🔌</div>
+          <div class="install-content">
+            <div class="install-from">MCP Servers</div>
+            <div class="install-note">Context7 (live docs), GitHub (issues/PRs)</div>
+          </div>
+          <div class="install-arrow">→</div>
+          <div class="install-to">claude mcp add</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 10: FINAL / LINKS
+       ============================================ -->
+  <section id="credits">
+    <div class="ascii-border" style="text-align: center;">
+      <h2>START BUILDING BETTER APIs</h2>
+
+      <div class="explanation" style="text-align: left;">
+        <div class="explanation-title">What You Get</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; align-items: center;">
+            <span class="visual-check checked"></span>
+            <span><strong>Structured workflow</strong> - No more skipped steps or assumptions</span>
+          </div>
+          <div style="display: flex; align-items: center;">
+            <span class="visual-check checked"></span>
+            <span><strong>Real enforcement</strong> - Hooks that actually block bad behavior</span>
+          </div>
+          <div style="display: flex; align-items: center;">
+            <span class="visual-check checked"></span>
+            <span><strong>Audit trail</strong> - Every action logged to state file</span>
+          </div>
+          <div style="display: flex; align-items: center;">
+            <span class="visual-check checked"></span>
+            <span><strong>Gap detection</strong> - Catches mismatches between requirements and code</span>
+          </div>
+          <div style="display: flex; align-items: center;">
+            <span class="visual-check checked"></span>
+            <span><strong>TDD built-in</strong> - Tests written before implementation</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="credit-links">
+        <a href="https://github.com/hustle-together/api-dev-tools" class="credit-link" target="_blank">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px;">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          VIEW ON GITHUB
+        </a>
+        <a href="https://www.npmjs.com/package/@hustle-together/api-dev-tools" class="credit-link" target="_blank">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px;">
+            <path d="M0 7.334v8h6.666v1.332H12v-1.332h12v-8H0zm6.666 6.664H5.334v-4H3.999v4H1.335V8.667h5.331v5.331zm4 0v1.336H8.001V8.667h5.334v5.332h-2.669v-.001zm12.001 0h-1.33v-4h-1.336v4h-1.335v-4h-1.33v4h-2.671V8.667h8.002v5.331zM10.665 10H12v2.667h-1.335V10z"/>
+          </svg>
+          INSTALL FROM NPM
+        </a>
+      </div>
+
+      <!-- Attribution -->
+      <div style="margin-top: 32px; padding: 20px; background: rgba(0,0,0,0.2); border-radius: 8px; text-align: center;">
+        <p style="color: #888; font-size: 0.85rem; margin-bottom: 16px;">Built on the shoulders of giants:</p>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 32px; flex-wrap: wrap;">
+          <a href="https://github.com/wbern/claude-instructions" target="_blank" style="display: flex; align-items: center; gap: 8px; color: var(--claude-orange); text-decoration: none;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+            <span>@wbern/claude-instructions</span>
+          </a>
+          <a href="https://context7.com" target="_blank" style="display: flex; align-items: center; gap: 8px; color: var(--claude-orange); text-decoration: none;">
+            <span style="font-weight: bold; font-size: 1.1rem;">C7</span>
+            <span>Context7</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="made-with">
+        <p>Made for developers who want AI assistants<br>that actually follow instructions.</p>
+        <p style="margin-top: 20px; color: var(--dark-grey);">
+          v3.6.0 | MIT License<br>
+          "Interview first, test first, document always"
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Register GSAP plugins
+    gsap.registerPlugin(ScrollTrigger, TextPlugin);
+
+    // ============================================
+    // CONFIGURATION
+    // ============================================
+    const sections = ['intro', 'problems', 'solution', 'hooks', 'phases', 'demo', 'state', 'install', 'credits'];
+    let isPlaying = false;
+
+    // ============================================
+    // SECTION INDICATORS
+    // ============================================
+    const indicatorContainer = document.getElementById('sectionIndicator');
+    sections.forEach((id, i) => {
+      const dot = document.createElement('div');
+      dot.className = 'section-dot';
+      dot.dataset.section = id;
+      dot.title = id.charAt(0).toUpperCase() + id.slice(1);
+      dot.addEventListener('click', () => {
+        document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+      });
+      indicatorContainer.appendChild(dot);
+    });
+
+    // Update active indicator on scroll
+    ScrollTrigger.create({
+      trigger: 'body',
+      start: 'top top',
+      end: 'bottom bottom',
+      onUpdate: (self) => {
+        const progress = self.progress;
+        const currentIndex = Math.min(Math.floor(progress * sections.length), sections.length - 1);
+        document.querySelectorAll('.section-dot').forEach((dot, i) => {
+          dot.classList.toggle('active', i === currentIndex);
+        });
+        document.getElementById('progressBar').style.width = `${progress * 100}%`;
+      }
+    });
+
+    // ============================================
+    // SECTION 1: INTRO ANIMATION - HUSTLE BRAND + PHASE LIGHTING
+    // ============================================
+    const introTL = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#intro',
+        start: 'top 80%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    // Hustle brand title animation
+    introTL
+      .to('.hustle-word', {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        stagger: 0.15,
+        ease: 'back.out(1.7)'
+      })
+      .to('#packageName', { opacity: 1, duration: 0.4 }, '-=0.2')
+      .to('#versionText', { opacity: 1, duration: 0.3 })
+      .to('.tagline', { opacity: 1, duration: 0.4 })
+      .to('.intro-text', { opacity: 1, duration: 0.5 }, '-=0.2')
+      .to('#introFlow', { opacity: 1, duration: 0.3 })
+      // Phase nodes appear one by one
+      .to('#introFlow .phase-node', {
+        opacity: 1,
+        y: 0,
+        duration: 0.3,
+        stagger: 0.12,
+        ease: 'power2.out'
+      })
+      // Arrows appear between nodes
+      .to('#introFlow .phase-connector-arrow', {
+        opacity: 1,
+        duration: 0.2,
+        stagger: 0.1
+      }, '-=0.4')
+      .to('.scroll-hint', { opacity: 1, duration: 0.4 }, '-=0.2');
+
+    // Phase lighting sequence - lights up each phase with red glow
+    const phaseNodes = document.querySelectorAll('#introFlow .phase-node');
+    const phaseArrows = document.querySelectorAll('#introFlow .phase-connector-arrow');
+
+    // Create a separate timeline for the lighting sequence that loops
+    // Store globally so we can pause during narration
+    window.introLightingTL = gsap.timeline({
+      repeat: -1,
+      repeatDelay: 1,
+      delay: 3 // Wait for intro animation to complete
+    });
+    const lightingTL = window.introLightingTL;
+
+    phaseNodes.forEach((node, i) => {
+      lightingTL
+        .call(() => {
+          // Light up current node
+          node.classList.add('active');
+          // Light up the arrow before this node (if any)
+          if (i > 0 && phaseArrows[i-1]) {
+            phaseArrows[i-1].classList.add('active');
+          }
+        })
+        .to({}, { duration: 0.5 }); // Pause to show the lit state
+    });
+
+    // Keep all lit for a moment, then reset
+    lightingTL
+      .to({}, { duration: 1.5 })
+      .call(() => {
+        // Reset all
+        phaseNodes.forEach(node => node.classList.remove('active'));
+        phaseArrows.forEach(arrow => arrow.classList.remove('active'));
+      })
+      .to({}, { duration: 0.5 }); // Brief pause before restart
+
+    // ============================================
+    // SECTION 2: PROBLEMS ANIMATION
+    // ============================================
+    const problemsTL = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#problems',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    problemsTL.to('#problems .explanation', { opacity: 1, duration: 0.5 });
+
+    document.querySelectorAll('.gap-item').forEach((item, i) => {
+      problemsTL.to(item, {
+        opacity: 1,
+        x: 0,
+        duration: 0.4,
+        ease: 'power2.out'
+      }, i * 0.2 + 0.3);
+    });
+
+    // ============================================
+    // SECTION 3: SOLUTION ANIMATION
+    // ============================================
+    const solutionTL = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#solution',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    solutionTL.to('#solution .explanation', { opacity: 1, duration: 0.5 });
+
+    document.querySelectorAll('.solution-card').forEach((card, i) => {
+      solutionTL.to(card, {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: 'power2.out'
+      }, i * 0.15 + 0.3);
+    });
+
+    // ============================================
+    // SECTION 4: HOOKS ANIMATION
+    // ============================================
+    const hooksTL = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#hooks',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    hooksTL
+      .to('#hooks .explanation', { opacity: 1, duration: 0.5 })
+      .to('#hooks .flow-box', { opacity: 1, stagger: 0.2, duration: 0.3 })
+      .to('#hooks .flow-arrow', { opacity: 1, stagger: 0.1, duration: 0.2 }, '-=0.3')
+      .to('#hooks .hook-group', { opacity: 1, stagger: 0.25, duration: 0.4 })
+      .to('#hooks .hook-file', { opacity: 1, stagger: 0.08, duration: 0.2 })
+      .to('#hooks .result-allowed, #hooks .result-blocked', { opacity: 1, stagger: 0.15, duration: 0.3 });
+
+    // ============================================
+    // SECTION 5: PHASES ANIMATION
+    // ============================================
+    const phasesTL = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#phases',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    phasesTL.to('#phases .explanation', { opacity: 1, duration: 0.5 });
+
+    document.querySelectorAll('.phase-box').forEach((box, i) => {
+      phasesTL.to(box, {
+        opacity: 1,
+        scale: 1,
+        duration: 0.25,
+        ease: 'back.out(1.5)',
+        onComplete: () => {
+          box.classList.add('active');
+          box.querySelector('.phase-status').textContent = '[OK]';
+        }
+      }, i * 0.1 + 0.3);
+    });
+
+    phasesTL.to('.phase-connector', { opacity: 1, duration: 0.3 }, '-=0.8');
+
+    // ============================================
+    // SECTION 6: CLAUDE CODE TERMINAL ANIMATION
+    // Animates both terminal messages and explanation panel
+    // ============================================
+    const demoTL = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#demo',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    demoTL.to('#demo .explanation', { opacity: 1, duration: 0.5 });
+
+    // Get all Claude Code messages and explanation steps
+    const claudeMessages = document.querySelectorAll('#claudeBody .claude-msg');
+    const explanationSteps = document.querySelectorAll('#explanationPanel .explanation-step');
+    const asciiStartup = document.getElementById('asciiStartup');
+    const promptLine = document.getElementById('promptLine');
+    const promptInput = document.getElementById('promptInput');
+    const loadingDots = document.getElementById('loadingDots');
+
+    // Track current phase for syncing explanation panel
+    let currentDemoPhase = 0;
+
+    // Function to update explanation panel
+    function updateExplanationPanel(phase) {
+      explanationSteps.forEach(step => {
+        const stepPhase = parseInt(step.dataset.phase);
+        if (stepPhase === phase) {
+          step.classList.add('active');
+          // Scroll the explanation panel to show the active step
+          step.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else if (stepPhase < phase) {
+          // Keep previous phases visible but not active
+          step.classList.remove('active');
+          step.style.opacity = '0.7';
+        } else {
+          step.classList.remove('active');
+          step.style.opacity = '0.5';
+        }
+      });
+    }
+
+    // Typing effect for prompt
+    function typeText(element, text, speed = 50) {
+      return new Promise(resolve => {
+        let i = 0;
+        element.textContent = '';
+        const interval = setInterval(() => {
+          if (i < text.length) {
+            element.textContent += text.charAt(i);
+            i++;
+          } else {
+            clearInterval(interval);
+            resolve();
+          }
+        }, speed);
+      });
+    }
+
+    // Show loading dots animation
+    function showLoadingDots(show = true) {
+      loadingDots.style.display = show ? 'inline-flex' : 'none';
+    }
+
+    // Step 1: Show ASCII startup screen (2 seconds)
+    demoTL.to(asciiStartup, {
+      opacity: 1,
+      duration: 0.5,
+      onStart: () => {
+        asciiStartup.style.display = 'block';
+        asciiStartup.classList.add('visible');
+      }
+    }, 0.5);
+
+    // Step 2: Show prompt line and type command (after ASCII)
+    demoTL.to(promptLine, {
+      opacity: 1,
+      duration: 0.3,
+      onStart: () => {
+        promptLine.classList.add('visible');
+      },
+      onComplete: () => {
+        // Type the command
+        typeText(promptInput, '/api-create brandfetch', 60);
+      }
+    }, 2.5);
+
+    // Step 3: Hide ASCII and prompt, show messages (after typing)
+    demoTL.to([asciiStartup, promptLine], {
+      opacity: 0,
+      duration: 0.3,
+      onComplete: () => {
+        asciiStartup.style.display = 'none';
+        promptLine.style.display = 'none';
+      }
+    }, 5.5);
+
+    // Get terminal body for scrolling
+    const claudeBody = document.getElementById('claudeBody');
+
+    // Animate each message SEQUENTIALLY using relative positioning
+    // Each message waits 1.5s after the PREVIOUS one completes
+    claudeMessages.forEach((msg, i) => {
+      const phase = parseInt(msg.dataset.phase);
+
+      // First message starts after ASCII animation (at 6s mark)
+      // Subsequent messages use +=1.5 (1.5s after previous completes)
+      const position = i === 0 ? 6.0 : '+=1.0'; // 1 second gap between messages
+
+      // Show loading dots before each message (except first)
+      if (i > 0) {
+        // Add loading dots that appear for 0.8s before message
+        demoTL.call(() => {
+          showLoadingDots(true);
+        }, null, '+=0.2'); // Small gap after previous message
+
+        demoTL.to({}, { duration: 0.8 }); // Hold for loading dots
+
+        demoTL.call(() => {
+          showLoadingDots(false);
+        });
+      }
+
+      // Add message to timeline
+      demoTL.to(msg, {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        ease: 'power2.out',
+        onStart: () => {
+          msg.classList.add('visible');
+          // Update explanation panel when phase changes
+          if (phase !== currentDemoPhase) {
+            currentDemoPhase = phase;
+            updateExplanationPanel(phase);
+          }
+        },
+        onComplete: () => {
+          // Scroll terminal to show new message after it appears
+          if (claudeBody) {
+            const msgTop = msg.offsetTop;
+            const bodyHeight = claudeBody.clientHeight;
+            const scrollTarget = Math.max(0, msgTop - bodyHeight + msg.offsetHeight + 40);
+            claudeBody.scrollTo({
+              top: scrollTarget,
+              behavior: 'smooth'
+            });
+          }
+        }
+      }, i === 0 ? position : '<'); // '<' means at same time as loading dots hide
+    });
+
+    // Initialize explanation panel (show first step as active)
+    updateExplanationPanel(0);
+
+    // ============================================
+    // SECTION 8: STATE FILE ANIMATION
+    // ============================================
+    const stateTL = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#state',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    stateTL.to('#state .explanation', { opacity: 1, duration: 0.5 });
+
+    document.querySelectorAll('.json-line').forEach((line, i) => {
+      stateTL.to(line, {
+        opacity: 1,
+        duration: 0.12
+      }, i * 0.06 + 0.4);
+    });
+
+    // ============================================
+    // SECTION 9: INSTALL ANIMATION
+    // ============================================
+    const installTL = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#install',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    installTL.to('#install .explanation', { opacity: 1, duration: 0.5 });
+
+    document.querySelectorAll('.install-step').forEach((step, i) => {
+      installTL.to(step, {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: 'power2.out'
+      }, i * 0.2 + 0.4);
+    });
+
+    // ============================================
+    // SECTION 10: CREDITS ANIMATION
+    // ============================================
+    const creditsTL = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#credits',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    creditsTL
+      .to('#credits .explanation', { opacity: 1, duration: 0.5 })
+      .to('.credit-link', { opacity: 1, stagger: 0.15, duration: 0.4 })
+      .to('.made-with', { opacity: 1, duration: 0.5 });
+
+    // ============================================
+    // UNIFIED AUTO-PLAY + AUDIO SYSTEM
+    // ============================================
+    const playBtn = document.getElementById('playBtn');
+    const audioToggleBtn = document.getElementById('audioToggleBtn');
+    const narrationAudio = document.getElementById('narrationAudio');
+    const audioProgressContainer = document.getElementById('audioProgressContainer');
+    const audioProgressBar = document.getElementById('audioProgressBar');
+    const audioProgressFill = document.getElementById('audioProgressFill');
+    const audioCurrentTime = document.getElementById('audioCurrentTime');
+    const audioTotalTime = document.getElementById('audioTotalTime');
+    const audioSectionMarkers = document.getElementById('audioSectionMarkers');
+    const chapterButtons = document.getElementById('chapterButtons');
+
+    let audioEnabled = true; // Audio on by default
+    let timingData = null;
+    let currentHighlight = null;
+    let highlightIndex = 0;
+    let currentSectionIdx = 0;
+    let autoPlayInterval = null;
+
+    // Format seconds to MM:SS
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    // Current timing URL (can be changed when voice changes)
+    let currentTimingUrl = 'audio/narration-adam-timing.json';
+
+    // Load timing data (pass URL to force reload with different voice)
+    async function loadTimingData(url = null, forceReload = false) {
+      if (url) currentTimingUrl = url;
+      if (timingData && !forceReload) return timingData;
+      try {
+        const response = await fetch(currentTimingUrl);
+        if (!response.ok) throw new Error('Failed to load timing data');
+        timingData = await response.json();
+
+        // Update total time display
+        if (audioTotalTime) {
+          audioTotalTime.textContent = formatTime(timingData.duration);
+        }
+
+        // Create section markers on progress bar
+        if (audioSectionMarkers && timingData.sections) {
+          audioSectionMarkers.innerHTML = '';
+          timingData.sections.forEach((section, i) => {
+            if (i === 0) return;
+            const marker = document.createElement('div');
+            marker.className = 'audio-section-marker';
+            marker.style.left = `${(section.timestamp / timingData.duration) * 100}%`;
+            marker.title = section.id.toUpperCase();
+            audioSectionMarkers.appendChild(marker);
+          });
+        }
+
+        // Create chapter buttons for navigation
+        if (chapterButtons && timingData.sections) {
+          chapterButtons.innerHTML = '';
+          timingData.sections.forEach((section, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'chapter-btn';
+            btn.textContent = section.id.toUpperCase();
+            btn.dataset.timestamp = section.timestamp;
+            btn.dataset.sectionId = section.id;
+            btn.dataset.index = i;
+
+            // Click handler: seek audio to timestamp + scroll to section
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation(); // Prevent bubbling to progress bar
+
+              const seekTime = section.timestamp;
+              console.log(`Chapter click: seeking to ${section.id} at ${seekTime.toFixed(1)}s`);
+
+              // Function to perform the seek after audio is ready
+              const doSeek = () => {
+                console.log(`Performing seek to ${seekTime.toFixed(1)}s, audio readyState: ${narrationAudio.readyState}`);
+                narrationAudio.currentTime = seekTime;
+                console.log(`After setting currentTime: ${narrationAudio.currentTime.toFixed(1)}s`);
+              };
+
+              // If not playing, start first then seek
+              if (!isPlaying) {
+                isPlaying = true;
+                playBtn.classList.add('active');
+                playBtn.textContent = '⏸ STOP';
+
+                if (window.introLightingTL) {
+                  window.introLightingTL.kill();
+                  window.introLightingTL = null;
+                  document.querySelectorAll('#introFlow .phase-node').forEach(n => n.classList.remove('active'));
+                  document.querySelectorAll('#introFlow .phase-connector-arrow').forEach(a => a.classList.remove('active'));
+                }
+
+                audioProgressContainer.style.display = 'block';
+
+                // Wait for audio to be ready enough to seek
+                if (narrationAudio.readyState >= 1) {
+                  doSeek();
+                  narrationAudio.play().catch(err => console.error('Playback failed:', err));
+                } else {
+                  // Audio not ready yet, wait for loadedmetadata
+                  narrationAudio.addEventListener('loadedmetadata', function onLoaded() {
+                    narrationAudio.removeEventListener('loadedmetadata', onLoaded);
+                    doSeek();
+                    narrationAudio.play().catch(err => console.error('Playback failed:', err));
+                  });
+                  narrationAudio.load(); // Trigger loading
+                }
+              } else {
+                // Already playing - pause, seek, then play
+                narrationAudio.pause();
+
+                const performSeekAndPlay = () => {
+                  doSeek();
+                  narrationAudio.play().catch(err => console.error('Playback failed:', err));
+                };
+
+                // Use timingData.duration as indicator that we have valid timing for this voice
+                // Also check readyState >= 2 (HAVE_CURRENT_DATA) for reliable seeking
+                if (timingData && timingData.duration > 0 && narrationAudio.readyState >= 2) {
+                  performSeekAndPlay();
+                } else {
+                  // Audio not ready (e.g. after voice switch), wait for canplay
+                  console.log('Audio not ready for seek, waiting for canplay...');
+                  narrationAudio.addEventListener('canplay', function onReady() {
+                    narrationAudio.removeEventListener('canplay', onReady);
+                    performSeekAndPlay();
+                  }, { once: true });
+                  // Also try loadedmetadata as backup
+                  narrationAudio.addEventListener('loadedmetadata', function onMeta() {
+                    narrationAudio.removeEventListener('loadedmetadata', onMeta);
+                    if (narrationAudio.readyState >= 2) {
+                      performSeekAndPlay();
+                    }
+                  }, { once: true });
+                  narrationAudio.load();
+                }
+              }
+
+              // Update highlight tracking for new position
+              highlightIndex = 0;
+              if (timingData && timingData.highlights) {
+                for (let j = 0; j < timingData.highlights.length; j++) {
+                  if (timingData.highlights[j].timestamp <= seekTime) {
+                    highlightIndex = j;
+                  } else {
+                    break;
+                  }
+                }
+              }
+
+              // Scroll to section
+              const sectionEl = document.getElementById(section.id);
+              if (sectionEl) {
+                sectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+
+              // Update active state
+              updateActiveChapter(i);
+            });
+
+            chapterButtons.appendChild(btn);
+          });
+        }
+
+        console.log('Timing data loaded:', timingData.sections.length, 'sections,', timingData.highlights.length, 'highlights');
+        return timingData;
+      } catch (error) {
+        console.error('Failed to load timing data:', error);
+        return null;
+      }
+    }
+
+    // Apply highlight to an element
+    function applyHighlight(selector) {
+      removeHighlight();
+      try {
+        const el = document.querySelector(selector);
+        if (el) {
+          currentHighlight = el;
+          el.classList.add('audio-highlighted');
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+          // Only apply box-shadow GSAP animation to container elements, not text
+          const isContainer = el.classList.contains('solution-card') ||
+                              el.classList.contains('phase-box') ||
+                              el.classList.contains('gap-item') ||
+                              el.classList.contains('phase-node') ||
+                              el.classList.contains('install-command');
+
+          if (isContainer) {
+            gsap.fromTo(el,
+              { boxShadow: '0 4px 6px rgba(0,0,0,0.05)' },
+              { boxShadow: '0 8px 25px rgba(0,0,0,0.15)', duration: 0.4, ease: 'power2.out' }
+            );
+          }
+        }
+      } catch (e) {
+        console.warn('Could not highlight:', selector, e);
+      }
+    }
+
+    // Remove current highlight
+    function removeHighlight() {
+      if (currentHighlight) {
+        currentHighlight.classList.remove('audio-highlighted');
+        gsap.to(currentHighlight, { boxShadow: 'none', duration: 0.3 });
+        currentHighlight = null;
+      }
+    }
+
+    // Update active chapter button based on index
+    function updateActiveChapter(index) {
+      if (!chapterButtons) return;
+      const buttons = chapterButtons.querySelectorAll('.chapter-btn');
+      buttons.forEach((btn, i) => {
+        btn.classList.toggle('active', i === index);
+      });
+    }
+
+    // Find current section index based on audio time
+    function getCurrentSectionIndex(currentTime) {
+      if (!timingData || !timingData.sections) return 0;
+      let idx = 0;
+      for (let i = 0; i < timingData.sections.length; i++) {
+        if (currentTime >= timingData.sections[i].timestamp) {
+          idx = i;
+        } else {
+          break;
+        }
+      }
+      return idx;
+    }
+
+    // Handle audio time update (syncs highlights with narration)
+    function onAudioTimeUpdate() {
+      if (!timingData || !audioEnabled) return;
+
+      const currentTime = narrationAudio.currentTime;
+
+      // Update progress bar
+      const progress = (currentTime / timingData.duration) * 100;
+      audioProgressFill.style.width = `${progress}%`;
+
+      // Update time display
+      if (audioCurrentTime) {
+        audioCurrentTime.textContent = formatTime(currentTime);
+      }
+
+      // Update active chapter button
+      const sectionIdx = getCurrentSectionIndex(currentTime);
+      if (sectionIdx !== currentSectionIdx) {
+        currentSectionIdx = sectionIdx;
+        updateActiveChapter(sectionIdx);
+      }
+
+      // Check for highlight triggers
+      for (let i = highlightIndex; i < timingData.highlights.length; i++) {
+        const highlight = timingData.highlights[i];
+        if (currentTime >= highlight.timestamp) {
+          if (i !== highlightIndex || !currentHighlight) {
+            highlightIndex = i;
+            applyHighlight(highlight.selector);
+          }
+        } else {
+          break;
+        }
+      }
+    }
+
+    // Handle seek on progress bar click
+    function onProgressBarClick(e) {
+      e.stopPropagation(); // Prevent event bubbling
+      e.preventDefault();
+
+      // Must have timing data loaded to seek
+      if (!timingData || !timingData.duration) {
+        console.warn('Cannot seek: timing data not loaded');
+        return;
+      }
+
+      // Calculate seek position from click location
+      const rect = audioProgressBar.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const percentage = Math.max(0, Math.min(1, clickX / rect.width));
+      const seekTime = percentage * timingData.duration;
+
+      console.log(`Progress bar click: seeking to ${seekTime.toFixed(1)}s (${(percentage * 100).toFixed(1)}%)`);
+
+      // Remember if we were playing
+      const wasPlaying = !narrationAudio.paused;
+
+      // Directly set currentTime - DON'T call load() or pause() first
+      // The browser handles seeking while playing
+      try {
+        narrationAudio.currentTime = seekTime;
+        console.log(`Set currentTime to: ${narrationAudio.currentTime.toFixed(1)}s`);
+      } catch (err) {
+        console.error('Failed to set currentTime:', err);
+        return;
+      }
+
+      // If we weren't playing but user clicked progress bar, start playing
+      if (wasPlaying || isPlaying) {
+        narrationAudio.play().catch(err => console.error('Playback failed:', err));
+      }
+
+      // Update highlight tracking for the new position
+      highlightIndex = 0;
+      if (timingData.highlights) {
+        for (let i = 0; i < timingData.highlights.length; i++) {
+          if (timingData.highlights[i].timestamp <= seekTime) {
+            highlightIndex = i;
+          } else {
+            break;
+          }
+        }
+        // Apply highlight immediately
+        if (highlightIndex >= 0 && highlightIndex < timingData.highlights.length) {
+          applyHighlight(timingData.highlights[highlightIndex].selector);
+        }
+      }
+
+      // Scroll to correct section
+      if (timingData.sections) {
+        let sectionIdx = 0;
+        for (let i = 0; i < timingData.sections.length; i++) {
+          if (seekTime >= timingData.sections[i].timestamp) {
+            sectionIdx = i;
+          } else {
+            break;
+          }
+        }
+        currentSectionIdx = sectionIdx;
+        updateActiveChapter(sectionIdx);
+        const sectionEl = document.getElementById(timingData.sections[sectionIdx].id);
+        if (sectionEl) {
+          sectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+
+      // Update UI immediately
+      if (audioProgressFill) {
+        audioProgressFill.style.width = `${percentage * 100}%`;
+      }
+      if (audioCurrentTime) {
+        audioCurrentTime.textContent = formatTime(seekTime);
+      }
+    }
+
+    // Silent auto-play (no audio, timed sections)
+    function startSilentAutoPlay() {
+      let sectionIdx = 0;
+      autoPlayInterval = setInterval(() => {
+        if (sectionIdx < sections.length) {
+          document.getElementById(sections[sectionIdx]).scrollIntoView({ behavior: 'smooth' });
+          sectionIdx++;
+        } else {
+          stopAutoPlay();
+        }
+      }, 5000);
+    }
+
+    // Start auto-play
+    async function startAutoPlay() {
+      if (isPlaying) return;
+
+      isPlaying = true;
+      playBtn.classList.add('active');
+      playBtn.textContent = '⏸ STOP';
+
+      // KILL the intro lighting animation completely to avoid visual conflict
+      // (Don't just pause - kill it so it won't restart)
+      if (window.introLightingTL) {
+        window.introLightingTL.kill();
+        window.introLightingTL = null;
+        // Reset the phase nodes to clean state
+        document.querySelectorAll('#introFlow .phase-node').forEach(n => n.classList.remove('active'));
+        document.querySelectorAll('#introFlow .phase-connector-arrow').forEach(a => a.classList.remove('active'));
+      }
+
+      // Scroll to top first
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      await loadTimingData();
+
+      if (audioEnabled && timingData) {
+        // Try to play audio
+        audioProgressContainer.style.display = 'block';
+        document.body.classList.add('audio-playing'); // Adjust section heights
+
+        try {
+          await narrationAudio.play();
+          console.log('Audio playing');
+        } catch (err) {
+          console.error('Audio playback failed:', err);
+          // Fall back to silent mode
+          audioEnabled = false;
+          audioToggleBtn.textContent = '🔇 NO AUDIO';
+          audioToggleBtn.classList.add('disabled');
+          audioProgressContainer.style.display = 'none';
+          document.body.classList.remove('audio-playing');
+          startSilentAutoPlay();
+        }
+      } else {
+        // Silent auto-play
+        startSilentAutoPlay();
+      }
+    }
+
+    // Stop auto-play
+    function stopAutoPlay() {
+      isPlaying = false;
+      playBtn.classList.remove('active');
+      playBtn.textContent = '▶ AUTO PLAY';
+
+      if (autoPlayInterval) {
+        clearInterval(autoPlayInterval);
+        autoPlayInterval = null;
+      }
+
+      narrationAudio.pause();
+      narrationAudio.currentTime = 0;
+      audioProgressContainer.style.display = 'none';
+      document.body.classList.remove('audio-playing'); // Reset section heights
+      removeHighlight();
+      highlightIndex = 0;
+      currentSectionIdx = 0;
+
+      // Note: We killed the intro lighting animation, so don't try to restart it
+      // The animation was distracting during/after narration playback
+    }
+
+    // Audio ended
+    function onAudioEnded() {
+      stopAutoPlay();
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 500);
+    }
+
+    // Toggle audio on/off
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      if (audioEnabled) {
+        audioToggleBtn.textContent = '🔊 WITH AUDIO';
+        audioToggleBtn.classList.remove('disabled');
+      } else {
+        audioToggleBtn.textContent = '🔇 SILENT';
+        audioToggleBtn.classList.add('disabled');
+      }
+
+      // If currently playing, adjust
+      if (isPlaying) {
+        if (audioEnabled) {
+          narrationAudio.play().catch(() => {});
+          audioProgressContainer.style.display = 'block';
+          if (autoPlayInterval) {
+            clearInterval(autoPlayInterval);
+            autoPlayInterval = null;
+          }
+        } else {
+          narrationAudio.pause();
+          audioProgressContainer.style.display = 'none';
+          startSilentAutoPlay();
+        }
+      }
+    }
+
+    // Event listeners
+    playBtn.addEventListener('click', () => {
+      if (isPlaying) {
+        stopAutoPlay();
+      } else {
+        startAutoPlay();
+      }
+    });
+    audioToggleBtn.addEventListener('click', toggleAudio);
+    narrationAudio.addEventListener('timeupdate', onAudioTimeUpdate);
+    narrationAudio.addEventListener('ended', onAudioEnded);
+
+    // DEBUG: Global click handler to see what's being clicked anywhere on page
+    document.addEventListener('click', (e) => {
+      // Only log clicks in the bottom 200px of the screen (where the audio player is)
+      if (e.clientY > window.innerHeight - 200) {
+        console.log('%c CLICK DETECTED ', 'background: red; color: white; font-size: 14px;', {
+          element: e.target.tagName,
+          id: e.target.id || '(no id)',
+          class: e.target.className || '(no class)',
+          x: e.clientX,
+          y: e.clientY,
+          audioCurrentTime: narrationAudio.currentTime.toFixed(1),
+          audioDuration: narrationAudio.duration ? narrationAudio.duration.toFixed(1) : 'not loaded'
+        });
+      }
+    }, true); // Use capture phase to see ALL clicks before they're handled
+
+    // Debug: track seeking events
+    narrationAudio.addEventListener('seeking', () => {
+      console.log('%c AUDIO SEEKING ', 'background: blue; color: white;', 'to:', narrationAudio.currentTime.toFixed(1));
+    });
+    narrationAudio.addEventListener('seeked', () => {
+      console.log('%c AUDIO SEEKED ', 'background: green; color: white;', 'to:', narrationAudio.currentTime.toFixed(1));
+    });
+
+    audioProgressBar.addEventListener('click', onProgressBarClick);
+
+    // Check if audio file is accessible
+    narrationAudio.addEventListener('error', (e) => {
+      console.error('Audio error:', e);
+      audioEnabled = false;
+      audioToggleBtn.textContent = '🔇 NO AUDIO';
+      audioToggleBtn.classList.add('disabled');
+      audioToggleBtn.title = 'Audio file not accessible (run from a web server)';
+    });
+
+    // Preload timing data
+    loadTimingData();
+
+    // ============================================
+    // RESET BUTTON
+    // ============================================
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      // Stop audio and auto-play first
+      stopAutoPlay();
+
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Reset animations
+      setTimeout(() => {
+        gsap.set('.explanation', { opacity: 0 });
+        gsap.set('.gap-item', { opacity: 0, x: -30 });
+        gsap.set('.solution-card', { opacity: 0, y: 20 });
+        gsap.set('.flow-box, .flow-arrow, .hook-group, .hook-file', { opacity: 0 });
+        gsap.set('.result-allowed, .result-blocked', { opacity: 0 });
+        gsap.set('.phase-box', { opacity: 0, scale: 0.9 });
+        gsap.set('.terminal-line, .terminal-comment', { opacity: 0 });
+        gsap.set('.json-line', { opacity: 0 });
+        gsap.set('.install-step', { opacity: 0, y: 20 });
+        gsap.set('.credit-link, .made-with', { opacity: 0 });
+        gsap.set('.intro-text, .scroll-hint', { opacity: 0 });
+
+        // Reset phase boxes
+        document.querySelectorAll('.phase-box').forEach(box => {
+          box.classList.remove('active');
+          box.querySelector('.phase-status').textContent = '';
+        });
+
+        // Reset intro phase nodes
+        document.querySelectorAll('.phase-node').forEach(node => {
+          node.classList.remove('active');
+        });
+        document.querySelectorAll('.phase-connector-arrow').forEach(arrow => {
+          arrow.classList.remove('active');
+        });
+
+        ScrollTrigger.refresh();
+      }, 500);
+    });
+
+    // ============================================
+    // HOVER EFFECTS
+    // ============================================
+    document.querySelectorAll('.phase-box, .gap-item, .solution-card, .hook-file').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        gsap.to(el, {
+          boxShadow: '0 0 30px rgba(255,255,255,0.15)',
+          duration: 0.3
+        });
+      });
+      el.addEventListener('mouseleave', () => {
+        gsap.to(el, {
+          boxShadow: 'none',
+          duration: 0.3
+        });
+      });
+    });
+
+    // ============================================
+    // ANIMATED BACKGROUND - FLOATING PARTICLES (ENHANCED)
+    // ============================================
+    const particleContainer = document.getElementById('particles');
+    // More particle types: circles, squares, X's, plus signs, lines, triangles
+    const particleTypes = ['', 'square', 'plus', 'x-shape', 'line', 'line-v', 'circle-outline', 'triangle'];
+    const particleCount = 50; // More particles
+
+    // Create particles
+    for (let i = 0; i < particleCount; i++) {
+      const particle = document.createElement('div');
+      const type = particleTypes[Math.floor(Math.random() * particleTypes.length)];
+      particle.className = `particle ${type}`;
+      particle.style.left = `${Math.random() * 100}%`;
+      particle.style.top = `${Math.random() * 100}%`;
+      particleContainer.appendChild(particle);
+
+      // FASTER, MORE VISIBLE MOVEMENT
+      const speed = 4 + Math.random() * 8; // Much faster: 4-12 seconds
+      const distance = 150 + Math.random() * 250; // Larger movement range
+
+      // Animate each particle with GSAP - MORE MOTION
+      gsap.to(particle, {
+        x: `${(Math.random() - 0.5) * distance}`,
+        y: `${(Math.random() - 0.5) * distance}`,
+        rotation: (Math.random() - 0.5) * 720, // More rotation
+        duration: speed,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+        delay: Math.random() * 2
+      });
+
+      // Fade in/out animation - more visible
+      gsap.to(particle, {
+        opacity: 0.15 + Math.random() * 0.4, // Higher opacity
+        duration: 2 + Math.random() * 3,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+        delay: Math.random() * 2
+      });
+    }
+
+    // Add some CONSTANTLY MOVING particles that drift across the screen
+    for (let i = 0; i < 10; i++) {
+      const drifter = document.createElement('div');
+      const type = particleTypes[Math.floor(Math.random() * particleTypes.length)];
+      drifter.className = `particle ${type}`;
+      drifter.style.left = `-20px`;
+      drifter.style.top = `${Math.random() * 100}%`;
+      drifter.style.opacity = '0.3';
+      particleContainer.appendChild(drifter);
+
+      // Drift across the screen continuously
+      gsap.to(drifter, {
+        x: window.innerWidth + 40,
+        y: (Math.random() - 0.5) * 200,
+        rotation: Math.random() * 360,
+        duration: 15 + Math.random() * 15,
+        repeat: -1,
+        ease: 'none',
+        delay: i * 3
+      });
+    }
+
+    // ============================================
+    // ANIMATED BACKGROUND - GRID MOTION (FASTER)
+    // ============================================
+    const gridRect = document.getElementById('gridRect');
+    let gridOffset = { x: 0, y: 0 };
+
+    // Faster, more noticeable grid drift
+    gsap.to(gridOffset, {
+      x: 40,
+      y: 40,
+      duration: 10, // Faster: was 30
+      repeat: -1,
+      yoyo: true, // Added yoyo for back-and-forth
+      ease: 'sine.inOut',
+      onUpdate: () => {
+        gridRect.setAttribute('transform', `translate(${gridOffset.x}, ${gridOffset.y})`);
+      }
+    });
+
+    // Add subtle grid pulsing
+    gsap.to('.grid-svg', {
+      opacity: 0.2,
+      duration: 4,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut'
+    });
+
+    // ============================================
+    // CURSOR GLOW EFFECT
+    // ============================================
+    const cursorGlow = document.getElementById('cursorGlow');
+    let mouseX = 0, mouseY = 0;
+    let glowX = 0, glowY = 0;
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    // Smooth cursor follow
+    function updateCursorGlow() {
+      const dx = mouseX - glowX;
+      const dy = mouseY - glowY;
+      glowX += dx * 0.08;
+      glowY += dy * 0.08;
+      cursorGlow.style.left = `${glowX}px`;
+      cursorGlow.style.top = `${glowY}px`;
+      requestAnimationFrame(updateCursorGlow);
+    }
+    updateCursorGlow();
+
+    // ============================================
+    // CORNER DECORATIONS ANIMATION
+    // ============================================
+    gsap.to('.corner-decoration', {
+      opacity: 0.2,
+      duration: 2,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      stagger: 0.5
+    });
+
+    // ============================================
+    // SECTION TRANSITION EFFECTS
+    // ============================================
+    sections.forEach(sectionId => {
+      ScrollTrigger.create({
+        trigger: `#${sectionId}`,
+        start: 'top center',
+        end: 'bottom center',
+        onEnter: () => {
+          // Pulse the grid when entering a new section
+          gsap.to('.grid-svg', {
+            opacity: 0.25,
+            duration: 0.3,
+            yoyo: true,
+            repeat: 1,
+            ease: 'power2.out'
+          });
+        }
+      });
+    });
+
+    // ============================================
+    // VOICE PREVIEW MODAL
+    // ============================================
+    const voiceSelectBtn = document.getElementById('voiceSelectBtn');
+    const voiceModalOverlay = document.getElementById('voiceModalOverlay');
+    const voiceModalClose = document.getElementById('voiceModalClose');
+    const voiceConfirmBtn = document.getElementById('voiceConfirmBtn');
+    const voiceOptions = document.querySelectorAll('.voice-option');
+    const voicePlayBtns = document.querySelectorAll('.voice-play-btn');
+
+    let previewAudio = null;
+    let currentlyPlayingBtn = null;
+    let selectedVoice = 'adam';
+
+    // Open modal
+    voiceSelectBtn.addEventListener('click', () => {
+      voiceModalOverlay.classList.add('active');
+    });
+
+    // Close modal
+    function closeVoiceModal() {
+      voiceModalOverlay.classList.remove('active');
+      // Stop any playing preview
+      if (previewAudio) {
+        previewAudio.pause();
+        previewAudio = null;
+      }
+      if (currentlyPlayingBtn) {
+        currentlyPlayingBtn.textContent = '▶';
+        currentlyPlayingBtn.classList.remove('playing');
+        currentlyPlayingBtn = null;
+      }
+    }
+
+    voiceModalClose.addEventListener('click', closeVoiceModal);
+    voiceModalOverlay.addEventListener('click', (e) => {
+      if (e.target === voiceModalOverlay) {
+        closeVoiceModal();
+      }
+    });
+
+    // Play preview
+    voicePlayBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const previewSrc = btn.dataset.preview;
+
+        // If clicking the same button that's playing, stop it
+        if (currentlyPlayingBtn === btn && previewAudio && !previewAudio.paused) {
+          previewAudio.pause();
+          btn.textContent = '▶';
+          btn.classList.remove('playing');
+          currentlyPlayingBtn = null;
+          return;
+        }
+
+        // Stop any currently playing preview
+        if (previewAudio) {
+          previewAudio.pause();
+        }
+        if (currentlyPlayingBtn) {
+          currentlyPlayingBtn.textContent = '▶';
+          currentlyPlayingBtn.classList.remove('playing');
+        }
+
+        // Play new preview
+        previewAudio = new Audio(previewSrc);
+        previewAudio.play().catch(err => {
+          console.error('Audio play failed:', err);
+          btn.textContent = '⚠';
+          setTimeout(() => { btn.textContent = '▶'; }, 2000);
+        });
+
+        btn.textContent = '⏸';
+        btn.classList.add('playing');
+        currentlyPlayingBtn = btn;
+
+        previewAudio.addEventListener('ended', () => {
+          btn.textContent = '▶';
+          btn.classList.remove('playing');
+          currentlyPlayingBtn = null;
+        });
+      });
+    });
+
+    // Select voice
+    voiceOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        // Remove selected from all
+        voiceOptions.forEach(opt => {
+          opt.classList.remove('selected');
+          opt.querySelector('.voice-select-btn').textContent = 'Select';
+        });
+
+        // Add selected to clicked
+        option.classList.add('selected');
+        option.querySelector('.voice-select-btn').textContent = 'Selected';
+        selectedVoice = option.dataset.voice;
+      });
+    });
+
+    // Confirm selection
+    voiceConfirmBtn.addEventListener('click', async () => {
+      const selectedOption = document.querySelector('.voice-option.selected');
+      if (selectedOption) {
+        const voiceFile = selectedOption.dataset.file;
+        const timingFile = selectedOption.dataset.timing;
+        const voiceName = selectedOption.querySelector('.voice-name').textContent;
+
+        // Stop current playback if any
+        if (isPlaying) {
+          stopAutoPlay();
+        }
+
+        // Update audio source
+        narrationAudio.src = voiceFile;
+
+        // Force load the new audio and wait for it to be ready
+        narrationAudio.load();
+
+        // Wait for the audio to load metadata AND have valid duration (don't trust stale readyState)
+        await new Promise((resolve) => {
+          let resolved = false;
+          const tryResolve = () => {
+            if (!resolved && narrationAudio.duration > 0 && !isNaN(narrationAudio.duration)) {
+              resolved = true;
+              resolve();
+            }
+          };
+          // Listen for multiple events to ensure we catch when audio is truly ready
+          narrationAudio.addEventListener('loadedmetadata', tryResolve, { once: true });
+          narrationAudio.addEventListener('canplay', tryResolve, { once: true });
+          narrationAudio.addEventListener('durationchange', tryResolve, { once: true });
+          // Timeout fallback in case load fails
+          setTimeout(() => {
+            if (!resolved) {
+              console.warn('Audio load timeout, proceeding anyway');
+              resolved = true;
+              resolve();
+            }
+          }, 3000);
+        });
+
+        // Reset audio position and clear old state
+        narrationAudio.currentTime = 0;
+        timingData = null;
+        highlightIndex = 0;
+        currentSectionIdx = 0;
+        await loadTimingData(timingFile, true);
+
+        // Update voice button to show selected voice
+        voiceSelectBtn.textContent = `🎙 ${voiceName.toUpperCase()}`;
+
+        console.log(`Voice changed to: ${voiceName} (${voiceFile})`);
+        console.log(`Audio duration: ${narrationAudio.duration}s, readyState: ${narrationAudio.readyState}`);
+        console.log(`Timing data loaded: ${timingFile}`);
+      }
+      closeVoiceModal();
+    });
+
+    // Keyboard close (Escape)
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && voiceModalOverlay.classList.contains('active')) {
+        closeVoiceModal();
+      }
+    });
+
+  </script>
+
+</body>
+</html>

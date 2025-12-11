@@ -1,4643 +1,4967 @@
 {
-  "generated": "2025-12-11T05:20:28.594Z",
-  "duration": 450.093,
-  "wordCount": 869,
+  "generated": "2025-12-11T05:35:36.338Z",
+  "duration": 517.944,
+  "wordCount": 934,
   "sections": [
     {
-      "id": "intro",
+      "id": "hero",
       "timestamp": 0
     },
     {
-      "id": "problems",
-      "timestamp": 40.995
+      "id": "problem",
+      "timestamp": 27.04
     },
     {
       "id": "solution",
-      "timestamp": 108.948
+      "timestamp": 113.127
+    },
+    {
+      "id": "grounding",
+      "timestamp": 195.964
+    },
+    {
+      "id": "hooks",
+      "timestamp": 223.015
     },
     {
       "id": "phases",
-      "timestamp": 155.713
+      "timestamp": 278.279
     },
     {
       "id": "demo",
-      "timestamp": 255.568
+      "timestamp": 367.537
     },
     {
-      "id": "installation",
-      "timestamp": 367.43
+      "id": "state",
+      "timestamp": 401.333
     },
     {
-      "id": "credits",
-      "timestamp": 399.148
-    },
-    {
-      "id": "outro",
-      "timestamp": 425.143
+      "id": "install",
+      "timestamp": 463.935
     }
   ],
   "highlights": [
     {
-      "selector": "#hustleBrand",
-      "section": "intro",
-      "timestamp": 4.748
+      "selector": ".hero-badge",
+      "section": "hero",
+      "timestamp": 3.355
     },
     {
-      "selector": "[data-phase=\"research\"]",
-      "section": "intro",
-      "timestamp": 10.147
+      "selector": ".hero-tagline",
+      "section": "hero",
+      "timestamp": 7.976
     },
     {
-      "selector": "[data-phase=\"interview\"]",
-      "section": "intro",
-      "timestamp": 17.891
+      "selector": ".hero-terminal",
+      "section": "hero",
+      "timestamp": 13.944
     },
     {
-      "selector": "[data-phase=\"test\"]",
-      "section": "intro",
-      "timestamp": 23.823
+      "selector": "#problem h2",
+      "section": "problem",
+      "timestamp": 27.04
     },
     {
-      "selector": "[data-phase=\"docs\"]",
-      "section": "intro",
-      "timestamp": 29.954
+      "selector": ".problem-card:nth-child(1)",
+      "section": "problem",
+      "timestamp": 35.305
     },
     {
-      "selector": "#problems h2",
-      "section": "problems",
-      "timestamp": 40.995
+      "selector": ".problem-card:nth-child(2)",
+      "section": "problem",
+      "timestamp": 49.319
     },
     {
-      "selector": ".gap-item:nth-child(1)",
-      "section": "problems",
-      "timestamp": 46.626
+      "selector": ".problem-card:nth-child(3)",
+      "section": "problem",
+      "timestamp": 62.855
     },
     {
-      "selector": ".gap-item:nth-child(2)",
-      "section": "problems",
-      "timestamp": 57.144
+      "selector": ".problem-card:nth-child(4)",
+      "section": "problem",
+      "timestamp": 74.442
     },
     {
-      "selector": ".gap-item:nth-child(3)",
-      "section": "problems",
-      "timestamp": 69.416
+      "selector": ".problem-card:nth-child(5)",
+      "section": "problem",
+      "timestamp": 85.611
     },
     {
-      "selector": ".gap-item:nth-child(4)",
-      "section": "problems",
-      "timestamp": 79.737
-    },
-    {
-      "selector": ".gap-item:nth-child(5)",
-      "section": "problems",
-      "timestamp": 90.024
+      "selector": ".problem-card:nth-child(6)",
+      "section": "problem",
+      "timestamp": 97.233
     },
     {
       "selector": "#solution h2",
       "section": "solution",
-      "timestamp": 108.948
+      "timestamp": 113.127
     },
     {
-      "selector": ".hook-box:nth-child(1)",
+      "selector": ".solution-card:nth-child(1)",
       "section": "solution",
-      "timestamp": 114.567
+      "timestamp": 120.546
     },
     {
-      "selector": ".hook-box:nth-child(2)",
+      "selector": ".solution-card:nth-child(2)",
       "section": "solution",
-      "timestamp": 123.24
+      "timestamp": 133.27
     },
     {
-      "selector": ".hook-box:nth-child(3)",
+      "selector": ".solution-card:nth-child(3)",
       "section": "solution",
-      "timestamp": 132.864
+      "timestamp": 144.787
     },
     {
-      "selector": ".hook-box:nth-child(4)",
+      "selector": ".solution-card:nth-child(4)",
       "section": "solution",
-      "timestamp": 140.608
+      "timestamp": 158.336
+    },
+    {
+      "selector": ".solution-card:nth-child(5)",
+      "section": "solution",
+      "timestamp": 172.605
+    },
+    {
+      "selector": ".solution-card:nth-child(6)",
+      "section": "solution",
+      "timestamp": 184.679
+    },
+    {
+      "selector": "#grounding h2",
+      "section": "grounding",
+      "timestamp": 195.964
+    },
+    {
+      "selector": ".grounding-tools",
+      "section": "grounding",
+      "timestamp": 200.666
+    },
+    {
+      "selector": ".grounding-example",
+      "section": "grounding",
+      "timestamp": 209.002
+    },
+    {
+      "selector": "#hooks h2",
+      "section": "hooks",
+      "timestamp": 223.015
+    },
+    {
+      "selector": ".hook-types",
+      "section": "hooks",
+      "timestamp": 230.283
+    },
+    {
+      "selector": ".exit-code-callout",
+      "section": "hooks",
+      "timestamp": 243.739
+    },
+    {
+      "selector": ".exit-code-demo",
+      "section": "hooks",
+      "timestamp": 255.338
     },
     {
       "selector": "#phases h2",
       "section": "phases",
-      "timestamp": 155.713
+      "timestamp": 278.279
     },
     {
-      "selector": "[data-phase=\"0\"]",
+      "selector": ".phase-card:nth-child(1)",
       "section": "phases",
-      "timestamp": 158.395
+      "timestamp": 282.435
     },
     {
-      "selector": "[data-phase=\"1\"]",
+      "selector": ".phase-card:nth-child(2)",
       "section": "phases",
-      "timestamp": 170.806
+      "timestamp": 292.281
     },
     {
-      "selector": "[data-phase=\"2\"]",
+      "selector": ".phase-card:nth-child(3)",
       "section": "phases",
-      "timestamp": 175.403
+      "timestamp": 298.271
     },
     {
-      "selector": "[data-phase=\"3\"]",
+      "selector": ".phase-card:nth-child(4)",
       "section": "phases",
-      "timestamp": 181.731
+      "timestamp": 304.181
     },
     {
-      "selector": "[data-phase=\"4\"]",
+      "selector": ".phase-card:nth-child(5)",
       "section": "phases",
-      "timestamp": 188.673
+      "timestamp": 310.799
     },
     {
-      "selector": "[data-phase=\"5\"]",
+      "selector": ".phase-card:nth-child(6)",
       "section": "phases",
-      "timestamp": 197.334
+      "timestamp": 316.975
     },
     {
-      "selector": "[data-phase=\"6\"]",
+      "selector": ".phase-card:nth-child(7)",
       "section": "phases",
-      "timestamp": 204.254
+      "timestamp": 323.871
     },
     {
-      "selector": "[data-phase=\"7\"]",
+      "selector": ".phase-card:nth-child(8)",
       "section": "phases",
-      "timestamp": 210.314
+      "timestamp": 329.48
     },
     {
-      "selector": "[data-phase=\"8\"]",
+      "selector": ".phase-card:nth-child(9)",
       "section": "phases",
-      "timestamp": 216.177
+      "timestamp": 337.026
     },
     {
-      "selector": "[data-phase=\"9\"]",
+      "selector": ".phase-card:nth-child(10)",
       "section": "phases",
-      "timestamp": 222.968
+      "timestamp": 340.95
     },
     {
-      "selector": "[data-phase=\"10\"]",
+      "selector": ".phase-card:nth-child(11)",
       "section": "phases",
-      "timestamp": 232.628
+      "timestamp": 348.427
     },
     {
-      "selector": "[data-phase=\"11\"]",
+      "selector": ".phase-card:nth-child(12)",
       "section": "phases",
-      "timestamp": 237.422
-    },
-    {
-      "selector": "[data-phase=\"12\"]",
-      "section": "phases",
-      "timestamp": 242.31
+      "timestamp": 354.569
     },
     {
       "selector": "#demo h2",
       "section": "demo",
-      "timestamp": 255.568
+      "timestamp": 367.537
     },
     {
-      "selector": "[data-step=\"0\"]",
+      "selector": ".demo-terminal",
       "section": "demo",
-      "timestamp": 259.736
+      "timestamp": 370.555
     },
     {
-      "selector": "[data-step=\"1\"]",
+      "selector": ".demo-controls",
       "section": "demo",
-      "timestamp": 265.738
+      "timestamp": 375.617
     },
     {
-      "selector": "[data-step=\"2\"]",
+      "selector": ".phase-progress-bar",
       "section": "demo",
-      "timestamp": 270.591
+      "timestamp": 383.117
     },
     {
-      "selector": "[data-step=\"3\"]",
+      "selector": ".demo-explanation",
       "section": "demo",
-      "timestamp": 279.403
+      "timestamp": 390.478
     },
     {
-      "selector": "[data-step=\"4\"]",
-      "section": "demo",
-      "timestamp": 291.675
+      "selector": "#state h2",
+      "section": "state",
+      "timestamp": 401.333
     },
     {
-      "selector": "[data-step=\"5\"]",
-      "section": "demo",
-      "timestamp": 295.936
+      "selector": ".state-highlight-box:nth-child(1)",
+      "section": "state",
+      "timestamp": 408.519
     },
     {
-      "selector": "[data-step=\"7\"]",
-      "section": "demo",
-      "timestamp": 302.739
+      "selector": ".state-highlight-box:nth-child(2)",
+      "section": "state",
+      "timestamp": 426.956
     },
     {
-      "selector": "[data-step=\"8\"]",
-      "section": "demo",
-      "timestamp": 310.123
+      "selector": ".state-code",
+      "section": "state",
+      "timestamp": 444.789
     },
     {
-      "selector": "[data-step=\"9\"]",
-      "section": "demo",
-      "timestamp": 315.951
-    },
-    {
-      "selector": "[data-step=\"10\"]",
-      "section": "demo",
-      "timestamp": 320.444
-    },
-    {
-      "selector": "[data-step=\"11\"]",
-      "section": "demo",
-      "timestamp": 325.576
-    },
-    {
-      "selector": "[data-step=\"12\"]",
-      "section": "demo",
-      "timestamp": 333.169
-    },
-    {
-      "selector": "[data-step=\"13\"]",
-      "section": "demo",
-      "timestamp": 340.913
-    },
-    {
-      "selector": "[data-step=\"14\"]",
-      "section": "demo",
-      "timestamp": 352.453
-    },
-    {
-      "selector": "[data-step=\"15\"]",
-      "section": "demo",
-      "timestamp": 355.831
-    },
-    {
-      "selector": "[data-step=\"16\"]",
-      "section": "demo",
-      "timestamp": 360.731
-    },
-    {
-      "selector": "#installation h2",
-      "section": "installation",
-      "timestamp": 367.43
+      "selector": "#install h2",
+      "section": "install",
+      "timestamp": 463.935
     },
     {
       "selector": ".install-command",
-      "section": "installation",
-      "timestamp": 369.844
+      "section": "install",
+      "timestamp": 471.377
     },
     {
-      "selector": "#credits h2",
-      "section": "credits",
-      "timestamp": 399.148
+      "selector": ".claude-features",
+      "section": "install",
+      "timestamp": 475.603
     },
     {
-      "selector": "#intro",
-      "section": "outro",
-      "timestamp": 425.143
+      "selector": ".install-links",
+      "section": "install",
+      "timestamp": 487.828
     }
   ],
   "words": [
     {
       "word": "Welcome",
       "start": 0,
-      "end": 0.348
-    },
-    {
-      "word": "to",
-      "start": 0.372,
       "end": 0.418
     },
     {
-      "word": "Hustle",
-      "start": 0.476,
-      "end": 0.72
+      "word": "to",
+      "start": 0.441,
+      "end": 0.488
     },
     {
       "word": "API",
-      "start": 0.755,
-      "end": 1.091
+      "start": 0.557,
+      "end": 0.94
     },
     {
       "word": "Dev",
-      "start": 2.043,
-      "end": 2.264
+      "start": 1.022,
+      "end": 1.184
     },
     {
       "word": "Tools,",
-      "start": 2.334,
-      "end": 2.682
+      "start": 1.254,
+      "end": 1.625
     },
     {
       "word": "version",
-      "start": 2.728,
-      "end": 3.03
+      "start": 1.683,
+      "end": 1.985
     },
     {
       "word": "one",
-      "start": 3.111,
-      "end": 3.251
+      "start": 2.055,
+      "end": 2.194
     },
     {
       "word": "point",
-      "start": 3.297,
-      "end": 3.529
+      "start": 2.241,
+      "end": 2.485
     },
     {
       "word": "oh.",
-      "start": 3.587,
-      "end": 3.936
+      "start": 2.543,
+      "end": 2.914
     },
     {
       "word": "This",
-      "start": 4.748,
-      "end": 4.934
-    },
-    {
-      "word": "package",
-      "start": 4.981,
-      "end": 5.317
-    },
-    {
-      "word": "enforces",
-      "start": 5.352,
-      "end": 5.828
-    },
-    {
-      "word": "a",
-      "start": 5.875,
-      "end": 5.909
-    },
-    {
-      "word": "structured,",
-      "start": 5.956,
-      "end": 6.444
-    },
-    {
-      "word": "twelve-phase",
-      "start": 6.467,
-      "end": 7.001
-    },
-    {
-      "word": "workflow",
-      "start": 7.024,
-      "end": 7.535
-    },
-    {
-      "word": "for",
-      "start": 7.628,
-      "end": 7.79
-    },
-    {
-      "word": "AI-assisted",
-      "start": 7.872,
-      "end": 8.824
-    },
-    {
-      "word": "API",
-      "start": 8.893,
-      "end": 9.242
-    },
-    {
-      "word": "development.",
-      "start": 9.3,
-      "end": 9.996
-    },
-    {
-      "word": "]",
-      "start": 10.147,
-      "end": 10.17
-    },
-    {
-      "word": "Research",
-      "start": 10.983,
-      "end": 11.343
-    },
-    {
-      "word": "first.",
-      "start": 11.389,
-      "end": 12.016
-    },
-    {
-      "word": "No",
-      "start": 12.19,
-      "end": 12.318
-    },
-    {
-      "word": "assumptions.",
-      "start": 12.353,
-      "end": 12.945
-    },
-    {
-      "word": "No",
-      "start": 12.991,
-      "end": 13.107
-    },
-    {
-      "word": "training",
-      "start": 13.165,
-      "end": 13.467
-    },
-    {
-      "word": "data.",
-      "start": 13.525,
-      "end": 13.99
-    },
-    {
-      "word": "Real",
-      "start": 14.373,
-      "end": 14.582
-    },
-    {
-      "word": "documentation",
-      "start": 14.64,
-      "end": 15.429
-    },
-    {
-      "word": "from",
-      "start": 15.487,
-      "end": 15.627
-    },
-    {
-      "word": "Context7",
-      "start": 15.696,
-      "end": 16.451
-    },
-    {
-      "word": "and",
-      "start": 16.66,
-      "end": 16.788
-    },
-    {
-      "word": "web",
-      "start": 16.834,
-      "end": 17.008
-    },
-    {
-      "word": "search.",
-      "start": 17.066,
-      "end": 17.566
-    },
-    {
-      "word": "]",
-      "start": 17.891,
-      "end": 17.925
-    },
-    {
-      "word": "Interview",
-      "start": 18.309,
-      "end": 18.68
-    },
-    {
-      "word": "second.",
-      "start": 18.738,
-      "end": 19.261
-    },
-    {
-      "word": "The",
-      "start": 19.644,
-      "end": 19.783
-    },
-    {
-      "word": "AI",
-      "start": 19.829,
-      "end": 20.213
-    },
-    {
-      "word": "asks",
-      "start": 20.247,
-      "end": 20.398
-    },
-    {
-      "word": "YOU",
-      "start": 20.445,
-      "end": 20.526
-    },
-    {
-      "word": "questions",
-      "start": 20.596,
-      "end": 21.199
-    },
-    {
-      "word": "with",
-      "start": 21.258,
-      "end": 21.385
-    },
-    {
-      "word": "structured",
-      "start": 21.408,
-      "end": 21.908
-    },
-    {
-      "word": "options",
-      "start": 21.966,
-      "end": 22.442
-    },
-    {
-      "word": "based",
-      "start": 22.535,
-      "end": 22.79
-    },
-    {
-      "word": "on",
-      "start": 22.825,
-      "end": 22.906
-    },
-    {
-      "word": "what",
-      "start": 22.964,
-      "end": 23.138
-    },
-    {
-      "word": "it",
-      "start": 23.196,
-      "end": 23.301
-    },
-    {
-      "word": "actually",
-      "start": 23.347,
-      "end": 23.754
-    },
-    {
-      "word": "found.",
-      "start": 23.823,
-      "end": 24.288
-    },
-    {
-      "word": "]",
-      "start": 24.671,
-      "end": 24.694
-    },
-    {
-      "word": "Test",
-      "start": 24.938,
-      "end": 25.158
-    },
-    {
-      "word": "before",
-      "start": 25.193,
-      "end": 25.495
-    },
-    {
-      "word": "code.",
-      "start": 25.542,
-      "end": 25.994
-    },
-    {
-      "word": "Red,",
-      "start": 26.378,
-      "end": 26.575
-    },
-    {
-      "word": "green,",
-      "start": 26.598,
-      "end": 26.842
-    },
-    {
-      "word": "refactor.",
-      "start": 26.877,
-      "end": 27.643
-    },
-    {
-      "word": "No",
-      "start": 28.026,
-      "end": 28.154
-    },
-    {
-      "word": "implementation",
-      "start": 28.212,
-      "end": 29.118
-    },
-    {
-      "word": "without",
-      "start": 29.211,
-      "end": 29.512
-    },
-    {
-      "word": "a",
-      "start": 29.547,
-      "end": 29.57
-    },
-    {
-      "word": "failing",
-      "start": 29.617,
-      "end": 29.907
-    },
-    {
-      "word": "test.",
-      "start": 29.954,
-      "end": 30.464
-    },
-    {
-      "word": "]",
-      "start": 31.579,
-      "end": 31.602
-    },
-    {
-      "word": "Document",
-      "start": 31.811,
-      "end": 32.229
-    },
-    {
-      "word": "everything.",
-      "start": 32.287,
-      "end": 32.949
-    },
-    {
-      "word": "Every",
-      "start": 33.158,
-      "end": 33.39
-    },
-    {
-      "word": "endpoint",
-      "start": 33.448,
-      "end": 33.843
-    },
-    {
-      "word": "documented",
-      "start": 33.913,
-      "end": 34.412
-    },
-    {
-      "word": "with",
-      "start": 34.47,
-      "end": 34.609
-    },
-    {
-      "word": "real",
-      "start": 34.679,
-      "end": 34.865
-    },
-    {
-      "word": "examples",
-      "start": 34.923,
-      "end": 35.364
-    },
-    {
-      "word": "and",
-      "start": 35.399,
-      "end": 35.48
-    },
-    {
-      "word": "schemas.",
-      "start": 35.526,
-      "end": 36.188
-    },
-    {
-      "word": "The",
-      "start": 36.571,
-      "end": 36.687
-    },
-    {
-      "word": "philosophy",
-      "start": 36.722,
-      "end": 37.221
+      "start": 3.355,
+      "end": 3.553
     },
     {
       "word": "is",
-      "start": 37.268,
-      "end": 37.338
-    },
-    {
-      "word": "simple:",
-      "start": 37.384,
-      "end": 37.918
-    },
-    {
-      "word": "Hustle",
-      "start": 38.359,
-      "end": 38.684
-    },
-    {
-      "word": "together.",
-      "start": 38.719,
-      "end": 39.276
-    },
-    {
-      "word": "Share",
-      "start": 39.451,
-      "end": 39.694
-    },
-    {
-      "word": "resources.",
-      "start": 39.741,
-      "end": 40.565
-    },
-    {
-      "word": "Build",
-      "start": 40.716,
-      "end": 40.948
-    },
-    {
-      "word": "stronger.",
-      "start": 40.995,
-      "end": 41.656
-    },
-    {
-      "word": "Let's",
-      "start": 42.167,
-      "end": 42.365
-    },
-    {
-      "word": "talk",
-      "start": 42.388,
-      "end": 42.539
-    },
-    {
-      "word": "about",
-      "start": 42.585,
-      "end": 42.736
-    },
-    {
-      "word": "the",
-      "start": 42.759,
-      "end": 42.829
-    },
-    {
-      "word": "problem.",
-      "start": 42.864,
-      "end": 43.456
-    },
-    {
-      "word": "What",
-      "start": 43.967,
-      "end": 44.141
-    },
-    {
-      "word": "goes",
-      "start": 44.187,
-      "end": 44.362
-    },
-    {
-      "word": "wrong",
-      "start": 44.408,
-      "end": 44.687
-    },
-    {
-      "word": "when",
-      "start": 44.756,
-      "end": 44.919
-    },
-    {
-      "word": "AI",
-      "start": 44.977,
-      "end": 45.372
-    },
-    {
-      "word": "builds",
-      "start": 45.441,
-      "end": 45.697
-    },
-    {
-      "word": "APIs",
-      "start": 45.743,
-      "end": 46.231
-    },
-    {
-      "word": "without",
-      "start": 46.277,
-      "end": 46.567
-    },
-    {
-      "word": "structure?",
-      "start": 46.626,
-      "end": 47.299
-    },
-    {
-      "word": "Gap",
-      "start": 48.599,
-      "end": 48.797
-    },
-    {
-      "word": "one:",
-      "start": 48.878,
-      "end": 49.377
-    },
-    {
-      "word": "AI",
-      "start": 49.551,
-      "end": 49.853
-    },
-    {
-      "word": "doesn't",
-      "start": 49.9,
-      "end": 50.132
-    },
-    {
-      "word": "use",
-      "start": 50.19,
-      "end": 50.329
-    },
-    {
-      "word": "your",
-      "start": 50.352,
-      "end": 50.468
-    },
-    {
-      "word": "exact",
-      "start": 50.515,
-      "end": 50.817
-    },
-    {
-      "word": "words.",
-      "start": 50.875,
-      "end": 51.42
-    },
-    {
-      "word": "You",
-      "start": 51.746,
-      "end": 51.862
-    },
-    {
-      "word": "say",
-      "start": 51.92,
-      "end": 52.047
-    },
-    {
-      "word": "Brandfetch",
-      "start": 52.094,
-      "end": 52.581
-    },
-    {
-      "word": "API",
-      "start": 52.64,
-      "end": 53.069
-    },
-    {
-      "word": "but",
-      "start": 53.15,
-      "end": 53.266
-    },
-    {
-      "word": "it",
-      "start": 53.301,
-      "end": 53.371
-    },
-    {
-      "word": "searches",
-      "start": 53.417,
-      "end": 53.754
-    },
-    {
-      "word": "for",
-      "start": 53.812,
-      "end": 53.916
-    },
-    {
-      "word": "something",
-      "start": 53.974,
-      "end": 54.276
-    },
-    {
-      "word": "else.",
-      "start": 54.323,
-      "end": 54.799
-    },
-    {
-      "word": "Wrong",
-      "start": 55.31,
-      "end": 55.565
-    },
-    {
-      "word": "library.",
-      "start": 55.635,
-      "end": 56.32
-    },
-    {
-      "word": "Wrong",
-      "start": 56.703,
-      "end": 57.028
-    },
-    {
-      "word": "documentation.",
-      "start": 57.144,
-      "end": 58.235
-    },
-    {
-      "word": "Gap",
-      "start": 59.187,
-      "end": 59.408
-    },
-    {
-      "word": "two:",
-      "start": 59.478,
-      "end": 59.988
-    },
-    {
-      "word": "Generic",
-      "start": 60.43,
-      "end": 60.813
-    },
-    {
-      "word": "questions.",
-      "start": 60.847,
-      "end": 61.637
-    },
-    {
-      "word": "Without",
-      "start": 61.962,
-      "end": 62.276
-    },
-    {
-      "word": "research",
-      "start": 62.334,
-      "end": 62.74
-    },
-    {
-      "word": "first,",
-      "start": 62.798,
-      "end": 63.425
-    },
-    {
-      "word": "the",
-      "start": 63.704,
-      "end": 63.796
-    },
-    {
-      "word": "AI",
-      "start": 63.843,
-      "end": 64.238
-    },
-    {
-      "word": "asks",
-      "start": 64.307,
-      "end": 64.783
-    },
-    {
-      "word": "template",
-      "start": 64.83,
-      "end": 65.224
-    },
-    {
-      "word": "questions",
-      "start": 65.259,
-      "end": 65.828
-    },
-    {
-      "word": "instead",
-      "start": 66.211,
-      "end": 66.536
-    },
-    {
-      "word": "of",
-      "start": 66.571,
-      "end": 66.629
-    },
-    {
-      "word": "specific",
-      "start": 66.699,
-      "end": 67.268
-    },
-    {
-      "word": "ones",
-      "start": 67.337,
-      "end": 67.639
-    },
-    {
-      "word": "based",
-      "start": 68.022,
-      "end": 68.301
-    },
-    {
-      "word": "on",
-      "start": 68.336,
-      "end": 68.417
-    },
-    {
-      "word": "actual",
-      "start": 68.498,
-      "end": 68.916
-    },
-    {
-      "word": "API",
-      "start": 69.009,
-      "end": 69.358
-    },
-    {
-      "word": "capabilities.",
-      "start": 69.416,
-      "end": 70.379
-    },
-    {
-      "word": "Gap",
-      "start": 71.076,
-      "end": 71.262
-    },
-    {
-      "word": "three:",
-      "start": 71.32,
-      "end": 71.877
-    },
-    {
-      "word": "Memory-based",
-      "start": 72.69,
-      "end": 73.375
-    },
-    {
-      "word": "implementation.",
-      "start": 73.421,
-      "end": 74.455
-    },
-    {
-      "word": "After",
-      "start": 75.267,
-      "end": 75.569
-    },
-    {
-      "word": "research,",
-      "start": 75.651,
-      "end": 76.185
-    },
-    {
-      "word": "the",
-      "start": 76.301,
-      "end": 76.428
-    },
-    {
-      "word": "AI",
-      "start": 76.486,
-      "end": 76.881
-    },
-    {
-      "word": "forgets",
-      "start": 76.951,
-      "end": 77.299
-    },
-    {
-      "word": "what",
-      "start": 77.322,
-      "end": 77.45
-    },
-    {
-      "word": "it",
-      "start": 77.497,
-      "end": 77.566
-    },
-    {
-      "word": "learned",
-      "start": 77.624,
-      "end": 77.973
-    },
-    {
-      "word": "and",
-      "start": 78.042,
-      "end": 78.216
-    },
-    {
-      "word": "implements",
-      "start": 78.298,
-      "end": 78.785
-    },
-    {
-      "word": "from",
-      "start": 78.82,
-      "end": 78.971
-    },
-    {
-      "word": "training",
-      "start": 79.041,
-      "end": 79.389
-    },
-    {
-      "word": "data",
-      "start": 79.447,
-      "end": 79.679
-    },
-    {
-      "word": "instead.",
-      "start": 79.737,
-      "end": 80.353
-    },
-    {
-      "word": "Gap",
-      "start": 81.467,
-      "end": 81.688
-    },
-    {
-      "word": "four:",
-      "start": 81.757,
-      "end": 82.21
-    },
-    {
-      "word": "No",
-      "start": 83.023,
-      "end": 83.174
-    },
-    {
-      "word": "verification",
-      "start": 83.243,
-      "end": 84.103
-    },
-    {
-      "word": "after",
-      "start": 84.219,
-      "end": 84.486
-    },
-    {
-      "word": "tests",
-      "start": 84.544,
-      "end": 84.822
-    },
-    {
-      "word": "pass.",
-      "start": 84.869,
-      "end": 85.449
-    },
-    {
-      "word": "The",
-      "start": 85.891,
-      "end": 86.018
-    },
-    {
-      "word": "AI",
-      "start": 86.065,
-      "end": 86.448
-    },
-    {
-      "word": "writes",
-      "start": 86.483,
-      "end": 86.75
-    },
-    {
-      "word": "code",
-      "start": 86.831,
-      "end": 87.284
-    },
-    {
-      "word": "that",
-      "start": 87.342,
-      "end": 87.504
-    },
-    {
-      "word": "passes",
-      "start": 87.551,
-      "end": 87.946
-    },
-    {
-      "word": "tests",
-      "start": 88.004,
-      "end": 88.48
-    },
-    {
-      "word": "but",
-      "start": 88.689,
-      "end": 88.839
-    },
-    {
-      "word": "doesn't",
-      "start": 88.886,
-      "end": 89.141
-    },
-    {
-      "word": "match",
-      "start": 89.188,
-      "end": 89.408
-    },
-    {
-      "word": "the",
-      "start": 89.455,
-      "end": 89.536
-    },
-    {
-      "word": "actual",
-      "start": 89.594,
-      "end": 89.954
-    },
-    {
-      "word": "documentation.",
-      "start": 90.024,
-      "end": 91.057
-    },
-    {
-      "word": "Gap",
-      "start": 91.754,
-      "end": 91.928
-    },
-    {
-      "word": "five:",
-      "start": 91.997,
-      "end": 92.462
-    },
-    {
-      "word": "Context",
-      "start": 92.903,
-      "end": 93.344
-    },
-    {
-      "word": "dilution.",
-      "start": 93.379,
-      "end": 94.133
-    },
-    {
-      "word": "After",
-      "start": 94.737,
-      "end": 94.981
-    },
-    {
-      "word": "many",
-      "start": 95.027,
-      "end": 95.236
-    },
-    {
-      "word": "turns,",
-      "start": 95.306,
-      "end": 95.759
-    },
-    {
-      "word": "the",
-      "start": 95.805,
-      "end": 95.887
-    },
-    {
-      "word": "AI",
-      "start": 95.945,
-      "end": 96.293
-    },
-    {
-      "word": "forgets",
-      "start": 96.409,
-      "end": 96.769
-    },
-    {
-      "word": "project",
-      "start": 96.815,
-      "end": 97.245
-    },
-    {
-      "word": "structure,",
-      "start": 97.291,
-      "end": 98.058
-    },
-    {
-      "word": "documentation",
-      "start": 98.383,
-      "end": 99.172
-    },
-    {
-      "word": "locations,",
-      "start": 99.219,
-      "end": 100.066
-    },
-    {
-      "word": "and",
-      "start": 100.089,
-      "end": 100.229
-    },
-    {
-      "word": "workflow",
-      "start": 100.275,
-      "end": 100.67
-    },
-    {
-      "word": "requirements.",
-      "start": 100.74,
-      "end": 101.564
-    },
-    {
-      "word": "These",
-      "start": 102.168,
-      "end": 102.423
-    },
-    {
-      "word": "gaps",
-      "start": 102.481,
-      "end": 102.829
-    },
-    {
-      "word": "compound.",
-      "start": 102.887,
-      "end": 103.619
-    },
-    {
-      "word": "Version",
-      "start": 104.315,
-      "end": 104.652
-    },
-    {
-      "word": "one",
-      "start": 104.722,
-      "end": 104.919
-    },
-    {
-      "word": "solves",
-      "start": 104.966,
-      "end": 105.256
-    },
-    {
-      "word": "all",
-      "start": 105.314,
-      "end": 105.465
-    },
-    {
-      "word": "of",
-      "start": 105.523,
-      "end": 105.581
-    },
-    {
-      "word": "them",
-      "start": 105.651,
-      "end": 105.86
-    },
-    {
-      "word": "with",
-      "start": 106.463,
-      "end": 106.649
-    },
-    {
-      "word": "loop-back",
-      "start": 106.719,
-      "end": 107.137
-    },
-    {
-      "word": "architecture",
-      "start": 107.218,
-      "end": 107.949
-    },
-    {
-      "word": "and",
-      "start": 108.019,
-      "end": 108.17
-    },
-    {
-      "word": "continuous",
-      "start": 108.228,
-      "end": 108.878
-    },
-    {
-      "word": "re-grounding.",
-      "start": 108.948,
-      "end": 109.795
-    },
-    {
-      "word": "The",
-      "start": 110.608,
-      "end": 110.747
-    },
-    {
-      "word": "solution",
-      "start": 110.794,
-      "end": 111.328
-    },
-    {
-      "word": "is",
-      "start": 111.444,
-      "end": 111.595
-    },
-    {
-      "word": "enforcement.",
-      "start": 111.653,
-      "end": 112.396
-    },
-    {
-      "word": "Python",
-      "start": 113.209,
-      "end": 113.58
-    },
-    {
-      "word": "hooks",
-      "start": 113.638,
-      "end": 113.882
-    },
-    {
-      "word": "that",
-      "start": 113.905,
-      "end": 114.033
-    },
-    {
-      "word": "intercept",
-      "start": 114.091,
-      "end": 114.521
-    },
-    {
-      "word": "every",
-      "start": 114.567,
-      "end": 114.776
-    },
-    {
-      "word": "tool",
-      "start": 114.834,
-      "end": 115.032
-    },
-    {
-      "word": "call.",
-      "start": 115.09,
-      "end": 115.496
-    },
-    {
-      "word": "PreToolUse",
-      "start": 116.193,
-      "end": 116.878
-    },
-    {
-      "word": "hooks",
-      "start": 116.936,
-      "end": 117.237
-    },
-    {
-      "word": "run",
-      "start": 117.354,
-      "end": 117.539
-    },
-    {
-      "word": "before",
-      "start": 117.597,
-      "end": 117.899
-    },
-    {
-      "word": "Claude",
-      "start": 117.946,
-      "end": 118.248
-    },
-    {
-      "word": "writes",
-      "start": 118.271,
-      "end": 118.503
-    },
-    {
-      "word": "any",
-      "start": 118.549,
-      "end": 118.689
-    },
-    {
-      "word": "file.",
-      "start": 118.758,
-      "end": 119.292
-    },
-    {
-      "word": "They",
-      "start": 119.676,
-      "end": 119.85
-    },
-    {
-      "word": "inject",
-      "start": 119.885,
-      "end": 120.221
-    },
-    {
-      "word": "interview",
-      "start": 120.291,
-      "end": 120.662
-    },
-    {
-      "word": "decisions",
-      "start": 120.732,
-      "end": 121.394
-    },
-    {
-      "word": "as",
-      "start": 121.777,
-      "end": 121.951
-    },
-    {
-      "word": "reminders",
-      "start": 122.032,
-      "end": 122.497
-    },
-    {
-      "word": "and",
-      "start": 122.543,
-      "end": 122.613
-    },
-    {
-      "word": "block",
-      "start": 122.659,
-      "end": 122.903
-    },
-    {
-      "word": "writes",
-      "start": 122.95,
-      "end": 123.205
-    },
-    {
-      "word": "without",
-      "start": 123.24,
-      "end": 123.495
-    },
-    {
-      "word": "research.",
-      "start": 123.553,
-      "end": 124.203
-    },
-    {
-      "word": "PostToolUse",
-      "start": 125.016,
-      "end": 125.748
-    },
-    {
-      "word": "hooks",
-      "start": 125.794,
-      "end": 126.073
-    },
-    {
-      "word": "track",
-      "start": 126.119,
-      "end": 126.374
-    },
-    {
-      "word": "tool",
-      "start": 126.444,
-      "end": 126.676
-    },
-    {
-      "word": "usage",
-      "start": 126.758,
-      "end": 127.21
-    },
-    {
-      "word": "and",
-      "start": 127.489,
-      "end": 127.663
-    },
-    {
-      "word": "trigger",
-      "start": 127.71,
-      "end": 128.023
-    },
-    {
-      "word": "verification.",
-      "start": 128.092,
-      "end": 129.068
-    },
-    {
-      "word": "After",
-      "start": 129.671,
-      "end": 129.973
-    },
-    {
-      "word": "tests",
-      "start": 130.031,
-      "end": 130.356
-    },
-    {
-      "word": "pass,",
-      "start": 130.426,
-      "end": 130.809
-    },
-    {
-      "word": "they",
-      "start": 130.832,
-      "end": 130.96
-    },
-    {
-      "word": "force",
-      "start": 131.018,
-      "end": 131.285
-    },
-    {
-      "word": "Phase",
-      "start": 131.308,
-      "end": 131.552
-    },
-    {
-      "word": "nine:",
-      "start": 131.599,
-      "end": 132.005
-    },
-    {
-      "word": "re-read",
-      "start": 132.33,
-      "end": 132.713
-    },
-    {
-      "word": "the",
-      "start": 132.748,
-      "end": 132.818
-    },
-    {
-      "word": "documentation.",
-      "start": 132.864,
-      "end": 133.874
-    },
-    {
-      "word": "The",
-      "start": 134.199,
-      "end": 134.339
-    },
-    {
-      "word": "Stop",
-      "start": 134.385,
-      "end": 134.652
-    },
-    {
-      "word": "hook",
-      "start": 134.699,
-      "end": 134.931
-    },
-    {
-      "word": "blocks",
-      "start": 135.024,
-      "end": 135.349
-    },
-    {
-      "word": "completion",
-      "start": 135.395,
-      "end": 135.964
-    },
-    {
-      "word": "if",
-      "start": 136.057,
-      "end": 136.173
-    },
-    {
-      "word": "any",
-      "start": 136.243,
-      "end": 136.417
-    },
-    {
-      "word": "phase",
-      "start": 136.463,
-      "end": 136.742
-    },
-    {
-      "word": "is",
-      "start": 136.777,
-      "end": 136.846
-    },
-    {
-      "word": "incomplete.",
-      "start": 136.904,
-      "end": 137.613
-    },
-    {
-      "word": "No",
-      "start": 138.216,
-      "end": 138.356
-    },
-    {
-      "word": "more",
-      "start": 138.425,
-      "end": 138.704
-    },
-    {
-      "word": "premature",
-      "start": 138.82,
-      "end": 139.505
-    },
-    {
-      "word": "\"done\"",
-      "start": 139.784,
-      "end": 140.515
-    },
-    {
-      "word": "declarations.",
-      "start": 140.608,
-      "end": 141.653
-    },
-    {
-      "word": "SessionStart",
-      "start": 142.605,
-      "end": 143.418
-    },
-    {
-      "word": "and",
-      "start": 143.801,
-      "end": 143.975
-    },
-    {
-      "word": "periodic",
-      "start": 144.033,
-      "end": 144.579
-    },
-    {
-      "word": "hooks",
-      "start": 144.637,
-      "end": 144.962
-    },
-    {
-      "word": "re-inject",
-      "start": 145.403,
-      "end": 146.227
-    },
-    {
-      "word": "context",
-      "start": 146.297,
-      "end": 146.935
-    },
-    {
-      "word": "every",
-      "start": 146.982,
-      "end": 147.203
-    },
-    {
-      "word": "seven",
-      "start": 147.261,
-      "end": 147.516
-    },
-    {
-      "word": "turns",
-      "start": 147.562,
-      "end": 147.876
-    },
-    {
-      "word": "to",
-      "start": 147.946,
-      "end": 148.015
-    },
-    {
-      "word": "prevent",
-      "start": 148.085,
-      "end": 148.41
-    },
-    {
-      "word": "dilution",
-      "start": 148.457,
-      "end": 149.049
-    },
-    {
-      "word": "in",
-      "start": 149.432,
-      "end": 149.594
-    },
-    {
-      "word": "long",
-      "start": 149.664,
-      "end": 149.896
-    },
-    {
-      "word": "sessions.",
-      "start": 149.977,
-      "end": 150.72
-    },
-    {
-      "word": "This",
-      "start": 151.324,
-      "end": 151.533
-    },
-    {
-      "word": "isn't",
-      "start": 151.614,
-      "end": 151.87
-    },
-    {
-      "word": "about",
-      "start": 151.905,
-      "end": 152.137
-    },
-    {
-      "word": "limiting",
-      "start": 152.207,
-      "end": 152.555
-    },
-    {
-      "word": "AI.",
-      "start": 152.636,
-      "end": 153.298
-    },
-    {
-      "word": "It's",
-      "start": 153.809,
-      "end": 153.995
-    },
-    {
-      "word": "about",
-      "start": 154.018,
-      "end": 154.227
-    },
-    {
-      "word": "holding",
-      "start": 154.285,
-      "end": 154.575
-    },
-    {
-      "word": "it",
-      "start": 154.621,
-      "end": 154.691
-    },
-    {
-      "word": "to",
-      "start": 154.738,
-      "end": 154.796
-    },
-    {
-      "word": "the",
-      "start": 154.877,
-      "end": 154.947
-    },
-    {
-      "word": "same",
-      "start": 155.005,
-      "end": 155.237
-    },
-    {
-      "word": "standards",
-      "start": 155.272,
-      "end": 155.678
-    },
-    {
-      "word": "we",
-      "start": 155.713,
-      "end": 155.806
-    },
-    {
-      "word": "hold",
-      "start": 155.864,
-      "end": 156.026
-    },
-    {
-      "word": "ourselves.",
-      "start": 156.073,
-      "end": 156.793
-    },
-    {
-      "word": "The",
-      "start": 157.118,
-      "end": 157.234
-    },
-    {
-      "word": "workflow",
-      "start": 157.292,
-      "end": 157.779
-    },
-    {
-      "word": "now",
-      "start": 158.162,
-      "end": 158.325
-    },
-    {
-      "word": "has",
-      "start": 158.395,
-      "end": 158.546
-    },
-    {
-      "word": "twelve",
-      "start": 158.604,
-      "end": 158.871
-    },
-    {
-      "word": "phases.",
-      "start": 158.894,
-      "end": 159.544
-    },
-    {
-      "word": "]",
-      "start": 159.66,
-      "end": 159.683
-    },
-    {
-      "word": "Phase",
-      "start": 160.798,
-      "end": 161.158
-    },
-    {
-      "word": "zero:",
-      "start": 161.599,
-      "end": 162.18
-    },
-    {
-      "word": "Disambiguation.",
-      "start": 162.992,
-      "end": 164.211
-    },
-    {
-      "word": "When",
-      "start": 164.815,
-      "end": 164.978
-    },
-    {
-      "word": "you",
-      "start": 165.024,
-      "end": 165.094
-    },
-    {
-      "word": "say",
-      "start": 165.152,
-      "end": 165.372
-    },
-    {
-      "word": "Vercel",
-      "start": 165.883,
-      "end": 166.336
-    },
-    {
-      "word": "AI,",
-      "start": 166.429,
-      "end": 166.905
-    },
-    {
-      "word": "do",
-      "start": 166.951,
-      "end": 167.044
-    },
-    {
-      "word": "you",
-      "start": 167.102,
-      "end": 167.172
-    },
-    {
-      "word": "mean",
-      "start": 167.23,
-      "end": 167.404
-    },
-    {
-      "word": "the",
-      "start": 167.613,
-      "end": 167.741
-    },
-    {
-      "word": "SDK",
-      "start": 167.834,
-      "end": 168.344
-    },
-    {
-      "word": "or",
-      "start": 168.588,
-      "end": 168.716
-    },
-    {
-      "word": "the",
-      "start": 168.774,
-      "end": 168.843
-    },
-    {
-      "word": "Gateway?",
-      "start": 168.878,
-      "end": 169.436
-    },
-    {
-      "word": "We",
-      "start": 170.132,
-      "end": 170.26
-    },
-    {
-      "word": "clarify",
-      "start": 170.306,
-      "end": 170.736
-    },
-    {
-      "word": "before",
-      "start": 170.806,
-      "end": 171.084
-    },
-    {
-      "word": "researching.",
-      "start": 171.142,
-      "end": 171.827
-    },
-    {
-      "word": "]",
-      "start": 172.152,
-      "end": 172.176
-    },
-    {
-      "word": "Phase",
-      "start": 172.384,
-      "end": 172.663
-    },
-    {
-      "word": "one:",
-      "start": 172.71,
-      "end": 173.046
-    },
-    {
-      "word": "Scope.",
-      "start": 173.487,
-      "end": 174.01
-    },
-    {
-      "word": "Confirm",
-      "start": 174.393,
-      "end": 174.776
-    },
-    {
-      "word": "we",
-      "start": 174.811,
-      "end": 174.892
-    },
-    {
-      "word": "understand",
-      "start": 174.95,
-      "end": 175.368
-    },
-    {
-      "word": "what",
-      "start": 175.403,
-      "end": 175.508
-    },
-    {
-      "word": "you",
-      "start": 175.531,
-      "end": 175.6
-    },
-    {
-      "word": "want",
-      "start": 175.635,
-      "end": 175.763
-    },
-    {
-      "word": "to",
-      "start": 175.798,
-      "end": 175.844
-    },
-    {
-      "word": "build.",
-      "start": 175.902,
-      "end": 176.285
-    },
-    {
-      "word": "]",
-      "start": 176.611,
-      "end": 176.634
-    },
-    {
-      "word": "Phase",
-      "start": 176.878,
-      "end": 177.145
-    },
-    {
-      "word": "two:",
-      "start": 177.179,
-      "end": 177.621
-    },
-    {
-      "word": "Initial",
-      "start": 178.004,
-      "end": 178.387
-    },
-    {
-      "word": "research.",
-      "start": 178.456,
-      "end": 179.118
-    },
-    {
-      "word": "Context7",
-      "start": 179.501,
-      "end": 180.117
-    },
-    {
-      "word": "and",
-      "start": 180.326,
-      "end": 180.43
-    },
-    {
-      "word": "web",
-      "start": 180.477,
-      "end": 180.639
-    },
-    {
-      "word": "search.",
-      "start": 180.709,
-      "end": 181.185
-    },
-    {
-      "word": "Find",
-      "start": 181.51,
-      "end": 181.696
-    },
-    {
-      "word": "the",
-      "start": 181.731,
-      "end": 181.8
-    },
-    {
-      "word": "real",
-      "start": 181.87,
-      "end": 182.137
-    },
-    {
-      "word": "documentation.",
-      "start": 182.23,
-      "end": 183.205
-    },
-    {
-      "word": "]",
-      "start": 183.588,
-      "end": 183.611
-    },
-    {
-      "word": "Phase",
-      "start": 183.82,
-      "end": 184.111
-    },
-    {
-      "word": "three:",
-      "start": 184.145,
-      "end": 184.552
-    },
-    {
-      "word": "Interview.",
-      "start": 184.935,
-      "end": 185.62
-    },
-    {
-      "word": "Questions",
-      "start": 186.131,
-      "end": 186.549
-    },
-    {
-      "word": "generated",
-      "start": 186.607,
-      "end": 187.083
-    },
-    {
-      "word": "FROM",
-      "start": 187.141,
-      "end": 187.28
-    },
-    {
-      "word": "research",
-      "start": 187.349,
-      "end": 187.767
-    },
-    {
-      "word": "findings.",
-      "start": 187.849,
-      "end": 188.522
-    },
-    {
-      "word": "Not",
-      "start": 188.673,
-      "end": 188.847
-    },
-    {
-      "word": "generic",
-      "start": 188.882,
-      "end": 189.23
-    },
-    {
-      "word": "templates.",
-      "start": 189.277,
-      "end": 189.985
-    },
-    {
-      "word": "]",
-      "start": 190.31,
-      "end": 190.356
-    },
-    {
-      "word": "Phase",
-      "start": 190.96,
-      "end": 191.227
-    },
-    {
-      "word": "four:",
-      "start": 191.262,
-      "end": 191.692
-    },
-    {
-      "word": "Deep",
-      "start": 191.75,
-      "end": 191.947
-    },
-    {
-      "word": "research.",
-      "start": 192.005,
-      "end": 192.678
-    },
-    {
-      "word": "Based",
-      "start": 193.12,
-      "end": 193.387
-    },
-    {
-      "word": "on",
-      "start": 193.422,
-      "end": 193.491
-    },
-    {
-      "word": "your",
-      "start": 193.526,
-      "end": 193.642
-    },
-    {
-      "word": "interview",
-      "start": 193.7,
-      "end": 194.083
-    },
-    {
-      "word": "answers,",
-      "start": 194.153,
-      "end": 194.606
-    },
-    {
-      "word": "we",
-      "start": 194.641,
-      "end": 194.757
-    },
-    {
-      "word": "propose",
-      "start": 194.826,
-      "end": 195.267
-    },
-    {
-      "word": "targeted",
-      "start": 195.314,
-      "end": 195.744
-    },
-    {
-      "word": "follow-up",
-      "start": 195.813,
-      "end": 196.231
-    },
-    {
-      "word": "searches.",
-      "start": 196.301,
-      "end": 196.951
-    },
-    {
-      "word": "Adaptive,",
-      "start": 197.334,
-      "end": 198.031
-    },
-    {
-      "word": "not",
-      "start": 198.205,
-      "end": 198.379
-    },
-    {
-      "word": "shotgun.",
-      "start": 198.425,
-      "end": 199.041
-    },
-    {
-      "word": "]",
-      "start": 199.366,
-      "end": 199.389
-    },
-    {
-      "word": "Phase",
-      "start": 199.714,
-      "end": 199.993
-    },
-    {
-      "word": "five:",
-      "start": 200.039,
-      "end": 200.492
-    },
-    {
-      "word": "Schema.",
-      "start": 200.666,
-      "end": 201.293
-    },
-    {
-      "word": "Define",
-      "start": 201.99,
-      "end": 202.466
-    },
-    {
-      "word": "Zod",
-      "start": 202.524,
-      "end": 202.756
-    },
-    {
-      "word": "schemas",
-      "start": 202.814,
-      "end": 203.162
-    },
-    {
-      "word": "based",
-      "start": 203.209,
-      "end": 203.453
-    },
-    {
-      "word": "on",
-      "start": 203.499,
-      "end": 203.569
-    },
-    {
-      "word": "research",
-      "start": 203.638,
-      "end": 204.138
-    },
-    {
-      "word": "plus",
-      "start": 204.254,
-      "end": 204.521
-    },
-    {
-      "word": "interview",
-      "start": 204.602,
-      "end": 205.019
-    },
-    {
-      "word": "decisions.",
-      "start": 205.089,
-      "end": 205.879
-    },
-    {
-      "word": "]",
-      "start": 206.204,
-      "end": 206.238
-    },
-    {
-      "word": "Phase",
-      "start": 206.447,
-      "end": 206.714
-    },
-    {
-      "word": "six:",
-      "start": 206.738,
-      "end": 207.399
-    },
-    {
-      "word": "Environment.",
-      "start": 207.725,
-      "end": 208.491
-    },
-    {
-      "word": "Verify",
-      "start": 209.095,
-      "end": 209.571
-    },
-    {
-      "word": "API",
-      "start": 209.594,
-      "end": 209.942
-    },
-    {
-      "word": "keys",
-      "start": 210.023,
-      "end": 210.256
-    },
-    {
-      "word": "exist",
-      "start": 210.314,
-      "end": 210.615
-    },
-    {
-      "word": "before",
-      "start": 210.662,
-      "end": 210.952
-    },
-    {
-      "word": "writing",
-      "start": 210.999,
-      "end": 211.277
-    },
-    {
-      "word": "code.",
-      "start": 211.335,
-      "end": 211.788
-    },
-    {
-      "word": "]",
-      "start": 212.171,
-      "end": 212.206
-    },
-    {
-      "word": "Phase",
-      "start": 212.415,
-      "end": 212.659
-    },
-    {
-      "word": "seven:",
-      "start": 212.682,
-      "end": 213.112
-    },
-    {
-      "word": "TDD",
-      "start": 213.228,
-      "end": 213.739
-    },
-    {
-      "word": "Red.",
-      "start": 213.831,
-      "end": 214.238
-    },
-    {
-      "word": "Write",
-      "start": 214.563,
-      "end": 214.818
-    },
-    {
-      "word": "failing",
-      "start": 214.853,
-      "end": 215.143
-    },
-    {
-      "word": "tests.",
-      "start": 215.19,
-      "end": 215.666
-    },
-    {
-      "word": "Define",
-      "start": 215.817,
-      "end": 216.142
-    },
-    {
-      "word": "success",
-      "start": 216.177,
-      "end": 216.595
-    },
-    {
-      "word": "before",
-      "start": 216.664,
-      "end": 217.001
-    },
-    {
-      "word": "implementation.",
-      "start": 217.059,
-      "end": 218.127
-    },
-    {
-      "word": "]",
-      "start": 218.51,
-      "end": 218.557
-    },
-    {
-      "word": "Phase",
-      "start": 218.766,
-      "end": 219.033
-    },
-    {
-      "word": "eight:",
-      "start": 219.079,
-      "end": 219.416
-    },
-    {
-      "word": "TDD",
-      "start": 219.439,
-      "end": 219.95
-    },
-    {
-      "word": "Green.",
-      "start": 220.066,
-      "end": 220.53
-    },
-    {
-      "word": "Minimal",
-      "start": 220.681,
-      "end": 221.041
-    },
-    {
-      "word": "code",
-      "start": 221.088,
-      "end": 221.273
-    },
-    {
-      "word": "to",
-      "start": 221.297,
-      "end": 221.343
-    },
-    {
-      "word": "pass",
-      "start": 221.389,
-      "end": 221.598
-    },
-    {
-      "word": "tests.",
-      "start": 221.657,
-      "end": 222.098
-    },
-    {
-      "word": "Interview",
-      "start": 222.481,
-      "end": 222.91
-    },
-    {
-      "word": "decisions",
-      "start": 222.968,
-      "end": 223.514
-    },
-    {
-      "word": "injected",
-      "start": 223.572,
-      "end": 223.99
-    },
-    {
-      "word": "by",
-      "start": 224.025,
-      "end": 224.129
-    },
-    {
-      "word": "hooks.",
-      "start": 224.187,
-      "end": 224.756
-    },
-    {
-      "word": "]",
-      "start": 225.081,
-      "end": 225.116
-    },
-    {
-      "word": "Phase",
-      "start": 225.325,
-      "end": 225.592
-    },
-    {
-      "word": "nine:",
-      "start": 225.627,
-      "end": 225.998
-    },
-    {
-      "word": "Verify.",
-      "start": 226.323,
-      "end": 226.915
-    },
-    {
-      "word": "This",
-      "start": 227.299,
-      "end": 227.496
-    },
-    {
-      "word": "is",
-      "start": 227.566,
-      "end": 227.647
-    },
-    {
-      "word": "new.",
-      "start": 227.717,
-      "end": 228.042
-    },
-    {
-      "word": "Re-read",
-      "start": 228.645,
-      "end": 229.005
-    },
-    {
-      "word": "the",
-      "start": 229.04,
-      "end": 229.11
-    },
-    {
-      "word": "original",
-      "start": 229.156,
-      "end": 229.574
-    },
-    {
-      "word": "documentation",
-      "start": 229.632,
-      "end": 230.41
-    },
-    {
-      "word": "and",
-      "start": 230.48,
-      "end": 230.584
-    },
-    {
-      "word": "compare",
-      "start": 230.642,
-      "end": 231.025
-    },
-    {
-      "word": "to",
-      "start": 231.072,
-      "end": 231.13
-    },
-    {
-      "word": "implementation.",
-      "start": 231.188,
-      "end": 232.186
-    },
-    {
-      "word": "Find",
-      "start": 232.628,
-      "end": 232.848
-    },
-    {
-      "word": "gaps.",
-      "start": 232.906,
-      "end": 233.405
-    },
-    {
-      "word": "Loop",
-      "start": 233.556,
-      "end": 233.754
-    },
-    {
-      "word": "back",
-      "start": 233.789,
-      "end": 233.963
-    },
-    {
-      "word": "if",
-      "start": 234.021,
-      "end": 234.102
-    },
-    {
-      "word": "needed.",
-      "start": 234.172,
-      "end": 234.59
-    },
-    {
-      "word": "]",
-      "start": 234.915,
-      "end": 234.938
-    },
-    {
-      "word": "Phase",
-      "start": 235.263,
-      "end": 235.507
-    },
-    {
-      "word": "ten:",
-      "start": 235.542,
-      "end": 235.913
-    },
-    {
-      "word": "Refactor.",
-      "start": 236.029,
-      "end": 236.714
-    },
-    {
-      "word": "Clean",
-      "start": 237.155,
-      "end": 237.376
-    },
-    {
-      "word": "up",
-      "start": 237.422,
-      "end": 237.492
-    },
-    {
-      "word": "code",
-      "start": 237.562,
-      "end": 237.875
-    },
-    {
-      "word": "while",
-      "start": 237.91,
-      "end": 238.096
-    },
-    {
-      "word": "tests",
-      "start": 238.131,
-      "end": 238.398
-    },
-    {
-      "word": "stay",
-      "start": 238.421,
-      "end": 238.607
-    },
-    {
-      "word": "green.",
-      "start": 238.653,
-      "end": 239.083
-    },
-    {
-      "word": "]",
-      "start": 239.408,
-      "end": 239.431
-    },
-    {
-      "word": "Phase",
-      "start": 239.71,
-      "end": 239.965
-    },
-    {
-      "word": "eleven:",
-      "start": 239.988,
-      "end": 240.453
-    },
-    {
-      "word": "Documentation.",
-      "start": 240.499,
-      "end": 241.509
-    },
-    {
-      "word": "Update",
-      "start": 241.892,
-      "end": 242.275
-    },
-    {
-      "word": "OpenAPI",
-      "start": 242.31,
-      "end": 242.867
-    },
-    {
-      "word": "spec",
-      "start": 242.902,
-      "end": 243.157
-    },
-    {
-      "word": "and",
-      "start": 243.215,
-      "end": 243.285
-    },
-    {
-      "word": "test",
-      "start": 243.332,
-      "end": 243.541
-    },
-    {
-      "word": "manifest.",
-      "start": 243.599,
-      "end": 244.318
-    },
-    {
-      "word": "]",
-      "start": 244.643,
-      "end": 244.678
-    },
-    {
-      "word": "Phase",
-      "start": 245.375,
-      "end": 245.619
-    },
-    {
-      "word": "twelve:",
-      "start": 245.642,
-      "end": 246.13
-    },
-    {
-      "word": "Complete.",
-      "start": 246.513,
-      "end": 247.221
-    },
-    {
-      "word": "Final",
-      "start": 247.917,
-      "end": 248.185
-    },
-    {
-      "word": "verification",
-      "start": 248.219,
-      "end": 248.858
-    },
-    {
-      "word": "by",
-      "start": 248.916,
-      "end": 248.997
-    },
-    {
-      "word": "the",
-      "start": 249.055,
-      "end": 249.125
-    },
-    {
-      "word": "Stop",
-      "start": 249.171,
-      "end": 249.404
-    },
-    {
-      "word": "hook.",
-      "start": 249.462,
-      "end": 249.822
-    },
-    {
-      "word": "Every",
-      "start": 250.518,
-      "end": 250.797
-    },
-    {
-      "word": "phase",
-      "start": 250.843,
-      "end": 251.099
-    },
-    {
-      "word": "can",
-      "start": 251.122,
-      "end": 251.238
-    },
-    {
-      "word": "loop",
-      "start": 251.296,
-      "end": 251.47
-    },
-    {
-      "word": "back.",
-      "start": 251.528,
-      "end": 251.958
-    },
-    {
-      "word": "If",
-      "start": 252.283,
-      "end": 252.422
-    },
-    {
-      "word": "verification",
-      "start": 252.445,
-      "end": 253.212
-    },
-    {
-      "word": "finds",
-      "start": 253.305,
-      "end": 253.595
-    },
-    {
-      "word": "gaps,",
-      "start": 253.641,
-      "end": 254.222
-    },
-    {
-      "word": "we",
-      "start": 254.373,
-      "end": 254.5
-    },
-    {
-      "word": "return",
-      "start": 254.582,
-      "end": 254.895
-    },
-    {
-      "word": "to",
-      "start": 254.953,
-      "end": 255.023
-    },
-    {
-      "word": "Red",
-      "start": 255.104,
-      "end": 255.325
-    },
-    {
-      "word": "and",
-      "start": 255.406,
-      "end": 255.534
-    },
-    {
-      "word": "write",
-      "start": 255.568,
-      "end": 255.789
-    },
-    {
-      "word": "tests",
-      "start": 255.824,
-      "end": 256.161
-    },
-    {
-      "word": "for",
-      "start": 256.207,
-      "end": 256.335
-    },
-    {
-      "word": "missing",
-      "start": 256.381,
-      "end": 256.66
-    },
-    {
-      "word": "features.",
-      "start": 256.718,
-      "end": 257.333
-    },
-    {
-      "word": "Let's",
-      "start": 258.03,
-      "end": 258.227
-    },
-    {
-      "word": "watch",
-      "start": 258.25,
-      "end": 258.425
-    },
-    {
-      "word": "a",
-      "start": 258.459,
-      "end": 258.483
-    },
-    {
-      "word": "real",
-      "start": 258.541,
-      "end": 258.726
-    },
-    {
-      "word": "example.",
-      "start": 258.784,
-      "end": 259.353
-    },
-    {
-      "word": "Creating",
-      "start": 259.736,
-      "end": 260.178
-    },
-    {
-      "word": "a",
-      "start": 260.259,
-      "end": 260.294
-    },
-    {
-      "word": "Brandfetch",
-      "start": 260.352,
-      "end": 260.885
-    },
-    {
-      "word": "API",
-      "start": 260.943,
-      "end": 261.315
-    },
-    {
-      "word": "endpoint.",
-      "start": 261.385,
-      "end": 261.942
-    },
-    {
-      "word": "]",
-      "start": 262.116,
-      "end": 262.139
-    },
-    {
-      "word": "The",
-      "start": 262.952,
-      "end": 263.08
-    },
-    {
-      "word": "user",
-      "start": 263.161,
-      "end": 263.405
-    },
-    {
-      "word": "types",
-      "start": 263.451,
-      "end": 263.788
-    },
-    {
-      "word": "/api-create",
-      "start": 263.904,
-      "end": 264.879
-    },
-    {
-      "word": "brandfetch.",
-      "start": 264.902,
-      "end": 265.564
-    },
-    {
-      "word": "The",
-      "start": 265.738,
-      "end": 265.855
-    },
-    {
-      "word": "twelve-phase",
-      "start": 265.889,
-      "end": 266.435
-    },
-    {
-      "word": "workflow",
-      "start": 266.47,
-      "end": 266.865
-    },
-    {
-      "word": "begins.",
-      "start": 266.934,
-      "end": 267.492
-    },
-    {
-      "word": "]",
-      "start": 267.817,
-      "end": 267.851
-    },
-    {
-      "word": "Claude",
-      "start": 268.026,
-      "end": 268.281
-    },
-    {
-      "word": "confirms",
-      "start": 268.304,
-      "end": 268.699
-    },
-    {
-      "word": "scope.",
-      "start": 268.722,
-      "end": 269.175
-    },
-    {
-      "word": "We're",
-      "start": 269.5,
-      "end": 269.686
-    },
-    {
-      "word": "building",
-      "start": 269.709,
-      "end": 269.976
+      "start": 3.611,
+      "end": 3.704
     },
     {
       "word": "an",
-      "start": 270.011,
-      "end": 270.069
+      "start": 3.762,
+      "end": 3.831
     },
     {
-      "word": "endpoint",
-      "start": 270.127,
-      "end": 270.545
+      "word": "interview-driven,",
+      "start": 3.889,
+      "end": 4.807
     },
     {
-      "word": "to",
-      "start": 270.591,
-      "end": 270.649
+      "word": "research-first",
+      "start": 4.957,
+      "end": 5.724
     },
     {
-      "word": "fetch",
-      "start": 270.731,
-      "end": 270.963
-    },
-    {
-      "word": "brand",
-      "start": 271.009,
-      "end": 271.276
-    },
-    {
-      "word": "assets",
-      "start": 271.334,
-      "end": 271.718
-    },
-    {
-      "word": "by",
-      "start": 271.764,
-      "end": 271.88
-    },
-    {
-      "word": "domain.",
-      "start": 271.95,
-      "end": 272.472
-    },
-    {
-      "word": "]",
-      "start": 272.855,
-      "end": 272.89
-    },
-    {
-      "word": "Initial",
-      "start": 273.134,
-      "end": 273.552
-    },
-    {
-      "word": "research.",
-      "start": 273.61,
-      "end": 274.179
-    },
-    {
-      "word": "Claude",
-      "start": 274.562,
-      "end": 274.817
-    },
-    {
-      "word": "uses",
-      "start": 274.864,
-      "end": 275.131
-    },
-    {
-      "word": "Context7",
-      "start": 275.189,
-      "end": 275.99
-    },
-    {
-      "word": "to",
-      "start": 276.164,
-      "end": 276.234
-    },
-    {
-      "word": "find",
-      "start": 276.292,
-      "end": 276.478
-    },
-    {
-      "word": "the",
-      "start": 276.512,
-      "end": 276.582
-    },
-    {
-      "word": "SDK",
-      "start": 276.64,
-      "end": 277.058
-    },
-    {
-      "word": "documentation.",
-      "start": 277.267,
-      "end": 278.242
-    },
-    {
-      "word": "WebSearch",
-      "start": 278.846,
-      "end": 279.345
-    },
-    {
-      "word": "finds",
-      "start": 279.403,
-      "end": 279.658
-    },
-    {
-      "word": "rate",
-      "start": 279.716,
-      "end": 279.891
-    },
-    {
-      "word": "limits",
-      "start": 279.925,
-      "end": 280.309
-    },
-    {
-      "word": "and",
-      "start": 280.587,
-      "end": 280.75
-    },
-    {
-      "word": "response",
-      "start": 280.808,
-      "end": 281.261
-    },
-    {
-      "word": "formats.",
-      "start": 281.295,
-      "end": 281.992
-    },
-    {
-      "word": "]",
-      "start": 282.689,
-      "end": 282.816
-    },
-    {
-      "word": "Interview",
-      "start": 283.42,
-      "end": 283.78
-    },
-    {
-      "word": "begins.",
-      "start": 283.838,
-      "end": 284.453
-    },
-    {
-      "word": "But",
-      "start": 285.15,
-      "end": 285.312
-    },
-    {
-      "word": "notice:",
-      "start": 285.359,
-      "end": 285.823
-    },
-    {
-      "word": "the",
-      "start": 285.997,
-      "end": 286.09
-    },
-    {
-      "word": "questions",
-      "start": 286.137,
-      "end": 286.531
-    },
-    {
-      "word": "are",
-      "start": 286.566,
-      "end": 286.671
-    },
-    {
-      "word": "specific",
-      "start": 286.717,
-      "end": 287.251
-    },
-    {
-      "word": "to",
-      "start": 287.298,
-      "end": 287.356
-    },
-    {
-      "word": "what",
-      "start": 287.414,
-      "end": 287.542
-    },
-    {
-      "word": "Claude",
-      "start": 287.6,
-      "end": 287.936
-    },
-    {
-      "word": "actually",
-      "start": 287.983,
-      "end": 288.494
-    },
-    {
-      "word": "found.",
-      "start": 288.552,
-      "end": 289.004
-    },
-    {
-      "word": "What's",
-      "start": 289.701,
-      "end": 289.933
-    },
-    {
-      "word": "the",
-      "start": 289.98,
-      "end": 290.049
-    },
-    {
-      "word": "primary",
-      "start": 290.084,
-      "end": 290.514
-    },
-    {
-      "word": "purpose?",
-      "start": 290.583,
-      "end": 291.233
-    },
-    {
-      "word": "Options",
-      "start": 291.675,
-      "end": 292.151
-    },
-    {
-      "word": "come",
-      "start": 292.209,
-      "end": 292.371
-    },
-    {
-      "word": "from",
-      "start": 292.406,
-      "end": 292.534
-    },
-    {
-      "word": "the",
-      "start": 292.58,
-      "end": 292.65
-    },
-    {
-      "word": "documentation.",
-      "start": 292.685,
-      "end": 293.776
-    },
-    {
-      "word": "]",
-      "start": 294.217,
-      "end": 294.24
-    },
-    {
-      "word": "User",
-      "start": 294.415,
-      "end": 294.705
-    },
-    {
-      "word": "selects:",
-      "start": 294.751,
-      "end": 295.297
-    },
-    {
-      "word": "Full",
-      "start": 295.622,
-      "end": 295.877
-    },
-    {
-      "word": "brand",
-      "start": 295.936,
-      "end": 296.191
-    },
-    {
-      "word": "kit",
-      "start": 296.249,
-      "end": 296.47
-    },
-    {
-      "word": "with",
-      "start": 296.528,
-      "end": 296.667
-    },
-    {
-      "word": "logos,",
-      "start": 296.748,
-      "end": 297.213
-    },
-    {
-      "word": "colors,",
-      "start": 297.248,
-      "end": 297.654
-    },
-    {
-      "word": "and",
-      "start": 297.677,
-      "end": 297.793
-    },
-    {
-      "word": "fonts.",
-      "start": 297.863,
-      "end": 298.42
-    },
-    {
-      "word": "]",
-      "start": 298.699,
-      "end": 298.722
-    },
-    {
-      "word": "More",
-      "start": 298.931,
-      "end": 299.14
-    },
-    {
-      "word": "questions.",
-      "start": 299.187,
-      "end": 299.988
-    },
-    {
-      "word": "How",
-      "start": 300.266,
-      "end": 300.429
-    },
-    {
-      "word": "should",
-      "start": 300.487,
-      "end": 300.661
-    },
-    {
-      "word": "API",
-      "start": 300.719,
-      "end": 301.056
-    },
-    {
-      "word": "keys",
-      "start": 301.137,
-      "end": 301.346
-    },
-    {
-      "word": "be",
-      "start": 301.416,
-      "end": 301.509
-    },
-    {
-      "word": "handled?",
-      "start": 301.555,
-      "end": 302.066
-    },
-    {
-      "word": "User",
-      "start": 302.391,
-      "end": 302.681
-    },
-    {
-      "word": "selects",
-      "start": 302.739,
-      "end": 303.076
-    },
-    {
-      "word": "server",
-      "start": 303.122,
-      "end": 303.459
-    },
-    {
-      "word": "environment",
-      "start": 303.517,
-      "end": 303.97
-    },
-    {
-      "word": "variables",
-      "start": 304.016,
-      "end": 304.527
-    },
-    {
-      "word": "only.",
-      "start": 304.597,
-      "end": 305.061
-    },
-    {
-      "word": "]",
-      "start": 305.444,
-      "end": 305.479
-    },
-    {
-      "word": "Deep",
-      "start": 305.688,
-      "end": 305.92
-    },
-    {
-      "word": "research.",
-      "start": 306.013,
-      "end": 306.722
-    },
-    {
-      "word": "Based",
-      "start": 307.105,
-      "end": 307.383
-    },
-    {
-      "word": "on",
-      "start": 307.43,
-      "end": 307.499
-    },
-    {
-      "word": "your",
-      "start": 307.557,
-      "end": 307.685
-    },
-    {
-      "word": "selections,",
-      "start": 307.743,
-      "end": 308.463
-    },
-    {
-      "word": "Claude",
-      "start": 308.614,
-      "end": 308.974
-    },
-    {
-      "word": "proposes",
-      "start": 309.009,
-      "end": 309.496
-    },
-    {
-      "word": "specific",
-      "start": 309.554,
-      "end": 310.065
-    },
-    {
-      "word": "searches",
-      "start": 310.123,
-      "end": 310.657
+      "word": "workflow",
+      "start": 5.782,
+      "end": 6.281
     },
     {
       "word": "for",
-      "start": 311.099,
-      "end": 311.249
-    },
-    {
-      "word": "the",
-      "start": 311.296,
-      "end": 311.366
-    },
-    {
-      "word": "full",
-      "start": 311.447,
-      "end": 311.714
-    },
-    {
-      "word": "brand",
-      "start": 311.795,
-      "end": 312.109
-    },
-    {
-      "word": "response",
-      "start": 312.178,
-      "end": 312.608
-    },
-    {
-      "word": "format.",
-      "start": 312.654,
-      "end": 313.212
-    },
-    {
-      "word": "]",
-      "start": 313.537,
-      "end": 313.56
-    },
-    {
-      "word": "Schema",
-      "start": 313.769,
-      "end": 314.14
-    },
-    {
-      "word": "created.",
-      "start": 314.198,
-      "end": 314.825
-    },
-    {
-      "word": "Zod",
-      "start": 315.336,
-      "end": 315.591
-    },
-    {
-      "word": "types",
-      "start": 315.638,
-      "end": 315.905
-    },
-    {
-      "word": "based",
-      "start": 315.951,
-      "end": 316.195
-    },
-    {
-      "word": "on",
-      "start": 316.23,
-      "end": 316.311
-    },
-    {
-      "word": "research",
-      "start": 316.381,
-      "end": 316.822
-    },
-    {
-      "word": "plus",
-      "start": 316.892,
-      "end": 317.135
-    },
-    {
-      "word": "interview",
-      "start": 317.193,
-      "end": 317.6
-    },
-    {
-      "word": "decisions.",
-      "start": 317.658,
-      "end": 318.436
-    },
-    {
-      "word": "]",
-      "start": 318.761,
-      "end": 318.796
-    },
-    {
-      "word": "Environment",
-      "start": 318.97,
-      "end": 319.55
-    },
-    {
-      "word": "check.",
-      "start": 319.585,
-      "end": 320.003
-    },
-    {
-      "word": "The",
-      "start": 320.444,
-      "end": 320.572
-    },
-    {
-      "word": "hook",
-      "start": 320.618,
-      "end": 320.781
-    },
-    {
-      "word": "verifies",
-      "start": 320.851,
-      "end": 321.419
-    },
-    {
-      "word": "BRANDFETCH_API_KEY",
-      "start": 321.535,
-      "end": 322.789
-    },
-    {
-      "word": "exists.",
-      "start": 322.813,
-      "end": 323.486
-    },
-    {
-      "word": "]",
-      "start": 323.765,
-      "end": 323.788
-    },
-    {
-      "word": "TDD",
-      "start": 324.902,
-      "end": 325.251
-    },
-    {
-      "word": "Red.",
-      "start": 325.576,
-      "end": 326.098
+      "start": 6.362,
+      "end": 6.49
     },
     {
       "word": "Claude",
-      "start": 327.05,
-      "end": 327.306
+      "start": 6.536,
+      "end": 6.815
     },
     {
-      "word": "writes",
-      "start": 327.329,
-      "end": 327.573
-    },
-    {
-      "word": "twelve",
-      "start": 327.631,
-      "end": 327.956
-    },
-    {
-      "word": "failing",
-      "start": 328.002,
-      "end": 328.327
-    },
-    {
-      "word": "test",
-      "start": 328.385,
-      "end": 328.594
-    },
-    {
-      "word": "cases.",
-      "start": 328.641,
-      "end": 329.279
-    },
-    {
-      "word": "]",
-      "start": 329.604,
-      "end": 329.628
-    },
-    {
-      "word": "TDD",
-      "start": 329.871,
-      "end": 330.255
-    },
-    {
-      "word": "Green.",
-      "start": 330.324,
-      "end": 330.812
-    },
-    {
-      "word": "Implementation",
-      "start": 330.986,
-      "end": 331.787
-    },
-    {
-      "word": "begins.",
-      "start": 331.845,
-      "end": 332.565
-    },
-    {
-      "word": "Watch",
-      "start": 333.169,
-      "end": 333.447
-    },
-    {
-      "word": "the",
-      "start": 333.494,
-      "end": 333.563
-    },
-    {
-      "word": "hook",
-      "start": 333.61,
-      "end": 333.772
-    },
-    {
-      "word": "inject",
-      "start": 333.819,
-      "end": 334.121
-    },
-    {
-      "word": "interview",
-      "start": 334.179,
-      "end": 334.608
-    },
-    {
-      "word": "decisions.",
-      "start": 334.678,
-      "end": 335.468
-    },
-    {
-      "word": "]",
-      "start": 335.793,
-      "end": 335.816
-    },
-    {
-      "word": "The",
-      "start": 336.257,
-      "end": 336.373
-    },
-    {
-      "word": "hook",
-      "start": 336.42,
-      "end": 336.571
-    },
-    {
-      "word": "reminds",
-      "start": 336.64,
-      "end": 336.977
-    },
-    {
-      "word": "Claude:",
-      "start": 337.012,
-      "end": 337.441
-    },
-    {
-      "word": "Remember",
-      "start": 337.65,
-      "end": 338.138
-    },
-    {
-      "word": "user",
-      "start": 338.312,
-      "end": 338.602
-    },
-    {
-      "word": "decisions.",
-      "start": 338.66,
-      "end": 339.438
-    },
-    {
-      "word": "Purpose:",
-      "start": 339.763,
-      "end": 340.471
-    },
-    {
-      "word": "full",
-      "start": 340.913,
-      "end": 341.098
-    },
-    {
-      "word": "brand",
-      "start": 341.122,
-      "end": 341.342
-    },
-    {
-      "word": "kit.",
-      "start": 341.4,
-      "end": 341.83
-    },
-    {
-      "word": "API",
-      "start": 342.213,
-      "end": 342.712
-    },
-    {
-      "word": "key",
-      "start": 343.525,
-      "end": 343.711
-    },
-    {
-      "word": "handling:",
-      "start": 343.769,
-      "end": 344.338
-    },
-    {
-      "word": "server",
-      "start": 344.663,
-      "end": 344.965
-    },
-    {
-      "word": "only.",
-      "start": 345.034,
-      "end": 345.533
-    },
-    {
-      "word": "]",
-      "start": 345.859,
-      "end": 345.893
-    },
-    {
-      "word": "Phase",
-      "start": 346.218,
-      "end": 346.497
-    },
-    {
-      "word": "nine:",
-      "start": 346.543,
-      "end": 346.927
-    },
-    {
-      "word": "Verify.",
-      "start": 347.368,
-      "end": 348.064
-    },
-    {
-      "word": "Claude",
-      "start": 348.877,
-      "end": 349.167
-    },
-    {
-      "word": "re-reads",
-      "start": 349.202,
-      "end": 349.678
-    },
-    {
-      "word": "the",
-      "start": 349.725,
-      "end": 349.794
-    },
-    {
-      "word": "Brandfetch",
-      "start": 349.841,
-      "end": 350.398
-    },
-    {
-      "word": "documentation",
-      "start": 350.468,
-      "end": 351.327
-    },
-    {
-      "word": "and",
-      "start": 351.71,
-      "end": 351.907
-    },
-    {
-      "word": "compares",
-      "start": 351.954,
-      "end": 352.395
-    },
-    {
-      "word": "to",
-      "start": 352.453,
-      "end": 352.523
-    },
-    {
-      "word": "implementation.",
-      "start": 352.604,
-      "end": 353.626
-    },
-    {
-      "word": "All",
-      "start": 353.951,
-      "end": 354.148
-    },
-    {
-      "word": "features",
-      "start": 354.206,
-      "end": 354.578
-    },
-    {
-      "word": "accounted",
-      "start": 354.612,
-      "end": 354.972
-    },
-    {
-      "word": "for.",
-      "start": 355.019,
-      "end": 355.448
-    },
-    {
-      "word": "]",
-      "start": 355.831,
-      "end": 355.866
-    },
-    {
-      "word": "Refactor.",
-      "start": 356.075,
-      "end": 356.876
-    },
-    {
-      "word": "Code",
-      "start": 356.992,
-      "end": 357.259
-    },
-    {
-      "word": "cleaned",
-      "start": 357.282,
-      "end": 357.561
-    },
-    {
-      "word": "up.",
-      "start": 357.607,
-      "end": 357.863
-    },
-    {
-      "word": "Tests",
-      "start": 357.956,
-      "end": 358.339
-    },
-    {
-      "word": "still",
-      "start": 358.455,
-      "end": 358.734
-    },
-    {
-      "word": "pass.",
-      "start": 358.803,
-      "end": 359.361
-    },
-    {
-      "word": "]",
-      "start": 359.744,
-      "end": 359.767
-    },
-    {
-      "word": "Documentation",
-      "start": 359.918,
-      "end": 360.649
-    },
-    {
-      "word": "updated.",
-      "start": 360.731,
-      "end": 361.404
-    },
-    {
-      "word": "API",
-      "start": 361.578,
-      "end": 362.031
-    },
-    {
-      "word": "test",
-      "start": 362.124,
-      "end": 362.333
-    },
-    {
-      "word": "manifest",
-      "start": 362.402,
-      "end": 363.029
-    },
-    {
-      "word": "and",
-      "start": 363.412,
-      "end": 363.598
-    },
-    {
-      "word": "OpenAPI",
-      "start": 363.691,
-      "end": 364.411
-    },
-    {
-      "word": "spec.",
-      "start": 364.492,
-      "end": 364.991
-    },
-    {
-      "word": "]",
-      "start": 365.317,
-      "end": 365.34
-    },
-    {
-      "word": "Complete.",
-      "start": 365.549,
-      "end": 366.176
-    },
-    {
-      "word": "All",
-      "start": 366.501,
-      "end": 366.675
-    },
-    {
-      "word": "twelve",
-      "start": 366.721,
-      "end": 366.977
-    },
-    {
-      "word": "phases",
-      "start": 367,
-      "end": 367.371
-    },
-    {
-      "word": "verified.",
-      "start": 367.43,
-      "end": 368.115
-    },
-    {
-      "word": "Four",
-      "start": 368.265,
-      "end": 368.474
-    },
-    {
-      "word": "files",
-      "start": 368.544,
-      "end": 368.858
-    },
-    {
-      "word": "created.",
-      "start": 368.916,
-      "end": 369.519
-    },
-    {
-      "word": "Twelve",
-      "start": 369.844,
-      "end": 370.146
-    },
-    {
-      "word": "tests",
-      "start": 370.181,
-      "end": 370.46
-    },
-    {
-      "word": "passing.",
-      "start": 370.506,
-      "end": 371.122
-    },
-    {
-      "word": "Installation",
-      "start": 371.447,
-      "end": 372.143
-    },
-    {
-      "word": "takes",
-      "start": 372.201,
-      "end": 372.433
-    },
-    {
-      "word": "one",
-      "start": 372.503,
-      "end": 372.724
-    },
-    {
-      "word": "command.",
-      "start": 372.759,
-      "end": 373.362
-    },
-    {
-      "word": "Run",
-      "start": 373.745,
-      "end": 374.012
-    },
-    {
-      "word": "npx",
-      "start": 374.047,
-      "end": 374.512
-    },
-    {
-      "word": "@hustle-together/api-dev-tools.",
-      "start": 374.721,
-      "end": 377.101
-    },
-    {
-      "word": "That's",
-      "start": 377.426,
-      "end": 377.716
-    },
-    {
-      "word": "it.",
-      "start": 377.786,
-      "end": 378.088
-    },
-    {
-      "word": "The",
-      "start": 378.785,
-      "end": 378.912
-    },
-    {
-      "word": "CLI",
-      "start": 378.982,
-      "end": 379.609
-    },
-    {
-      "word": "copies",
-      "start": 379.76,
-      "end": 380.41
-    },
-    {
-      "word": "slash",
-      "start": 380.561,
-      "end": 380.944
-    },
-    {
-      "word": "commands,",
-      "start": 380.99,
-      "end": 381.594
-    },
-    {
-      "word": "Python",
-      "start": 381.71,
-      "end": 382.117
-    },
-    {
-      "word": "hooks,",
-      "start": 382.163,
-      "end": 382.569
-    },
-    {
-      "word": "and",
-      "start": 383.266,
-      "end": 383.394
-    },
-    {
-      "word": "settings.",
-      "start": 383.463,
-      "end": 384.079
-    },
-    {
-      "word": "It",
-      "start": 384.462,
-      "end": 384.59
-    },
-    {
-      "word": "creates",
-      "start": 384.636,
-      "end": 384.973
-    },
-    {
-      "word": "the",
-      "start": 385.031,
-      "end": 385.1
-    },
-    {
-      "word": "research",
-      "start": 385.17,
-      "end": 385.588
-    },
-    {
-      "word": "cache",
-      "start": 385.658,
-      "end": 385.96
-    },
-    {
-      "word": "folder",
-      "start": 386.006,
-      "end": 386.389
-    },
-    {
-      "word": "and",
-      "start": 386.47,
-      "end": 386.598
-    },
-    {
-      "word": "updates",
-      "start": 386.656,
-      "end": 387.074
-    },
-    {
-      "word": "your",
-      "start": 387.121,
-      "end": 387.248
-    },
-    {
-      "word": "CLAUDE.md",
-      "start": 387.295,
-      "end": 388.038
-    },
-    {
-      "word": "with",
-      "start": 388.363,
-      "end": 388.56
-    },
-    {
-      "word": "workflow",
-      "start": 388.63,
-      "end": 389.094
-    },
-    {
-      "word": "documentation.",
-      "start": 389.164,
-      "end": 390.22
-    },
-    {
-      "word": "The",
-      "start": 390.824,
-      "end": 390.94
-    },
-    {
-      "word": "CLI",
-      "start": 390.987,
-      "end": 391.497
-    },
-    {
-      "word": "adds",
-      "start": 391.881,
-      "end": 392.194
-    },
-    {
-      "word": "automatic",
-      "start": 392.24,
-      "end": 392.67
-    },
-    {
-      "word": "CLAUDE.md",
-      "start": 392.717,
-      "end": 393.332
-    },
-    {
-      "word": "updates",
-      "start": 393.843,
-      "end": 394.47
-    },
-    {
-      "word": "so",
-      "start": 394.853,
-      "end": 394.992
-    },
-    {
-      "word": "Claude",
-      "start": 395.05,
-      "end": 395.305
-    },
-    {
-      "word": "understands",
-      "start": 395.363,
-      "end": 395.944
-    },
-    {
-      "word": "the",
-      "start": 395.99,
-      "end": 396.06
-    },
-    {
-      "word": "workflow",
-      "start": 396.106,
-      "end": 396.582
-    },
-    {
-      "word": "in",
-      "start": 396.664,
-      "end": 396.745
-    },
-    {
-      "word": "your",
-      "start": 396.791,
-      "end": 396.907
-    },
-    {
-      "word": "project.",
-      "start": 396.942,
-      "end": 397.581
-    },
-    {
-      "word": "Your",
-      "start": 398.184,
-      "end": 398.335
-    },
-    {
-      "word": "project",
-      "start": 398.37,
-      "end": 398.753
-    },
-    {
-      "word": "is",
-      "start": 398.8,
-      "end": 398.881
-    },
-    {
-      "word": "now",
-      "start": 398.951,
-      "end": 399.09
-    },
-    {
-      "word": "enforced.",
-      "start": 399.148,
-      "end": 399.856
-    },
-    {
-      "word": "Every",
-      "start": 400.298,
-      "end": 400.646
-    },
-    {
-      "word": "API",
-      "start": 400.739,
-      "end": 401.226
-    },
-    {
-      "word": "follows",
-      "start": 401.319,
-      "end": 401.667
-    },
-    {
-      "word": "the",
-      "start": 401.749,
-      "end": 401.842
-    },
-    {
-      "word": "twelve-phase",
-      "start": 401.9,
-      "end": 402.631
-    },
-    {
-      "word": "workflow.",
-      "start": 402.666,
-      "end": 403.339
-    },
-    {
-      "word": "This",
-      "start": 403.781,
-      "end": 403.978
-    },
-    {
-      "word": "project",
-      "start": 404.059,
-      "end": 404.5
-    },
-    {
-      "word": "builds",
-      "start": 404.558,
-      "end": 404.849
-    },
-    {
-      "word": "on",
-      "start": 404.895,
-      "end": 404.965
-    },
-    {
-      "word": "the",
-      "start": 405,
-      "end": 405.069
-    },
-    {
-      "word": "work",
-      "start": 405.104,
-      "end": 405.267
-    },
-    {
-      "word": "of",
-      "start": 405.313,
-      "end": 405.371
-    },
-    {
-      "word": "others.",
-      "start": 405.441,
-      "end": 405.986
-    },
-    {
-      "word": "The",
-      "start": 406.497,
-      "end": 406.625
-    },
-    {
-      "word": "TDD",
-      "start": 406.683,
-      "end": 407.089
-    },
-    {
-      "word": "workflow",
-      "start": 407.171,
-      "end": 407.6
-    },
-    {
-      "word": "is",
-      "start": 407.658,
-      "end": 407.739
-    },
-    {
-      "word": "based",
-      "start": 407.798,
-      "end": 408.053
-    },
-    {
-      "word": "on",
-      "start": 408.088,
-      "end": 408.169
-    },
-    {
-      "word": "@wbern/claude-instructions",
-      "start": 408.216,
-      "end": 409.945
-    },
-    {
-      "word": "by",
-      "start": 410.015,
-      "end": 410.143
-    },
-    {
-      "word": "William",
-      "start": 410.201,
-      "end": 410.526
-    },
-    {
-      "word": "Bernmalm.",
-      "start": 410.584,
-      "end": 411.211
-    },
-    {
-      "word": "Context7",
-      "start": 412.163,
-      "end": 412.918
-    },
-    {
-      "word": "provides",
-      "start": 413.092,
-      "end": 413.498
-    },
-    {
-      "word": "live",
-      "start": 413.568,
-      "end": 413.765
-    },
-    {
-      "word": "documentation",
-      "start": 413.812,
-      "end": 414.601
-    },
-    {
-      "word": "lookup.",
-      "start": 414.659,
-      "end": 415.193
-    },
-    {
-      "word": "Current",
-      "start": 415.576,
-      "end": 415.867
-    },
-    {
-      "word": "docs,",
-      "start": 415.913,
-      "end": 416.54
-    },
-    {
-      "word": "not",
-      "start": 416.668,
-      "end": 416.83
-    },
-    {
-      "word": "stale",
-      "start": 416.877,
-      "end": 417.121
-    },
-    {
-      "word": "training",
-      "start": 417.144,
-      "end": 417.446
-    },
-    {
-      "word": "data.",
-      "start": 417.504,
-      "end": 417.957
-    },
-    {
-      "word": "And",
-      "start": 418.34,
-      "end": 418.537
-    },
-    {
-      "word": "the",
-      "start": 418.583,
-      "end": 418.653
-    },
-    {
-      "word": "interview",
-      "start": 418.711,
-      "end": 419.176
-    },
-    {
-      "word": "methodology",
-      "start": 419.385,
-      "end": 420.174
-    },
-    {
-      "word": "ensures",
-      "start": 420.557,
-      "end": 420.975
-    },
-    {
-      "word": "questions",
-      "start": 421.033,
-      "end": 421.44
-    },
-    {
-      "word": "come",
-      "start": 421.486,
-      "end": 421.637
-    },
-    {
-      "word": "from",
-      "start": 421.66,
-      "end": 421.799
-    },
-    {
-      "word": "research,",
-      "start": 421.869,
-      "end": 422.508
-    },
-    {
-      "word": "not",
-      "start": 422.751,
-      "end": 422.926
-    },
-    {
-      "word": "templates.",
-      "start": 422.972,
-      "end": 423.727
-    },
-    {
-      "word": "Thank",
-      "start": 424.238,
-      "end": 424.458
-    },
-    {
-      "word": "you",
-      "start": 424.493,
-      "end": 424.574
-    },
-    {
-      "word": "to",
-      "start": 424.644,
-      "end": 424.702
-    },
-    {
-      "word": "the",
-      "start": 424.76,
-      "end": 424.83
-    },
-    {
-      "word": "Claude",
-      "start": 424.864,
-      "end": 425.12
-    },
-    {
-      "word": "Code",
-      "start": 425.143,
-      "end": 425.329
-    },
-    {
-      "word": "community.",
-      "start": 425.352,
-      "end": 426.037
-    },
-    {
-      "word": "Together,",
-      "start": 426.362,
-      "end": 426.931
-    },
-    {
-      "word": "we're",
-      "start": 427.024,
-      "end": 427.198
-    },
-    {
-      "word": "making",
-      "start": 427.221,
-      "end": 427.488
-    },
-    {
-      "word": "AI",
-      "start": 427.546,
-      "end": 427.941
-    },
-    {
-      "word": "development",
-      "start": 428.011,
-      "end": 428.591
-    },
-    {
-      "word": "better.",
-      "start": 428.707,
-      "end": 429.253
-    },
-    {
-      "word": "Hustle",
-      "start": 430.205,
-      "end": 430.693
-    },
-    {
-      "word": "API",
-      "start": 430.82,
-      "end": 431.354
-    },
-    {
-      "word": "Dev",
-      "start": 432.306,
-      "end": 432.515
-    },
-    {
-      "word": "Tools",
-      "start": 432.562,
-      "end": 432.84
-    },
-    {
-      "word": "version",
-      "start": 432.91,
-      "end": 433.235
-    },
-    {
-      "word": "one.",
-      "start": 433.316,
-      "end": 433.723
-    },
-    {
-      "word": "Twelve",
-      "start": 434.048,
-      "end": 434.338
-    },
-    {
-      "word": "phases.",
-      "start": 434.361,
-      "end": 434.953
-    },
-    {
-      "word": "Loop-back",
-      "start": 435.279,
-      "end": 435.697
-    },
-    {
-      "word": "architecture.",
-      "start": 435.778,
-      "end": 436.707
+      "word": "Code.",
+      "start": 6.85,
+      "end": 7.372
     },
     {
       "word": "Continuous",
-      "start": 437.09,
-      "end": 437.705
+      "start": 7.976,
+      "end": 8.487
     },
     {
-      "word": "verification.",
-      "start": 437.763,
-      "end": 438.715
+      "word": "verification",
+      "start": 8.533,
+      "end": 9.276
     },
     {
-      "word": "Research",
-      "start": 439.098,
-      "end": 439.516
+      "word": "loops",
+      "start": 9.346,
+      "end": 9.671
     },
     {
-      "word": "first.",
-      "start": 439.574,
-      "end": 440.12
+      "word": "ensure",
+      "start": 9.845,
+      "end": 10.182
     },
     {
-      "word": "Questions",
-      "start": 440.724,
-      "end": 441.188
+      "word": "the",
+      "start": 10.217,
+      "end": 10.298
     },
     {
-      "word": "FROM",
-      "start": 441.234,
-      "end": 441.385
+      "word": "AI",
+      "start": 10.344,
+      "end": 10.728
     },
     {
-      "word": "findings.",
-      "start": 441.467,
-      "end": 442.163
+      "word": "never",
+      "start": 10.786,
+      "end": 10.995
     },
     {
-      "word": "Verify",
-      "start": 442.546,
-      "end": 443.057
+      "word": "falls",
+      "start": 11.053,
+      "end": 11.296
     },
     {
-      "word": "after",
-      "start": 443.139,
-      "end": 443.44
+      "word": "back",
+      "start": 11.343,
+      "end": 11.529
     },
     {
-      "word": "green.",
-      "start": 443.498,
-      "end": 443.951
+      "word": "to",
+      "start": 11.587,
+      "end": 11.645
     },
     {
-      "word": "Document",
-      "start": 444.392,
-      "end": 444.88
+      "word": "outdated",
+      "start": 11.738,
+      "end": 12.225
     },
     {
-      "word": "always.",
-      "start": 444.926,
-      "end": 445.519
+      "word": "training",
+      "start": 12.272,
+      "end": 12.62
     },
     {
-      "word": "Install",
-      "start": 445.902,
-      "end": 446.285
+      "word": "data.",
+      "start": 12.678,
+      "end": 13.131
     },
     {
-      "word": "it",
-      "start": 446.354,
-      "end": 446.424
+      "word": "One",
+      "start": 13.944,
+      "end": 14.129
     },
     {
-      "word": "now",
-      "start": 446.482,
-      "end": 446.645
+      "word": "command",
+      "start": 14.164,
+      "end": 14.617
     },
     {
-      "word": "with",
-      "start": 446.703,
-      "end": 446.854
+      "word": "installs",
+      "start": 14.698,
+      "end": 15.105
+    },
+    {
+      "word": "everything.",
+      "start": 15.151,
+      "end": 15.766
     },
     {
       "word": "npx",
-      "start": 446.9,
-      "end": 447.411
+      "start": 16.37,
+      "end": 16.765
     },
     {
       "word": "@hustle-together/api-dev-tools.",
-      "start": 447.655,
-      "end": 450.093
+      "start": 16.974,
+      "end": 19.923
+    },
+    {
+      "word": "The",
+      "start": 20.619,
+      "end": 20.747
+    },
+    {
+      "word": "philosophy",
+      "start": 20.793,
+      "end": 21.316
+    },
+    {
+      "word": "is",
+      "start": 21.374,
+      "end": 21.444
+    },
+    {
+      "word": "simple:",
+      "start": 21.49,
+      "end": 22.001
+    },
+    {
+      "word": "Research",
+      "start": 22.442,
+      "end": 22.86
+    },
+    {
+      "word": "first.",
+      "start": 22.918,
+      "end": 23.441
+    },
+    {
+      "word": "Interview",
+      "start": 23.719,
+      "end": 24.137
+    },
+    {
+      "word": "second.",
+      "start": 24.207,
+      "end": 24.787
+    },
+    {
+      "word": "Test",
+      "start": 25.112,
+      "end": 25.379
+    },
+    {
+      "word": "before",
+      "start": 25.426,
+      "end": 25.786
+    },
+    {
+      "word": "code.",
+      "start": 25.844,
+      "end": 26.331
+    },
+    {
+      "word": "Document",
+      "start": 26.506,
+      "end": 26.982
+    },
+    {
+      "word": "always.",
+      "start": 27.04,
+      "end": 27.725
+    },
+    {
+      "word": "Let's",
+      "start": 28.003,
+      "end": 28.235
+    },
+    {
+      "word": "talk",
+      "start": 28.282,
+      "end": 28.549
+    },
+    {
+      "word": "about",
+      "start": 28.665,
+      "end": 28.897
+    },
+    {
+      "word": "the",
+      "start": 28.932,
+      "end": 29.001
+    },
+    {
+      "word": "problem.",
+      "start": 29.048,
+      "end": 29.651
+    },
+    {
+      "word": "Six",
+      "start": 30.603,
+      "end": 30.975
+    },
+    {
+      "word": "failure",
+      "start": 31.091,
+      "end": 31.521
+    },
+    {
+      "word": "modes",
+      "start": 31.567,
+      "end": 31.95
+    },
+    {
+      "word": "break",
+      "start": 32.124,
+      "end": 32.507
+    },
+    {
+      "word": "AI-assisted",
+      "start": 32.658,
+      "end": 33.425
+    },
+    {
+      "word": "API",
+      "start": 33.471,
+      "end": 33.877
+    },
+    {
+      "word": "development.",
+      "start": 33.935,
+      "end": 34.609
+    },
+    {
+      "word": "Problem",
+      "start": 35.305,
+      "end": 35.689
+    },
+    {
+      "word": "one:",
+      "start": 35.77,
+      "end": 36.153
+    },
+    {
+      "word": "Outdated",
+      "start": 36.536,
+      "end": 37.059
+    },
+    {
+      "word": "documentation.",
+      "start": 37.093,
+      "end": 38.138
+    },
+    {
+      "word": "AI",
+      "start": 38.649,
+      "end": 38.939
+    },
+    {
+      "word": "training",
+      "start": 38.986,
+      "end": 39.288
+    },
+    {
+      "word": "data",
+      "start": 39.346,
+      "end": 39.659
+    },
+    {
+      "word": "can",
+      "start": 40.042,
+      "end": 40.205
+    },
+    {
+      "word": "be",
+      "start": 40.263,
+      "end": 40.356
+    },
+    {
+      "word": "months",
+      "start": 40.414,
+      "end": 40.681
+    },
+    {
+      "word": "or",
+      "start": 40.762,
+      "end": 40.855
+    },
+    {
+      "word": "years",
+      "start": 40.925,
+      "end": 41.168
+    },
+    {
+      "word": "old.",
+      "start": 41.238,
+      "end": 41.644
+    },
+    {
+      "word": "APIs",
+      "start": 42.596,
+      "end": 43.096
+    },
+    {
+      "word": "change",
+      "start": 43.154,
+      "end": 43.421
+    },
+    {
+      "word": "constantly",
+      "start": 43.467,
+      "end": 43.99
+    },
+    {
+      "word": "with",
+      "start": 44.048,
+      "end": 44.175
+    },
+    {
+      "word": "new",
+      "start": 44.233,
+      "end": 44.361
+    },
+    {
+      "word": "endpoints",
+      "start": 44.419,
+      "end": 44.93
+    },
+    {
+      "word": "and",
+      "start": 45.255,
+      "end": 45.406
+    },
+    {
+      "word": "deprecated",
+      "start": 45.464,
+      "end": 46.01
+    },
+    {
+      "word": "parameters.",
+      "start": 46.068,
+      "end": 46.95
+    },
+    {
+      "word": "Your",
+      "start": 47.333,
+      "end": 47.484
+    },
+    {
+      "word": "implementation",
+      "start": 47.531,
+      "end": 48.343
+    },
+    {
+      "word": "breaks",
+      "start": 48.413,
+      "end": 48.796
+    },
+    {
+      "word": "on",
+      "start": 48.912,
+      "end": 49.052
+    },
+    {
+      "word": "day",
+      "start": 49.11,
+      "end": 49.237
+    },
+    {
+      "word": "one.",
+      "start": 49.319,
+      "end": 49.76
+    },
+    {
+      "word": "Problem",
+      "start": 50.573,
+      "end": 50.967
+    },
+    {
+      "word": "two:",
+      "start": 51.037,
+      "end": 51.629
+    },
+    {
+      "word": "Memory-based",
+      "start": 52.07,
+      "end": 52.767
+    },
+    {
+      "word": "implementation.",
+      "start": 52.825,
+      "end": 53.986
+    },
+    {
+      "word": "Even",
+      "start": 54.938,
+      "end": 55.263
+    },
+    {
+      "word": "after",
+      "start": 55.356,
+      "end": 55.646
+    },
+    {
+      "word": "researching",
+      "start": 55.727,
+      "end": 56.273
+    },
+    {
+      "word": "current",
+      "start": 56.331,
+      "end": 56.61
+    },
+    {
+      "word": "docs,",
+      "start": 56.656,
+      "end": 57.213
+    },
+    {
+      "word": "the",
+      "start": 57.248,
+      "end": 57.364
+    },
+    {
+      "word": "AI",
+      "start": 57.411,
+      "end": 57.806
+    },
+    {
+      "word": "forgets",
+      "start": 57.875,
+      "end": 58.224
+    },
+    {
+      "word": "by",
+      "start": 58.27,
+      "end": 58.374
+    },
+    {
+      "word": "implementation",
+      "start": 58.432,
+      "end": 59.198
+    },
+    {
+      "word": "time.",
+      "start": 59.256,
+      "end": 59.709
+    },
+    {
+      "word": "It",
+      "start": 60.15,
+      "end": 60.278
+    },
+    {
+      "word": "falls",
+      "start": 60.301,
+      "end": 60.487
+    },
+    {
+      "word": "back",
+      "start": 60.522,
+      "end": 60.661
+    },
+    {
+      "word": "to",
+      "start": 60.708,
+      "end": 60.766
+    },
+    {
+      "word": "training",
+      "start": 60.824,
+      "end": 61.126
+    },
+    {
+      "word": "patterns",
+      "start": 61.184,
+      "end": 61.544
+    },
+    {
+      "word": "that",
+      "start": 61.578,
+      "end": 61.706
+    },
+    {
+      "word": "don't",
+      "start": 61.764,
+      "end": 61.961
+    },
+    {
+      "word": "match",
+      "start": 62.02,
+      "end": 62.24
+    },
+    {
+      "word": "what",
+      "start": 62.275,
+      "end": 62.414
+    },
+    {
+      "word": "it",
+      "start": 62.449,
+      "end": 62.519
+    },
+    {
+      "word": "just",
+      "start": 62.565,
+      "end": 62.786
+    },
+    {
+      "word": "read.",
+      "start": 62.855,
+      "end": 63.25
+    },
+    {
+      "word": "Problem",
+      "start": 64.365,
+      "end": 64.736
+    },
+    {
+      "word": "three:",
+      "start": 64.794,
+      "end": 65.224
+    },
+    {
+      "word": "Self-answering",
+      "start": 65.549,
+      "end": 66.188
+    },
+    {
+      "word": "questions.",
+      "start": 66.246,
+      "end": 66.977
+    },
+    {
+      "word": "The",
+      "start": 67.302,
+      "end": 67.441
+    },
+    {
+      "word": "AI",
+      "start": 67.488,
+      "end": 67.871
+    },
+    {
+      "word": "asks",
+      "start": 67.941,
+      "end": 68.44
+    },
+    {
+      "word": "\"What",
+      "start": 68.649,
+      "end": 68.927
+    },
+    {
+      "word": "format",
+      "start": 68.974,
+      "end": 69.311
+    },
+    {
+      "word": "do",
+      "start": 69.345,
+      "end": 69.403
+    },
+    {
+      "word": "you",
+      "start": 69.438,
+      "end": 69.508
+    },
+    {
+      "word": "want?\"",
+      "start": 69.566,
+      "end": 69.914
+    },
+    {
+      "word": "then",
+      "start": 70.297,
+      "end": 70.46
+    },
+    {
+      "word": "immediately",
+      "start": 70.506,
+      "end": 71.04
+    },
+    {
+      "word": "answers",
+      "start": 71.099,
+      "end": 71.447
+    },
+    {
+      "word": "itself.",
+      "start": 71.505,
+      "end": 72.039
+    },
+    {
+      "word": "Your",
+      "start": 72.55,
+      "end": 72.724
+    },
+    {
+      "word": "actual",
+      "start": 72.77,
+      "end": 73.084
+    },
+    {
+      "word": "requirements",
+      "start": 73.177,
+      "end": 73.804
+    },
+    {
+      "word": "never",
+      "start": 73.955,
+      "end": 74.21
+    },
+    {
+      "word": "get",
+      "start": 74.268,
+      "end": 74.396
+    },
+    {
+      "word": "captured.",
+      "start": 74.442,
+      "end": 75.058
+    },
+    {
+      "word": "Problem",
+      "start": 75.87,
+      "end": 76.242
+    },
+    {
+      "word": "four:",
+      "start": 76.323,
+      "end": 76.799
+    },
+    {
+      "word": "Context",
+      "start": 77.24,
+      "end": 77.67
+    },
+    {
+      "word": "dilution.",
+      "start": 77.705,
+      "end": 78.483
+    },
+    {
+      "word": "In",
+      "start": 78.692,
+      "end": 78.831
+    },
+    {
+      "word": "long",
+      "start": 78.901,
+      "end": 79.086
+    },
+    {
+      "word": "sessions,",
+      "start": 79.156,
+      "end": 79.713
+    },
+    {
+      "word": "early",
+      "start": 79.748,
+      "end": 80.004
+    },
+    {
+      "word": "decisions",
+      "start": 80.062,
+      "end": 80.596
+    },
+    {
+      "word": "fade",
+      "start": 80.921,
+      "end": 81.362
+    },
+    {
+      "word": "from",
+      "start": 81.397,
+      "end": 81.548
+    },
+    {
+      "word": "the",
+      "start": 81.583,
+      "end": 81.652
+    },
+    {
+      "word": "context",
+      "start": 81.699,
+      "end": 82.117
+    },
+    {
+      "word": "window.",
+      "start": 82.163,
+      "end": 82.674
+    },
+    {
+      "word": "Turn",
+      "start": 83.487,
+      "end": 83.719
+    },
+    {
+      "word": "forty-seven",
+      "start": 83.765,
+      "end": 84.334
+    },
+    {
+      "word": "doesn't",
+      "start": 84.404,
+      "end": 84.659
+    },
+    {
+      "word": "remember",
+      "start": 84.706,
+      "end": 85.112
+    },
+    {
+      "word": "turn",
+      "start": 85.321,
+      "end": 85.553
+    },
+    {
+      "word": "three.",
+      "start": 85.611,
+      "end": 86.052
+    },
+    {
+      "word": "Problem",
+      "start": 86.865,
+      "end": 87.225
+    },
+    {
+      "word": "five:",
+      "start": 87.295,
+      "end": 87.771
+    },
+    {
+      "word": "Skipped",
+      "start": 88.212,
+      "end": 88.537
+    },
+    {
+      "word": "verification.",
+      "start": 88.607,
+      "end": 89.593
+    },
+    {
+      "word": "The",
+      "start": 90.035,
+      "end": 90.162
+    },
+    {
+      "word": "AI",
+      "start": 90.209,
+      "end": 90.627
+    },
+    {
+      "word": "claims",
+      "start": 90.685,
+      "end": 91.021
+    },
+    {
+      "word": "done",
+      "start": 91.114,
+      "end": 91.3
+    },
+    {
+      "word": "without",
+      "start": 91.323,
+      "end": 91.602
+    },
+    {
+      "word": "checking",
+      "start": 91.648,
+      "end": 92.078
+    },
+    {
+      "word": "if",
+      "start": 92.171,
+      "end": 92.299
+    },
+    {
+      "word": "implementation",
+      "start": 92.38,
+      "end": 93.192
+    },
+    {
+      "word": "matches",
+      "start": 93.25,
+      "end": 93.587
+    },
+    {
+      "word": "documentation.",
+      "start": 93.634,
+      "end": 94.644
+    },
+    {
+      "word": "Memory-based",
+      "start": 95.456,
+      "end": 96.072
+    },
+    {
+      "word": "errors",
+      "start": 96.118,
+      "end": 96.548
+    },
+    {
+      "word": "slip",
+      "start": 96.664,
+      "end": 96.919
+    },
+    {
+      "word": "through",
+      "start": 96.966,
+      "end": 97.175
+    },
+    {
+      "word": "uncaught.",
+      "start": 97.233,
+      "end": 97.836
+    },
+    {
+      "word": "Problem",
+      "start": 98.788,
+      "end": 99.172
+    },
+    {
+      "word": "six:",
+      "start": 99.253,
+      "end": 99.88
+    },
+    {
+      "word": "No",
+      "start": 100.576,
+      "end": 100.727
+    },
+    {
+      "word": "enforcement",
+      "start": 100.785,
+      "end": 101.366
+    },
+    {
+      "word": "mechanism.",
+      "start": 101.424,
+      "end": 102.225
+    },
+    {
+      "word": "Nothing",
+      "start": 102.829,
+      "end": 103.189
+    },
+    {
+      "word": "forces",
+      "start": 103.282,
+      "end": 103.723
+    },
+    {
+      "word": "the",
+      "start": 103.792,
+      "end": 103.885
+    },
+    {
+      "word": "AI",
+      "start": 103.943,
+      "end": 104.396
+    },
+    {
+      "word": "to",
+      "start": 104.466,
+      "end": 104.524
+    },
+    {
+      "word": "follow",
+      "start": 104.593,
+      "end": 104.86
+    },
+    {
+      "word": "the",
+      "start": 104.919,
+      "end": 104.988
+    },
+    {
+      "word": "workflow.",
+      "start": 105.035,
+      "end": 105.743
+    },
+    {
+      "word": "It",
+      "start": 106.347,
+      "end": 106.463
+    },
+    {
+      "word": "can",
+      "start": 106.497,
+      "end": 106.614
+    },
+    {
+      "word": "skip",
+      "start": 106.66,
+      "end": 106.904
+    },
+    {
+      "word": "steps",
+      "start": 106.973,
+      "end": 107.38
+    },
+    {
+      "word": "whenever",
+      "start": 107.763,
+      "end": 108.146
+    },
+    {
+      "word": "convenient.",
+      "start": 108.216,
+      "end": 108.947
+    },
+    {
+      "word": "These",
+      "start": 109.644,
+      "end": 109.876
+    },
+    {
+      "word": "problems",
+      "start": 109.911,
+      "end": 110.364
+    },
+    {
+      "word": "compound.",
+      "start": 110.456,
+      "end": 111.408
+    },
+    {
+      "word": "Each",
+      "start": 112.012,
+      "end": 112.21
+    },
+    {
+      "word": "failure",
+      "start": 112.268,
+      "end": 112.744
+    },
+    {
+      "word": "leads",
+      "start": 112.825,
+      "end": 113.069
+    },
+    {
+      "word": "to",
+      "start": 113.127,
+      "end": 113.196
+    },
+    {
+      "word": "the",
+      "start": 113.278,
+      "end": 113.347
+    },
+    {
+      "word": "next.",
+      "start": 113.405,
+      "end": 114.021
+    },
+    {
+      "word": "The",
+      "start": 114.718,
+      "end": 114.845
+    },
+    {
+      "word": "solution:",
+      "start": 114.903,
+      "end": 115.553
+    },
+    {
+      "word": "Six",
+      "start": 115.937,
+      "end": 116.169
+    },
+    {
+      "word": "fixes",
+      "start": 116.25,
+      "end": 116.691
+    },
+    {
+      "word": "that",
+      "start": 116.761,
+      "end": 116.889
+    },
+    {
+      "word": "directly",
+      "start": 116.935,
+      "end": 117.423
+    },
+    {
+      "word": "address",
+      "start": 117.516,
+      "end": 117.91
+    },
+    {
+      "word": "each",
+      "start": 118.026,
+      "end": 118.235
+    },
+    {
+      "word": "problem.",
+      "start": 118.293,
+      "end": 118.851
+    },
+    {
+      "word": "Python",
+      "start": 119.663,
+      "end": 120.035
+    },
+    {
+      "word": "hooks",
+      "start": 120.093,
+      "end": 120.325
+    },
+    {
+      "word": "that",
+      "start": 120.36,
+      "end": 120.499
+    },
+    {
+      "word": "BLOCK",
+      "start": 120.546,
+      "end": 120.766
+    },
+    {
+      "word": "progress.",
+      "start": 120.824,
+      "end": 121.509
+    },
+    {
+      "word": "Fix",
+      "start": 121.893,
+      "end": 122.113
+    },
+    {
+      "word": "one:",
+      "start": 122.229,
+      "end": 122.543
+    },
+    {
+      "word": "Research-first",
+      "start": 123.146,
+      "end": 124.087
+    },
+    {
+      "word": "enforcement.",
+      "start": 124.133,
+      "end": 124.9
+    },
+    {
+      "word": "Blocks",
+      "start": 125.283,
+      "end": 125.701
+    },
+    {
+      "word": "ALL",
+      "start": 125.817,
+      "end": 126.037
+    },
+    {
+      "word": "implementation",
+      "start": 126.084,
+      "end": 126.908
+    },
+    {
+      "word": "until",
+      "start": 126.989,
+      "end": 127.233
+    },
+    {
+      "word": "Context7",
+      "start": 127.303,
+      "end": 128.22
+    },
+    {
+      "word": "or",
+      "start": 128.731,
+      "end": 128.905
+    },
+    {
+      "word": "WebSearch",
+      "start": 128.986,
+      "end": 129.544
+    },
+    {
+      "word": "fetches",
+      "start": 129.927,
+      "end": 130.321
+    },
+    {
+      "word": "current",
+      "start": 130.403,
+      "end": 130.705
+    },
+    {
+      "word": "documentation.",
+      "start": 130.751,
+      "end": 131.749
+    },
+    {
+      "word": "No",
+      "start": 132.562,
+      "end": 132.759
+    },
+    {
+      "word": "cached",
+      "start": 132.852,
+      "end": 133.201
+    },
+    {
+      "word": "code",
+      "start": 133.27,
+      "end": 133.595
+    },
+    {
+      "word": "allowed.",
+      "start": 133.653,
+      "end": 134.188
+    },
+    {
+      "word": "Fix",
+      "start": 134.884,
+      "end": 135.116
+    },
+    {
+      "word": "two:",
+      "start": 135.174,
+      "end": 135.65
+    },
+    {
+      "word": "Verification",
+      "start": 136.091,
+      "end": 136.811
+    },
+    {
+      "word": "loops.",
+      "start": 136.869,
+      "end": 137.322
+    },
+    {
+      "word": "Re-fetches",
+      "start": 137.705,
+      "end": 138.274
+    },
+    {
+      "word": "documentation",
+      "start": 138.344,
+      "end": 139.272
+    },
+    {
+      "word": "AFTER",
+      "start": 140.573,
+      "end": 140.909
+    },
+    {
+      "word": "tests",
+      "start": 140.967,
+      "end": 141.211
+    },
+    {
+      "word": "pass",
+      "start": 141.269,
+      "end": 141.664
+    },
+    {
+      "word": "and",
+      "start": 141.722,
+      "end": 141.85
+    },
+    {
+      "word": "compares",
+      "start": 141.896,
+      "end": 142.384
+    },
+    {
+      "word": "to",
+      "start": 142.465,
+      "end": 142.57
+    },
+    {
+      "word": "implementation.",
+      "start": 142.651,
+      "end": 143.719
+    },
+    {
+      "word": "Catches",
+      "start": 144.323,
+      "end": 144.694
+    },
+    {
+      "word": "memory-based",
+      "start": 144.787,
+      "end": 145.402
+    },
+    {
+      "word": "drift.",
+      "start": 145.437,
+      "end": 145.948
+    },
+    {
+      "word": "Fix",
+      "start": 146.645,
+      "end": 146.865
+    },
+    {
+      "word": "three:",
+      "start": 146.935,
+      "end": 147.33
+    },
+    {
+      "word": "Interview",
+      "start": 147.933,
+      "end": 148.433
+    },
+    {
+      "word": "enforcement.",
+      "start": 148.514,
+      "end": 149.303
+    },
+    {
+      "word": "Requires",
+      "start": 149.686,
+      "end": 150.441
+    },
+    {
+      "word": "the",
+      "start": 150.65,
+      "end": 150.789
+    },
+    {
+      "word": "AskUserQuestion",
+      "start": 150.871,
+      "end": 151.881
+    },
+    {
+      "word": "tool",
+      "start": 151.95,
+      "end": 152.299
+    },
+    {
+      "word": "with",
+      "start": 152.74,
+      "end": 152.937
+    },
+    {
+      "word": "structured",
+      "start": 153.019,
+      "end": 153.622
+    },
+    {
+      "word": "numbered",
+      "start": 153.796,
+      "end": 154.168
+    },
+    {
+      "word": "options.",
+      "start": 154.238,
+      "end": 154.981
+    },
+    {
+      "word": "Detects",
+      "start": 155.132,
+      "end": 155.596
+    },
+    {
+      "word": "self-answers",
+      "start": 155.689,
+      "end": 156.571
+    },
+    {
+      "word": "and",
+      "start": 156.629,
+      "end": 156.734
+    },
+    {
+      "word": "blocks",
+      "start": 156.78,
+      "end": 157.256
+    },
+    {
+      "word": "until",
+      "start": 157.64,
+      "end": 157.93
+    },
+    {
+      "word": "human",
+      "start": 157.988,
+      "end": 158.278
+    },
+    {
+      "word": "confirmation.",
+      "start": 158.336,
+      "end": 159.242
+    },
+    {
+      "word": "Fix",
+      "start": 160.194,
+      "end": 160.414
+    },
+    {
+      "word": "four:",
+      "start": 160.484,
+      "end": 160.948
+    },
+    {
+      "word": "Periodic",
+      "start": 161.645,
+      "end": 162.179
+    },
+    {
+      "word": "re-grounding.",
+      "start": 162.33,
+      "end": 163.27
+    },
+    {
+      "word": "Re-injects",
+      "start": 164.083,
+      "end": 164.687
+    },
+    {
+      "word": "interview",
+      "start": 164.78,
+      "end": 165.174
+    },
+    {
+      "word": "decisions",
+      "start": 165.244,
+      "end": 165.883
+    },
+    {
+      "word": "and",
+      "start": 166.161,
+      "end": 166.312
+    },
+    {
+      "word": "current",
+      "start": 166.382,
+      "end": 166.684
+    },
+    {
+      "word": "phase",
+      "start": 166.73,
+      "end": 167.276
+    },
+    {
+      "word": "every",
+      "start": 167.601,
+      "end": 167.88
+    },
+    {
+      "word": "seven",
+      "start": 167.938,
+      "end": 168.216
+    },
+    {
+      "word": "turns.",
+      "start": 168.274,
+      "end": 168.866
+    },
+    {
+      "word": "Uses",
+      "start": 169.563,
+      "end": 169.876
+    },
+    {
+      "word": "phase_exit_confirmed",
+      "start": 169.923,
+      "end": 171.142
+    },
+    {
+      "word": "to",
+      "start": 171.188,
+      "end": 171.246
+    },
+    {
+      "word": "track",
+      "start": 171.305,
+      "end": 171.618
+    },
+    {
+      "word": "explicit",
+      "start": 171.734,
+      "end": 172.431
+    },
+    {
+      "word": "user",
+      "start": 172.605,
+      "end": 172.918
+    },
+    {
+      "word": "approval.",
+      "start": 172.965,
+      "end": 173.58
+    },
+    {
+      "word": "Fix",
+      "start": 174.277,
+      "end": 174.497
+    },
+    {
+      "word": "five:",
+      "start": 174.567,
+      "end": 175.02
+    },
+    {
+      "word": "Automatic",
+      "start": 175.403,
+      "end": 176.018
+    },
+    {
+      "word": "re-research.",
+      "start": 176.192,
+      "end": 177.133
+    },
+    {
+      "word": "Triggers",
+      "start": 177.644,
+      "end": 178.143
+    },
+    {
+      "word": "when",
+      "start": 178.212,
+      "end": 178.352
+    },
+    {
+      "word": "tests",
+      "start": 178.41,
+      "end": 178.735
+    },
+    {
+      "word": "pass.",
+      "start": 178.793,
+      "end": 179.42
+    },
+    {
+      "word": "Re-fetches",
+      "start": 180.116,
+      "end": 180.662
+    },
+    {
+      "word": "docs,",
+      "start": 180.72,
+      "end": 181.277
+    },
+    {
+      "word": "builds",
+      "start": 181.428,
+      "end": 181.661
+    },
+    {
+      "word": "comparison",
+      "start": 181.695,
+      "end": 182.195
+    },
+    {
+      "word": "table,",
+      "start": 182.253,
+      "end": 182.822
+    },
+    {
+      "word": "loops",
+      "start": 183.147,
+      "end": 183.402
+    },
+    {
+      "word": "back",
+      "start": 183.448,
+      "end": 183.646
+    },
+    {
+      "word": "if",
+      "start": 183.716,
+      "end": 183.785
+    },
+    {
+      "word": "implementation",
+      "start": 183.855,
+      "end": 184.621
+    },
+    {
+      "word": "doesn't",
+      "start": 184.679,
+      "end": 184.946
+    },
+    {
+      "word": "match.",
+      "start": 184.981,
+      "end": 185.48
+    },
+    {
+      "word": "Fix",
+      "start": 185.921,
+      "end": 186.13
+    },
+    {
+      "word": "six:",
+      "start": 186.177,
+      "end": 186.781
+    },
+    {
+      "word": "Exit",
+      "start": 187.384,
+      "end": 187.675
+    },
+    {
+      "word": "code",
+      "start": 187.721,
+      "end": 187.965
+    },
+    {
+      "word": "two",
+      "start": 187.988,
+      "end": 188.116
+    },
+    {
+      "word": "blocking.",
+      "start": 188.162,
+      "end": 188.754
+    },
+    {
+      "word": "Hooks",
+      "start": 189.079,
+      "end": 189.323
+    },
+    {
+      "word": "return",
+      "start": 189.37,
+      "end": 189.671
+    },
+    {
+      "word": "exit",
+      "start": 189.729,
+      "end": 189.973
+    },
+    {
+      "word": "code",
+      "start": 190.008,
+      "end": 190.205
+    },
+    {
+      "word": "two",
+      "start": 190.229,
+      "end": 190.38
+    },
+    {
+      "word": "to",
+      "start": 191.494,
+      "end": 191.61
+    },
+    {
+      "word": "block",
+      "start": 191.645,
+      "end": 191.877
+    },
+    {
+      "word": "actions",
+      "start": 191.947,
+      "end": 192.423
+    },
+    {
+      "word": "and",
+      "start": 192.469,
+      "end": 192.562
+    },
+    {
+      "word": "show",
+      "start": 192.62,
+      "end": 192.795
+    },
+    {
+      "word": "errors",
+      "start": 192.853,
+      "end": 193.12
+    },
+    {
+      "word": "to",
+      "start": 193.166,
+      "end": 193.236
+    },
+    {
+      "word": "Claude.",
+      "start": 193.282,
+      "end": 193.793
+    },
+    {
+      "word": "Cannot",
+      "start": 194.304,
+      "end": 194.617
+    },
+    {
+      "word": "proceed",
+      "start": 194.664,
+      "end": 195.058
+    },
+    {
+      "word": "until",
+      "start": 195.116,
+      "end": 195.36
+    },
+    {
+      "word": "workflow",
+      "start": 195.43,
+      "end": 195.883
+    },
+    {
+      "word": "requirements",
+      "start": 195.964,
+      "end": 196.521
+    },
+    {
+      "word": "are",
+      "start": 196.556,
+      "end": 196.649
+    },
+    {
+      "word": "met.",
+      "start": 196.672,
+      "end": 196.997
+    },
+    {
+      "word": "Research",
+      "start": 197.694,
+      "end": 198.1
+    },
+    {
+      "word": "grounding.",
+      "start": 198.146,
+      "end": 198.82
+    },
+    {
+      "word": "Current",
+      "start": 198.994,
+      "end": 199.261
+    },
+    {
+      "word": "documentation,",
+      "start": 199.307,
+      "end": 200.329
+    },
+    {
+      "word": "not",
+      "start": 200.457,
+      "end": 200.619
+    },
+    {
+      "word": "stale",
+      "start": 200.666,
+      "end": 200.933
+    },
+    {
+      "word": "training",
+      "start": 200.968,
+      "end": 201.258
+    },
+    {
+      "word": "data.",
+      "start": 201.316,
+      "end": 201.745
+    },
+    {
+      "word": "Two",
+      "start": 202.071,
+      "end": 202.256
+    },
+    {
+      "word": "MCP",
+      "start": 202.291,
+      "end": 202.663
+    },
+    {
+      "word": "tools",
+      "start": 202.744,
+      "end": 203.011
+    },
+    {
+      "word": "provide",
+      "start": 203.057,
+      "end": 203.394
+    },
+    {
+      "word": "live",
+      "start": 203.441,
+      "end": 203.661
+    },
+    {
+      "word": "research.",
+      "start": 203.708,
+      "end": 204.358
+    },
+    {
+      "word": "Context7",
+      "start": 204.741,
+      "end": 205.623
+    },
+    {
+      "word": "for",
+      "start": 205.751,
+      "end": 205.879
+    },
+    {
+      "word": "library",
+      "start": 205.96,
+      "end": 206.401
+    },
+    {
+      "word": "documentation.",
+      "start": 206.459,
+      "end": 207.446
+    },
+    {
+      "word": "WebSearch",
+      "start": 208.398,
+      "end": 208.932
+    },
+    {
+      "word": "for",
+      "start": 209.002,
+      "end": 209.141
+    },
+    {
+      "word": "official",
+      "start": 209.199,
+      "end": 209.652
+    },
+    {
+      "word": "API",
+      "start": 209.768,
+      "end": 210.186
+    },
+    {
+      "word": "docs.",
+      "start": 210.267,
+      "end": 210.813
+    },
+    {
+      "word": "The",
+      "start": 211.138,
+      "end": 211.266
+    },
+    {
+      "word": "enforce-research",
+      "start": 211.312,
+      "end": 212.241
+    },
+    {
+      "word": "hook",
+      "start": 212.357,
+      "end": 212.566
+    },
+    {
+      "word": "blocks",
+      "start": 212.636,
+      "end": 213.019
+    },
+    {
+      "word": "all",
+      "start": 213.344,
+      "end": 213.53
+    },
+    {
+      "word": "Write",
+      "start": 213.564,
+      "end": 213.773
+    },
+    {
+      "word": "and",
+      "start": 213.797,
+      "end": 213.866
+    },
+    {
+      "word": "Edit",
+      "start": 213.936,
+      "end": 214.145
+    },
+    {
+      "word": "operations",
+      "start": 214.215,
+      "end": 214.911
+    },
+    {
+      "word": "until",
+      "start": 215.294,
+      "end": 215.561
+    },
+    {
+      "word": "research",
+      "start": 215.643,
+      "end": 216.037
+    },
+    {
+      "word": "is",
+      "start": 216.095,
+      "end": 216.188
+    },
+    {
+      "word": "complete.",
+      "start": 216.246,
+      "end": 216.85
+    },
+    {
+      "word": "No",
+      "start": 217.291,
+      "end": 217.419
+    },
+    {
+      "word": "documentation",
+      "start": 217.489,
+      "end": 218.185
+    },
+    {
+      "word": "equals",
+      "start": 218.255,
+      "end": 218.557
+    },
+    {
+      "word": "no",
+      "start": 218.626,
+      "end": 218.731
+    },
+    {
+      "word": "implementation.",
+      "start": 218.801,
+      "end": 219.764
+    },
+    {
+      "word": "This",
+      "start": 220.205,
+      "end": 220.403
+    },
+    {
+      "word": "isn't",
+      "start": 220.472,
+      "end": 220.716
+    },
+    {
+      "word": "about",
+      "start": 220.751,
+      "end": 220.96
+    },
+    {
+      "word": "slowing",
+      "start": 221.007,
+      "end": 221.332
+    },
+    {
+      "word": "down.",
+      "start": 221.39,
+      "end": 221.796
+    },
+    {
+      "word": "It's",
+      "start": 222.179,
+      "end": 222.353
+    },
+    {
+      "word": "about",
+      "start": 222.388,
+      "end": 222.562
+    },
+    {
+      "word": "getting",
+      "start": 222.609,
+      "end": 222.853
+    },
+    {
+      "word": "it",
+      "start": 222.911,
+      "end": 222.969
+    },
+    {
+      "word": "right",
+      "start": 223.015,
+      "end": 223.201
+    },
+    {
+      "word": "the",
+      "start": 223.247,
+      "end": 223.329
+    },
+    {
+      "word": "first",
+      "start": 223.375,
+      "end": 223.619
+    },
+    {
+      "word": "time.",
+      "start": 223.654,
+      "end": 224.118
+    },
+    {
+      "word": "Workflow",
+      "start": 224.931,
+      "end": 225.372
+    },
+    {
+      "word": "enforcement.",
+      "start": 225.43,
+      "end": 226.173
+    },
+    {
+      "word": "The",
+      "start": 226.498,
+      "end": 226.614
+    },
+    {
+      "word": "problem:",
+      "start": 226.661,
+      "end": 227.241
+    },
+    {
+      "word": "AI",
+      "start": 227.566,
+      "end": 227.938
+    },
+    {
+      "word": "can",
+      "start": 227.996,
+      "end": 228.112
+    },
+    {
+      "word": "skip",
+      "start": 228.158,
+      "end": 228.367
+    },
+    {
+      "word": "steps.",
+      "start": 228.425,
+      "end": 228.983
+    },
+    {
+      "word": "The",
+      "start": 229.366,
+      "end": 229.482
+    },
+    {
+      "word": "solution:",
+      "start": 229.54,
+      "end": 230.167
+    },
+    {
+      "word": "hooks",
+      "start": 230.283,
+      "end": 230.527
+    },
+    {
+      "word": "that",
+      "start": 230.55,
+      "end": 230.666
+    },
+    {
+      "word": "block",
+      "start": 230.701,
+      "end": 230.921
+    },
+    {
+      "word": "progress.",
+      "start": 230.979,
+      "end": 231.664
+    },
+    {
+      "word": "Eighteen",
+      "start": 232.477,
+      "end": 232.919
+    },
+    {
+      "word": "Python",
+      "start": 233,
+      "end": 233.406
+    },
+    {
+      "word": "hooks",
+      "start": 233.464,
+      "end": 233.79
+    },
+    {
+      "word": "intercept",
+      "start": 233.859,
+      "end": 234.347
+    },
+    {
+      "word": "Claude's",
+      "start": 234.393,
+      "end": 234.695
+    },
+    {
+      "word": "actions.",
+      "start": 234.742,
+      "end": 235.427
+    },
+    {
+      "word": "PreToolUse",
+      "start": 236.123,
+      "end": 236.843
+    },
+    {
+      "word": "hooks",
+      "start": 236.889,
+      "end": 237.156
+    },
+    {
+      "word": "run",
+      "start": 237.273,
+      "end": 237.458
+    },
+    {
+      "word": "before",
+      "start": 237.516,
+      "end": 237.83
+    },
+    {
+      "word": "file",
+      "start": 237.888,
+      "end": 238.201
+    },
+    {
+      "word": "writes.",
+      "start": 238.225,
+      "end": 238.747
+    },
+    {
+      "word": "PostToolUse",
+      "start": 239.351,
+      "end": 240.105
+    },
+    {
+      "word": "hooks",
+      "start": 240.14,
+      "end": 240.477
+    },
+    {
+      "word": "run",
+      "start": 240.628,
+      "end": 240.79
+    },
+    {
+      "word": "after",
+      "start": 240.837,
+      "end": 241.046
+    },
+    {
+      "word": "tool",
+      "start": 241.104,
+      "end": 241.301
+    },
+    {
+      "word": "execution.",
+      "start": 241.371,
+      "end": 242.149
+    },
+    {
+      "word": "Stop",
+      "start": 242.845,
+      "end": 243.112
+    },
+    {
+      "word": "hooks",
+      "start": 243.17,
+      "end": 243.403
+    },
+    {
+      "word": "run",
+      "start": 243.449,
+      "end": 243.67
+    },
+    {
+      "word": "when",
+      "start": 243.739,
+      "end": 243.902
+    },
+    {
+      "word": "Claude",
+      "start": 243.948,
+      "end": 244.227
+    },
+    {
+      "word": "tries",
+      "start": 244.25,
+      "end": 244.506
+    },
+    {
+      "word": "to",
+      "start": 244.564,
+      "end": 244.622
+    },
+    {
+      "word": "end.",
+      "start": 244.691,
+      "end": 245.098
+    },
+    {
+      "word": "Exit",
+      "start": 245.794,
+      "end": 246.096
+    },
+    {
+      "word": "code",
+      "start": 246.143,
+      "end": 246.363
+    },
+    {
+      "word": "two",
+      "start": 246.386,
+      "end": 246.526
+    },
+    {
+      "word": "is",
+      "start": 246.595,
+      "end": 246.688
+    },
+    {
+      "word": "the",
+      "start": 246.746,
+      "end": 246.816
+    },
+    {
+      "word": "magic.",
+      "start": 246.862,
+      "end": 247.385
+    },
+    {
+      "word": "When",
+      "start": 247.989,
+      "end": 248.163
+    },
+    {
+      "word": "a",
+      "start": 248.198,
+      "end": 248.221
+    },
+    {
+      "word": "hook",
+      "start": 248.256,
+      "end": 248.43
+    },
+    {
+      "word": "returns",
+      "start": 248.499,
+      "end": 248.929
+    },
+    {
+      "word": "exit",
+      "start": 249.01,
+      "end": 249.254
+    },
+    {
+      "word": "code",
+      "start": 249.277,
+      "end": 249.451
+    },
+    {
+      "word": "two,",
+      "start": 249.486,
+      "end": 249.8
+    },
+    {
+      "word": "it",
+      "start": 249.835,
+      "end": 249.951
+    },
+    {
+      "word": "blocks",
+      "start": 249.997,
+      "end": 250.276
+    },
+    {
+      "word": "the",
+      "start": 250.311,
+      "end": 250.392
+    },
+    {
+      "word": "action",
+      "start": 250.45,
+      "end": 250.798
+    },
+    {
+      "word": "AND",
+      "start": 251.181,
+      "end": 251.355
+    },
+    {
+      "word": "sends",
+      "start": 251.414,
+      "end": 251.669
+    },
+    {
+      "word": "an",
+      "start": 251.715,
+      "end": 251.785
+    },
+    {
+      "word": "error",
+      "start": 251.866,
+      "end": 252.122
+    },
+    {
+      "word": "message",
+      "start": 252.191,
+      "end": 252.609
+    },
+    {
+      "word": "to",
+      "start": 252.667,
+      "end": 252.749
+    },
+    {
+      "word": "Claude.",
+      "start": 252.807,
+      "end": 253.283
+    },
+    {
+      "word": "Claude",
+      "start": 253.886,
+      "end": 254.153
+    },
+    {
+      "word": "sees",
+      "start": 254.177,
+      "end": 254.397
+    },
+    {
+      "word": "the",
+      "start": 254.444,
+      "end": 254.513
+    },
+    {
+      "word": "error",
+      "start": 254.571,
+      "end": 254.815
+    },
+    {
+      "word": "and",
+      "start": 254.885,
+      "end": 255.013
+    },
+    {
+      "word": "must",
+      "start": 255.071,
+      "end": 255.268
+    },
+    {
+      "word": "respond.",
+      "start": 255.338,
+      "end": 255.976
+    },
+    {
+      "word": "It",
+      "start": 256.22,
+      "end": 256.336
+    },
+    {
+      "word": "cannot",
+      "start": 256.383,
+      "end": 256.696
+    },
+    {
+      "word": "ignore",
+      "start": 256.731,
+      "end": 257.033
+    },
+    {
+      "word": "it.",
+      "start": 257.068,
+      "end": 257.265
+    },
+    {
+      "word": "Example:",
+      "start": 257.706,
+      "end": 258.321
+    },
+    {
+      "word": "Claude",
+      "start": 258.763,
+      "end": 259.03
+    },
+    {
+      "word": "tries",
+      "start": 259.053,
+      "end": 259.285
+    },
+    {
+      "word": "to",
+      "start": 259.332,
+      "end": 259.39
+    },
+    {
+      "word": "write",
+      "start": 259.424,
+      "end": 259.61
+    },
+    {
+      "word": "route.ts.",
+      "start": 259.645,
+      "end": 260.678
+    },
+    {
+      "word": "The",
+      "start": 261.282,
+      "end": 261.421
+    },
+    {
+      "word": "enforce-research",
+      "start": 261.468,
+      "end": 262.362
+    },
+    {
+      "word": "hook",
+      "start": 262.42,
+      "end": 262.617
+    },
+    {
+      "word": "blocks",
+      "start": 262.71,
+      "end": 263.105
+    },
+    {
+      "word": "with",
+      "start": 263.186,
+      "end": 263.36
+    },
+    {
+      "word": "exit",
+      "start": 263.43,
+      "end": 263.72
+    },
+    {
+      "word": "code",
+      "start": 263.755,
+      "end": 263.987
+    },
+    {
+      "word": "two.",
+      "start": 264.01,
+      "end": 264.51
+    },
+    {
+      "word": "Claude",
+      "start": 265.113,
+      "end": 265.415
+    },
+    {
+      "word": "sees:",
+      "start": 265.45,
+      "end": 265.926
+    },
+    {
+      "word": "Research",
+      "start": 266.739,
+      "end": 267.168
+    },
+    {
+      "word": "required",
+      "start": 267.238,
+      "end": 267.807
+    },
+    {
+      "word": "before",
+      "start": 267.865,
+      "end": 268.155
+    },
+    {
+      "word": "implementation.",
+      "start": 268.201,
+      "end": 269.165
+    },
+    {
+      "word": "Current",
+      "start": 269.769,
+      "end": 270.094
+    },
+    {
+      "word": "phase",
+      "start": 270.14,
+      "end": 270.465
+    },
+    {
+      "word": "incomplete.",
+      "start": 270.523,
+      "end": 271.243
+    },
+    {
+      "word": "Required",
+      "start": 271.754,
+      "end": 272.195
+    },
+    {
+      "word": "actions:",
+      "start": 272.242,
+      "end": 272.868
+    },
+    {
+      "word": "Use",
+      "start": 273.194,
+      "end": 273.391
+    },
+    {
+      "word": "Context7,",
+      "start": 273.426,
+      "end": 274.389
+    },
+    {
+      "word": "use",
+      "start": 274.831,
+      "end": 275.028
+    },
+    {
+      "word": "WebSearch,",
+      "start": 275.063,
+      "end": 275.736
+    },
+    {
+      "word": "document",
+      "start": 275.887,
+      "end": 276.317
+    },
+    {
+      "word": "findings.",
+      "start": 276.363,
+      "end": 277.002
+    },
+    {
+      "word": "Claude",
+      "start": 277.443,
+      "end": 277.698
+    },
+    {
+      "word": "must",
+      "start": 277.721,
+      "end": 277.884
+    },
+    {
+      "word": "fix",
+      "start": 277.965,
+      "end": 278.221
+    },
+    {
+      "word": "the",
+      "start": 278.279,
+      "end": 278.36
+    },
+    {
+      "word": "issue",
+      "start": 278.418,
+      "end": 278.732
+    },
+    {
+      "word": "before",
+      "start": 278.766,
+      "end": 279.068
+    },
+    {
+      "word": "continuing.",
+      "start": 279.115,
+      "end": 279.846
+    },
+    {
+      "word": "The",
+      "start": 280.229,
+      "end": 280.357
+    },
+    {
+      "word": "twelve",
+      "start": 280.392,
+      "end": 280.647
+    },
+    {
+      "word": "phases.",
+      "start": 280.67,
+      "end": 281.286
+    },
+    {
+      "word": "Each",
+      "start": 281.669,
+      "end": 281.866
+    },
+    {
+      "word": "phase",
+      "start": 281.913,
+      "end": 282.18
+    },
+    {
+      "word": "must",
+      "start": 282.215,
+      "end": 282.389
+    },
+    {
+      "word": "complete",
+      "start": 282.435,
+      "end": 282.795
+    },
+    {
+      "word": "before",
+      "start": 282.83,
+      "end": 283.108
+    },
+    {
+      "word": "proceeding.",
+      "start": 283.155,
+      "end": 283.782
+    },
+    {
+      "word": "Phase",
+      "start": 284.165,
+      "end": 284.536
+    },
+    {
+      "word": "zero:",
+      "start": 284.653,
+      "end": 285.152
+    },
+    {
+      "word": "Disambiguation.",
+      "start": 285.848,
+      "end": 287.3
+    },
+    {
+      "word": "When",
+      "start": 287.996,
+      "end": 288.159
+    },
+    {
+      "word": "you",
+      "start": 288.205,
+      "end": 288.275
+    },
+    {
+      "word": "say",
+      "start": 288.333,
+      "end": 288.496
+    },
+    {
+      "word": "Vercel",
+      "start": 288.577,
+      "end": 289.007
+    },
+    {
+      "word": "AI,",
+      "start": 289.099,
+      "end": 289.599
+    },
+    {
+      "word": "do",
+      "start": 289.645,
+      "end": 289.738
+    },
+    {
+      "word": "you",
+      "start": 289.784,
+      "end": 289.854
+    },
+    {
+      "word": "mean",
+      "start": 289.9,
+      "end": 290.028
+    },
+    {
+      "word": "the",
+      "start": 290.063,
+      "end": 290.144
+    },
+    {
+      "word": "SDK",
+      "start": 290.214,
+      "end": 290.748
+    },
+    {
+      "word": "or",
+      "start": 290.957,
+      "end": 291.05
+    },
+    {
+      "word": "the",
+      "start": 291.096,
+      "end": 291.166
+    },
+    {
+      "word": "Gateway?",
+      "start": 291.201,
+      "end": 291.77
+    },
+    {
+      "word": "We",
+      "start": 292.281,
+      "end": 292.408
+    },
+    {
+      "word": "clarify",
+      "start": 292.455,
+      "end": 292.873
+    },
+    {
+      "word": "before",
+      "start": 292.942,
+      "end": 293.221
+    },
+    {
+      "word": "researching.",
+      "start": 293.279,
+      "end": 294.022
+    },
+    {
+      "word": "Phase",
+      "start": 294.719,
+      "end": 295.02
+    },
+    {
+      "word": "one:",
+      "start": 295.067,
+      "end": 295.427
+    },
+    {
+      "word": "Scope",
+      "start": 295.868,
+      "end": 296.181
+    },
+    {
+      "word": "confirmation.",
+      "start": 296.216,
+      "end": 297.11
+    },
+    {
+      "word": "Confirm",
+      "start": 297.284,
+      "end": 297.656
+    },
+    {
+      "word": "understanding",
+      "start": 297.714,
+      "end": 298.225
+    },
+    {
+      "word": "of",
+      "start": 298.271,
+      "end": 298.318
+    },
+    {
+      "word": "what",
+      "start": 298.353,
+      "end": 298.48
+    },
+    {
+      "word": "the",
+      "start": 298.515,
+      "end": 298.585
+    },
+    {
+      "word": "endpoint",
+      "start": 298.643,
+      "end": 298.991
+    },
+    {
+      "word": "should",
+      "start": 299.026,
+      "end": 299.212
+    },
+    {
+      "word": "do.",
+      "start": 299.247,
+      "end": 299.653
+    },
+    {
+      "word": "Phase",
+      "start": 300.466,
+      "end": 300.756
+    },
+    {
+      "word": "two:",
+      "start": 300.791,
+      "end": 301.325
+    },
+    {
+      "word": "Initial",
+      "start": 301.708,
+      "end": 302.091
+    },
+    {
+      "word": "research.",
+      "start": 302.149,
+      "end": 302.799
+    },
+    {
+      "word": "Fetch",
+      "start": 303.008,
+      "end": 303.252
+    },
+    {
+      "word": "documentation",
+      "start": 303.31,
+      "end": 304.111
+    },
+    {
+      "word": "via",
+      "start": 304.181,
+      "end": 304.367
+    },
+    {
+      "word": "Context7",
+      "start": 304.436,
+      "end": 305.272
+    },
+    {
+      "word": "or",
+      "start": 305.423,
+      "end": 305.516
+    },
+    {
+      "word": "WebSearch.",
+      "start": 305.574,
+      "end": 306.259
+    },
+    {
+      "word": "Phase",
+      "start": 306.863,
+      "end": 307.142
+    },
+    {
+      "word": "three:",
+      "start": 307.176,
+      "end": 307.513
+    },
+    {
+      "word": "Interview.",
+      "start": 307.536,
+      "end": 308.244
+    },
+    {
+      "word": "Questions",
+      "start": 308.941,
+      "end": 309.405
+    },
+    {
+      "word": "generated",
+      "start": 309.475,
+      "end": 310.032
+    },
+    {
+      "word": "FROM",
+      "start": 310.102,
+      "end": 310.265
+    },
+    {
+      "word": "research",
+      "start": 310.334,
+      "end": 310.752
+    },
+    {
+      "word": "findings.",
+      "start": 310.799,
+      "end": 311.46
+    },
+    {
+      "word": "Not",
+      "start": 311.635,
+      "end": 311.82
+    },
+    {
+      "word": "generic",
+      "start": 311.855,
+      "end": 312.238
+    },
+    {
+      "word": "templates.",
+      "start": 312.285,
+      "end": 312.981
+    },
+    {
+      "word": "Phase",
+      "start": 313.794,
+      "end": 314.084
+    },
+    {
+      "word": "four:",
+      "start": 314.119,
+      "end": 314.491
+    },
+    {
+      "word": "Deep",
+      "start": 314.665,
+      "end": 314.874
+    },
+    {
+      "word": "research.",
+      "start": 314.943,
+      "end": 315.547
+    },
+    {
+      "word": "Based",
+      "start": 315.988,
+      "end": 316.244
+    },
+    {
+      "word": "on",
+      "start": 316.279,
+      "end": 316.348
+    },
+    {
+      "word": "your",
+      "start": 316.383,
+      "end": 316.488
+    },
+    {
+      "word": "answers,",
+      "start": 316.534,
+      "end": 316.94
+    },
+    {
+      "word": "propose",
+      "start": 316.975,
+      "end": 317.358
+    },
+    {
+      "word": "targeted",
+      "start": 317.405,
+      "end": 317.823
+    },
+    {
+      "word": "follow-up",
+      "start": 317.881,
+      "end": 318.299
+    },
+    {
+      "word": "searches.",
+      "start": 318.357,
+      "end": 319.042
+    },
+    {
+      "word": "Phase",
+      "start": 319.738,
+      "end": 319.994
+    },
+    {
+      "word": "five:",
+      "start": 320.04,
+      "end": 320.481
+    },
+    {
+      "word": "Schema.",
+      "start": 320.923,
+      "end": 321.457
+    },
+    {
+      "word": "Define",
+      "start": 322.269,
+      "end": 322.71
+    },
+    {
+      "word": "Zod",
+      "start": 322.757,
+      "end": 322.978
+    },
+    {
+      "word": "schemas",
+      "start": 323.024,
+      "end": 323.395
+    },
+    {
+      "word": "based",
+      "start": 323.465,
+      "end": 323.686
+    },
+    {
+      "word": "on",
+      "start": 323.721,
+      "end": 323.802
+    },
+    {
+      "word": "research",
+      "start": 323.871,
+      "end": 324.347
+    },
+    {
+      "word": "plus",
+      "start": 324.464,
+      "end": 324.731
+    },
+    {
+      "word": "interview",
+      "start": 324.801,
+      "end": 325.195
+    },
+    {
+      "word": "decisions.",
+      "start": 325.265,
+      "end": 326.055
+    },
+    {
+      "word": "Phase",
+      "start": 326.751,
+      "end": 327.053
+    },
+    {
+      "word": "six:",
+      "start": 327.088,
+      "end": 327.703
+    },
+    {
+      "word": "Environment.",
+      "start": 327.75,
+      "end": 328.469
+    },
+    {
+      "word": "Verify",
+      "start": 328.98,
+      "end": 329.421
+    },
+    {
+      "word": "API",
+      "start": 329.48,
+      "end": 329.897
+    },
+    {
+      "word": "keys",
+      "start": 329.979,
+      "end": 330.339
+    },
+    {
+      "word": "exist",
+      "start": 330.455,
+      "end": 330.826
+    },
+    {
+      "word": "before",
+      "start": 330.873,
+      "end": 331.198
+    },
+    {
+      "word": "writing",
+      "start": 331.256,
+      "end": 331.558
+    },
+    {
+      "word": "code.",
+      "start": 331.616,
+      "end": 332.092
+    },
+    {
+      "word": "Phase",
+      "start": 332.475,
+      "end": 332.788
+    },
+    {
+      "word": "seven:",
+      "start": 332.812,
+      "end": 333.334
+    },
+    {
+      "word": "TDD",
+      "start": 333.845,
+      "end": 334.402
+    },
+    {
+      "word": "Red.",
+      "start": 334.483,
+      "end": 334.925
+    },
+    {
+      "word": "Write",
+      "start": 335.435,
+      "end": 335.726
+    },
+    {
+      "word": "failing",
+      "start": 335.761,
+      "end": 336.086
+    },
+    {
+      "word": "tests.",
+      "start": 336.144,
+      "end": 336.747
+    },
+    {
+      "word": "Define",
+      "start": 337.026,
+      "end": 337.363
+    },
+    {
+      "word": "success",
+      "start": 337.398,
+      "end": 337.85
+    },
+    {
+      "word": "before",
+      "start": 337.92,
+      "end": 338.35
+    },
+    {
+      "word": "implementation.",
+      "start": 338.442,
+      "end": 339.487
+    },
+    {
+      "word": "Phase",
+      "start": 340.184,
+      "end": 340.463
+    },
+    {
+      "word": "eight:",
+      "start": 340.497,
+      "end": 340.834
+    },
+    {
+      "word": "TDD",
+      "start": 340.95,
+      "end": 341.426
+    },
+    {
+      "word": "Green.",
+      "start": 341.542,
+      "end": 342.03
+    },
+    {
+      "word": "Minimal",
+      "start": 342.843,
+      "end": 343.214
+    },
+    {
+      "word": "code",
+      "start": 343.388,
+      "end": 343.771
+    },
+    {
+      "word": "to",
+      "start": 343.841,
+      "end": 343.957
+    },
+    {
+      "word": "pass",
+      "start": 344.015,
+      "end": 344.247
+    },
+    {
+      "word": "tests.",
+      "start": 344.317,
+      "end": 344.874
+    },
+    {
+      "word": "Phase",
+      "start": 345.257,
+      "end": 345.536
+    },
+    {
+      "word": "nine:",
+      "start": 345.583,
+      "end": 345.966
+    },
+    {
+      "word": "Verify.",
+      "start": 346.569,
+      "end": 347.22
+    },
+    {
+      "word": "Re-read",
+      "start": 347.394,
+      "end": 347.846
+    },
+    {
+      "word": "original",
+      "start": 347.939,
+      "end": 348.369
+    },
+    {
+      "word": "documentation",
+      "start": 348.427,
+      "end": 349.216
+    },
+    {
+      "word": "and",
+      "start": 349.274,
+      "end": 349.356
+    },
+    {
+      "word": "compare",
+      "start": 349.414,
+      "end": 349.797
+    },
+    {
+      "word": "to",
+      "start": 349.832,
+      "end": 349.89
+    },
+    {
+      "word": "implementation.",
+      "start": 349.971,
+      "end": 351.004
+    },
+    {
+      "word": "Phase",
+      "start": 352.119,
+      "end": 352.479
+    },
+    {
+      "word": "ten:",
+      "start": 352.525,
+      "end": 352.99
+    },
+    {
+      "word": "Refactor.",
+      "start": 353.199,
+      "end": 353.965
+    },
+    {
+      "word": "Clean",
+      "start": 354.569,
+      "end": 354.789
+    },
+    {
+      "word": "up",
+      "start": 354.836,
+      "end": 354.917
+    },
+    {
+      "word": "code",
+      "start": 354.987,
+      "end": 355.23
+    },
+    {
+      "word": "while",
+      "start": 355.254,
+      "end": 355.416
+    },
+    {
+      "word": "tests",
+      "start": 355.451,
+      "end": 355.73
+    },
+    {
+      "word": "stay",
+      "start": 355.753,
+      "end": 355.962
+    },
+    {
+      "word": "green.",
+      "start": 356.008,
+      "end": 356.496
+    },
+    {
+      "word": "Phase",
+      "start": 357.309,
+      "end": 357.61
+    },
+    {
+      "word": "eleven:",
+      "start": 357.645,
+      "end": 358.203
+    },
+    {
+      "word": "Documentation.",
+      "start": 358.377,
+      "end": 359.387
+    },
+    {
+      "word": "Update",
+      "start": 359.828,
+      "end": 360.281
+    },
+    {
+      "word": "OpenAPI",
+      "start": 360.327,
+      "end": 360.931
+    },
+    {
+      "word": "spec",
+      "start": 360.966,
+      "end": 361.21
+    },
+    {
+      "word": "and",
+      "start": 361.279,
+      "end": 361.349
+    },
+    {
+      "word": "test",
+      "start": 361.384,
+      "end": 361.604
+    },
+    {
+      "word": "manifest.",
+      "start": 361.651,
+      "end": 362.382
+    },
+    {
+      "word": "Every",
+      "start": 363.079,
+      "end": 363.346
+    },
+    {
+      "word": "phase",
+      "start": 363.404,
+      "end": 363.706
+    },
+    {
+      "word": "can",
+      "start": 363.729,
+      "end": 363.845
+    },
+    {
+      "word": "loop",
+      "start": 363.903,
+      "end": 364.066
+    },
+    {
+      "word": "back.",
+      "start": 364.112,
+      "end": 364.53
+    },
+    {
+      "word": "If",
+      "start": 365.041,
+      "end": 365.18
+    },
+    {
+      "word": "verification",
+      "start": 365.215,
+      "end": 365.946
+    },
+    {
+      "word": "finds",
+      "start": 366.016,
+      "end": 366.283
+    },
+    {
+      "word": "gaps,",
+      "start": 366.33,
+      "end": 366.829
+    },
+    {
+      "word": "we",
+      "start": 366.864,
+      "end": 366.98
+    },
+    {
+      "word": "return",
+      "start": 367.061,
+      "end": 367.351
+    },
+    {
+      "word": "to",
+      "start": 367.409,
+      "end": 367.467
+    },
+    {
+      "word": "Red",
+      "start": 367.537,
+      "end": 367.722
+    },
+    {
+      "word": "and",
+      "start": 367.781,
+      "end": 367.862
+    },
+    {
+      "word": "write",
+      "start": 367.92,
+      "end": 368.129
+    },
+    {
+      "word": "tests",
+      "start": 368.152,
+      "end": 368.466
+    },
+    {
+      "word": "for",
+      "start": 368.5,
+      "end": 368.605
+    },
+    {
+      "word": "missing",
+      "start": 368.663,
+      "end": 368.953
+    },
+    {
+      "word": "features.",
+      "start": 369.011,
+      "end": 369.696
+    },
+    {
+      "word": "See",
+      "start": 370.079,
+      "end": 370.265
+    },
+    {
+      "word": "it",
+      "start": 370.3,
+      "end": 370.358
+    },
+    {
+      "word": "in",
+      "start": 370.416,
+      "end": 370.486
+    },
+    {
+      "word": "action.",
+      "start": 370.555,
+      "end": 371.147
+    },
+    {
+      "word": "Watch",
+      "start": 371.751,
+      "end": 372.018
+    },
+    {
+      "word": "the",
+      "start": 372.065,
+      "end": 372.134
+    },
+    {
+      "word": "interactive",
+      "start": 372.192,
+      "end": 372.796
+    },
+    {
+      "word": "workflow",
+      "start": 372.831,
+      "end": 373.26
+    },
+    {
+      "word": "demo.",
+      "start": 373.318,
+      "end": 373.864
+    },
+    {
+      "word": "The",
+      "start": 374.468,
+      "end": 374.596
+    },
+    {
+      "word": "demo",
+      "start": 374.654,
+      "end": 374.897
+    },
+    {
+      "word": "shows",
+      "start": 374.967,
+      "end": 375.234
+    },
+    {
+      "word": "a",
+      "start": 375.292,
+      "end": 375.315
+    },
+    {
+      "word": "real",
+      "start": 375.385,
+      "end": 375.548
+    },
+    {
+      "word": "example:",
+      "start": 375.617,
+      "end": 376.302
+    },
+    {
+      "word": "creating",
+      "start": 376.743,
+      "end": 377.115
+    },
+    {
+      "word": "a",
+      "start": 377.161,
+      "end": 377.196
+    },
+    {
+      "word": "Brandfetch",
+      "start": 377.243,
+      "end": 377.858
+    },
+    {
+      "word": "API",
+      "start": 377.974,
+      "end": 378.427
+    },
+    {
+      "word": "endpoint.",
+      "start": 378.508,
+      "end": 379.1
+    },
+    {
+      "word": "Use",
+      "start": 379.704,
+      "end": 379.89
+    },
+    {
+      "word": "the",
+      "start": 379.913,
+      "end": 379.983
+    },
+    {
+      "word": "auto-play",
+      "start": 380.029,
+      "end": 380.447
+    },
+    {
+      "word": "button",
+      "start": 380.493,
+      "end": 380.749
+    },
+    {
+      "word": "to",
+      "start": 380.807,
+      "end": 380.865
+    },
+    {
+      "word": "watch",
+      "start": 380.923,
+      "end": 381.155
+    },
+    {
+      "word": "the",
+      "start": 381.225,
+      "end": 381.306
+    },
+    {
+      "word": "full",
+      "start": 381.353,
+      "end": 381.538
+    },
+    {
+      "word": "workflow.",
+      "start": 381.596,
+      "end": 382.247
+    },
+    {
+      "word": "Or",
+      "start": 382.943,
+      "end": 383.059
+    },
+    {
+      "word": "step",
+      "start": 383.117,
+      "end": 383.338
+    },
+    {
+      "word": "through",
+      "start": 383.396,
+      "end": 383.675
+    },
+    {
+      "word": "manually",
+      "start": 383.802,
+      "end": 384.36
+    },
+    {
+      "word": "with",
+      "start": 384.441,
+      "end": 384.638
+    },
+    {
+      "word": "Next",
+      "start": 384.696,
+      "end": 384.963
+    },
+    {
+      "word": "and",
+      "start": 384.998,
+      "end": 385.079
+    },
+    {
+      "word": "Previous.",
+      "start": 385.125,
+      "end": 385.857
+    },
+    {
+      "word": "Watch",
+      "start": 386.67,
+      "end": 386.913
+    },
+    {
+      "word": "the",
+      "start": 386.96,
+      "end": 387.029
+    },
+    {
+      "word": "progress",
+      "start": 387.076,
+      "end": 387.505
+    },
+    {
+      "word": "bar",
+      "start": 387.552,
+      "end": 387.714
+    },
+    {
+      "word": "fill",
+      "start": 387.796,
+      "end": 387.97
+    },
+    {
+      "word": "as",
+      "start": 388.028,
+      "end": 388.098
+    },
+    {
+      "word": "each",
+      "start": 388.156,
+      "end": 388.33
+    },
+    {
+      "word": "phase",
+      "start": 388.365,
+      "end": 388.608
+    },
+    {
+      "word": "completes.",
+      "start": 388.643,
+      "end": 389.317
+    },
+    {
+      "word": "The",
+      "start": 389.642,
+      "end": 389.769
+    },
+    {
+      "word": "explanation",
+      "start": 389.827,
+      "end": 390.42
+    },
+    {
+      "word": "panel",
+      "start": 390.478,
+      "end": 390.768
+    },
+    {
+      "word": "shows",
+      "start": 390.838,
+      "end": 391.139
+    },
+    {
+      "word": "what's",
+      "start": 391.186,
+      "end": 391.36
+    },
+    {
+      "word": "happening",
+      "start": 391.395,
+      "end": 391.778
+    },
+    {
+      "word": "at",
+      "start": 391.836,
+      "end": 391.906
+    },
+    {
+      "word": "each",
+      "start": 391.964,
+      "end": 392.149
+    },
+    {
+      "word": "step.",
+      "start": 392.196,
+      "end": 392.672
+    },
+    {
+      "word": "Every",
+      "start": 393.113,
+      "end": 393.403
+    },
+    {
+      "word": "action",
+      "start": 393.461,
+      "end": 393.752
+    },
+    {
+      "word": "is",
+      "start": 393.798,
+      "end": 393.879
+    },
+    {
+      "word": "explained.",
+      "start": 393.937,
+      "end": 394.599
+    },
+    {
+      "word": "When",
+      "start": 395.203,
+      "end": 395.377
+    },
+    {
+      "word": "hooks",
+      "start": 395.423,
+      "end": 395.644
+    },
+    {
+      "word": "block,",
+      "start": 395.691,
+      "end": 396.085
+    },
+    {
+      "word": "you'll",
+      "start": 396.167,
+      "end": 396.341
+    },
+    {
+      "word": "see",
+      "start": 396.376,
+      "end": 396.492
+    },
+    {
+      "word": "exactly",
+      "start": 396.538,
+      "end": 396.968
+    },
+    {
+      "word": "why",
+      "start": 397.026,
+      "end": 397.304
+    },
+    {
+      "word": "and",
+      "start": 397.374,
+      "end": 397.455
+    },
+    {
+      "word": "what's",
+      "start": 397.502,
+      "end": 397.711
+    },
+    {
+      "word": "required",
+      "start": 397.78,
+      "end": 398.245
+    },
+    {
+      "word": "to",
+      "start": 398.28,
+      "end": 398.338
+    },
+    {
+      "word": "continue.",
+      "start": 398.396,
+      "end": 399.15
+    },
+    {
+      "word": "Click",
+      "start": 399.963,
+      "end": 400.218
+    },
+    {
+      "word": "auto-play",
+      "start": 400.288,
+      "end": 400.822
+    },
+    {
+      "word": "to",
+      "start": 400.903,
+      "end": 400.985
+    },
+    {
+      "word": "watch",
+      "start": 401.043,
+      "end": 401.275
+    },
+    {
+      "word": "Claude",
+      "start": 401.333,
+      "end": 401.681
+    },
+    {
+      "word": "build",
+      "start": 401.704,
+      "end": 401.913
+    },
+    {
+      "word": "an",
+      "start": 401.948,
+      "end": 402.006
+    },
+    {
+      "word": "API",
+      "start": 402.087,
+      "end": 402.505
+    },
+    {
+      "word": "from",
+      "start": 402.598,
+      "end": 402.761
+    },
+    {
+      "word": "research",
+      "start": 402.854,
+      "end": 403.318
+    },
+    {
+      "word": "to",
+      "start": 403.376,
+      "end": 403.446
+    },
+    {
+      "word": "completion.",
+      "start": 403.516,
+      "end": 404.27
+    },
+    {
+      "word": "Persistent",
+      "start": 404.967,
+      "end": 405.629
+    },
+    {
+      "word": "memory.",
+      "start": 405.687,
+      "end": 406.314
+    },
+    {
+      "word": "Two",
+      "start": 407.01,
+      "end": 407.207
+    },
+    {
+      "word": "problems",
+      "start": 407.266,
+      "end": 407.776
+    },
+    {
+      "word": "with",
+      "start": 407.846,
+      "end": 408.009
+    },
+    {
+      "word": "AI",
+      "start": 408.055,
+      "end": 408.45
+    },
+    {
+      "word": "memory.",
+      "start": 408.519,
+      "end": 409.158
+    },
+    {
+      "word": "Two",
+      "start": 409.669,
+      "end": 409.889
+    },
+    {
+      "word": "solutions",
+      "start": 409.971,
+      "end": 410.644
+    },
+    {
+      "word": "built",
+      "start": 410.76,
+      "end": 411.004
+    },
+    {
+      "word": "into",
+      "start": 411.062,
+      "end": 411.248
+    },
+    {
+      "word": "state",
+      "start": 411.317,
+      "end": 411.584
+    },
+    {
+      "word": "tracking.",
+      "start": 411.608,
+      "end": 412.211
+    },
+    {
+      "word": "Problem:",
+      "start": 413.163,
+      "end": 413.779
+    },
+    {
+      "word": "Self-answering.",
+      "start": 413.953,
+      "end": 414.928
+    },
+    {
+      "word": "The",
+      "start": 415.741,
+      "end": 415.892
+    },
+    {
+      "word": "AI",
+      "start": 415.938,
+      "end": 416.345
+    },
+    {
+      "word": "asks",
+      "start": 416.437,
+      "end": 416.751
+    },
+    {
+      "word": "a",
+      "start": 416.797,
+      "end": 416.832
+    },
+    {
+      "word": "question",
+      "start": 416.89,
+      "end": 417.436
+    },
+    {
+      "word": "then",
+      "start": 417.877,
+      "end": 418.074
+    },
+    {
+      "word": "immediately",
+      "start": 418.121,
+      "end": 418.69
+    },
+    {
+      "word": "answers",
+      "start": 418.748,
+      "end": 419.084
+    },
+    {
+      "word": "itself.",
+      "start": 419.154,
+      "end": 419.758
+    },
+    {
+      "word": "Solution:",
+      "start": 420.571,
+      "end": 421.256
+    },
+    {
+      "word": "phase_exit_confirmed.",
+      "start": 421.465,
+      "end": 423.206
+    },
+    {
+      "word": "State",
+      "start": 424.019,
+      "end": 424.309
+    },
+    {
+      "word": "tracking",
+      "start": 424.333,
+      "end": 424.727
+    },
+    {
+      "word": "detects",
+      "start": 424.785,
+      "end": 425.157
+    },
+    {
+      "word": "when",
+      "start": 425.192,
+      "end": 425.331
+    },
+    {
+      "word": "Claude",
+      "start": 425.401,
+      "end": 425.737
+    },
+    {
+      "word": "asks",
+      "start": 425.784,
+      "end": 426.272
+    },
+    {
+      "word": "an",
+      "start": 426.713,
+      "end": 426.875
+    },
+    {
+      "word": "exit",
+      "start": 426.956,
+      "end": 427.212
+    },
+    {
+      "word": "question",
+      "start": 427.247,
+      "end": 427.758
+    },
+    {
+      "word": "AND",
+      "start": 427.885,
+      "end": 428.059
+    },
+    {
+      "word": "the",
+      "start": 428.094,
+      "end": 428.164
+    },
+    {
+      "word": "user",
+      "start": 428.245,
+      "end": 428.524
+    },
+    {
+      "word": "responds",
+      "start": 428.582,
+      "end": 429.058
+    },
+    {
+      "word": "affirmatively.",
+      "start": 429.104,
+      "end": 430.045
+    },
+    {
+      "word": "Problem:",
+      "start": 430.648,
+      "end": 431.275
+    },
+    {
+      "word": "Context",
+      "start": 431.659,
+      "end": 432.123
+    },
+    {
+      "word": "dilution.",
+      "start": 432.146,
+      "end": 432.82
+    },
+    {
+      "word": "Early",
+      "start": 433.33,
+      "end": 433.597
+    },
+    {
+      "word": "decisions",
+      "start": 433.655,
+      "end": 434.213
+    },
+    {
+      "word": "fade",
+      "start": 434.271,
+      "end": 434.468
+    },
+    {
+      "word": "from",
+      "start": 434.491,
+      "end": 434.619
+    },
+    {
+      "word": "context.",
+      "start": 434.689,
+      "end": 435.525
+    },
+    {
+      "word": "Solution:",
+      "start": 435.908,
+      "end": 436.628
+    },
+    {
+      "word": "Periodic",
+      "start": 437.324,
+      "end": 437.916
+    },
+    {
+      "word": "re-grounding.",
+      "start": 438.032,
+      "end": 438.834
+    },
+    {
+      "word": "Every",
+      "start": 439.786,
+      "end": 440.076
+    },
+    {
+      "word": "seven",
+      "start": 440.134,
+      "end": 440.424
+    },
+    {
+      "word": "turns,",
+      "start": 440.482,
+      "end": 440.935
+    },
+    {
+      "word": "periodic-reground.py",
+      "start": 440.993,
+      "end": 442.479
+    },
+    {
+      "word": "injects",
+      "start": 443.083,
+      "end": 443.454
+    },
+    {
+      "word": "a",
+      "start": 443.489,
+      "end": 443.524
+    },
+    {
+      "word": "context",
+      "start": 443.582,
+      "end": 444.035
+    },
+    {
+      "word": "reminder",
+      "start": 444.093,
+      "end": 444.522
+    },
+    {
+      "word": "with",
+      "start": 444.592,
+      "end": 444.731
+    },
+    {
+      "word": "current",
+      "start": 444.789,
+      "end": 445.08
+    },
+    {
+      "word": "phase,",
+      "start": 445.126,
+      "end": 445.683
+    },
+    {
+      "word": "interview",
+      "start": 446.194,
+      "end": 446.577
+    },
+    {
+      "word": "decisions,",
+      "start": 446.635,
+      "end": 447.448
+    },
+    {
+      "word": "and",
+      "start": 447.727,
+      "end": 447.889
+    },
+    {
+      "word": "turn",
+      "start": 447.947,
+      "end": 448.168
+    },
+    {
+      "word": "count.",
+      "start": 448.238,
+      "end": 448.679
+    },
+    {
+      "word": "Everything",
+      "start": 449.491,
+      "end": 449.909
+    },
+    {
+      "word": "is",
+      "start": 449.956,
+      "end": 450.037
+    },
+    {
+      "word": "tracked",
+      "start": 450.095,
+      "end": 450.467
+    },
+    {
+      "word": "in",
+      "start": 450.525,
+      "end": 450.629
+    },
+    {
+      "word": "a",
+      "start": 450.687,
+      "end": 450.71
+    },
+    {
+      "word": "JSON",
+      "start": 450.792,
+      "end": 451.186
+    },
+    {
+      "word": "state",
+      "start": 451.256,
+      "end": 451.535
+    },
+    {
+      "word": "file.",
+      "start": 451.57,
+      "end": 452.115
+    },
+    {
+      "word": "Phases,",
+      "start": 452.626,
+      "end": 453.311
+    },
+    {
+      "word": "interview",
+      "start": 453.462,
+      "end": 453.868
+    },
+    {
+      "word": "decisions,",
+      "start": 453.926,
+      "end": 454.786
+    },
+    {
+      "word": "files",
+      "start": 454.913,
+      "end": 455.25
+    },
+    {
+      "word": "created,",
+      "start": 455.308,
+      "end": 456.028
+    },
+    {
+      "word": "turn",
+      "start": 456.411,
+      "end": 456.643
+    },
+    {
+      "word": "count.",
+      "start": 456.713,
+      "end": 457.177
+    },
+    {
+      "word": "Hooks",
+      "start": 458.129,
+      "end": 458.419
+    },
+    {
+      "word": "check",
+      "start": 458.477,
+      "end": 458.721
+    },
+    {
+      "word": "this",
+      "start": 458.803,
+      "end": 458.954
+    },
+    {
+      "word": "state",
+      "start": 459.012,
+      "end": 459.337
+    },
+    {
+      "word": "before",
+      "start": 459.395,
+      "end": 459.743
+    },
+    {
+      "word": "allowing",
+      "start": 459.778,
+      "end": 460.173
+    },
+    {
+      "word": "operations.",
+      "start": 460.231,
+      "end": 461.171
+    },
+    {
+      "word": "Your",
+      "start": 461.775,
+      "end": 461.949
+    },
+    {
+      "word": "decisions",
+      "start": 461.996,
+      "end": 462.495
+    },
+    {
+      "word": "are",
+      "start": 462.53,
+      "end": 462.646
+    },
+    {
+      "word": "actively",
+      "start": 462.704,
+      "end": 463.134
+    },
+    {
+      "word": "re-injected",
+      "start": 463.215,
+      "end": 463.865
+    },
+    {
+      "word": "into",
+      "start": 463.935,
+      "end": 464.12
+    },
+    {
+      "word": "context.",
+      "start": 464.19,
+      "end": 464.98
+    },
+    {
+      "word": "Claude",
+      "start": 465.932,
+      "end": 466.199
+    },
+    {
+      "word": "never",
+      "start": 466.222,
+      "end": 466.419
+    },
+    {
+      "word": "forgets",
+      "start": 466.5,
+      "end": 466.849
+    },
+    {
+      "word": "what",
+      "start": 466.872,
+      "end": 467
+    },
+    {
+      "word": "you",
+      "start": 467.034,
+      "end": 467.116
+    },
+    {
+      "word": "agreed",
+      "start": 467.185,
+      "end": 467.487
+    },
+    {
+      "word": "on.",
+      "start": 467.545,
+      "end": 467.87
+    },
+    {
+      "word": "Get",
+      "start": 468.567,
+      "end": 468.753
+    },
+    {
+      "word": "started.",
+      "start": 468.811,
+      "end": 469.438
+    },
+    {
+      "word": "Built",
+      "start": 470.25,
+      "end": 470.494
+    },
+    {
+      "word": "specifically",
+      "start": 470.564,
+      "end": 471.284
+    },
+    {
+      "word": "for",
+      "start": 471.377,
+      "end": 471.516
+    },
+    {
+      "word": "Claude",
+      "start": 471.574,
+      "end": 471.829
+    },
+    {
+      "word": "Code.",
+      "start": 471.876,
+      "end": 472.398
+    },
+    {
+      "word": "Install",
+      "start": 472.781,
+      "end": 473.281
+    },
+    {
+      "word": "in",
+      "start": 473.35,
+      "end": 473.42
+    },
+    {
+      "word": "under",
+      "start": 473.49,
+      "end": 473.699
+    },
+    {
+      "word": "sixty",
+      "start": 473.78,
+      "end": 474.128
+    },
+    {
+      "word": "seconds.",
+      "start": 474.186,
+      "end": 474.79
+    },
+    {
+      "word": "npx",
+      "start": 475.603,
+      "end": 476.021
+    },
+    {
+      "word": "@hustle-together/api-dev-tools.",
+      "start": 476.23,
+      "end": 479.237
+    },
+    {
+      "word": "That's",
+      "start": 479.933,
+      "end": 480.177
+    },
+    {
+      "word": "the",
+      "start": 480.235,
+      "end": 480.305
+    },
+    {
+      "word": "command.",
+      "start": 480.351,
+      "end": 480.908
+    },
+    {
+      "word": "The",
+      "start": 481.512,
+      "end": 481.628
+    },
+    {
+      "word": "CLI",
+      "start": 481.674,
+      "end": 482.139
+    },
+    {
+      "word": "installs",
+      "start": 482.208,
+      "end": 482.603
+    },
+    {
+      "word": "eighteen",
+      "start": 482.661,
+      "end": 482.963
+    },
+    {
+      "word": "enforcement",
+      "start": 483.01,
+      "end": 483.544
+    },
+    {
+      "word": "hooks,",
+      "start": 483.578,
+      "end": 484.02
+    },
+    {
+      "word": "twenty-four",
+      "start": 484.171,
+      "end": 484.635
+    },
+    {
+      "word": "slash",
+      "start": 484.67,
+      "end": 484.972
+    },
+    {
+      "word": "commands,",
+      "start": 485.018,
+      "end": 485.645
+    },
+    {
+      "word": "and",
+      "start": 485.854,
+      "end": 486.005
+    },
+    {
+      "word": "templates",
+      "start": 486.051,
+      "end": 486.469
+    },
+    {
+      "word": "into",
+      "start": 486.539,
+      "end": 486.736
+    },
+    {
+      "word": "your",
+      "start": 486.818,
+      "end": 486.969
+    },
+    {
+      "word": ".claude",
+      "start": 487.003,
+      "end": 487.77
+    },
+    {
+      "word": "directory.",
+      "start": 487.828,
+      "end": 488.606
+    },
+    {
+      "word": "Works",
+      "start": 489.72,
+      "end": 490.034
+    },
+    {
+      "word": "with",
+      "start": 490.092,
+      "end": 490.243
+    },
+    {
+      "word": "any",
+      "start": 490.289,
+      "end": 490.44
+    },
+    {
+      "word": "existing",
+      "start": 490.498,
+      "end": 490.951
+    },
+    {
+      "word": "Claude",
+      "start": 490.997,
+      "end": 491.253
+    },
+    {
+      "word": "Code",
+      "start": 491.276,
+      "end": 491.473
+    },
+    {
+      "word": "project.",
+      "start": 491.496,
+      "end": 492.147
+    },
+    {
+      "word": "Find",
+      "start": 492.657,
+      "end": 492.855
+    },
+    {
+      "word": "the",
+      "start": 492.89,
+      "end": 492.959
+    },
+    {
+      "word": "project",
+      "start": 492.994,
+      "end": 493.377
+    },
+    {
+      "word": "on",
+      "start": 493.424,
+      "end": 493.493
+    },
+    {
+      "word": "GitHub",
+      "start": 493.551,
+      "end": 493.877
+    },
+    {
+      "word": "and",
+      "start": 493.935,
+      "end": 494.144
+    },
+    {
+      "word": "npm.",
+      "start": 494.167,
+      "end": 494.759
+    },
+    {
+      "word": "Star",
+      "start": 495.27,
+      "end": 495.525
+    },
+    {
+      "word": "the",
+      "start": 495.583,
+      "end": 495.653
+    },
+    {
+      "word": "repo,",
+      "start": 495.711,
+      "end": 496.199
+    },
+    {
+      "word": "report",
+      "start": 496.326,
+      "end": 496.663
+    },
+    {
+      "word": "issues,",
+      "start": 496.721,
+      "end": 497.383
+    },
+    {
+      "word": "contribute",
+      "start": 497.51,
+      "end": 498.114
+    },
+    {
+      "word": "improvements.",
+      "start": 498.149,
+      "end": 498.95
+    },
+    {
+      "word": "API",
+      "start": 500.25,
+      "end": 500.842
+    },
+    {
+      "word": "Dev",
+      "start": 502.143,
+      "end": 502.352
+    },
+    {
+      "word": "Tools",
+      "start": 502.398,
+      "end": 502.677
+    },
+    {
+      "word": "version",
+      "start": 502.735,
+      "end": 503.06
+    },
+    {
+      "word": "one.",
+      "start": 503.141,
+      "end": 503.582
+    },
+    {
+      "word": "Twelve",
+      "start": 504.093,
+      "end": 504.383
+    },
+    {
+      "word": "phases.",
+      "start": 504.407,
+      "end": 505.057
+    },
+    {
+      "word": "Loop-back",
+      "start": 505.301,
+      "end": 505.695
+    },
+    {
+      "word": "architecture.",
+      "start": 505.777,
+      "end": 506.671
+    },
+    {
+      "word": "Continuous",
+      "start": 507.274,
+      "end": 507.913
+    },
+    {
+      "word": "verification.",
+      "start": 507.959,
+      "end": 508.969
+    },
+    {
+      "word": "Research",
+      "start": 509.411,
+      "end": 509.84
+    },
+    {
+      "word": "first.",
+      "start": 509.898,
+      "end": 510.467
+    },
+    {
+      "word": "Questions",
+      "start": 510.792,
+      "end": 511.28
+    },
+    {
+      "word": "from",
+      "start": 511.326,
+      "end": 511.489
+    },
+    {
+      "word": "findings.",
+      "start": 511.558,
+      "end": 512.255
+    },
+    {
+      "word": "Verify",
+      "start": 512.638,
+      "end": 513.126
+    },
+    {
+      "word": "after",
+      "start": 513.219,
+      "end": 513.497
+    },
+    {
+      "word": "green.",
+      "start": 513.555,
+      "end": 514.008
+    },
+    {
+      "word": "Document",
+      "start": 514.391,
+      "end": 514.844
+    },
+    {
+      "word": "always.",
+      "start": 514.89,
+      "end": 515.448
+    },
+    {
+      "word": "Hustle",
+      "start": 515.831,
+      "end": 516.156
+    },
+    {
+      "word": "together.",
+      "start": 516.191,
+      "end": 516.748
+    },
+    {
+      "word": "Build",
+      "start": 516.864,
+      "end": 517.108
+    },
+    {
+      "word": "stronger.",
+      "start": 517.154,
+      "end": 517.944
     }
   ]
 }

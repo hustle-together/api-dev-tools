@@ -43,195 +43,188 @@ const VOICE_NAME = voiceArg;
 
 // The narration script with section markers and highlight triggers
 // Format: [SECTION:id] marks a new section, [HIGHLIGHT:element-selector] marks what to highlight
+// Section IDs must match HTML page section IDs: hero, problem, solution, grounding, hooks, phases, demo, state, install
 const NARRATION_SCRIPT = `
-[SECTION:intro]
-Welcome to Hustle API Dev Tools, version one point oh.
+[SECTION:hero]
+Welcome to API Dev Tools, version one point oh.
 
-[HIGHLIGHT:#hustleBrand]
-This package enforces a structured, twelve-phase workflow for AI-assisted API development.
+[HIGHLIGHT:.hero-badge]
+This is an interview-driven, research-first workflow for Claude Code.
 
-[HIGHLIGHT:[data-phase="research"]]
-Research first. No assumptions. No training data. Real documentation from Context7 and web search.
+[HIGHLIGHT:.hero-tagline]
+Continuous verification loops ensure the AI never falls back to outdated training data.
 
-[HIGHLIGHT:[data-phase="interview"]]
-Interview second. The AI asks YOU questions with structured options based on what it actually found.
+[HIGHLIGHT:.hero-terminal]
+One command installs everything. npx @hustle-together/api-dev-tools.
 
-[HIGHLIGHT:[data-phase="test"]]
-Test before code. Red, green, refactor. No implementation without a failing test.
+The philosophy is simple: Research first. Interview second. Test before code. Document always.
 
-[HIGHLIGHT:[data-phase="docs"]]
-Document everything. Every endpoint documented with real examples and schemas.
+[SECTION:problem]
+[HIGHLIGHT:#problem h2]
+Let's talk about the problem. Six failure modes break AI-assisted API development.
 
-The philosophy is simple: Hustle together. Share resources. Build stronger.
+[HIGHLIGHT:.problem-card:nth-child(1)]
+Problem one: Outdated documentation. AI training data can be months or years old. APIs change constantly with new endpoints and deprecated parameters. Your implementation breaks on day one.
 
-[SECTION:problems]
-[HIGHLIGHT:#problems h2]
-Let's talk about the problem. What goes wrong when AI builds APIs without structure?
+[HIGHLIGHT:.problem-card:nth-child(2)]
+Problem two: Memory-based implementation. Even after researching current docs, the AI forgets by implementation time. It falls back to training patterns that don't match what it just read.
 
-[HIGHLIGHT:.gap-item:nth-child(1)]
-Gap one: AI doesn't use your exact words. You say Brandfetch API but it searches for something else. Wrong library. Wrong documentation.
+[HIGHLIGHT:.problem-card:nth-child(3)]
+Problem three: Self-answering questions. The AI asks "What format do you want?" then immediately answers itself. Your actual requirements never get captured.
 
-[HIGHLIGHT:.gap-item:nth-child(2)]
-Gap two: Generic questions. Without research first, the AI asks template questions instead of specific ones based on actual API capabilities.
+[HIGHLIGHT:.problem-card:nth-child(4)]
+Problem four: Context dilution. In long sessions, early decisions fade from the context window. Turn forty-seven doesn't remember turn three.
 
-[HIGHLIGHT:.gap-item:nth-child(3)]
-Gap three: Memory-based implementation. After research, the AI forgets what it learned and implements from training data instead.
+[HIGHLIGHT:.problem-card:nth-child(5)]
+Problem five: Skipped verification. The AI claims done without checking if implementation matches documentation. Memory-based errors slip through uncaught.
 
-[HIGHLIGHT:.gap-item:nth-child(4)]
-Gap four: No verification after tests pass. The AI writes code that passes tests but doesn't match the actual documentation.
+[HIGHLIGHT:.problem-card:nth-child(6)]
+Problem six: No enforcement mechanism. Nothing forces the AI to follow the workflow. It can skip steps whenever convenient.
 
-[HIGHLIGHT:.gap-item:nth-child(5)]
-Gap five: Context dilution. After many turns, the AI forgets project structure, documentation locations, and workflow requirements.
-
-These gaps compound. Version one solves all of them with loop-back architecture and continuous re-grounding.
+These problems compound. Each failure leads to the next.
 
 [SECTION:solution]
 [HIGHLIGHT:#solution h2]
-The solution is enforcement. Python hooks that intercept every tool call.
+The solution: Six fixes that directly address each problem. Python hooks that BLOCK progress.
 
-[HIGHLIGHT:.hook-box:nth-child(1)]
-PreToolUse hooks run before Claude writes any file. They inject interview decisions as reminders and block writes without research.
+[HIGHLIGHT:.solution-card:nth-child(1)]
+Fix one: Research-first enforcement. Blocks ALL implementation until Context7 or WebSearch fetches current documentation. No cached code allowed.
 
-[HIGHLIGHT:.hook-box:nth-child(2)]
-PostToolUse hooks track tool usage and trigger verification. After tests pass, they force Phase nine: re-read the documentation.
+[HIGHLIGHT:.solution-card:nth-child(2)]
+Fix two: Verification loops. Re-fetches documentation AFTER tests pass and compares to implementation. Catches memory-based drift.
 
-[HIGHLIGHT:.hook-box:nth-child(3)]
-The Stop hook blocks completion if any phase is incomplete. No more premature "done" declarations.
+[HIGHLIGHT:.solution-card:nth-child(3)]
+Fix three: Interview enforcement. Requires the AskUserQuestion tool with structured numbered options. Detects self-answers and blocks until human confirmation.
 
-[HIGHLIGHT:.hook-box:nth-child(4)]
-SessionStart and periodic hooks re-inject context every seven turns to prevent dilution in long sessions.
+[HIGHLIGHT:.solution-card:nth-child(4)]
+Fix four: Periodic re-grounding. Re-injects interview decisions and current phase every seven turns. Uses phase_exit_confirmed to track explicit user approval.
 
-This isn't about limiting AI. It's about holding it to the same standards we hold ourselves.
+[HIGHLIGHT:.solution-card:nth-child(5)]
+Fix five: Automatic re-research. Triggers when tests pass. Re-fetches docs, builds comparison table, loops back if implementation doesn't match.
+
+[HIGHLIGHT:.solution-card:nth-child(6)]
+Fix six: Exit code two blocking. Hooks return exit code two to block actions and show errors to Claude. Cannot proceed until workflow requirements are met.
+
+[SECTION:grounding]
+[HIGHLIGHT:#grounding h2]
+Research grounding. Current documentation, not stale training data.
+
+[HIGHLIGHT:.grounding-tools]
+Two MCP tools provide live research. Context7 for library documentation. WebSearch for official API docs.
+
+[HIGHLIGHT:.grounding-example]
+The enforce-research hook blocks all Write and Edit operations until research is complete. No documentation equals no implementation.
+
+This isn't about slowing down. It's about getting it right the first time.
+
+[SECTION:hooks]
+[HIGHLIGHT:#hooks h2]
+Workflow enforcement. The problem: AI can skip steps. The solution: hooks that block progress.
+
+[HIGHLIGHT:.hook-types]
+Eighteen Python hooks intercept Claude's actions. PreToolUse hooks run before file writes. PostToolUse hooks run after tool execution. Stop hooks run when Claude tries to end.
+
+[HIGHLIGHT:.exit-code-callout]
+Exit code two is the magic. When a hook returns exit code two, it blocks the action AND sends an error message to Claude. Claude sees the error and must respond. It cannot ignore it.
+
+[HIGHLIGHT:.exit-code-demo]
+Example: Claude tries to write route.ts. The enforce-research hook blocks with exit code two. Claude sees: Research required before implementation. Current phase incomplete. Required actions: Use Context7, use WebSearch, document findings.
+
+Claude must fix the issue before continuing.
 
 [SECTION:phases]
 [HIGHLIGHT:#phases h2]
-The workflow now has twelve phases.
+The twelve phases. Each phase must complete before proceeding.
 
-[HIGHLIGHT:[data-phase="0"]]
+[HIGHLIGHT:.phase-card:nth-child(1)]
 Phase zero: Disambiguation. When you say Vercel AI, do you mean the SDK or the Gateway? We clarify before researching.
 
-[HIGHLIGHT:[data-phase="1"]]
-Phase one: Scope. Confirm we understand what you want to build.
+[HIGHLIGHT:.phase-card:nth-child(2)]
+Phase one: Scope confirmation. Confirm understanding of what the endpoint should do.
 
-[HIGHLIGHT:[data-phase="2"]]
-Phase two: Initial research. Context7 and web search. Find the real documentation.
+[HIGHLIGHT:.phase-card:nth-child(3)]
+Phase two: Initial research. Fetch documentation via Context7 or WebSearch.
 
-[HIGHLIGHT:[data-phase="3"]]
+[HIGHLIGHT:.phase-card:nth-child(4)]
 Phase three: Interview. Questions generated FROM research findings. Not generic templates.
 
-[HIGHLIGHT:[data-phase="4"]]
-Phase four: Deep research. Based on your interview answers, we propose targeted follow-up searches. Adaptive, not shotgun.
+[HIGHLIGHT:.phase-card:nth-child(5)]
+Phase four: Deep research. Based on your answers, propose targeted follow-up searches.
 
-[HIGHLIGHT:[data-phase="5"]]
+[HIGHLIGHT:.phase-card:nth-child(6)]
 Phase five: Schema. Define Zod schemas based on research plus interview decisions.
 
-[HIGHLIGHT:[data-phase="6"]]
+[HIGHLIGHT:.phase-card:nth-child(7)]
 Phase six: Environment. Verify API keys exist before writing code.
 
-[HIGHLIGHT:[data-phase="7"]]
+[HIGHLIGHT:.phase-card:nth-child(8)]
 Phase seven: TDD Red. Write failing tests. Define success before implementation.
 
-[HIGHLIGHT:[data-phase="8"]]
-Phase eight: TDD Green. Minimal code to pass tests. Interview decisions injected by hooks.
+[HIGHLIGHT:.phase-card:nth-child(9)]
+Phase eight: TDD Green. Minimal code to pass tests.
 
-[HIGHLIGHT:[data-phase="9"]]
-Phase nine: Verify. This is new. Re-read the original documentation and compare to implementation. Find gaps. Loop back if needed.
+[HIGHLIGHT:.phase-card:nth-child(10)]
+Phase nine: Verify. Re-read original documentation and compare to implementation.
 
-[HIGHLIGHT:[data-phase="10"]]
+[HIGHLIGHT:.phase-card:nth-child(11)]
 Phase ten: Refactor. Clean up code while tests stay green.
 
-[HIGHLIGHT:[data-phase="11"]]
+[HIGHLIGHT:.phase-card:nth-child(12)]
 Phase eleven: Documentation. Update OpenAPI spec and test manifest.
-
-[HIGHLIGHT:[data-phase="12"]]
-Phase twelve: Complete. Final verification by the Stop hook.
 
 Every phase can loop back. If verification finds gaps, we return to Red and write tests for missing features.
 
 [SECTION:demo]
 [HIGHLIGHT:#demo h2]
-Let's watch a real example. Creating a Brandfetch API endpoint.
+See it in action. Watch the interactive workflow demo.
 
-[HIGHLIGHT:[data-step="0"]]
-The user types /api-create brandfetch. The twelve-phase workflow begins.
+[HIGHLIGHT:.demo-terminal]
+The demo shows a real example: creating a Brandfetch API endpoint.
 
-[HIGHLIGHT:[data-step="1"]]
-Claude confirms scope. We're building an endpoint to fetch brand assets by domain.
+[HIGHLIGHT:.demo-controls]
+Use the auto-play button to watch the full workflow. Or step through manually with Next and Previous.
 
-[HIGHLIGHT:[data-step="2"]]
-Initial research. Claude uses Context7 to find the SDK documentation. WebSearch finds rate limits and response formats.
+[HIGHLIGHT:.phase-progress-bar]
+Watch the progress bar fill as each phase completes. The explanation panel shows what's happening at each step.
 
-[HIGHLIGHT:[data-step="3"]]
-Interview begins. But notice: the questions are specific to what Claude actually found. What's the primary purpose? Options come from the documentation.
+[HIGHLIGHT:.demo-explanation]
+Every action is explained. When hooks block, you'll see exactly why and what's required to continue.
 
-[HIGHLIGHT:[data-step="4"]]
-User selects: Full brand kit with logos, colors, and fonts.
+Click auto-play to watch Claude build an API from research to completion.
 
-[HIGHLIGHT:[data-step="5"]]
-More questions. How should API keys be handled? User selects server environment variables only.
+[SECTION:state]
+[HIGHLIGHT:#state h2]
+Persistent memory. Two problems with AI memory. Two solutions built into state tracking.
 
-[HIGHLIGHT:[data-step="7"]]
-Deep research. Based on your selections, Claude proposes specific searches for the full brand response format.
+[HIGHLIGHT:.state-highlight-box:nth-child(1)]
+Problem: Self-answering. The AI asks a question then immediately answers itself. Solution: phase_exit_confirmed. State tracking detects when Claude asks an exit question AND the user responds affirmatively.
 
-[HIGHLIGHT:[data-step="8"]]
-Schema created. Zod types based on research plus interview decisions.
+[HIGHLIGHT:.state-highlight-box:nth-child(2)]
+Problem: Context dilution. Early decisions fade from context. Solution: Periodic re-grounding. Every seven turns, periodic-reground.py injects a context reminder with current phase, interview decisions, and turn count.
 
-[HIGHLIGHT:[data-step="9"]]
-Environment check. The hook verifies BRANDFETCH_API_KEY exists.
+[HIGHLIGHT:.state-code]
+Everything is tracked in a JSON state file. Phases, interview decisions, files created, turn count. Hooks check this state before allowing operations.
 
-[HIGHLIGHT:[data-step="10"]]
-TDD Red. Claude writes twelve failing test cases.
+Your decisions are actively re-injected into context. Claude never forgets what you agreed on.
 
-[HIGHLIGHT:[data-step="11"]]
-TDD Green. Implementation begins. Watch the hook inject interview decisions.
-
-[HIGHLIGHT:[data-step="12"]]
-The hook reminds Claude: Remember user decisions. Purpose: full brand kit. API key handling: server only.
-
-[HIGHLIGHT:[data-step="13"]]
-Phase nine: Verify. Claude re-reads the Brandfetch documentation and compares to implementation. All features accounted for.
-
-[HIGHLIGHT:[data-step="14"]]
-Refactor. Code cleaned up. Tests still pass.
-
-[HIGHLIGHT:[data-step="15"]]
-Documentation updated. API test manifest and OpenAPI spec.
-
-[HIGHLIGHT:[data-step="16"]]
-Complete. All twelve phases verified. Four files created. Twelve tests passing.
-
-[SECTION:installation]
-[HIGHLIGHT:#installation h2]
-Installation takes one command.
+[SECTION:install]
+[HIGHLIGHT:#install h2]
+Get started. Built specifically for Claude Code. Install in under sixty seconds.
 
 [HIGHLIGHT:.install-command]
-Run npx @hustle-together/api-dev-tools. That's it.
+npx @hustle-together/api-dev-tools. That's the command.
 
-The CLI copies slash commands, Python hooks, and settings. It creates the research cache folder and updates your CLAUDE.md with workflow documentation.
+[HIGHLIGHT:.claude-features]
+The CLI installs eighteen enforcement hooks, twenty-four slash commands, and templates into your .claude directory. Works with any existing Claude Code project.
 
-The CLI adds automatic CLAUDE.md updates so Claude understands the workflow in your project.
+[HIGHLIGHT:.install-links]
+Find the project on GitHub and npm. Star the repo, report issues, contribute improvements.
 
-Your project is now enforced. Every API follows the twelve-phase workflow.
+API Dev Tools version one. Twelve phases. Loop-back architecture. Continuous verification.
 
-[SECTION:credits]
-[HIGHLIGHT:#credits h2]
-This project builds on the work of others.
+Research first. Questions from findings. Verify after green. Document always.
 
-The TDD workflow is based on @wbern/claude-instructions by William Bernmalm.
-
-Context7 provides live documentation lookup. Current docs, not stale training data.
-
-And the interview methodology ensures questions come from research, not templates.
-
-Thank you to the Claude Code community. Together, we're making AI development better.
-
-[SECTION:outro]
-[HIGHLIGHT:#intro]
-Hustle API Dev Tools version one. Twelve phases. Loop-back architecture. Continuous verification.
-
-Research first. Questions FROM findings. Verify after green. Document always.
-
-Install it now with npx @hustle-together/api-dev-tools.
+Hustle together. Build stronger.
 `.trim();
 
 /**
