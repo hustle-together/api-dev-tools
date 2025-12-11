@@ -312,15 +312,170 @@
       text-align: center;
     }
 
+    .hero-meta {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
     .hero-badge {
       display: inline-block;
       border: 1px solid var(--border);
       padding: 8px 16px;
       font-family: 'SF Mono', 'Monaco', monospace;
       font-size: 0.8rem;
-      margin-bottom: 30px;
+    }
+
+    .npm-stats {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .npm-downloads {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .npm-downloads i {
+      color: var(--accent);
+    }
+
+    .npm-link {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 12px;
+      background: #cb3837;
+      color: white;
+      text-decoration: none;
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .npm-link:hover {
+      background: #a82b2b;
+      transform: translateY(-1px);
+    }
+
+    .npm-link i {
+      font-size: 1rem;
+    }
+
+    .hero-install {
+      margin: 40px auto;
+      max-width: 500px;
+      text-align: center;
       opacity: 0;
-      transform: translateY(20px);
+    }
+
+    .install-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .install-command {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      padding: 12px 20px;
+    }
+
+    .install-command code {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 5px 8px;
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      color: var(--accent);
+      transform: scale(1.1);
+    }
+
+    .copy-btn.copied {
+      color: var(--success);
+    }
+
+    .install-note {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      margin-top: 8px;
+    }
+
+    .hero-features {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 40px;
+      opacity: 0;
+    }
+
+    .feature-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-light);
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+    }
+
+    .feature-pill:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .feature-pill i {
+      font-size: 0.85rem;
+    }
+
+    .terminal-title {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-left: auto;
+      padding-right: 10px;
+    }
+
+    .btn.accent {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .btn.accent:hover {
+      background: transparent;
+      color: var(--accent);
     }
 
     .hero-title {
@@ -2559,7 +2714,16 @@
   <!-- Section 1: Hero -->
   <section id="hero">
     <div class="section-inner">
-      <div class="hero-badge">v3.4.0 - Continuous Verification Loop</div>
+      <!-- Version badge with NPM stats -->
+      <div class="hero-meta">
+        <div class="hero-badge">v3.4.0 - Continuous Verification Loop</div>
+        <div class="npm-stats">
+          <span class="npm-downloads"><i class="fa-solid fa-download"></i> 2,000+ downloads</span>
+          <a href="https://www.npmjs.com/package/@hustle-together/api-dev-tools" class="npm-link" target="_blank">
+            <i class="fa-brands fa-npm"></i> npm
+          </a>
+        </div>
+      </div>
 
       <h1 class="hero-title">
         API Dev Tools
@@ -2570,18 +2734,48 @@
         Interview-driven, research-first API development workflow with continuous verification loops for Claude Code
       </p>
 
+      <!-- Install command with copy functionality -->
+      <div class="hero-install">
+        <div class="install-label">Quick Install</div>
+        <div class="install-command">
+          <code id="install-code">npx @hustle-together/api-dev-tools</code>
+          <button class="copy-btn" onclick="copyInstallCommand()" title="Copy to clipboard">
+            <i class="fa-regular fa-copy"></i>
+          </button>
+        </div>
+        <div class="install-note">Works with any Claude Code project • No dependencies required</div>
+      </div>
+
+      <!-- Terminal animation -->
       <div class="hero-terminal">
         <div class="terminal-header">
           <div class="terminal-dot red"></div>
           <div class="terminal-dot yellow"></div>
           <div class="terminal-dot green"></div>
+          <span class="terminal-title">Claude Code Session</span>
         </div>
         <pre><span class="prompt">~/project $</span> <span class="command" id="hero-command"></span><span class="cursor-blink"></span></pre>
       </div>
 
+      <!-- Hero buttons -->
       <div class="hero-buttons">
-        <a href="https://github.com/hustle-together/api-dev-tools#readme" class="btn primary">Read Documentation</a>
-        <a href="#problem" class="btn">See the Problem</a>
+        <a href="https://github.com/hustle-together/api-dev-tools#readme" class="btn primary">
+          <i class="fa-brands fa-github"></i> Documentation
+        </a>
+        <a href="#problem" class="btn">
+          <i class="fa-solid fa-triangle-exclamation"></i> See the Problem
+        </a>
+        <a href="#demo" class="btn accent">
+          <i class="fa-solid fa-play"></i> Watch Demo
+        </a>
+      </div>
+
+      <!-- Feature highlights -->
+      <div class="hero-features">
+        <div class="feature-pill"><i class="fa-solid fa-shield-halved"></i> 18 Enforcement Hooks</div>
+        <div class="feature-pill"><i class="fa-solid fa-list-ol"></i> 12 Workflow Phases</div>
+        <div class="feature-pill"><i class="fa-solid fa-rotate"></i> Verification Loops</div>
+        <div class="feature-pill"><i class="fa-solid fa-code"></i> Exit Code 2 Blocking</div>
       </div>
     </div>
 
@@ -3697,6 +3891,27 @@ Required actions:
 
     gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
+    // Copy install command to clipboard
+    function copyInstallCommand() {
+      const code = document.getElementById('install-code');
+      const btn = document.querySelector('.copy-btn');
+
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        btn.classList.add('copied');
+        btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = '<i class="fa-regular fa-copy"></i>';
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy:', err);
+      });
+    }
+
+    // Make copyInstallCommand globally available
+    window.copyInstallCommand = copyInstallCommand;
+
     // Create floating shapes
     function createFloatingShapes() {
       const container = document.getElementById('floating-shapes');
@@ -3722,7 +3937,7 @@ Required actions:
     // Hero animations
     const heroTl = gsap.timeline({ delay: 0.5 });
 
-    heroTl.to('.hero-badge', {
+    heroTl.to('.hero-meta', {
       opacity: 1,
       y: 0,
       duration: 0.6,
@@ -3739,6 +3954,11 @@ Required actions:
       duration: 0.6,
       ease: 'power2.out'
     }, '-=0.4')
+    .to('.hero-install', {
+      opacity: 1,
+      duration: 0.5,
+      ease: 'power2.out'
+    }, '-=0.3')
     .to('.hero-terminal', {
       opacity: 1,
       y: 0,
@@ -3756,6 +3976,11 @@ Required actions:
       duration: 0.6,
       ease: 'power2.out'
     }, '-=0.8')
+    .to('.hero-features', {
+      opacity: 1,
+      duration: 0.5,
+      ease: 'power2.out'
+    }, '-=0.4')
     .to('.scroll-indicator', {
       opacity: 1,
       duration: 0.6
