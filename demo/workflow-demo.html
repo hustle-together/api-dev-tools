@@ -5041,6 +5041,7 @@ Required actions:
         this.isMuted = false;
         this.lastScrolledSection = null;
         this.isDragging = false;
+        this.isSeeking = false; // Prevent onTimeUpdate from overriding seek position
         this.demoPauseTriggered = false; // Track if we've already paused for demo section
 
         // DOM elements - will be set in init()
@@ -5216,7 +5217,7 @@ Required actions:
       }
 
       onTimeUpdate() {
-        if (!this.timing || this.isDragging) return;
+        if (!this.timing || this.isDragging || this.isSeeking) return;
 
         const currentTime = this.audio.currentTime;
         const progress = (currentTime / this.timing.duration) * 100;
@@ -5446,6 +5447,9 @@ Required actions:
 
         console.log('seek: calculated', { percent: (percent * 100).toFixed(1) + '%', newTime: newTime.toFixed(1), duration: this.timing.duration.toFixed(1) });
 
+        // Set seeking flag to prevent onTimeUpdate from overriding our UI updates
+        this.isSeeking = true;
+
         // Update UI immediately
         if (this.progressFill) this.progressFill.style.width = `${percent * 100}%`;
         if (this.handle) this.handle.style.left = `${percent * 100}%`;
@@ -5470,11 +5474,19 @@ Required actions:
           }, { once: true });
         }
 
+        // Clear seeking flag after audio has seeked (or after a short timeout as fallback)
+        this.audio.addEventListener('seeked', () => {
+          console.log('seek: audio seeked event fired');
+          this.isSeeking = false;
+        }, { once: true });
+
+        // Fallback: clear seeking flag after 500ms in case seeked event doesn't fire
+        setTimeout(() => {
+          this.isSeeking = false;
+        }, 500);
+
         // Update subtitles immediately to show text at new position
         this.updateSubtitles(newTime);
-
-        // Don't auto-scroll on seek - let user control the page position
-        // this.lastScrolledSection = null;
       }
 
       startDrag(e) {
