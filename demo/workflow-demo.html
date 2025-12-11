@@ -317,7 +317,7 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      gap: 12px;
+      gap: 20px;
       margin-bottom: 30px;
       opacity: 0;
       transform: translateY(20px);
@@ -393,8 +393,8 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      background: #ffffff;
-      border: 2px solid var(--border);
+      background: #ffffff !important;
+      border: 2px solid #000000;
       border-right-width: 4px;
       border-bottom-width: 4px;
       padding: 16px 28px;
@@ -404,6 +404,7 @@
       font-family: 'SF Mono', 'Monaco', monospace;
       font-size: 1rem;
       font-weight: 500;
+      background: transparent;
     }
 
     .install-command .cmd-npx {
@@ -459,6 +460,7 @@
     }
 
     .hero-title {
+      font-size: 5rem;
       opacity: 0;
       transform: translateY(30px);
     }
@@ -466,9 +468,9 @@
     .hero-title .package-name {
       display: block;
       font-family: 'SF Mono', 'Monaco', monospace;
-      font-size: 1.75rem;
+      font-size: 1.4rem;
       color: var(--text-muted);
-      margin-top: 15px;
+      margin-top: 20px;
       font-weight: 400;
     }
 
