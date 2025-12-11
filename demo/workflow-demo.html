@@ -4596,6 +4596,14 @@ Required actions:
       // Remove pulse hint if present
       const playBtn = document.getElementById('demo-play');
       playBtn.classList.remove('pulse-hint');
+
+      // Ensure explanation panel is updated for current scene
+      const scene = demoScenes[currentScene];
+      if (scene) {
+        updatePhaseList(scene.phase);
+        updateExplanation(scene);
+      }
+
       updateButtonStates();
       autoplayTick();
     }
@@ -4958,8 +4966,8 @@ Required actions:
     const originalStartAutoplay = startAutoplay;
     startAutoplay = function() {
       originalStartAutoplay();
-      if (demoAudioController.enabled && demoAudioController.audio) {
-        // Sync to current scene
+      // Always sync audio when autoplay starts (if enabled)
+      if (demoAudioController.enabled) {
         demoAudioController.syncToScene(currentScene);
       }
     };
@@ -5123,14 +5131,27 @@ Required actions:
         // Audio event listeners (will be re-attached when voice changes)
         this.attachAudioListeners();
 
-        // Progress bar click to seek - use the entire progress wrapper
+        // Progress bar click/tap to seek - use the entire progress wrapper
         const progressWrapper = document.querySelector('.narration-progress');
         if (progressWrapper) {
+          // Click handler for mouse
           progressWrapper.addEventListener('click', (e) => {
             // Don't seek if clicking on the handle (that's for dragging)
             if (e.target === this.handle) return;
             this.seek(e);
           });
+
+          // Touch handler for mobile - more reliable than click on touch devices
+          progressWrapper.addEventListener('touchend', (e) => {
+            // Don't seek if touching the handle (that's for dragging)
+            if (e.target === this.handle) return;
+            // Use the touch position
+            if (e.changedTouches && e.changedTouches.length > 0) {
+              const touch = e.changedTouches[0];
+              // Create a fake event with clientX from the touch
+              this.seek({ clientX: touch.clientX });
+            }
+          }, { passive: true });
         }
 
         // Handle drag for scrubbing
@@ -5396,7 +5417,8 @@ Required actions:
         console.log('seek() called', {
           hasTiming: !!this.timing,
           hasAudio: !!this.audio,
-          audioReadyState: this.audio ? this.audio.readyState : 'no audio'
+          audioReadyState: this.audio ? this.audio.readyState : 'no audio',
+          timingDuration: this.timing ? this.timing.duration : 'no timing'
         });
 
         if (!this.timing) {
@@ -5417,10 +5439,12 @@ Required actions:
         }
 
         const rect = progressTrack.getBoundingClientRect();
+        console.log('seek: rect', { left: rect.left, width: rect.width, clientX: event.clientX });
+
         const percent = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
         const newTime = percent * this.timing.duration;
 
-        console.log('seek: setting time to', newTime.toFixed(1), 'of', this.timing.duration.toFixed(1), 'percent:', (percent * 100).toFixed(1) + '%');
+        console.log('seek: calculated', { percent: (percent * 100).toFixed(1) + '%', newTime: newTime.toFixed(1), duration: this.timing.duration.toFixed(1) });
 
         // Update UI immediately
         if (this.progressFill) this.progressFill.style.width = `${percent * 100}%`;
@@ -5449,8 +5473,8 @@ Required actions:
         // Update subtitles immediately to show text at new position
         this.updateSubtitles(newTime);
 
-        // Allow re-scroll to current section
-        this.lastScrolledSection = null;
+        // Don't auto-scroll on seek - let user control the page position
+        // this.lastScrolledSection = null;
       }
 
       startDrag(e) {
@@ -5519,22 +5543,22 @@ Required actions:
           label.textContent = sectionNames[section.id] || section.id;
           marker.appendChild(label);
 
-          // Click to seek to section
-          marker.addEventListener('click', (e) => {
+          // Click/tap to seek to section - shared handler
+          const seekToSection = (e) => {
             e.stopPropagation();
-            console.log('Section marker clicked:', section.id, 'timestamp:', section.timestamp);
+            console.log('Section marker clicked/tapped:', section.id, 'timestamp:', section.timestamp);
 
             if (!this.audio) {
-              console.log('Section marker click: no audio');
+              console.log('Section marker: no audio');
               return;
             }
 
             const newTime = section.timestamp;
-            const percent = (newTime / this.timing.duration) * 100;
+            const pct = (newTime / this.timing.duration) * 100;
 
             // Update UI immediately
-            if (this.progressFill) this.progressFill.style.width = `${percent}%`;
-            if (this.handle) this.handle.style.left = `${percent}%`;
+            if (this.progressFill) this.progressFill.style.width = `${pct}%`;
+            if (this.handle) this.handle.style.left = `${pct}%`;
             if (this.currentTimeEl) this.currentTimeEl.textContent = this.formatTime(newTime);
 
             // Set audio time
@@ -5550,8 +5574,10 @@ Required actions:
 
             // Update subtitles
             this.updateSubtitles(newTime);
-            this.lastScrolledSection = null;
-          });
+          };
+
+          marker.addEventListener('click', seekToSection);
+          marker.addEventListener('touchend', seekToSection, { passive: false });
 
           this.sectionMarkers.appendChild(marker);
         }
