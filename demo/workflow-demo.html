@@ -12,8 +12,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
   <style>
     /* ============================================
-       90s RETRO TERMINAL AESTHETIC
-       Black & White, Monospace, Dashed Borders
+       DARK THEME WITH RED ACCENTS & ANIMATED GRID
+       90s terminal aesthetic with glow effects
        ============================================ */
 
     * {
@@ -23,25 +23,32 @@
     }
 
     :root {
-      --white: #e0e0e0;
-      --grey: #888;
-      --dark-grey: #444;
+      /* Dark theme colors */
       --black: #0a0a0a;
-      --glow: rgba(255, 255, 255, 0.3);
-      --accent-red: #BA0C2F;
+      --darker-grey: #111;
+      --dark-grey: #1a1a1a;
+      --card-bg: #0d0d0d;
+      --border-color: #333;
+      --grey: #888;
+      --white: #f0f0f0;
+      /* Main accent - Hustle red */
+      --accent-red: #ba0c2f;
       --accent-red-glow: rgba(186, 12, 47, 0.4);
+      /* Claude Code section only - orange */
+      --claude-orange: #f97316;
+      --claude-orange-glow: rgba(249, 115, 22, 0.4);
     }
 
     body {
       background: var(--black);
       color: var(--white);
-      font-family: 'Courier New', Courier, monospace;
-      line-height: 1.7;
+      font-family: 'Courier New', monospace;
+      line-height: 1.6;
       overflow-x: hidden;
     }
 
     /* ============================================
-       ANIMATED BACKGROUND
+       ANIMATED BACKGROUND GRID
        ============================================ */
     .background-pattern {
       position: fixed;
@@ -49,21 +56,20 @@
       left: 0;
       width: 100%;
       height: 100%;
-      pointer-events: none;
       z-index: -1;
-      overflow: hidden;
+      opacity: 0.4;
     }
 
     .grid-svg {
       width: 100%;
       height: 100%;
-      opacity: 0.15;
     }
 
     .grid-line {
-      stroke: var(--grey);
+      stroke: var(--accent-red);
       stroke-width: 0.5;
       fill: none;
+      opacity: 0.4;
     }
 
     /* Floating particles */
@@ -73,130 +79,101 @@
       left: 0;
       width: 100%;
       height: 100%;
-      pointer-events: none;
       z-index: -1;
+      pointer-events: none;
     }
 
     .particle {
       position: absolute;
       width: 4px;
       height: 4px;
-      background: var(--grey);
-      opacity: 0.3;
+      background: var(--accent-red);
       border-radius: 50%;
+      opacity: 0;
+      box-shadow: 0 0 6px var(--accent-red-glow);
     }
 
+    /* Particle shape variations */
     .particle.square {
       border-radius: 0;
-      border: 1px solid var(--grey);
+      width: 6px;
+      height: 6px;
+    }
+
+    .particle.plus {
+      width: 8px;
+      height: 2px;
+      background: var(--accent-red);
+      border-radius: 0;
+    }
+
+    .particle.plus::before {
+      content: '';
+      position: absolute;
+      width: 2px;
+      height: 8px;
+      background: var(--accent-red);
+      left: 3px;
+      top: -3px;
+    }
+
+    .particle.x-shape {
+      width: 8px;
+      height: 2px;
+      background: var(--accent-red);
+      border-radius: 0;
+      transform: rotate(45deg);
+    }
+
+    .particle.x-shape::before {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 2px;
+      background: var(--accent-red);
+      transform: rotate(90deg);
+    }
+
+    .particle.line {
+      width: 12px;
+      height: 1px;
+      border-radius: 0;
+    }
+
+    .particle.line-v {
+      width: 1px;
+      height: 12px;
+      border-radius: 0;
+    }
+
+    .particle.circle-outline {
       background: transparent;
+      border: 1px solid var(--accent-red);
       width: 8px;
       height: 8px;
     }
 
-    .particle.plus {
-      border-radius: 0;
-      background: transparent;
-      width: 12px;
-      height: 12px;
-    }
-
-    .particle.plus::before,
-    .particle.plus::after {
-      content: '';
-      position: absolute;
-      background: var(--grey);
-    }
-
-    .particle.plus::before {
-      width: 12px;
-      height: 1px;
-      top: 5.5px;
-      left: 0;
-    }
-
-    .particle.plus::after {
-      width: 1px;
-      height: 12px;
-      left: 5.5px;
-      top: 0;
-    }
-
-    /* X shape particle */
-    .particle.x-shape {
-      border-radius: 0;
-      background: transparent;
-      width: 14px;
-      height: 14px;
-    }
-
-    .particle.x-shape::before,
-    .particle.x-shape::after {
-      content: '';
-      position: absolute;
-      background: var(--grey);
-    }
-
-    .particle.x-shape::before {
-      width: 14px;
-      height: 1px;
-      top: 6.5px;
-      left: 0;
-      transform: rotate(45deg);
-    }
-
-    .particle.x-shape::after {
-      width: 14px;
-      height: 1px;
-      top: 6.5px;
-      left: 0;
-      transform: rotate(-45deg);
-    }
-
-    /* Line/dash particle */
-    .particle.line {
-      border-radius: 0;
-      width: 20px;
-      height: 1px;
-      background: var(--grey);
-    }
-
-    .particle.line-v {
-      border-radius: 0;
-      width: 1px;
-      height: 20px;
-      background: var(--grey);
-    }
-
-    /* Circle outline particle */
-    .particle.circle-outline {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: transparent;
-      border: 1px solid var(--grey);
-    }
-
-    /* Triangle particle */
     .particle.triangle {
       width: 0;
       height: 0;
       background: transparent;
-      border-left: 6px solid transparent;
-      border-right: 6px solid transparent;
-      border-bottom: 10px solid var(--grey);
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-bottom: 7px solid var(--accent-red);
+      border-radius: 0;
     }
 
     /* Cursor glow effect */
     .cursor-glow {
       position: fixed;
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--accent-red-glow) 0%, rgba(186, 12, 47, 0.15) 30%, transparent 70%);
       pointer-events: none;
-      z-index: 0;
+      z-index: -1;
       transform: translate(-50%, -50%);
-      transition: opacity 0.3s;
+      opacity: 0.7;
     }
 
     /* Scanlines overlay */
@@ -206,26 +183,27 @@
       left: 0;
       width: 100%;
       height: 100%;
-      pointer-events: none;
-      z-index: 9999;
       background: repeating-linear-gradient(
         0deg,
         transparent,
         transparent 2px,
-        rgba(0, 0, 0, 0.1) 2px,
-        rgba(0, 0, 0, 0.1) 4px
+        rgba(0, 0, 0, 0.05) 2px,
+        rgba(0, 0, 0, 0.05) 4px
       );
-      opacity: 0.3;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.2;
     }
 
-    /* Animated corner decorations */
+    /* Corner decorations */
     .corner-decoration {
       position: fixed;
-      width: 60px;
-      height: 60px;
-      border: 1px dashed var(--dark-grey);
-      opacity: 0.4;
+      width: 100px;
+      height: 100px;
+      border: 1px dashed var(--accent-red);
       z-index: 1;
+      pointer-events: none;
+      opacity: 0.4;
     }
 
     .corner-decoration.top-left {
@@ -237,7 +215,7 @@
 
     .corner-decoration.top-right {
       top: 20px;
-      right: 80px;
+      right: 20px;
       border-left: none;
       border-bottom: none;
     }
@@ -256,299 +234,86 @@
       border-top: none;
     }
 
-    /* Visual flow lines between sections */
-    .flow-connector-line {
-      position: absolute;
-      width: 2px;
-      background: linear-gradient(to bottom, transparent, var(--dark-grey), transparent);
-      left: 50%;
-      bottom: -60px;
-      height: 60px;
-      opacity: 0.3;
-    }
-
-    /* Status badge animations */
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
-      border: 1px dashed var(--grey);
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
-
-    .status-badge .pulse {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--grey);
-      animation: pulse 2s infinite;
-    }
-
-    .status-badge.active .pulse {
-      background: var(--accent-red);
-      box-shadow: 0 0 10px var(--accent-red);
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.2); opacity: 0.5; }
-    }
-
-    /* Visual data flow diagram */
-    .data-flow {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-      margin: 30px 0;
-      flex-wrap: wrap;
-    }
-
-    .data-node {
-      border: 1px dashed var(--grey);
-      padding: 15px 25px;
-      text-align: center;
-      position: relative;
-      min-width: 120px;
-    }
-
-    .data-node-icon {
-      font-size: 1.5rem;
-      margin-bottom: 8px;
-      display: block;
-    }
-
-    .data-node-label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--grey);
-    }
-
-    .data-arrow {
-      color: var(--grey);
-      font-size: 1.5rem;
-      animation: arrowPulse 1.5s infinite;
-    }
-
-    @keyframes arrowPulse {
-      0%, 100% { opacity: 0.3; transform: translateX(0); }
-      50% { opacity: 1; transform: translateX(5px); }
-    }
-
-    /* Visual checkmarks for completed items */
-    .visual-check {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 24px;
-      height: 24px;
-      border: 2px solid var(--grey);
-      margin-right: 12px;
-      font-size: 0.8rem;
-      transition: all 0.3s;
-    }
-
-    .visual-check.checked {
-      border-color: var(--accent-red);
-      background: rgba(186, 12, 47, 0.2);
-    }
-
-    .visual-check.checked::after {
-      content: '✓';
-      color: var(--accent-red);
-    }
-
-    /* Animated underline effect */
-    .highlight-underline {
-      position: relative;
-      display: inline-block;
-    }
-
-    .highlight-underline::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--accent-red);
-      transition: width 0.3s ease;
-    }
-
-    .highlight-underline:hover::after {
-      width: 100%;
-    }
-
-    /* Visual timeline indicator */
-    .timeline-indicator {
-      position: absolute;
-      left: -40px;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      background: var(--dark-grey);
-    }
-
-    .timeline-indicator::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: -4px;
-      width: 10px;
-      height: 10px;
-      border: 2px solid var(--grey);
-      border-radius: 50%;
-      background: var(--black);
-      transform: translateY(-50%);
-    }
-
-    .timeline-indicator.active::before {
-      border-color: var(--accent-red);
-      box-shadow: 0 0 10px var(--accent-red-glow);
-    }
-
-    /* Animated typing indicator */
-    .typing-indicator {
-      display: inline-flex;
-      gap: 4px;
-      padding: 10px 15px;
-      background: rgba(255,255,255,0.03);
-    }
-
-    .typing-indicator span {
-      width: 6px;
-      height: 6px;
-      background: var(--grey);
-      border-radius: 50%;
-      animation: typing 1.4s infinite both;
-    }
-
-    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-
-    @keyframes typing {
-      0%, 100% { transform: translateY(0); opacity: 0.3; }
-      50% { transform: translateY(-8px); opacity: 1; }
-    }
-
-    /* Phase connection arrows */
-    .phase-arrow {
-      display: none;
-      position: absolute;
-      right: -22px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--dark-grey);
-      font-size: 1rem;
-      z-index: 2;
-    }
-
-    .phase-box:not(:nth-child(5n)) .phase-arrow {
-      display: block;
-    }
-
-    /* Glowing border effect for active elements */
-    .glow-border {
-      position: relative;
-    }
-
-    .glow-border::before {
-      content: '';
-      position: absolute;
-      top: -2px;
-      left: -2px;
-      right: -2px;
-      bottom: -2px;
-      background: linear-gradient(45deg, transparent, var(--white), transparent);
-      opacity: 0;
-      transition: opacity 0.3s;
-      z-index: -1;
-    }
-
-    .glow-border:hover::before {
-      opacity: 0.1;
-    }
-
-    /* Navigation */
+    /* ============================================
+       NAVIGATION
+       ============================================ */
     .nav {
       position: fixed;
-      top: 20px;
-      right: 20px;
+      top: 0;
+      left: 0;
+      right: 0;
       z-index: 1000;
       display: flex;
+      justify-content: flex-end;
       gap: 10px;
+      padding: 20px 40px;
+      background: rgba(10, 10, 10, 0.9);
+      border-bottom: 1px dashed var(--border-color);
     }
 
     .nav-btn {
       background: transparent;
-      border: 1px dashed var(--grey);
-      color: var(--white);
+      border: 1px solid var(--border-color);
+      color: var(--grey);
       padding: 8px 16px;
       font-family: inherit;
+      font-size: 0.75rem;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .nav-btn:hover {
-      background: var(--accent-red);
-      color: #fff;
       border-color: var(--accent-red);
-      box-shadow: 0 0 15px var(--accent-red-glow);
+      color: var(--accent-red);
+      box-shadow: 0 0 10px var(--accent-red-glow);
     }
 
     .nav-btn.active {
       background: var(--accent-red);
-      color: #fff;
       border-color: var(--accent-red);
+      color: var(--white);
     }
 
     .nav-btn.disabled {
-      opacity: 0.5;
+      opacity: 0.4;
       cursor: not-allowed;
-      text-decoration: line-through;
     }
 
     .nav-btn.disabled:hover {
-      background: transparent;
+      border-color: var(--border-color);
       color: var(--grey);
-      border-color: var(--grey);
       box-shadow: none;
     }
 
     /* ============================================
-       AUDIO NARRATION PLAYER
+       AUDIO PLAYER
        ============================================ */
     .audio-progress-container {
       position: fixed;
-      bottom: 60px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80%;
-      max-width: 600px;
-      background: rgba(0, 0, 0, 0.9);
-      border: 1px dashed var(--grey);
-      padding: 15px 20px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(10, 10, 10, 0.95);
+      border-top: 1px dashed var(--border-color);
+      padding: 15px 40px;
       z-index: 1001;
-      border-radius: 0;
     }
 
     .audio-time-display {
       display: flex;
       justify-content: space-between;
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       color: var(--grey);
-      margin-bottom: 10px;
-      font-family: 'Courier New', monospace;
+      margin-bottom: 8px;
     }
 
     .audio-progress-bar {
       position: relative;
-      height: 6px;
-      background: var(--dark-grey);
+      height: 12px;
+      background: var(--darker-grey);
+      border: 1px solid var(--border-color);
       cursor: pointer;
     }
 
@@ -557,6 +322,8 @@
       background: var(--accent-red);
       width: 0%;
       transition: width 0.1s linear;
+      pointer-events: none;
+      box-shadow: 0 0 10px var(--accent-red-glow);
     }
 
     .audio-section-markers {
@@ -570,154 +337,341 @@
 
     .audio-section-marker {
       position: absolute;
-      top: -3px;
-      width: 2px;
-      height: 12px;
+      top: -2px;
+      width: 3px;
+      height: 16px;
       background: var(--white);
       opacity: 0.5;
+      pointer-events: none; /* Don't intercept clicks - let them pass to progress bar */
+      margin-left: -1px;
     }
 
-    .audio-section-marker:hover {
-      opacity: 1;
+    /* Chapter buttons */
+    .chapter-buttons {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
-    /* Audio highlight effect for elements being narrated */
+    .chapter-btn {
+      padding: 6px 12px;
+      font-size: 0.65rem;
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--grey);
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+    }
+
+    .chapter-btn:hover {
+      border-color: var(--accent-red);
+      color: var(--accent-red);
+    }
+
+    .chapter-btn.active {
+      background: var(--accent-red);
+      border-color: var(--accent-red);
+      color: var(--white);
+      box-shadow: 0 0 10px var(--accent-red-glow);
+    }
+
+    /* Voice Modal */
+    .voice-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .voice-modal-overlay.active {
+      display: flex;
+    }
+
+    .voice-modal {
+      background: var(--darker-grey);
+      border: 2px solid var(--border-color);
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+    }
+
+    .voice-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px dashed var(--border-color);
+    }
+
+    .voice-modal-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--white);
+    }
+
+    .voice-modal-close {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--grey);
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .voice-modal-close:hover {
+      background: var(--accent-red);
+      border-color: var(--accent-red);
+      color: var(--white);
+    }
+
+    .voice-option {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border-color);
+      background: var(--card-bg);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .voice-option:hover {
+      border-color: var(--accent-red);
+    }
+
+    .voice-option.selected {
+      border-color: var(--accent-red);
+      background: rgba(186, 12, 47, 0.1);
+      box-shadow: 0 0 15px var(--accent-red-glow);
+    }
+
+    .voice-play-btn {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border-color);
+      background: transparent;
+      color: var(--grey);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .voice-play-btn:hover {
+      background: var(--accent-red);
+      border-color: var(--accent-red);
+      color: var(--white);
+    }
+
+    .voice-info { flex: 1; }
+
+    .voice-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--white);
+    }
+
+    .voice-desc {
+      font-size: 0.8rem;
+      color: var(--grey);
+    }
+
+    .voice-select-btn {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--grey);
+      padding: 6px 12px;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+
+    .voice-option.selected .voice-select-btn {
+      background: var(--accent-red);
+      border-color: var(--accent-red);
+      color: var(--white);
+    }
+
+    .voice-modal-footer {
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px dashed var(--border-color);
+      text-align: center;
+    }
+
+    .voice-modal-note {
+      font-size: 0.8rem;
+      color: var(--grey);
+      margin-bottom: 15px;
+    }
+
+    .voice-confirm-btn {
+      background: var(--accent-red);
+      border: 1px solid var(--accent-red);
+      color: var(--white);
+      padding: 12px 30px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .voice-confirm-btn:hover {
+      background: transparent;
+      box-shadow: 0 0 15px var(--accent-red-glow);
+    }
+
+    /* Audio highlight effect */
     .audio-highlighted {
       outline: 2px solid var(--accent-red) !important;
       outline-offset: 4px;
-      border-color: var(--accent-red) !important;
       transition: all 0.3s ease !important;
+      box-shadow: 0 0 20px var(--accent-red-glow) !important;
     }
 
-    /* For container elements (cards, boxes), use glow effect */
     .audio-highlighted.solution-card,
     .audio-highlighted.phase-box,
     .audio-highlighted.gap-item,
     .audio-highlighted.phase-node {
+      outline: none !important;
+      border-color: var(--accent-red) !important;
+      background: rgba(186, 12, 47, 0.15) !important;
       box-shadow: 0 0 25px var(--accent-red-glow) !important;
-      outline: none !important;
-      transform: scale(1.02);
-    }
-
-    /* For text elements (headings, brand), use subtle underline/border */
-    .audio-highlighted h2,
-    h2.audio-highlighted,
-    .hustle-brand.audio-highlighted {
-      box-shadow: none !important;
-      outline: none !important;
-      border-bottom: 3px solid var(--accent-red) !important;
-      padding-bottom: 8px;
     }
 
     /* Progress indicator */
     .progress-bar {
       position: fixed;
-      top: 0;
+      top: 61px;
       left: 0;
-      height: 3px;
+      height: 2px;
       background: var(--accent-red);
       width: 0%;
       z-index: 1001;
+      box-shadow: 0 0 10px var(--accent-red-glow);
     }
 
-    /* Section base */
+    /* ============================================
+       SECTIONS & CONTENT
+       ============================================ */
     section {
-      min-height: 100vh;
+      /* Account for fixed header (60px) and audio player bottom bar (120px) */
+      min-height: calc(100vh - 180px);
+      max-height: calc(100vh - 100px);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 80px 40px;
+      padding: 80px 40px 60px;
       position: relative;
+      overflow-y: auto;
     }
 
-    /* ASCII border decoration */
+    /* When audio is playing, reduce section height to fit */
+    body.audio-playing section {
+      min-height: calc(100vh - 240px);
+      max-height: calc(100vh - 160px);
+      padding: 60px 40px 40px;
+    }
+
     .ascii-border {
-      border: 1px dashed var(--grey);
+      border: 1px dashed var(--border-color);
       padding: 50px;
       position: relative;
-      max-width: 1000px;
+      max-width: 900px;
       width: 100%;
-      /* Blurred glass backdrop so boxes don't interfere with background animation */
-      background: rgba(10, 10, 10, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(10, 10, 10, 0.8);
     }
 
-    .ascii-border::before {
-      content: '+';
-      position: absolute;
-      top: -8px;
-      left: -8px;
-      color: var(--grey);
-    }
-
+    .ascii-border::before,
     .ascii-border::after {
       content: '+';
       position: absolute;
+      color: var(--border-color);
+      font-size: 1rem;
+    }
+
+    .ascii-border::before {
+      top: -8px;
+      left: -8px;
+    }
+
+    .ascii-border::after {
       bottom: -8px;
       right: -8px;
-      color: var(--grey);
     }
 
     /* Typography */
     h1 {
-      font-size: 2.5rem;
-      font-weight: normal;
-      letter-spacing: 4px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 700;
       margin-bottom: 20px;
+      color: var(--white);
     }
 
     h2 {
-      font-size: 1.8rem;
-      font-weight: normal;
-      letter-spacing: 2px;
-      margin-bottom: 10px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: var(--white);
     }
 
     h3 {
-      font-size: 1.2rem;
+      font-size: 1rem;
       margin-bottom: 15px;
       text-transform: uppercase;
       letter-spacing: 1px;
       color: var(--grey);
     }
 
-    /* Explanation blocks - THE KEY EDUCATIONAL ELEMENT */
+    /* Explanation blocks */
     .explanation {
-      background: rgba(255, 255, 255, 0.03);
-      border-left: 3px solid var(--grey);
+      background: var(--darker-grey);
+      border: 1px dashed var(--border-color);
+      border-left: 3px solid var(--accent-red);
       padding: 25px 30px;
       margin: 30px 0;
       font-size: 1rem;
-      line-height: 1.9;
+      line-height: 1.8;
       opacity: 0;
     }
 
     .explanation-title {
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
-      letter-spacing: 3px;
-      color: var(--grey);
+      letter-spacing: 2px;
+      color: var(--accent-red);
       margin-bottom: 15px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      font-weight: 600;
     }
 
     .explanation-title::before {
-      content: '?';
-      width: 24px;
-      height: 24px;
-      border: 1px dashed var(--grey);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.9rem;
+      content: '// ';
+      color: var(--grey);
     }
 
     .explanation p {
       margin-bottom: 15px;
+      color: var(--grey);
     }
 
     .explanation p:last-child {
@@ -726,14 +680,13 @@
 
     .explanation strong {
       color: var(--white);
-      font-weight: normal;
-      border-bottom: 1px dashed var(--grey);
+      font-weight: 600;
     }
 
     /* Real example callout */
     .real-example {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px dashed var(--white);
+      background: var(--darker-grey);
+      border: 2px solid var(--border-color);
       padding: 20px 25px;
       margin: 20px 0;
       position: relative;
@@ -744,11 +697,12 @@
       position: absolute;
       top: -10px;
       left: 20px;
-      background: var(--black);
+      background: var(--card-bg);
       padding: 0 10px;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       letter-spacing: 2px;
-      color: var(--grey);
+      color: var(--accent-red);
+      border: 1px solid var(--border-color);
     }
 
     .real-example-content {
@@ -760,7 +714,7 @@
       display: inline-block;
       width: 10px;
       height: 20px;
-      background: var(--white);
+      background: var(--accent-red);
       animation: blink 1s infinite;
       vertical-align: middle;
       margin-left: 5px;
@@ -778,10 +732,11 @@
       justify-content: center;
       width: 50px;
       height: 50px;
-      border: 2px solid var(--white);
+      border: 2px solid var(--accent-red);
       font-size: 1.5rem;
       margin-right: 20px;
       flex-shrink: 0;
+      color: var(--accent-red);
     }
 
     .step-header {
@@ -848,11 +803,12 @@
 
     .hustle-highlight {
       color: var(--accent-red);
-      text-shadow: 0 0 30px var(--accent-red-glow), 0 0 60px var(--accent-red-glow);
+      text-shadow: 0 0 20px var(--accent-red-glow);
     }
 
     .text-red {
       color: var(--accent-red);
+      font-weight: 600;
     }
 
     /* Intro section centering */
@@ -883,13 +839,13 @@
     }
 
     /* ============================================
-       PHASE FLOW - LIGHTING UP SEQUENCE
+       PHASE FLOW - LIGHTING UP SEQUENCE (boxy)
        ============================================ */
     .phase-flow {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 15px;
+      gap: 12px;
       margin-top: 50px;
       flex-wrap: wrap;
       opacity: 0;
@@ -897,30 +853,31 @@
 
     .phase-node {
       position: relative;
-      border: 2px solid var(--dark-grey);
+      border: 2px solid var(--border-color);
+      background: var(--darker-grey);
       padding: 20px 25px;
       text-align: center;
       min-width: 100px;
-      transition: all 0.4s ease;
+      transition: all 0.3s ease;
       opacity: 0;
       transform: translateY(20px);
     }
 
     .phase-node .phase-glow {
       position: absolute;
-      top: -2px;
-      left: -2px;
-      right: -2px;
-      bottom: -2px;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       border: 2px solid var(--accent-red);
       opacity: 0;
-      box-shadow: 0 0 20px var(--accent-red-glow), inset 0 0 20px var(--accent-red-glow);
-      transition: opacity 0.4s ease;
+      transition: opacity 0.3s ease;
     }
 
     .phase-node.active {
       border-color: var(--accent-red);
-      background: rgba(186, 12, 47, 0.1);
+      background: rgba(186, 12, 47, 0.2);
+      box-shadow: 0 0 20px var(--accent-red-glow);
     }
 
     .phase-node.active .phase-glow {
@@ -929,7 +886,6 @@
 
     .phase-node.active .phase-icon {
       color: var(--accent-red);
-      text-shadow: 0 0 10px var(--accent-red);
     }
 
     .phase-node.active .phase-label {
@@ -938,31 +894,31 @@
 
     .phase-icon {
       display: block;
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       font-weight: bold;
       margin-bottom: 8px;
       color: var(--grey);
-      transition: all 0.4s ease;
+      transition: all 0.3s ease;
     }
 
     .phase-label {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       text-transform: uppercase;
       letter-spacing: 2px;
-      color: var(--dark-grey);
-      transition: all 0.4s ease;
+      color: var(--grey);
+      transition: all 0.3s ease;
+      font-weight: bold;
     }
 
     .phase-connector-arrow {
-      color: var(--dark-grey);
-      font-size: 1.5rem;
+      color: var(--border-color);
+      font-size: 1.2rem;
       opacity: 0;
       transition: all 0.3s ease;
     }
 
     .phase-connector-arrow.active {
       color: var(--accent-red);
-      text-shadow: 0 0 10px var(--accent-red-glow);
     }
 
     @media (max-width: 768px) {
@@ -1012,62 +968,70 @@
     }
 
     /* ============================================
-       SECTION 2: THE PROBLEM - GAPS
+       SECTION 2: THE PROBLEM - GAPS - boxy cards
        ============================================ */
     .gap-list {
       list-style: none;
       width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
     }
 
     .gap-item {
-      border: 1px dashed var(--dark-grey);
-      padding: 25px 30px;
-      margin-bottom: 20px;
+      border: 2px solid var(--border-color);
+      background: var(--darker-grey);
+      padding: 20px 25px;
       opacity: 0;
       transform: translateX(-30px);
-      transition: all 0.3s;
+      transition: all 0.2s;
       position: relative;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
     }
 
     .gap-item:hover {
       border-color: var(--accent-red);
-      box-shadow: 0 0 25px var(--accent-red-glow);
+      transform: translateX(5px);
     }
 
-    .gap-item::before {
-      content: 'X';
-      position: absolute;
-      left: -35px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--accent-red);
-      font-size: 1.2rem;
+    .gap-icon {
+      font-size: 2rem;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .gap-content {
+      flex: 1;
     }
 
     .gap-number {
-      color: var(--grey);
-      font-size: 0.8rem;
+      color: var(--accent-red);
+      font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 2px;
+      font-weight: bold;
     }
 
     .gap-title {
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       margin: 8px 0;
     }
 
     .gap-desc {
       color: var(--grey);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       margin-bottom: 10px;
     }
 
     .gap-example {
       font-size: 0.85rem;
       padding: 12px 15px;
-      background: rgba(255,255,255,0.03);
-      border-left: 2px solid var(--dark-grey);
-      margin-top: 10px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-left: 3px solid var(--accent-red);
+      margin-top: 12px;
     }
 
     .gap-example .bad {
@@ -1076,44 +1040,48 @@
     }
 
     .gap-example .good {
-      color: var(--white);
+      color: var(--accent-red);
+      font-weight: bold;
     }
 
     /* ============================================
-       SECTION 3: SOLUTION OVERVIEW
+       SECTION 3: SOLUTION OVERVIEW - boxy grid
        ============================================ */
     .solution-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 25px;
+      gap: 20px;
       margin-top: 30px;
     }
 
     .solution-card {
-      border: 1px dashed var(--dark-grey);
-      padding: 30px 25px;
+      border: 2px solid var(--border-color);
+      background: var(--darker-grey);
+      padding: 35px 25px;
       text-align: center;
       opacity: 0;
       transform: translateY(20px);
-      transition: all 0.3s;
+      transition: all 0.2s;
     }
 
     .solution-card:hover {
       border-color: var(--accent-red);
-      box-shadow: 0 0 25px var(--accent-red-glow);
+      transform: translateY(-3px);
     }
 
     .solution-icon {
-      font-size: 2rem;
+      font-size: 2.5rem;
       margin-bottom: 15px;
       display: block;
     }
 
     .solution-title {
-      font-size: 1rem;
-      margin-bottom: 10px;
+      font-size: 0.95rem;
+      margin-bottom: 12px;
       text-transform: uppercase;
       letter-spacing: 1px;
+      color: var(--white);
+      font-weight: 600;
     }
 
     .solution-desc {
@@ -1123,7 +1091,7 @@
     }
 
     /* ============================================
-       SECTION 4: HOOK SYSTEM
+       SECTION 4: HOOK SYSTEM - clean boxy flow
        ============================================ */
     .hook-diagram {
       width: 100%;
@@ -1131,49 +1099,53 @@
     }
 
     .flow-box {
-      border: 1px dashed var(--grey);
+      border: 2px solid var(--border-color);
+      background: var(--darker-grey);
       padding: 18px 30px;
       margin: 12px 0;
       text-align: center;
       opacity: 0;
-      transition: all 0.3s;
+      transition: all 0.2s;
     }
 
     .flow-box:hover {
-      background: rgba(186, 12, 47, 0.1);
-      box-shadow: 0 0 20px var(--accent-red-glow);
       border-color: var(--accent-red);
+      transform: translateX(5px);
     }
 
     .flow-arrow {
       text-align: center;
-      color: var(--grey);
+      color: var(--accent-red);
       font-size: 1.5rem;
       opacity: 0;
     }
 
     .hook-group {
-      border: 2px dashed var(--white);
+      border: 2px dashed var(--border-color);
+      background: var(--darker-grey);
       padding: 25px;
       margin: 25px 0;
       opacity: 0;
     }
 
     .hook-group h4 {
-      color: var(--grey);
-      font-size: 0.85rem;
+      color: var(--accent-red);
+      font-size: 0.8rem;
       text-transform: uppercase;
       letter-spacing: 2px;
       margin-bottom: 15px;
+      font-weight: bold;
     }
 
     .hook-file {
       padding: 12px 20px;
       margin: 8px 0;
-      border-left: 2px solid var(--grey);
+      border: 1px solid var(--border-color);
+      border-left: 3px solid var(--grey);
+      background: var(--card-bg);
       font-size: 0.9rem;
       opacity: 0;
-      transition: all 0.3s;
+      transition: all 0.2s;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -1181,22 +1153,23 @@
 
     .hook-file:hover {
       border-left-color: var(--accent-red);
-      background: rgba(186, 12, 47, 0.1);
-      padding-left: 25px;
+      border-color: var(--accent-red);
     }
 
     .hook-file code {
       color: var(--white);
+      font-weight: 500;
     }
 
     .hook-purpose {
       color: var(--grey);
-      font-size: 0.8rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
     }
 
     .result-box {
       display: flex;
-      gap: 40px;
+      gap: 30px;
       justify-content: center;
       margin-top: 25px;
     }
@@ -1204,12 +1177,15 @@
     .result-allowed, .result-blocked {
       padding: 18px 35px;
       border: 2px solid;
+      background: var(--card-bg);
       opacity: 0;
-      transition: all 0.3s;
+      transition: all 0.2s;
+      font-weight: bold;
     }
 
     .result-allowed {
       border-color: var(--grey);
+      color: var(--grey);
     }
 
     .result-blocked {
@@ -1218,62 +1194,65 @@
     }
 
     .result-allowed:hover, .result-blocked:hover {
-      transform: scale(1.05);
+      transform: scale(1.03);
     }
 
     /* ============================================
-       SECTION 5: 10-PHASE WORKFLOW
+       SECTION 5: 10-PHASE WORKFLOW - boxy grid
        ============================================ */
     .phase-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 18px;
+      gap: 15px;
       width: 100%;
       margin-top: 30px;
     }
 
     .phase-box {
-      border: 1px dashed var(--dark-grey);
+      border: 2px solid var(--border-color);
+      background: var(--darker-grey);
       padding: 25px 15px;
       text-align: center;
       opacity: 0;
       transform: scale(0.9);
-      transition: all 0.3s;
+      transition: all 0.2s;
       position: relative;
     }
 
     .phase-box:hover {
       border-color: var(--accent-red);
-      box-shadow: 0 0 25px var(--accent-red-glow);
       transform: scale(1.02);
     }
 
     .phase-box.active {
       border-color: var(--accent-red);
-      background: rgba(186, 12, 47, 0.1);
+      background: rgba(186, 12, 47, 0.2);
+      box-shadow: 0 0 20px var(--accent-red-glow);
     }
 
     .phase-number {
-      font-size: 2.2rem;
-      color: var(--dark-grey);
+      font-size: 2rem;
+      color: var(--grey);
       margin-bottom: 10px;
+      font-weight: bold;
     }
 
     .phase-box.active .phase-number {
-      color: var(--white);
+      color: var(--accent-red);
     }
 
     .phase-name {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 1px;
+      font-weight: bold;
     }
 
     .phase-status {
       position: absolute;
       top: 8px;
       right: 8px;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       color: var(--grey);
     }
 
@@ -1287,26 +1266,26 @@
     }
 
     .phase-desc {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       color: var(--grey);
       margin-top: 8px;
       line-height: 1.4;
     }
 
     /* ============================================
-       SECTION 6: REAL WALKTHROUGH
+       SECTION 6: REAL WALKTHROUGH - boxy steps
        ============================================ */
     .walkthrough-step {
-      border: 1px dashed var(--dark-grey);
+      border: 2px solid var(--border-color);
+      background: var(--darker-grey);
       padding: 30px;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
       opacity: 0;
       transform: translateY(20px);
     }
 
     .walkthrough-step.active {
       border-color: var(--accent-red);
-      box-shadow: 0 0 20px var(--accent-red-glow);
     }
 
     .walkthrough-header {
@@ -1319,16 +1298,19 @@
     .walkthrough-num {
       width: 45px;
       height: 45px;
-      border: 2px solid var(--white);
+      border: 2px solid var(--accent-red);
+      background: transparent;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       flex-shrink: 0;
+      color: var(--accent-red);
+      font-weight: bold;
     }
 
     .walkthrough-title {
-      font-size: 1.1rem;
+      font-size: 1rem;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
@@ -1344,26 +1326,28 @@
     }
 
     .walkthrough-example {
-      background: #111;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
       padding: 15px 20px;
       font-size: 0.85rem;
-      border-left: 3px solid var(--grey);
+      border-left: 3px solid var(--accent-red);
     }
 
     .walkthrough-example .label {
-      color: var(--grey);
-      font-size: 0.75rem;
+      color: var(--accent-red);
+      font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 1px;
       margin-bottom: 8px;
+      font-weight: bold;
     }
 
     /* ============================================
-       SECTION 7: LIVE DEMO TERMINAL
+       SECTION 7: LIVE DEMO TERMINAL - boxy style
        ============================================ */
     .terminal {
-      background: #0d0d0d;
-      border: 1px solid var(--grey);
+      background: var(--card-bg);
+      border: 2px solid var(--border-color);
       padding: 25px;
       width: 100%;
       font-size: 0.85rem;
@@ -1375,20 +1359,27 @@
       gap: 8px;
       margin-bottom: 20px;
       padding-bottom: 15px;
-      border-bottom: 1px dashed var(--dark-grey);
+      border-bottom: 1px dashed var(--border-color);
     }
 
     .terminal-dot {
       width: 12px;
       height: 12px;
-      border-radius: 50%;
-      border: 1px solid var(--grey);
+      border-radius: 0;
+      border: 2px solid var(--border-color);
+    }
+
+    .terminal-dot:first-child {
+      border-color: var(--accent-red);
+      background: var(--accent-red);
     }
 
     .terminal-title {
       margin-left: auto;
       color: var(--grey);
-      font-size: 0.8rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .terminal-line {
@@ -1400,8 +1391,9 @@
     }
 
     .terminal-prompt {
-      color: var(--grey);
+      color: var(--accent-red);
       flex-shrink: 0;
+      font-weight: bold;
     }
 
     .terminal-command {
@@ -1420,8 +1412,8 @@
     }
 
     .terminal-allowed {
-      color: var(--grey);
-      border-left: 3px solid var(--grey);
+      color: #22c55e;
+      border-left: 3px solid #22c55e;
       padding-left: 15px;
     }
 
@@ -1431,18 +1423,495 @@
     }
 
     .terminal-comment {
-      color: var(--dark-grey);
-      font-size: 0.8rem;
+      color: var(--grey);
+      font-size: 0.75rem;
       padding-left: 25px;
       margin-bottom: 5px;
     }
 
     /* ============================================
-       SECTION 8: STATE FILE
+       CLAUDE CODE TERMINAL SIMULATION
+       With side panel for explanations
+       ============================================ */
+    .claude-code-container {
+      display: flex;
+      gap: 20px;
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .claude-code-terminal {
+      flex: 2;
+      background: #1e1e1e;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(249, 115, 22, 0.2);
+    }
+
+    .claude-code-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: #2d2d2d;
+      border-bottom: 1px solid #3d3d3d;
+    }
+
+    .claude-code-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .claude-code-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .claude-code-dot.red { background: #ff5f56; }
+    .claude-code-dot.yellow { background: #ffbd2e; }
+    .claude-code-dot.green { background: #27ca40; }
+
+    .claude-code-title {
+      flex: 1;
+      text-align: center;
+      color: #888;
+      font-size: 0.85rem;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+    }
+
+    .claude-code-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: rgba(249, 115, 22, 0.15);
+      border: 1px solid var(--claude-orange);
+      border-radius: 4px;
+      color: var(--claude-orange);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .claude-code-badge::before {
+      content: '◉';
+      animation: pulse-orange 1.5s infinite;
+    }
+
+    @keyframes pulse-orange {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .claude-code-body {
+      padding: 20px;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Courier New', monospace;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      max-height: 600px;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      position: relative;
+    }
+
+    .claude-msg {
+      margin-bottom: 16px;
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    .claude-msg.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: all 0.3s ease;
+    }
+
+    .claude-msg-role {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .claude-msg-role.ai {
+      color: var(--claude-orange);
+    }
+
+    .claude-msg-role.user {
+      color: #3b82f6;
+    }
+
+    .claude-msg-role.system {
+      color: #22c55e;
+    }
+
+    .claude-msg-icon {
+      font-size: 1rem;
+    }
+
+    .claude-msg-name {
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 0.75rem;
+    }
+
+    .claude-msg-content {
+      padding-left: 28px;
+      color: #e0e0e0;
+    }
+
+    .claude-msg-content code {
+      background: rgba(249, 115, 22, 0.15);
+      color: var(--claude-orange);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.85em;
+    }
+
+    .claude-tool-call {
+      margin: 8px 0;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid #3d3d3d;
+      border-radius: 6px;
+      border-left: 3px solid var(--claude-orange);
+    }
+
+    .claude-tool-name {
+      color: var(--claude-orange);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .claude-tool-result {
+      color: #888;
+      font-size: 0.85rem;
+    }
+
+    .claude-user-choice {
+      margin: 12px 0;
+      padding: 12px;
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 6px;
+    }
+
+    .claude-choice-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      margin: 4px 0;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .claude-choice-option:hover {
+      background: rgba(59, 130, 246, 0.2);
+    }
+
+    .claude-choice-option.selected {
+      background: rgba(59, 130, 246, 0.3);
+      border: 1px solid #3b82f6;
+    }
+
+    .claude-choice-marker {
+      width: 18px;
+      height: 18px;
+      border: 2px solid #888;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .claude-choice-option.selected .claude-choice-marker {
+      border-color: #3b82f6;
+      background: #3b82f6;
+    }
+
+    .claude-choice-option.selected .claude-choice-marker::after {
+      content: '✓';
+      color: white;
+      font-size: 0.7rem;
+    }
+
+    /* ASCII Art Startup Screen */
+    .ascii-startup {
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Courier New', monospace;
+      font-size: 11px;
+      line-height: 1.3;
+      color: var(--claude-orange);
+      white-space: pre;
+      margin: 0;
+      padding: 16px;
+      opacity: 0;
+      display: none;
+    }
+
+    .ascii-startup.visible {
+      opacity: 1;
+      display: block;
+    }
+
+    .ascii-startup .welcome-text {
+      color: #e5e5e5;
+    }
+
+    .ascii-startup .tips-text {
+      color: #888;
+    }
+
+    .ascii-startup .model-text {
+      color: var(--claude-orange);
+    }
+
+    .ascii-startup .path-text {
+      color: #666;
+    }
+
+    /* Prompt Line */
+    .claude-prompt-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.2);
+      border-top: 1px solid #3d3d3d;
+      opacity: 0;
+    }
+
+    .claude-prompt-line.visible {
+      opacity: 1;
+    }
+
+    .claude-prompt {
+      color: var(--claude-orange);
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    .claude-input {
+      color: #e5e5e5;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+    }
+
+    .claude-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 16px;
+      background: var(--claude-orange);
+      animation: blink-cursor 1s infinite;
+      margin-left: 2px;
+      vertical-align: middle;
+    }
+
+    @keyframes blink-cursor {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    /* Loading Dots Animation */
+    .loading-dots {
+      display: inline-flex;
+      gap: 4px;
+      padding: 8px 16px;
+      margin: 8px 0;
+    }
+
+    .loading-dots span {
+      width: 8px;
+      height: 8px;
+      background: var(--claude-orange);
+      border-radius: 50%;
+      animation: pulse-dot 1.2s infinite ease-in-out;
+    }
+
+    .loading-dots span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .loading-dots span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes pulse-dot {
+      0%, 80%, 100% {
+        opacity: 0.3;
+        transform: scale(0.8);
+      }
+      40% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Thinking indicator */
+    .claude-thinking {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 28px;
+      color: #888;
+      font-style: italic;
+      opacity: 0;
+    }
+
+    .claude-thinking.visible {
+      opacity: 1;
+    }
+
+    /* Loop-back message styling */
+    .claude-msg.loop-back .claude-msg-content {
+      border-left: 3px solid #f59e0b;
+      padding-left: 12px;
+      background: rgba(245, 158, 11, 0.1);
+      border-radius: 0 6px 6px 0;
+      padding: 8px 12px;
+    }
+
+    .loop-back-badge {
+      display: inline-block;
+      background: rgba(245, 158, 11, 0.2);
+      color: #f59e0b;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      margin-bottom: 8px;
+    }
+
+    /* Gap found styling */
+    .gap-found {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 6px;
+      padding: 12px;
+      margin: 8px 0;
+    }
+
+    .gap-found-title {
+      color: #ef4444;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    /* Explanation Side Panel */
+    .explanation-panel {
+      flex: 1;
+      min-width: 300px;
+      background: var(--darker-grey);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .explanation-panel-header {
+      padding: 12px 16px;
+      background: rgba(249, 115, 22, 0.1);
+      border-bottom: 1px solid var(--border-color);
+      font-weight: 600;
+      color: var(--claude-orange);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .explanation-panel-body {
+      padding: 16px;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    .explanation-step {
+      padding: 16px;
+      margin-bottom: 12px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 6px;
+      border-left: 3px solid var(--border-color);
+      opacity: 0.5;
+      transition: all 0.3s ease;
+    }
+
+    .explanation-step.active {
+      opacity: 1;
+      border-left-color: var(--claude-orange);
+      background: rgba(249, 115, 22, 0.05);
+    }
+
+    .explanation-step-phase {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .explanation-step-num {
+      width: 24px;
+      height: 24px;
+      background: var(--border-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--grey);
+    }
+
+    .explanation-step.active .explanation-step-num {
+      background: var(--claude-orange);
+      color: white;
+    }
+
+    .explanation-step-name {
+      font-weight: 600;
+      color: var(--grey);
+      font-size: 0.85rem;
+    }
+
+    .explanation-step.active .explanation-step-name {
+      color: var(--white);
+    }
+
+    .explanation-step-desc {
+      color: var(--grey);
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+
+    .explanation-step.active .explanation-step-desc {
+      color: #aaa;
+    }
+
+    .explanation-step-why {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--border-color);
+      font-size: 0.75rem;
+      color: var(--claude-orange);
+      font-style: italic;
+    }
+
+    @media (max-width: 1000px) {
+      .claude-code-container {
+        flex-direction: column;
+      }
+      .explanation-panel {
+        min-width: unset;
+      }
+    }
+
+    /* ============================================
+       SECTION 8: STATE FILE - boxy JSON viewer
        ============================================ */
     .json-viewer {
-      background: #0d0d0d;
-      border: 1px solid var(--grey);
+      background: var(--card-bg);
+      border: 2px solid var(--border-color);
       padding: 25px;
       font-size: 0.85rem;
       width: 100%;
@@ -1450,7 +1919,8 @@
     }
 
     .json-key {
-      color: var(--grey);
+      color: var(--accent-red);
+      font-weight: 600;
     }
 
     .json-value {
@@ -1467,33 +1937,36 @@
     }
 
     .json-line.highlight {
-      background: rgba(186, 12, 47, 0.15);
+      background: rgba(186, 12, 47, 0.1);
       margin: 0 -25px;
       padding-left: 25px;
       padding-right: 25px;
-      border-left: 2px solid var(--accent-red);
+      border-left: 3px solid var(--accent-red);
     }
 
     .json-comment {
-      color: var(--dark-grey);
-      font-size: 0.75rem;
+      color: var(--grey);
+      font-size: 0.7rem;
       margin-left: 20px;
+      text-transform: uppercase;
     }
 
     /* ============================================
-       SECTION 9: INSTALLATION
+       SECTION 9: INSTALLATION - boxy style
        ============================================ */
     .install-command {
-      background: #0d0d0d;
-      border: 1px solid var(--grey);
-      padding: 20px 30px;
+      background: var(--darker-grey);
+      border: 2px solid var(--accent-red);
+      padding: 25px 35px;
       font-size: 1.1rem;
       margin: 30px 0;
       text-align: center;
+      box-shadow: 0 0 20px var(--accent-red-glow);
     }
 
     .install-command code {
-      color: var(--white);
+      color: var(--accent-red);
+      font-weight: bold;
     }
 
     .install-flow {
@@ -1504,25 +1977,26 @@
       display: flex;
       align-items: center;
       gap: 25px;
-      padding: 20px 0;
-      border-bottom: 1px dashed var(--dark-grey);
+      padding: 20px;
+      margin-bottom: 15px;
+      border: 2px solid var(--border-color);
+      background: var(--darker-grey);
       opacity: 0;
       transform: translateY(20px);
     }
 
     .install-step:last-child {
-      border-bottom: none;
+      margin-bottom: 0;
     }
 
     .install-icon {
       width: 50px;
       height: 50px;
-      border: 1px dashed var(--grey);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      font-size: 1.2rem;
+      font-size: 1.8rem;
     }
 
     .install-content {
@@ -1530,29 +2004,35 @@
     }
 
     .install-from {
-      color: var(--grey);
-      font-size: 0.9rem;
+      color: var(--white);
+      font-size: 1rem;
+      font-weight: 500;
     }
 
     .install-arrow {
-      color: var(--grey);
+      color: var(--accent-red);
       flex-shrink: 0;
       font-size: 1.2rem;
+      font-weight: bold;
     }
 
     .install-to {
       color: var(--white);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      min-width: 180px;
+      text-align: right;
+      font-family: 'JetBrains Mono', 'SF Mono', monospace;
     }
 
     .install-note {
       color: var(--grey);
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       margin-top: 5px;
     }
 
     /* ============================================
-       SECTION 10: CREDITS
+       SECTION 10: CREDITS - boxy style
        ============================================ */
     #credits {
       text-align: center;
@@ -1560,64 +2040,69 @@
 
     .credit-links {
       display: flex;
-      gap: 30px;
+      gap: 20px;
       margin-top: 40px;
       flex-wrap: wrap;
       justify-content: center;
     }
 
     .credit-link {
-      border: 1px dashed var(--grey);
+      border: 2px solid var(--border-color);
+      background: var(--darker-grey);
       padding: 18px 35px;
       text-decoration: none;
       color: var(--white);
-      transition: all 0.3s;
+      transition: all 0.2s;
       opacity: 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.85rem;
     }
 
     .credit-link:hover {
       background: var(--accent-red);
-      color: #fff;
+      color: var(--white);
       border-color: var(--accent-red);
-      box-shadow: 0 0 25px var(--accent-red-glow);
+      box-shadow: 0 0 15px var(--accent-red-glow);
     }
 
     .made-with {
       margin-top: 50px;
       color: var(--grey);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       opacity: 0;
       line-height: 1.8;
     }
 
     /* ============================================
-       SECTION INDICATORS
+       SECTION INDICATORS - square boxy dots
        ============================================ */
     .section-indicator {
       position: fixed;
-      right: 25px;
+      right: 20px;
       top: 50%;
       transform: translateY(-50%);
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       z-index: 1000;
     }
 
     .section-dot {
       width: 10px;
       height: 10px;
-      border: 1px solid var(--grey);
-      border-radius: 50%;
+      border: 2px solid var(--border-color);
+      border-radius: 0;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.2s;
+      background: var(--card-bg);
     }
 
     .section-dot:hover,
     .section-dot.active {
       background: var(--accent-red);
       border-color: var(--accent-red);
-      box-shadow: 0 0 12px var(--accent-red-glow);
+      box-shadow: 0 0 8px var(--accent-red-glow);
     }
 
     /* ============================================
@@ -1700,16 +2185,82 @@
   <nav class="nav">
     <button class="nav-btn" id="playBtn">▶ AUTO PLAY</button>
     <button class="nav-btn" id="audioToggleBtn" title="Toggle narration audio">🔊 WITH AUDIO</button>
+    <button class="nav-btn" id="voiceSelectBtn" title="Choose narrator voice">🎙 VOICE</button>
     <button class="nav-btn" id="resetBtn">↺ RESTART</button>
   </nav>
 
+  <!-- Voice Preview Modal -->
+  <div class="voice-modal-overlay" id="voiceModalOverlay">
+    <div class="voice-modal">
+      <div class="voice-modal-header">
+        <div class="voice-modal-title">Choose Narrator Voice</div>
+        <button class="voice-modal-close" id="voiceModalClose">×</button>
+      </div>
+
+      <div class="voice-options">
+        <div class="voice-option selected" data-voice="adam" data-file="audio/narration-adam.mp3" data-timing="audio/narration-adam-timing.json" data-duration="370.8">
+          <button class="voice-play-btn" data-preview="audio/narration-adam.mp3">▶</button>
+          <div class="voice-info">
+            <div class="voice-name">Adam</div>
+            <div class="voice-desc">Deep, professional (~6 min)</div>
+          </div>
+          <button class="voice-select-btn">Selected</button>
+        </div>
+
+        <div class="voice-option" data-voice="mark" data-file="audio/narration-mark.mp3" data-timing="audio/narration-mark-timing.json" data-duration="338.7">
+          <button class="voice-play-btn" data-preview="audio/previews/preview-mark.mp3">▶</button>
+          <div class="voice-info">
+            <div class="voice-name">Mark</div>
+            <div class="voice-desc">Warm, conversational (~5.5 min)</div>
+          </div>
+          <button class="voice-select-btn">Select</button>
+        </div>
+
+        <div class="voice-option" data-voice="hope" data-file="audio/narration-hope.mp3" data-timing="audio/narration-hope-timing.json" data-duration="305.2">
+          <button class="voice-play-btn" data-preview="audio/previews/preview-hope.mp3">▶</button>
+          <div class="voice-info">
+            <div class="voice-name">Hope</div>
+            <div class="voice-desc">Bright, energetic (~5 min)</div>
+          </div>
+          <button class="voice-select-btn">Select</button>
+        </div>
+
+        <div class="voice-option" data-voice="creature" data-file="audio/narration-creature.mp3" data-timing="audio/narration-creature-timing.json" data-duration="466.6">
+          <button class="voice-play-btn" data-preview="audio/previews/preview-creature.mp3">▶</button>
+          <div class="voice-info">
+            <div class="voice-name">Creature</div>
+            <div class="voice-desc">Unique, character voice (~7.5 min)</div>
+          </div>
+          <button class="voice-select-btn">Select</button>
+        </div>
+
+        <div class="voice-option" data-voice="gaming" data-file="audio/narration-gaming.mp3" data-timing="audio/narration-gaming-timing.json" data-duration="644.1">
+          <button class="voice-play-btn" data-preview="audio/previews/preview-gaming.mp3">▶</button>
+          <div class="voice-info">
+            <div class="voice-name">Gaming</div>
+            <div class="voice-desc">Dynamic, enthusiastic (~10.5 min)</div>
+          </div>
+          <button class="voice-select-btn">Select</button>
+        </div>
+      </div>
+
+      <div class="voice-modal-footer">
+        <div class="voice-modal-note">All voices have full narration with synchronized highlights.</div>
+        <button class="voice-confirm-btn" id="voiceConfirmBtn">Confirm Selection</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Audio Narration Player (hidden) -->
   <audio id="narrationAudio" preload="auto">
-    <source src="audio/narration.mp3" type="audio/mpeg">
+    <source src="audio/narration-adam.mp3" type="audio/mpeg">
   </audio>
 
   <!-- Audio Progress Bar -->
   <div class="audio-progress-container" id="audioProgressContainer" style="display: none;">
+    <div class="chapter-buttons" id="chapterButtons">
+      <!-- Chapter buttons populated dynamically from timing data -->
+    </div>
     <div class="audio-time-display">
       <span id="audioCurrentTime">0:00</span>
       <span id="audioTotalTime">0:00</span>
@@ -1733,7 +2284,7 @@
         <span class="hustle-word hustle-highlight">API-DEV-TOOLS</span>
       </div>
       <div class="package-name" id="packageName">@hustle-together/api-dev-tools</div>
-      <div class="version" id="versionText">v2.0.7</div>
+      <div class="version" id="versionText">v2.0.8</div>
       <p class="tagline">"Hustle together. Share resources. Build stronger."<span class="cursor"></span></p>
 
       <div class="intro-text">
@@ -1786,63 +2337,52 @@
   <section id="problems">
     <div class="ascii-border">
       <h2>THE PROBLEM</h2>
-      <h3>What Goes Wrong Without Structure</h3>
+      <h3>LLMs Make Their Own Decisions</h3>
 
       <div class="explanation">
         <div class="explanation-title">Why This Matters</div>
         <p>
-          When you ask an AI assistant to build an API, it often <strong>skips important steps</strong>.
-          It might use outdated information from its training data, make assumptions about what you want,
-          or claim tasks are complete without actually verifying them.
-        </p>
-        <p>
-          These are the <strong>5 most common gaps</strong> we've identified - and the problems they cause:
+          LLMs are powerful but <strong>ungrounded</strong>. Without structure, they default to training data,
+          make assumptions, and forget context. These are the <strong>3 critical gaps</strong> that compound:
         </p>
       </div>
 
       <ul class="gap-list">
         <li class="gap-item">
-          <span class="gap-number">Gap 01</span>
-          <div class="gap-title">AI Doesn't Use Your Exact Words</div>
-          <div class="gap-desc">You say one thing, but the AI searches for something different.</div>
-          <div class="gap-example">
-            <span class="bad">You: "Use Vercel AI Gateway"</span><br>
-            <span class="bad">AI searches: "Vercel AI SDK" (wrong!)</span><br>
-            <span class="good">Should search: "Vercel AI Gateway" (your exact words)</span>
+          <span class="gap-icon">🔍</span>
+          <div class="gap-content">
+            <span class="gap-number">Gap 01</span>
+            <div class="gap-title">AI Doesn't Use Your Exact Words</div>
+            <div class="gap-desc">You say one thing, but the AI searches for something different. Wrong library. Wrong documentation.</div>
+            <div class="gap-example">
+              <span class="bad">You: "Use Brandfetch API"</span><br>
+              <span class="bad">AI searches: "brand fetch library" (wrong!)</span><br>
+              <span class="good">Solution: Phase 0 disambiguation before research</span>
+            </div>
           </div>
         </li>
         <li class="gap-item">
-          <span class="gap-number">Gap 02</span>
-          <div class="gap-title">No Proof Files Were Actually Changed</div>
-          <div class="gap-desc">AI says "I updated all the files" but never runs git diff to prove it.</div>
-          <div class="gap-example">
-            AI: "Migration complete! All 6 files updated."<br>
-            Reality: Only 4 files were changed, 2 were missed.
+          <span class="gap-icon">🧠</span>
+          <div class="gap-content">
+            <span class="gap-number">Gap 02</span>
+            <div class="gap-title">Memory-Based Implementation</div>
+            <div class="gap-desc">After research, the AI forgets what it learned and implements from training data instead.</div>
+            <div class="gap-example">
+              AI researches Brandfetch v2 API, then implements v1 patterns from memory.<br>
+              <span class="good">Solution: Phase 9 verification re-reads docs after implementation</span>
+            </div>
           </div>
         </li>
         <li class="gap-item">
-          <span class="gap-number">Gap 03</span>
-          <div class="gap-title">Skipped Tests Go Uninvestigated</div>
-          <div class="gap-desc">AI sees "9 tests skipped" and says "that's expected" without checking why.</div>
-          <div class="gap-example">
-            Tests might be skipping because they check the wrong environment variables.
-          </div>
-        </li>
-        <li class="gap-item">
-          <span class="gap-number">Gap 04</span>
-          <div class="gap-title">Tasks Marked Done Without Verification</div>
-          <div class="gap-desc">AI declares "complete!" without checking if the code matches your requirements.</div>
-          <div class="gap-example">
-            You asked for "single API key" but code still uses 4 separate keys.
-          </div>
-        </li>
-        <li class="gap-item">
-          <span class="gap-number">Gap 05</span>
-          <div class="gap-title">Tests Don't Match Production Code</div>
-          <div class="gap-desc">Production code uses new patterns, but tests still check old patterns.</div>
-          <div class="gap-example">
-            <span class="bad">Production: AI_GATEWAY_API_KEY</span><br>
-            <span class="bad">Tests: OPENAI_API_KEY (outdated!)</span>
+          <span class="gap-icon">💨</span>
+          <div class="gap-content">
+            <span class="gap-number">Gap 03</span>
+            <div class="gap-title">Context Dilution</div>
+            <div class="gap-desc">After many turns, the AI forgets project structure, documentation locations, and your decisions.</div>
+            <div class="gap-example">
+              Turn 50: "What API key should I use?" (you already told it 40 turns ago)<br>
+              <span class="good">Solution: Re-grounding every 7 turns via hooks</span>
+            </div>
           </div>
         </li>
       </ul>
@@ -1871,7 +2411,7 @@
 
       <div class="solution-grid">
         <div class="solution-card">
-          <span class="solution-icon">[R]</span>
+          <span class="solution-icon">📚</span>
           <div class="solution-title">Research First</div>
           <div class="solution-desc">
             AI must search for live documentation before writing any code.
@@ -1879,7 +2419,7 @@
           </div>
         </div>
         <div class="solution-card">
-          <span class="solution-icon">[I]</span>
+          <span class="solution-icon">💬</span>
           <div class="solution-title">Interview Required</div>
           <div class="solution-desc">
             AI must ask YOU questions and wait for answers.
@@ -1887,7 +2427,7 @@
           </div>
         </div>
         <div class="solution-card">
-          <span class="solution-icon">[V]</span>
+          <span class="solution-icon">✅</span>
           <div class="solution-title">Verification Built-In</div>
           <div class="solution-desc">
             System checks implementation matches interview.
@@ -1973,17 +2513,24 @@
   <section id="phases">
     <div class="ascii-border">
       <h2>THE WORKFLOW</h2>
-      <h3>10 Enforced Phases</h3>
+      <h3>12 Enforced Phases (v3.0)</h3>
 
       <div class="explanation">
         <div class="explanation-title">The Complete Process</div>
         <p>
-          Every API goes through these 10 phases. The system tracks progress and won't let
-          the AI skip ahead. This ensures <strong>thorough, consistent results</strong> every time.
+          Every API goes through these 12 phases. The system tracks progress and won't let
+          the AI skip ahead. <strong>Phase 0 (Disambiguation)</strong> and <strong>Phase 9 (Verify)</strong> are new in v3.0!
         </p>
       </div>
 
       <div class="phase-grid">
+        <div class="phase-box glow-border" data-phase="0">
+          <div class="phase-status"></div>
+          <div class="phase-number">00</div>
+          <div class="phase-name">Disambiguate</div>
+          <div class="phase-desc">Clarify ambiguous terms</div>
+          <span class="phase-arrow">→</span>
+        </div>
         <div class="phase-box glow-border" data-phase="1">
           <div class="phase-status"></div>
           <div class="phase-number">01</div>
@@ -2002,14 +2549,14 @@
           <div class="phase-status"></div>
           <div class="phase-number">03</div>
           <div class="phase-name">Interview</div>
-          <div class="phase-desc">Ask user questions</div>
+          <div class="phase-desc">Questions FROM research</div>
           <span class="phase-arrow">→</span>
         </div>
         <div class="phase-box glow-border" data-phase="4">
           <div class="phase-status"></div>
           <div class="phase-number">04</div>
           <div class="phase-name">Deep Research</div>
-          <div class="phase-desc">Based on interview answers</div>
+          <div class="phase-desc">Adaptive, not shotgun</div>
           <span class="phase-arrow">→</span>
         </div>
         <div class="phase-box glow-border" data-phase="5">
@@ -2042,275 +2589,740 @@
           <div class="phase-desc">Make tests pass</div>
           <span class="phase-arrow">→</span>
         </div>
-        <div class="phase-box glow-border" data-phase="9">
+        <div class="phase-box glow-border" data-phase="9" style="border-color: var(--claude-orange);">
           <div class="phase-status"></div>
           <div class="phase-number">09</div>
-          <div class="phase-name">Refactor</div>
-          <div class="phase-desc">Clean up the code</div>
+          <div class="phase-name">Verify</div>
+          <div class="phase-desc">Re-research, find gaps</div>
           <span class="phase-arrow">→</span>
         </div>
         <div class="phase-box glow-border" data-phase="10">
           <div class="phase-status"></div>
           <div class="phase-number">10</div>
+          <div class="phase-name">Refactor</div>
+          <div class="phase-desc">Clean up the code</div>
+          <span class="phase-arrow">→</span>
+        </div>
+        <div class="phase-box glow-border" data-phase="11">
+          <div class="phase-status"></div>
+          <div class="phase-number">11</div>
           <div class="phase-name">Documentation</div>
           <div class="phase-desc">Update all docs</div>
+          <span class="phase-arrow">→</span>
+        </div>
+        <div class="phase-box glow-border" data-phase="12">
+          <div class="phase-status"></div>
+          <div class="phase-number">12</div>
+          <div class="phase-name">Complete</div>
+          <div class="phase-desc">Final verification</div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ============================================
-       SECTION 6: REAL EXAMPLE WALKTHROUGH
-       ============================================ -->
-  <section id="walkthrough">
-    <div class="ascii-border">
-      <h2>REAL EXAMPLE</h2>
-      <h3>Creating a Brandfetch API</h3>
-
-      <div class="explanation">
-        <div class="explanation-title">The Complete Flow</div>
-        <p>
-          Let's walk through what happens when you run <code>/api-create brandfetch</code>.
-          This shows the full interview-driven workflow, from research to implementation,
-          with <strong>structured questions based on real documentation</strong>.
-        </p>
-      </div>
-
-      <div class="walkthrough-step">
-        <div class="walkthrough-header">
-          <div class="walkthrough-num">1</div>
-          <div class="walkthrough-title">You Run the Command</div>
-        </div>
-        <div class="walkthrough-content">
-          <div class="walkthrough-desc">
-            You type the command to create a new Brandfetch API endpoint.
-            The workflow immediately begins.
-          </div>
-          <div class="walkthrough-example">
-            <div class="label">Your Command:</div>
-            /api-create brandfetch
-          </div>
-        </div>
-      </div>
-
-      <div class="walkthrough-step">
-        <div class="walkthrough-header">
-          <div class="walkthrough-num">2</div>
-          <div class="walkthrough-title">Research Phase (Automatic)</div>
-        </div>
-        <div class="walkthrough-content">
-          <div class="walkthrough-desc">
-            Before asking any questions, the AI is <strong>required</strong> to research.
-            It fetches live documentation from Context7 and searches the web.
-          </div>
-          <div class="walkthrough-example">
-            <div class="label">Research Logged to State File:</div>
-            - Context7: Brandfetch SDK docs → found logos, colors, fonts endpoints<br>
-            - WebSearch: "Brandfetch API rate limits 2025" → 5 req/second<br>
-            - WebSearch: "Brandfetch API response format" → JSON with asset URLs<br>
-            - Context7: Authentication → Bearer token required
-          </div>
-        </div>
-      </div>
-
-      <div class="walkthrough-step">
-        <div class="walkthrough-header">
-          <div class="walkthrough-num">3</div>
-          <div class="walkthrough-title">Structured Interview (Based on Research)</div>
-        </div>
-        <div class="walkthrough-content">
-          <div class="walkthrough-desc">
-            Now the AI asks YOU questions - but with <strong>multiple-choice options</strong>
-            derived from what it actually found in the documentation. No guessing!
-          </div>
-          <div class="walkthrough-example">
-            <div class="label">Question 1 (with options from research):</div>
-            "What's the primary purpose of this endpoint?"<br><br>
-            <strong>1.</strong> Brand lookup (get brand by domain)<br>
-            <strong>2.</strong> Logo extraction (get logo assets)<br>
-            <strong>3.</strong> Color palette extraction<br>
-            <strong>4.</strong> Full brand kit (all assets)<br>
-            <strong>5.</strong> Type something else...<br><br>
-            <em>You select: "4. Full brand kit (all assets)"</em>
-          </div>
-        </div>
-      </div>
-
-      <div class="walkthrough-step">
-        <div class="walkthrough-header">
-          <div class="walkthrough-num">4</div>
-          <div class="walkthrough-title">More Questions, All Tracked</div>
-        </div>
-        <div class="walkthrough-content">
-          <div class="walkthrough-desc">
-            Each question is tracked with your answer. These decisions are stored
-            in the state file and <strong>injected during implementation</strong> to ensure consistency.
-          </div>
-          <div class="walkthrough-example">
-            <div class="label">Decisions Captured:</div>
-            • Purpose: full_brand_kit<br>
-            • Response Format: JSON with asset URLs<br>
-            • API Key Handling: server environment variables only<br>
-            • Error Handling: detailed (error, code, details)<br>
-            • Required Params: domain (string)<br>
-            • Optional Params: include_colors, include_fonts
-          </div>
-        </div>
-      </div>
-
-      <div class="walkthrough-step">
-        <div class="walkthrough-header">
-          <div class="walkthrough-num">5</div>
-          <div class="walkthrough-title">Implementation (With Decision Reminders)</div>
-        </div>
-        <div class="walkthrough-content">
-          <div class="walkthrough-desc">
-            When the AI writes code, the hook <strong>injects your decisions</strong> as a reminder.
-            This ensures the implementation matches what you actually asked for.
-          </div>
-          <div class="walkthrough-example">
-            <div class="label">Injected on Every Write:</div>
-            ✅ Interview complete. REMEMBER THE USER'S DECISIONS:<br><br>
-            • Purpose: Full brand kit (all assets)<br>
-            • Response Format: JSON with asset URLs<br>
-            • API Key Handling: server environment variables only<br>
-            • Error Handling: detailed (error, code, details)<br><br>
-            <em>Your implementation MUST align with these choices.</em>
-          </div>
-        </div>
-      </div>
-
-      <div class="walkthrough-step">
-        <div class="walkthrough-header">
-          <div class="walkthrough-num">6</div>
-          <div class="walkthrough-title">TDD + Final Result</div>
-        </div>
-        <div class="walkthrough-content">
-          <div class="walkthrough-desc">
-            Tests are written first (TDD), then implementation, then docs.
-            Everything is tracked and verified against your interview decisions.
-          </div>
-          <div class="walkthrough-example">
-            <div class="label">Files Created:</div>
-            - src/lib/schemas/brandfetch.ts (Zod validation)<br>
-            - src/lib/__tests__/brandfetch.test.ts (tests first!)<br>
-            - src/app/api/v2/brandfetch/route.ts<br>
-            - Interview doc: src/v2/docs/endpoints/brandfetch.md<br>
-            - All tests passing ✓
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================
-       SECTION 7: TERMINAL SIMULATION
+       SECTION 6: LIVE DEMO - CLAUDE CODE TERMINAL
+       Full 12-phase v3.0 workflow simulation
        ============================================ -->
   <section id="demo">
-    <div class="ascii-border">
+    <div class="ascii-border" style="max-width: 1400px;">
       <h2>LIVE SIMULATION</h2>
-      <h3>The Interview Flow</h3>
+      <h3>12-Phase Workflow (v3.0)</h3>
 
       <div class="explanation">
-        <div class="explanation-title">Structured Questions in Action</div>
+        <div class="explanation-title">The Complete v3.0 Flow</div>
         <p>
-          This simulates the interview phase. Notice how the AI uses
-          <strong>AskUserQuestion with options</strong> based on research findings.
-          Your answers are captured and used throughout implementation.
+          Watch the full <strong>/api-create brandfetch</strong> command in action.
+          The side panel explains each step as it happens. Notice the AI/User conversation format
+          and how research findings drive the interview questions.
         </p>
       </div>
 
-      <div class="terminal">
-        <div class="terminal-header">
-          <div class="terminal-dot"></div>
-          <div class="terminal-dot"></div>
-          <div class="terminal-dot"></div>
-          <div class="terminal-title">claude-code session: /api-create brandfetch</div>
-          <div class="status-badge active" style="margin-left: auto;">
-            <span class="pulse"></span>
-            <span>Live</span>
+      <div class="claude-code-container">
+        <!-- Claude Code Terminal (Left) -->
+        <div class="claude-code-terminal" id="claudeTerminal">
+          <div class="claude-code-header">
+            <div class="claude-code-dots">
+              <div class="claude-code-dot red"></div>
+              <div class="claude-code-dot yellow"></div>
+              <div class="claude-code-dot green"></div>
+            </div>
+            <div class="claude-code-title">~/my-project</div>
+            <div class="claude-code-badge">CLAUDE CODE</div>
+          </div>
+
+          <!-- ASCII Art Startup Screen -->
+          <pre class="ascii-startup" id="asciiStartup">
+<span style="color: var(--claude-orange);">╭─────────────────────────────────────────────────────────────────────────────╮</span>
+<span style="color: var(--claude-orange);">│</span>                             <span style="color: var(--claude-orange);">│</span> <span class="tips-text">Tips for getting started</span>                   <span style="color: var(--claude-orange);">│</span>
+<span style="color: var(--claude-orange);">│</span>   <span class="welcome-text">Welcome back, Developer!</span>  <span style="color: var(--claude-orange);">│</span> <span class="tips-text">Run /init to create a CLAUDE.md file...</span>    <span style="color: var(--claude-orange);">│</span>
+<span style="color: var(--claude-orange);">│</span>                             <span style="color: var(--claude-orange);">│</span> <span class="tips-text">Try /api-create to start a new endpoint</span>    <span style="color: var(--claude-orange);">│</span>
+<span style="color: var(--claude-orange);">│</span>         <span style="color: var(--claude-orange);">▗ ▗   ▖ ▖</span>           <span style="color: var(--claude-orange);">│</span> <span class="tips-text">────────────────────────────────────────</span>    <span style="color: var(--claude-orange);">│</span>
+<span style="color: var(--claude-orange);">│</span>                             <span style="color: var(--claude-orange);">│</span> <span class="tips-text">Recent activity</span>                            <span style="color: var(--claude-orange);">│</span>
+<span style="color: var(--claude-orange);">│</span>           <span style="color: var(--claude-orange);">▘▘ ▝▝</span>             <span style="color: var(--claude-orange);">│</span> <span class="tips-text">  api/v2/search - completed</span>                <span style="color: var(--claude-orange);">│</span>
+<span style="color: var(--claude-orange);">│</span>                             <span style="color: var(--claude-orange);">│</span> <span class="tips-text">  api/v2/analyze - 8 tests passing</span>         <span style="color: var(--claude-orange);">│</span>
+<span style="color: var(--claude-orange);">│</span>   <span class="model-text">Opus 4.5 · Claude Max</span>    <span style="color: var(--claude-orange);">│</span>                                            <span style="color: var(--claude-orange);">│</span>
+<span style="color: var(--claude-orange);">│</span>      <span class="path-text">~/my-project</span>          <span style="color: var(--claude-orange);">│</span>                                            <span style="color: var(--claude-orange);">│</span>
+<span style="color: var(--claude-orange);">╰─────────────────────────────────────────────────────────────────────────────╯</span>
+          </pre>
+
+          <!-- Prompt Line (shows before messages) -->
+          <div class="claude-prompt-line" id="promptLine">
+            <span class="claude-prompt">❯</span>
+            <span class="claude-input" id="promptInput"></span>
+            <span class="claude-cursor"></span>
+          </div>
+
+          <div class="claude-code-body" id="claudeBody">
+            <!-- Loading dots (shown between messages) -->
+            <div class="loading-dots" id="loadingDots" style="display: none;">
+              <span></span><span></span><span></span>
+            </div>
+
+            <!-- Phase 0: User Command -->
+            <div class="claude-msg" data-phase="0" data-step="0">
+              <div class="claude-msg-role user">
+                <span class="claude-msg-icon">👤</span>
+                <span class="claude-msg-name">USER</span>
+              </div>
+              <div class="claude-msg-content">
+                <code>/api-create brandfetch</code>
+              </div>
+            </div>
+
+            <!-- Phase 1: Scope Confirmation -->
+            <div class="claude-msg" data-phase="1" data-step="1">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                I understand you want to create an API endpoint for <strong>Brandfetch</strong> - a service for fetching brand assets (logos, colors, fonts) by domain.
+                <br><br>Is this correct? <span style="color: #22c55e;">✓ Yes</span>
+              </div>
+            </div>
+
+            <!-- Phase 2: Initial Research -->
+            <div class="claude-msg" data-phase="2" data-step="2">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Starting research... I need to find the real documentation before asking questions.
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">mcp__context7__get-library-docs</div>
+                  <div class="claude-tool-result">"brandfetch" → Found SDK docs, /v2/brands endpoint, auth method</div>
+                </div>
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">WebSearch</div>
+                  <div class="claude-tool-result">"Brandfetch API rate limits 2025" → 5 req/second</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- User Loop-back: Request more research -->
+            <div class="claude-msg loop-back" data-phase="2" data-step="3">
+              <div class="claude-msg-role user">
+                <span class="claude-msg-icon">👤</span>
+                <span class="claude-msg-name">USER</span>
+              </div>
+              <div class="claude-msg-content">
+                <span class="loop-back-badge">↩ LOOP BACK</span>
+                Can you also check what error responses look like?
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="2" data-step="4">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Good catch! Researching error handling...
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">WebSearch</div>
+                  <div class="claude-tool-result">"Brandfetch API error codes" → 401, 404, 429 with JSON error format</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase 3: Interview (Extensive - 5+ questions) -->
+            <div class="claude-msg" data-phase="3" data-step="5">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Based on my research, I found these capabilities. <strong>Question 1/5:</strong> What's the primary purpose?
+                <div class="claude-user-choice">
+                  <div class="claude-choice-option">
+                    <div class="claude-choice-marker"></div>
+                    <span>Brand lookup by domain</span>
+                  </div>
+                  <div class="claude-choice-option">
+                    <div class="claude-choice-marker"></div>
+                    <span>Logo extraction only</span>
+                  </div>
+                  <div class="claude-choice-option selected">
+                    <div class="claude-choice-marker"></div>
+                    <span>Full brand kit (logos, colors, fonts)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="3" data-step="6">
+              <div class="claude-msg-role user">
+                <span class="claude-msg-icon">👤</span>
+                <span class="claude-msg-name">USER</span>
+              </div>
+              <div class="claude-msg-content">
+                <span style="color: #3b82f6;">Selected: Full brand kit (logos, colors, fonts)</span>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="3" data-step="7">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                <strong>Question 2/5:</strong> How should <strong>API keys</strong> be handled?
+                <div class="claude-user-choice">
+                  <div class="claude-choice-option selected">
+                    <div class="claude-choice-marker"></div>
+                    <span>Server environment variables only</span>
+                  </div>
+                  <div class="claude-choice-option">
+                    <div class="claude-choice-marker"></div>
+                    <span>Custom header override (X-Brandfetch-Key)</span>
+                  </div>
+                  <div class="claude-choice-option">
+                    <div class="claude-choice-marker"></div>
+                    <span>Both methods</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="3" data-step="8">
+              <div class="claude-msg-role user">
+                <span class="claude-msg-icon">👤</span>
+                <span class="claude-msg-name">USER</span>
+              </div>
+              <div class="claude-msg-content">
+                <span style="color: #3b82f6;">Selected: Server environment variables only</span>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="3" data-step="9">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                <strong>Question 3/5:</strong> What <strong>caching strategy</strong> should we use?
+                <div class="claude-user-choice">
+                  <div class="claude-choice-option">
+                    <div class="claude-choice-marker"></div>
+                    <span>No caching</span>
+                  </div>
+                  <div class="claude-choice-option">
+                    <div class="claude-choice-marker"></div>
+                    <span>Short cache (5 minutes)</span>
+                  </div>
+                  <div class="claude-choice-option selected">
+                    <div class="claude-choice-marker"></div>
+                    <span>Long cache (24 hours) - brands rarely change</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="3" data-step="10">
+              <div class="claude-msg-role user">
+                <span class="claude-msg-icon">👤</span>
+                <span class="claude-msg-name">USER</span>
+              </div>
+              <div class="claude-msg-content">
+                <span style="color: #3b82f6;">Selected: Long cache (24 hours)</span>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="3" data-step="11">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                <strong>Question 4/5:</strong> How should we handle <strong>errors</strong>?
+                <div class="claude-user-choice">
+                  <div class="claude-choice-option">
+                    <div class="claude-choice-marker"></div>
+                    <span>Throw exceptions (let caller handle)</span>
+                  </div>
+                  <div class="claude-choice-option selected">
+                    <div class="claude-choice-marker"></div>
+                    <span>Return error objects with status codes</span>
+                  </div>
+                  <div class="claude-choice-option">
+                    <div class="claude-choice-marker"></div>
+                    <span>Fallback to empty brand object</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="3" data-step="12">
+              <div class="claude-msg-role user">
+                <span class="claude-msg-icon">👤</span>
+                <span class="claude-msg-name">USER</span>
+              </div>
+              <div class="claude-msg-content">
+                <span style="color: #3b82f6;">Selected: Return error objects with status codes</span>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="3" data-step="13">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                <strong>Question 5/5:</strong> Should we expose <strong>rate limit headers</strong>?
+                <div class="claude-user-choice">
+                  <div class="claude-choice-option">
+                    <div class="claude-choice-marker"></div>
+                    <span>No - handle internally</span>
+                  </div>
+                  <div class="claude-choice-option selected">
+                    <div class="claude-choice-marker"></div>
+                    <span>Yes - X-RateLimit-Remaining, X-RateLimit-Reset</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="3" data-step="14">
+              <div class="claude-msg-role user">
+                <span class="claude-msg-icon">👤</span>
+                <span class="claude-msg-name">USER</span>
+              </div>
+              <div class="claude-msg-content">
+                <span style="color: #3b82f6;">Selected: Yes - expose rate limit headers</span>
+              </div>
+            </div>
+
+            <!-- Phase 4: Deep Research -->
+            <div class="claude-msg" data-phase="4" data-step="15">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Based on your selections, I'll research more specifically:
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">WebSearch</div>
+                  <div class="claude-tool-result">"Brandfetch full brand response format" → JSON with logos[], colors[], fonts[]</div>
+                </div>
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">WebSearch</div>
+                  <div class="claude-tool-result">"Brandfetch rate limit headers" → X-RateLimit-Limit, X-RateLimit-Remaining</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase 5: Schema -->
+            <div class="claude-msg" data-phase="5" data-step="16">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Creating Zod schema based on research + interview decisions...
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">Write</div>
+                  <div class="claude-tool-result">src/lib/schemas/brandfetch.ts → BrandRequestSchema, BrandResponseSchema, BrandErrorSchema</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase 6: Environment -->
+            <div class="claude-msg" data-phase="6" data-step="17">
+              <div class="claude-msg-role system">
+                <span class="claude-msg-icon">⚙️</span>
+                <span class="claude-msg-name">HOOK</span>
+              </div>
+              <div class="claude-msg-content">
+                <strong style="color: var(--claude-orange);">check-env.py:</strong> Checking required environment variables...<br>
+                <span style="color: #22c55e;">✓ BRANDFETCH_API_KEY found in .env.local</span>
+              </div>
+            </div>
+
+            <!-- Phase 7: TDD Red -->
+            <div class="claude-msg" data-phase="7" data-step="18">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Writing failing tests first (TDD Red)...
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">Write</div>
+                  <div class="claude-tool-result">src/lib/__tests__/brandfetch.test.ts (15 test cases)</div>
+                </div>
+                <div style="margin-top: 8px; color: #888; font-size: 0.85rem;">
+                  Tests cover: full brand kit, caching, error objects, rate limit headers
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase 8: TDD Green -->
+            <div class="claude-msg" data-phase="8" data-step="19">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Implementing to pass tests...
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">Write</div>
+                  <div class="claude-tool-result">src/app/api/v2/brandfetch/route.ts</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="8" data-step="20">
+              <div class="claude-msg-role system">
+                <span class="claude-msg-icon">⚙️</span>
+                <span class="claude-msg-name">HOOK</span>
+              </div>
+              <div class="claude-msg-content">
+                <strong style="color: var(--claude-orange);">enforce-interview.py:</strong> REMEMBER USER DECISIONS:<br>
+                • Purpose: full_brand_kit<br>
+                • API Key Handling: server_only<br>
+                • Caching: 24_hours<br>
+                • Error Handling: return_error_objects<br>
+                • Rate Limits: expose_headers
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="8" data-step="21">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                <span style="color: #22c55e;">✓ All 15 tests passing!</span>
+              </div>
+            </div>
+
+            <!-- Phase 9: Verify - GAP FOUND! -->
+            <div class="claude-msg" data-phase="9" data-step="22">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Re-reading docs to verify implementation matches...
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">mcp__context7__get-library-docs</div>
+                  <div class="claude-tool-result">"brandfetch" → Comparing implementation to docs...</div>
+                </div>
+                <div class="gap-found">
+                  <div class="gap-found-title">⚠️ GAP DETECTED</div>
+                  Missing <code>include_fonts</code> query parameter documented in v2 API
+                </div>
+              </div>
+            </div>
+
+            <!-- Loop back to fix gap -->
+            <div class="claude-msg loop-back" data-phase="9" data-step="23">
+              <div class="claude-msg-role system">
+                <span class="claude-msg-icon">🔄</span>
+                <span class="claude-msg-name">HOOK</span>
+              </div>
+              <div class="claude-msg-content">
+                <span class="loop-back-badge">↩ LOOP BACK TO PHASE 7</span>
+                <strong style="color: var(--claude-orange);">verify-implementation.py:</strong> Gap found! Returning to TDD Red phase to add missing test...
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="7" data-step="24">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Adding test for include_fonts parameter...
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">Edit</div>
+                  <div class="claude-tool-result">src/lib/__tests__/brandfetch.test.ts → Added test case #16</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="8" data-step="25">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Updating implementation for include_fonts...
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">Edit</div>
+                  <div class="claude-tool-result">src/app/api/v2/brandfetch/route.ts → Added include_fonts query param</div>
+                </div>
+                <span style="color: #22c55e;">✓ All 16 tests passing!</span>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="9" data-step="26">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Re-verifying implementation...
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">mcp__context7__get-library-docs</div>
+                  <div class="claude-tool-result">"brandfetch" → All documented features now implemented</div>
+                </div>
+                <span style="color: #22c55e;">✓ Verification complete - no gaps remaining</span>
+              </div>
+            </div>
+
+            <!-- Phase 10-12: Refactor, Docs, Complete -->
+            <div class="claude-msg" data-phase="10" data-step="27">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Refactoring code (tests still pass)...
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">Edit</div>
+                  <div class="claude-tool-result">Extracted caching logic to utils, improved type safety</div>
+                </div>
+                <span style="color: #22c55e;">✓ 16/16 tests passing</span>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="11" data-step="28">
+              <div class="claude-msg-role ai">
+                <span class="claude-msg-icon">🤖</span>
+                <span class="claude-msg-name">CLAUDE</span>
+              </div>
+              <div class="claude-msg-content">
+                Updating documentation...
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">Write</div>
+                  <div class="claude-tool-result">api-tests-manifest.json → Added /api/v2/brandfetch entry</div>
+                </div>
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">Edit</div>
+                  <div class="claude-tool-result">openapi.yaml → Added brandfetch endpoint schema</div>
+                </div>
+                <div class="claude-tool-call">
+                  <div class="claude-tool-name">Write</div>
+                  <div class="claude-tool-result">.claude/research/brandfetch/ → Cached research for future sessions</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="claude-msg" data-phase="12" data-step="29">
+              <div class="claude-msg-role system">
+                <span class="claude-msg-icon">✅</span>
+                <span class="claude-msg-name">COMPLETE</span>
+              </div>
+              <div class="claude-msg-content">
+                <span style="color: #22c55e; font-weight: 600;">All 12 phases complete! Brandfetch API ready.</span><br><br>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 0.85rem;">
+                  <div>📁 Files created: <strong>5</strong></div>
+                  <div>✅ Tests passing: <strong>16/16</strong></div>
+                  <div>🔄 Loop-backs: <strong>2</strong></div>
+                  <div>📋 Interview decisions: <strong>5</strong></div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="terminal-comment" data-step="0">// Step 1: Research phase starts automatically</div>
-        <div class="terminal-line" data-step="1">
-          <span class="terminal-prompt">claude></span>
-          <span class="terminal-command">mcp__context7__get-library-docs("brandfetch")</span>
-        </div>
-        <div class="terminal-line terminal-result" data-step="2">
-          <span class="terminal-logged">[LOGGED] Context7 source: brandfetch SDK documentation</span>
-        </div>
+        <!-- Explanation Panel (Right) -->
+        <div class="explanation-panel" id="explanationPanel">
+          <div class="explanation-panel-header">
+            Phase Explanation
+          </div>
+          <div class="explanation-panel-body">
+            <div class="explanation-step active" data-phase="0">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">0</div>
+                <div class="explanation-step-name">User Command</div>
+              </div>
+              <div class="explanation-step-desc">
+                The user triggers the full 12-phase workflow with a single command.
+              </div>
+              <div class="explanation-step-why">
+                This starts the entire interview-driven development process.
+              </div>
+            </div>
 
-        <div class="terminal-line" data-step="3">
-          <span class="terminal-prompt">claude></span>
-          <span class="terminal-command">WebSearch "Brandfetch API endpoints 2025"</span>
-        </div>
-        <div class="terminal-line terminal-result" data-step="4">
-          <span class="terminal-logged">[LOGGED] WebSearch: found /v2/brands, /v2/search, /v2/logos</span>
-        </div>
+            <div class="explanation-step" data-phase="1">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">1</div>
+                <div class="explanation-step-name">Scope Confirmation</div>
+              </div>
+              <div class="explanation-step-desc">
+                Claude confirms understanding of what we're building before doing anything.
+              </div>
+              <div class="explanation-step-why">
+                Prevents building the wrong thing. Loop back if unclear.
+              </div>
+            </div>
 
-        <div class="terminal-comment" data-step="5">// Step 2: Interview with structured options (from research)</div>
-        <div class="terminal-line" data-step="6">
-          <span class="terminal-prompt">claude></span>
-          <span class="terminal-command">AskUserQuestion(<br>
-            &nbsp;&nbsp;question: "What's the primary purpose?"<br>
-            &nbsp;&nbsp;options: [<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;{value: "lookup", label: "Brand lookup by domain"},<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;{value: "logos", label: "Logo extraction only"},<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;{value: "full_kit", label: "Full brand kit"},<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;{value: "custom", label: "Type something..."}<br>
-            &nbsp;&nbsp;]<br>
-          )</span>
-        </div>
-        <div class="terminal-line terminal-result" data-step="7">
-          <span class="terminal-allowed">[USER] Selected: "full_kit"<br>[TRACKED] decisions.purpose = "full_kit"</span>
-        </div>
+            <div class="explanation-step" data-phase="2">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">2</div>
+                <div class="explanation-step-name">Initial Research</div>
+              </div>
+              <div class="explanation-step-desc">
+                Claude researches REAL documentation using Context7 and WebSearch. No training data assumptions!
+              </div>
+              <div class="explanation-step-why">
+                Questions will be generated FROM these findings - not generic templates.
+              </div>
+            </div>
 
-        <div class="terminal-line" data-step="8">
-          <span class="terminal-prompt">claude></span>
-          <span class="terminal-command">AskUserQuestion(<br>
-            &nbsp;&nbsp;question: "How should API keys be handled?"<br>
-            &nbsp;&nbsp;options: [<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;{value: "server_only", label: "Server env vars only"},<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;{value: "header", label: "Custom header override"},<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;{value: "both", label: "Both methods"},<br>
-            &nbsp;&nbsp;]<br>
-          )</span>
-        </div>
-        <div class="terminal-line terminal-result" data-step="9">
-          <span class="terminal-allowed">[USER] Selected: "server_only"<br>[TRACKED] decisions.api_key_handling = "server_only"</span>
-        </div>
+            <div class="explanation-step" data-phase="3">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">3</div>
+                <div class="explanation-step-name">Interview</div>
+              </div>
+              <div class="explanation-step-desc">
+                Claude asks structured questions with options derived from research. User selects, answers tracked.
+              </div>
+              <div class="explanation-step-why">
+                Every decision is recorded and injected during implementation.
+              </div>
+            </div>
 
-        <div class="terminal-comment" data-step="10">// Step 3: Interview complete, now writing code</div>
-        <div class="terminal-line" data-step="11">
-          <span class="terminal-prompt">claude></span>
-          <span class="terminal-command">Write src/app/api/v2/brandfetch/route.ts</span>
-        </div>
-        <div class="terminal-line terminal-result" data-step="12">
-          <span class="terminal-allowed">✅ Interview complete. REMEMBER THE USER'S DECISIONS:<br>
-          &nbsp;&nbsp;• Purpose: full_kit<br>
-          &nbsp;&nbsp;• API Key Handling: server_only<br>
-          ALLOWED: Writing file...</span>
-        </div>
+            <div class="explanation-step" data-phase="4">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">4</div>
+                <div class="explanation-step-name">Deep Research</div>
+              </div>
+              <div class="explanation-step-desc">
+                Based on interview answers, Claude proposes targeted follow-up searches.
+              </div>
+              <div class="explanation-step-why">
+                Adaptive research - not shotgun. Only what's relevant to YOUR choices.
+              </div>
+            </div>
 
-        <div class="terminal-comment" data-step="13">// Decisions are injected on EVERY write operation</div>
-        <div class="terminal-line" data-step="14">
-          <span class="terminal-prompt">claude></span>
-          <span class="terminal-command">Write src/lib/schemas/brandfetch.ts</span>
-        </div>
-        <div class="terminal-line terminal-result" data-step="15">
-          <span class="terminal-allowed">✅ REMEMBER THE USER'S DECISIONS:<br>
-          &nbsp;&nbsp;• Purpose: full_kit<br>
-          &nbsp;&nbsp;• API Key Handling: server_only<br>
-          ALLOWED: Writing schema file...</span>
-        </div>
+            <div class="explanation-step" data-phase="5">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">5</div>
+                <div class="explanation-step-name">Schema Design</div>
+              </div>
+              <div class="explanation-step-desc">
+                Zod schemas created based on research + interview decisions.
+              </div>
+              <div class="explanation-step-why">
+                Types before code. Schema drives tests and implementation.
+              </div>
+            </div>
 
-        <div class="terminal-line" data-step="16" style="margin-top: 15px;">
-          <span class="terminal-prompt">claude></span>
-          <div class="typing-indicator">
-            <span></span>
-            <span></span>
-            <span></span>
+            <div class="explanation-step" data-phase="6">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">6</div>
+                <div class="explanation-step-name">Environment</div>
+              </div>
+              <div class="explanation-step-desc">
+                Verify API keys exist and are configured correctly.
+              </div>
+              <div class="explanation-step-why">
+                Catches config issues BEFORE writing code.
+              </div>
+            </div>
+
+            <div class="explanation-step" data-phase="7">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">7</div>
+                <div class="explanation-step-name">TDD Red</div>
+              </div>
+              <div class="explanation-step-desc">
+                Write failing tests first. Define success BEFORE implementation.
+              </div>
+              <div class="explanation-step-why">
+                No implementation until tests exist. Enforced by hooks.
+              </div>
+            </div>
+
+            <div class="explanation-step" data-phase="8">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">8</div>
+                <div class="explanation-step-name">TDD Green</div>
+              </div>
+              <div class="explanation-step-desc">
+                Write minimal code to pass tests. Interview decisions injected by hook!
+              </div>
+              <div class="explanation-step-why">
+                Hook reminds Claude of YOUR decisions on every write.
+              </div>
+            </div>
+
+            <div class="explanation-step" data-phase="9">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">9</div>
+                <div class="explanation-step-name">Verify</div>
+              </div>
+              <div class="explanation-step-desc">
+                Re-read original docs, compare to implementation. Find gaps!
+              </div>
+              <div class="explanation-step-why">
+                Catches memory-based errors. Loops back if gaps found.
+              </div>
+            </div>
+
+            <div class="explanation-step" data-phase="10">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">10</div>
+                <div class="explanation-step-name">Refactor</div>
+              </div>
+              <div class="explanation-step-desc">
+                Clean up code while tests stay green.
+              </div>
+              <div class="explanation-step-why">
+                Safe improvements - tests prove nothing broke.
+              </div>
+            </div>
+
+            <div class="explanation-step" data-phase="11">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">11</div>
+                <div class="explanation-step-name">Documentation</div>
+              </div>
+              <div class="explanation-step-desc">
+                Update OpenAPI spec, test manifest, research cache.
+              </div>
+              <div class="explanation-step-why">
+                No "complete" without docs. Stop hook enforces this.
+              </div>
+            </div>
+
+            <div class="explanation-step" data-phase="12">
+              <div class="explanation-step-phase">
+                <div class="explanation-step-num">12</div>
+                <div class="explanation-step-name">Completion</div>
+              </div>
+              <div class="explanation-step-desc">
+                All phases verified. API is ready for use!
+              </div>
+              <div class="explanation-step-why">
+                api-workflow-check.py blocks completion if anything incomplete.
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -2326,12 +3338,34 @@
       <h3>The State File</h3>
 
       <div class="explanation">
-        <div class="explanation-title">Everything Gets Recorded</div>
+        <div class="explanation-title">Why This Matters</div>
         <p>
           All progress is saved to <code>.claude/api-dev-state.json</code>.
-          This includes <strong>your interview decisions</strong>, which are injected
-          during implementation to ensure consistency.
+          This solves three critical problems:
         </p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 16px;">
+          <div style="background: rgba(249, 115, 22, 0.1); border-left: 3px solid var(--claude-orange); padding: 12px; border-radius: 4px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.5rem;">🎯</span>
+              <strong style="color: var(--claude-orange);">Re-Grounding</strong>
+            </div>
+            <p style="margin: 8px 0 0; font-size: 0.85rem; color: #aaa;">Hooks inject your decisions into every file write, preventing the AI from "forgetting" what you asked for.</p>
+          </div>
+          <div style="background: rgba(249, 115, 22, 0.1); border-left: 3px solid var(--claude-orange); padding: 12px; border-radius: 4px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.5rem;">💾</span>
+              <strong style="color: var(--claude-orange);">Session Persistence</strong>
+            </div>
+            <p style="margin: 8px 0 0; font-size: 0.85rem; color: #aaa;">Come back tomorrow and pick up where you left off. The state file remembers research, interview answers, and progress.</p>
+          </div>
+          <div style="background: rgba(249, 115, 22, 0.1); border-left: 3px solid var(--claude-orange); padding: 12px; border-radius: 4px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.5rem;">🔄</span>
+              <strong style="color: var(--claude-orange);">Loop-Back Tracking</strong>
+            </div>
+            <p style="margin: 8px 0 0; font-size: 0.85rem; color: #aaa;">When verification finds gaps, we know exactly which phase to return to. No lost context.</p>
+          </div>
+        </div>
       </div>
 
       <div class="json-viewer">
@@ -2393,39 +3427,39 @@
 
       <div class="install-flow">
         <div class="install-step">
-          <div class="install-icon">21</div>
+          <div class="install-icon">📝</div>
           <div class="install-content">
-            <div class="install-from">Slash Commands</div>
+            <div class="install-from">21 Slash Commands</div>
             <div class="install-note">/api-create, /api-interview, /red, /green, /refactor...</div>
           </div>
-          <div class="install-arrow">---></div>
+          <div class="install-arrow">→</div>
           <div class="install-to">.claude/commands/</div>
         </div>
         <div class="install-step">
-          <div class="install-icon">5</div>
+          <div class="install-icon">🐍</div>
           <div class="install-content">
-            <div class="install-from">Python Hooks</div>
+            <div class="install-from">5 Python Hooks</div>
             <div class="install-note">enforce-research, enforce-interview, verify-implementation...</div>
           </div>
-          <div class="install-arrow">---></div>
+          <div class="install-arrow">→</div>
           <div class="install-to">.claude/hooks/</div>
         </div>
         <div class="install-step">
-          <div class="install-icon">+</div>
+          <div class="install-icon">⚙️</div>
           <div class="install-content">
             <div class="install-from">Settings Configuration</div>
             <div class="install-note">Hook registration, permissions, matchers</div>
           </div>
-          <div class="install-arrow">---></div>
+          <div class="install-arrow">→</div>
           <div class="install-to">.claude/settings.json</div>
         </div>
         <div class="install-step">
-          <div class="install-icon">*</div>
+          <div class="install-icon">🔌</div>
           <div class="install-content">
             <div class="install-from">MCP Servers</div>
             <div class="install-note">Context7 (live docs), GitHub (issues/PRs)</div>
           </div>
-          <div class="install-arrow">---></div>
+          <div class="install-arrow">→</div>
           <div class="install-to">claude mcp add</div>
         </div>
       </div>
@@ -2466,14 +3500,41 @@
       </div>
 
       <div class="credit-links">
-        <a href="https://github.com/hustle-together/api-dev-tools" class="credit-link" target="_blank">VIEW ON GITHUB</a>
-        <a href="https://www.npmjs.com/package/@hustle-together/api-dev-tools" class="credit-link" target="_blank">INSTALL FROM NPM</a>
+        <a href="https://github.com/hustle-together/api-dev-tools" class="credit-link" target="_blank">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px;">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          VIEW ON GITHUB
+        </a>
+        <a href="https://www.npmjs.com/package/@hustle-together/api-dev-tools" class="credit-link" target="_blank">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px;">
+            <path d="M0 7.334v8h6.666v1.332H12v-1.332h12v-8H0zm6.666 6.664H5.334v-4H3.999v4H1.335V8.667h5.331v5.331zm4 0v1.336H8.001V8.667h5.334v5.332h-2.669v-.001zm12.001 0h-1.33v-4h-1.336v4h-1.335v-4h-1.33v4h-2.671V8.667h8.002v5.331zM10.665 10H12v2.667h-1.335V10z"/>
+          </svg>
+          INSTALL FROM NPM
+        </a>
+      </div>
+
+      <!-- Attribution -->
+      <div style="margin-top: 32px; padding: 20px; background: rgba(0,0,0,0.2); border-radius: 8px; text-align: center;">
+        <p style="color: #888; font-size: 0.85rem; margin-bottom: 16px;">Built on the shoulders of giants:</p>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 32px; flex-wrap: wrap;">
+          <a href="https://github.com/wbern/claude-instructions" target="_blank" style="display: flex; align-items: center; gap: 8px; color: var(--claude-orange); text-decoration: none;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+            <span>@wbern/claude-instructions</span>
+          </a>
+          <a href="https://context7.com" target="_blank" style="display: flex; align-items: center; gap: 8px; color: var(--claude-orange); text-decoration: none;">
+            <span style="font-weight: bold; font-size: 1.1rem;">C7</span>
+            <span>Context7</span>
+          </a>
+        </div>
       </div>
 
       <div class="made-with">
         <p>Made for developers who want AI assistants<br>that actually follow instructions.</p>
         <p style="margin-top: 20px; color: var(--dark-grey);">
-          v1.9.0 | MIT License<br>
+          v3.0.0 | MIT License<br>
           "Interview first, test first, document always"
         </p>
       </div>
@@ -2487,7 +3548,7 @@
     // ============================================
     // CONFIGURATION
     // ============================================
-    const sections = ['intro', 'problems', 'solution', 'hooks', 'phases', 'walkthrough', 'demo', 'state', 'install', 'credits'];
+    const sections = ['intro', 'problems', 'solution', 'hooks', 'phases', 'demo', 'state', 'install', 'credits'];
     let isPlaying = false;
 
     // ============================================
@@ -2689,29 +3750,8 @@
     phasesTL.to('.phase-connector', { opacity: 1, duration: 0.3 }, '-=0.8');
 
     // ============================================
-    // SECTION 6: WALKTHROUGH ANIMATION
-    // ============================================
-    const walkthroughTL = gsap.timeline({
-      scrollTrigger: {
-        trigger: '#walkthrough',
-        start: 'top 60%',
-        toggleActions: 'play none none reverse'
-      }
-    });
-
-    walkthroughTL.to('#walkthrough .explanation', { opacity: 1, duration: 0.5 });
-
-    document.querySelectorAll('.walkthrough-step').forEach((step, i) => {
-      walkthroughTL.to(step, {
-        opacity: 1,
-        y: 0,
-        duration: 0.4,
-        ease: 'power2.out'
-      }, i * 0.25 + 0.3);
-    });
-
-    // ============================================
-    // SECTION 7: DEMO TERMINAL ANIMATION
+    // SECTION 6: CLAUDE CODE TERMINAL ANIMATION
+    // Animates both terminal messages and explanation panel
     // ============================================
     const demoTL = gsap.timeline({
       scrollTrigger: {
@@ -2723,16 +3763,148 @@
 
     demoTL.to('#demo .explanation', { opacity: 1, duration: 0.5 });
 
-    // Get all terminal elements in order
-    const terminalElements = document.querySelectorAll('#demo .terminal-comment, #demo .terminal-line');
-    terminalElements.forEach((el, i) => {
-      const delay = i * 0.25 + 0.5;
-      demoTL.to(el, {
+    // Get all Claude Code messages and explanation steps
+    const claudeMessages = document.querySelectorAll('#claudeBody .claude-msg');
+    const explanationSteps = document.querySelectorAll('#explanationPanel .explanation-step');
+    const asciiStartup = document.getElementById('asciiStartup');
+    const promptLine = document.getElementById('promptLine');
+    const promptInput = document.getElementById('promptInput');
+    const loadingDots = document.getElementById('loadingDots');
+
+    // Track current phase for syncing explanation panel
+    let currentDemoPhase = 0;
+
+    // Function to update explanation panel
+    function updateExplanationPanel(phase) {
+      explanationSteps.forEach(step => {
+        const stepPhase = parseInt(step.dataset.phase);
+        if (stepPhase === phase) {
+          step.classList.add('active');
+          // Scroll the explanation panel to show the active step
+          step.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else if (stepPhase < phase) {
+          // Keep previous phases visible but not active
+          step.classList.remove('active');
+          step.style.opacity = '0.7';
+        } else {
+          step.classList.remove('active');
+          step.style.opacity = '0.5';
+        }
+      });
+    }
+
+    // Typing effect for prompt
+    function typeText(element, text, speed = 50) {
+      return new Promise(resolve => {
+        let i = 0;
+        element.textContent = '';
+        const interval = setInterval(() => {
+          if (i < text.length) {
+            element.textContent += text.charAt(i);
+            i++;
+          } else {
+            clearInterval(interval);
+            resolve();
+          }
+        }, speed);
+      });
+    }
+
+    // Show loading dots animation
+    function showLoadingDots(show = true) {
+      loadingDots.style.display = show ? 'inline-flex' : 'none';
+    }
+
+    // Step 1: Show ASCII startup screen (2 seconds)
+    demoTL.to(asciiStartup, {
+      opacity: 1,
+      duration: 0.5,
+      onStart: () => {
+        asciiStartup.style.display = 'block';
+        asciiStartup.classList.add('visible');
+      }
+    }, 0.5);
+
+    // Step 2: Show prompt line and type command (after ASCII)
+    demoTL.to(promptLine, {
+      opacity: 1,
+      duration: 0.3,
+      onStart: () => {
+        promptLine.classList.add('visible');
+      },
+      onComplete: () => {
+        // Type the command
+        typeText(promptInput, '/api-create brandfetch', 60);
+      }
+    }, 2.5);
+
+    // Step 3: Hide ASCII and prompt, show messages (after typing)
+    demoTL.to([asciiStartup, promptLine], {
+      opacity: 0,
+      duration: 0.3,
+      onComplete: () => {
+        asciiStartup.style.display = 'none';
+        promptLine.style.display = 'none';
+      }
+    }, 5.5);
+
+    // Get terminal body for scrolling
+    const claudeBody = document.getElementById('claudeBody');
+
+    // Animate each message SEQUENTIALLY using relative positioning
+    // Each message waits 1.5s after the PREVIOUS one completes
+    claudeMessages.forEach((msg, i) => {
+      const phase = parseInt(msg.dataset.phase);
+
+      // First message starts after ASCII animation (at 6s mark)
+      // Subsequent messages use +=1.5 (1.5s after previous completes)
+      const position = i === 0 ? 6.0 : '+=1.0'; // 1 second gap between messages
+
+      // Show loading dots before each message (except first)
+      if (i > 0) {
+        // Add loading dots that appear for 0.8s before message
+        demoTL.call(() => {
+          showLoadingDots(true);
+        }, null, '+=0.2'); // Small gap after previous message
+
+        demoTL.to({}, { duration: 0.8 }); // Hold for loading dots
+
+        demoTL.call(() => {
+          showLoadingDots(false);
+        });
+      }
+
+      // Add message to timeline
+      demoTL.to(msg, {
         opacity: 1,
-        duration: 0.3,
-        ease: 'power2.out'
-      }, delay);
+        y: 0,
+        duration: 0.5,
+        ease: 'power2.out',
+        onStart: () => {
+          msg.classList.add('visible');
+          // Update explanation panel when phase changes
+          if (phase !== currentDemoPhase) {
+            currentDemoPhase = phase;
+            updateExplanationPanel(phase);
+          }
+        },
+        onComplete: () => {
+          // Scroll terminal to show new message after it appears
+          if (claudeBody) {
+            const msgTop = msg.offsetTop;
+            const bodyHeight = claudeBody.clientHeight;
+            const scrollTarget = Math.max(0, msgTop - bodyHeight + msg.offsetHeight + 40);
+            claudeBody.scrollTo({
+              top: scrollTarget,
+              behavior: 'smooth'
+            });
+          }
+        }
+      }, i === 0 ? position : '<'); // '<' means at same time as loading dots hide
     });
+
+    // Initialize explanation panel (show first step as active)
+    updateExplanationPanel(0);
 
     // ============================================
     // SECTION 8: STATE FILE ANIMATION
@@ -2804,6 +3976,7 @@
     const audioCurrentTime = document.getElementById('audioCurrentTime');
     const audioTotalTime = document.getElementById('audioTotalTime');
     const audioSectionMarkers = document.getElementById('audioSectionMarkers');
+    const chapterButtons = document.getElementById('chapterButtons');
 
     let audioEnabled = true; // Audio on by default
     let timingData = null;
@@ -2819,11 +3992,15 @@
       return `${mins}:${secs.toString().padStart(2, '0')}`;
     }
 
-    // Load timing data
-    async function loadTimingData() {
-      if (timingData) return timingData;
+    // Current timing URL (can be changed when voice changes)
+    let currentTimingUrl = 'audio/narration-adam-timing.json';
+
+    // Load timing data (pass URL to force reload with different voice)
+    async function loadTimingData(url = null, forceReload = false) {
+      if (url) currentTimingUrl = url;
+      if (timingData && !forceReload) return timingData;
       try {
-        const response = await fetch('audio/narration-timing.json');
+        const response = await fetch(currentTimingUrl);
         if (!response.ok) throw new Error('Failed to load timing data');
         timingData = await response.json();
 
@@ -2842,6 +4019,116 @@
             marker.style.left = `${(section.timestamp / timingData.duration) * 100}%`;
             marker.title = section.id.toUpperCase();
             audioSectionMarkers.appendChild(marker);
+          });
+        }
+
+        // Create chapter buttons for navigation
+        if (chapterButtons && timingData.sections) {
+          chapterButtons.innerHTML = '';
+          timingData.sections.forEach((section, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'chapter-btn';
+            btn.textContent = section.id.toUpperCase();
+            btn.dataset.timestamp = section.timestamp;
+            btn.dataset.sectionId = section.id;
+            btn.dataset.index = i;
+
+            // Click handler: seek audio to timestamp + scroll to section
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation(); // Prevent bubbling to progress bar
+
+              const seekTime = section.timestamp;
+              console.log(`Chapter click: seeking to ${section.id} at ${seekTime.toFixed(1)}s`);
+
+              // Function to perform the seek after audio is ready
+              const doSeek = () => {
+                console.log(`Performing seek to ${seekTime.toFixed(1)}s, audio readyState: ${narrationAudio.readyState}`);
+                narrationAudio.currentTime = seekTime;
+                console.log(`After setting currentTime: ${narrationAudio.currentTime.toFixed(1)}s`);
+              };
+
+              // If not playing, start first then seek
+              if (!isPlaying) {
+                isPlaying = true;
+                playBtn.classList.add('active');
+                playBtn.textContent = '⏸ STOP';
+
+                if (window.introLightingTL) {
+                  window.introLightingTL.kill();
+                  window.introLightingTL = null;
+                  document.querySelectorAll('#introFlow .phase-node').forEach(n => n.classList.remove('active'));
+                  document.querySelectorAll('#introFlow .phase-connector-arrow').forEach(a => a.classList.remove('active'));
+                }
+
+                audioProgressContainer.style.display = 'block';
+
+                // Wait for audio to be ready enough to seek
+                if (narrationAudio.readyState >= 1) {
+                  doSeek();
+                  narrationAudio.play().catch(err => console.error('Playback failed:', err));
+                } else {
+                  // Audio not ready yet, wait for loadedmetadata
+                  narrationAudio.addEventListener('loadedmetadata', function onLoaded() {
+                    narrationAudio.removeEventListener('loadedmetadata', onLoaded);
+                    doSeek();
+                    narrationAudio.play().catch(err => console.error('Playback failed:', err));
+                  });
+                  narrationAudio.load(); // Trigger loading
+                }
+              } else {
+                // Already playing - pause, seek, then play
+                narrationAudio.pause();
+
+                const performSeekAndPlay = () => {
+                  doSeek();
+                  narrationAudio.play().catch(err => console.error('Playback failed:', err));
+                };
+
+                // Use timingData.duration as indicator that we have valid timing for this voice
+                // Also check readyState >= 2 (HAVE_CURRENT_DATA) for reliable seeking
+                if (timingData && timingData.duration > 0 && narrationAudio.readyState >= 2) {
+                  performSeekAndPlay();
+                } else {
+                  // Audio not ready (e.g. after voice switch), wait for canplay
+                  console.log('Audio not ready for seek, waiting for canplay...');
+                  narrationAudio.addEventListener('canplay', function onReady() {
+                    narrationAudio.removeEventListener('canplay', onReady);
+                    performSeekAndPlay();
+                  }, { once: true });
+                  // Also try loadedmetadata as backup
+                  narrationAudio.addEventListener('loadedmetadata', function onMeta() {
+                    narrationAudio.removeEventListener('loadedmetadata', onMeta);
+                    if (narrationAudio.readyState >= 2) {
+                      performSeekAndPlay();
+                    }
+                  }, { once: true });
+                  narrationAudio.load();
+                }
+              }
+
+              // Update highlight tracking for new position
+              highlightIndex = 0;
+              if (timingData && timingData.highlights) {
+                for (let j = 0; j < timingData.highlights.length; j++) {
+                  if (timingData.highlights[j].timestamp <= seekTime) {
+                    highlightIndex = j;
+                  } else {
+                    break;
+                  }
+                }
+              }
+
+              // Scroll to section
+              const sectionEl = document.getElementById(section.id);
+              if (sectionEl) {
+                sectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+
+              // Update active state
+              updateActiveChapter(i);
+            });
+
+            chapterButtons.appendChild(btn);
           });
         }
 
@@ -2872,8 +4159,8 @@
 
           if (isContainer) {
             gsap.fromTo(el,
-              { boxShadow: '0 0 0px var(--accent-red-glow)' },
-              { boxShadow: '0 0 30px var(--accent-red-glow)', duration: 0.4, ease: 'power2.out' }
+              { boxShadow: '0 4px 6px rgba(0,0,0,0.05)' },
+              { boxShadow: '0 8px 25px rgba(0,0,0,0.15)', duration: 0.4, ease: 'power2.out' }
             );
           }
         }
@@ -2891,6 +4178,29 @@
       }
     }
 
+    // Update active chapter button based on index
+    function updateActiveChapter(index) {
+      if (!chapterButtons) return;
+      const buttons = chapterButtons.querySelectorAll('.chapter-btn');
+      buttons.forEach((btn, i) => {
+        btn.classList.toggle('active', i === index);
+      });
+    }
+
+    // Find current section index based on audio time
+    function getCurrentSectionIndex(currentTime) {
+      if (!timingData || !timingData.sections) return 0;
+      let idx = 0;
+      for (let i = 0; i < timingData.sections.length; i++) {
+        if (currentTime >= timingData.sections[i].timestamp) {
+          idx = i;
+        } else {
+          break;
+        }
+      }
+      return idx;
+    }
+
     // Handle audio time update (syncs highlights with narration)
     function onAudioTimeUpdate() {
       if (!timingData || !audioEnabled) return;
@@ -2904,6 +4214,13 @@
       // Update time display
       if (audioCurrentTime) {
         audioCurrentTime.textContent = formatTime(currentTime);
+      }
+
+      // Update active chapter button
+      const sectionIdx = getCurrentSectionIndex(currentTime);
+      if (sectionIdx !== currentSectionIdx) {
+        currentSectionIdx = sectionIdx;
+        updateActiveChapter(sectionIdx);
       }
 
       // Check for highlight triggers
@@ -2922,23 +4239,81 @@
 
     // Handle seek on progress bar click
     function onProgressBarClick(e) {
-      if (!timingData || !narrationAudio.duration) return;
+      e.stopPropagation(); // Prevent event bubbling
+      e.preventDefault();
 
+      // Must have timing data loaded to seek
+      if (!timingData || !timingData.duration) {
+        console.warn('Cannot seek: timing data not loaded');
+        return;
+      }
+
+      // Calculate seek position from click location
       const rect = audioProgressBar.getBoundingClientRect();
       const clickX = e.clientX - rect.left;
-      const percentage = clickX / rect.width;
+      const percentage = Math.max(0, Math.min(1, clickX / rect.width));
       const seekTime = percentage * timingData.duration;
 
-      narrationAudio.currentTime = seekTime;
+      console.log(`Progress bar click: seeking to ${seekTime.toFixed(1)}s (${(percentage * 100).toFixed(1)}%)`);
 
-      // Reset highlight tracking
+      // Remember if we were playing
+      const wasPlaying = !narrationAudio.paused;
+
+      // Directly set currentTime - DON'T call load() or pause() first
+      // The browser handles seeking while playing
+      try {
+        narrationAudio.currentTime = seekTime;
+        console.log(`Set currentTime to: ${narrationAudio.currentTime.toFixed(1)}s`);
+      } catch (err) {
+        console.error('Failed to set currentTime:', err);
+        return;
+      }
+
+      // If we weren't playing but user clicked progress bar, start playing
+      if (wasPlaying || isPlaying) {
+        narrationAudio.play().catch(err => console.error('Playback failed:', err));
+      }
+
+      // Update highlight tracking for the new position
       highlightIndex = 0;
-      for (let i = 0; i < timingData.highlights.length; i++) {
-        if (timingData.highlights[i].timestamp <= seekTime) {
-          highlightIndex = i;
-        } else {
-          break;
+      if (timingData.highlights) {
+        for (let i = 0; i < timingData.highlights.length; i++) {
+          if (timingData.highlights[i].timestamp <= seekTime) {
+            highlightIndex = i;
+          } else {
+            break;
+          }
         }
+        // Apply highlight immediately
+        if (highlightIndex >= 0 && highlightIndex < timingData.highlights.length) {
+          applyHighlight(timingData.highlights[highlightIndex].selector);
+        }
+      }
+
+      // Scroll to correct section
+      if (timingData.sections) {
+        let sectionIdx = 0;
+        for (let i = 0; i < timingData.sections.length; i++) {
+          if (seekTime >= timingData.sections[i].timestamp) {
+            sectionIdx = i;
+          } else {
+            break;
+          }
+        }
+        currentSectionIdx = sectionIdx;
+        updateActiveChapter(sectionIdx);
+        const sectionEl = document.getElementById(timingData.sections[sectionIdx].id);
+        if (sectionEl) {
+          sectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+
+      // Update UI immediately
+      if (audioProgressFill) {
+        audioProgressFill.style.width = `${percentage * 100}%`;
+      }
+      if (audioCurrentTime) {
+        audioCurrentTime.textContent = formatTime(seekTime);
       }
     }
 
@@ -2963,9 +4338,11 @@
       playBtn.classList.add('active');
       playBtn.textContent = '⏸ STOP';
 
-      // Pause the intro lighting animation to avoid visual conflict
+      // KILL the intro lighting animation completely to avoid visual conflict
+      // (Don't just pause - kill it so it won't restart)
       if (window.introLightingTL) {
-        window.introLightingTL.pause();
+        window.introLightingTL.kill();
+        window.introLightingTL = null;
         // Reset the phase nodes to clean state
         document.querySelectorAll('#introFlow .phase-node').forEach(n => n.classList.remove('active'));
         document.querySelectorAll('#introFlow .phase-connector-arrow').forEach(a => a.classList.remove('active'));
@@ -2979,6 +4356,7 @@
       if (audioEnabled && timingData) {
         // Try to play audio
         audioProgressContainer.style.display = 'block';
+        document.body.classList.add('audio-playing'); // Adjust section heights
 
         try {
           await narrationAudio.play();
@@ -2990,6 +4368,7 @@
           audioToggleBtn.textContent = '🔇 NO AUDIO';
           audioToggleBtn.classList.add('disabled');
           audioProgressContainer.style.display = 'none';
+          document.body.classList.remove('audio-playing');
           startSilentAutoPlay();
         }
       } else {
@@ -3012,14 +4391,13 @@
       narrationAudio.pause();
       narrationAudio.currentTime = 0;
       audioProgressContainer.style.display = 'none';
+      document.body.classList.remove('audio-playing'); // Reset section heights
       removeHighlight();
       highlightIndex = 0;
       currentSectionIdx = 0;
 
-      // Resume the intro lighting animation
-      if (window.introLightingTL) {
-        window.introLightingTL.restart();
-      }
+      // Note: We killed the intro lighting animation, so don't try to restart it
+      // The animation was distracting during/after narration playback
     }
 
     // Audio ended
@@ -3069,6 +4447,31 @@
     audioToggleBtn.addEventListener('click', toggleAudio);
     narrationAudio.addEventListener('timeupdate', onAudioTimeUpdate);
     narrationAudio.addEventListener('ended', onAudioEnded);
+
+    // DEBUG: Global click handler to see what's being clicked anywhere on page
+    document.addEventListener('click', (e) => {
+      // Only log clicks in the bottom 200px of the screen (where the audio player is)
+      if (e.clientY > window.innerHeight - 200) {
+        console.log('%c CLICK DETECTED ', 'background: red; color: white; font-size: 14px;', {
+          element: e.target.tagName,
+          id: e.target.id || '(no id)',
+          class: e.target.className || '(no class)',
+          x: e.clientX,
+          y: e.clientY,
+          audioCurrentTime: narrationAudio.currentTime.toFixed(1),
+          audioDuration: narrationAudio.duration ? narrationAudio.duration.toFixed(1) : 'not loaded'
+        });
+      }
+    }, true); // Use capture phase to see ALL clicks before they're handled
+
+    // Debug: track seeking events
+    narrationAudio.addEventListener('seeking', () => {
+      console.log('%c AUDIO SEEKING ', 'background: blue; color: white;', 'to:', narrationAudio.currentTime.toFixed(1));
+    });
+    narrationAudio.addEventListener('seeked', () => {
+      console.log('%c AUDIO SEEKED ', 'background: green; color: white;', 'to:', narrationAudio.currentTime.toFixed(1));
+    });
+
     audioProgressBar.addEventListener('click', onProgressBarClick);
 
     // Check if audio file is accessible
@@ -3087,6 +4490,10 @@
     // RESET BUTTON
     // ============================================
     document.getElementById('resetBtn').addEventListener('click', () => {
+      // Stop audio and auto-play first
+      stopAutoPlay();
+
+      // Scroll to top
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
       // Reset animations
@@ -3097,16 +4504,24 @@
         gsap.set('.flow-box, .flow-arrow, .hook-group, .hook-file', { opacity: 0 });
         gsap.set('.result-allowed, .result-blocked', { opacity: 0 });
         gsap.set('.phase-box', { opacity: 0, scale: 0.9 });
-        gsap.set('.walkthrough-step', { opacity: 0, y: 20 });
         gsap.set('.terminal-line, .terminal-comment', { opacity: 0 });
         gsap.set('.json-line', { opacity: 0 });
         gsap.set('.install-step', { opacity: 0, y: 20 });
         gsap.set('.credit-link, .made-with', { opacity: 0 });
         gsap.set('.intro-text, .scroll-hint', { opacity: 0 });
 
+        // Reset phase boxes
         document.querySelectorAll('.phase-box').forEach(box => {
           box.classList.remove('active');
           box.querySelector('.phase-status').textContent = '';
+        });
+
+        // Reset intro phase nodes
+        document.querySelectorAll('.phase-node').forEach(node => {
+          node.classList.remove('active');
+        });
+        document.querySelectorAll('.phase-connector-arrow').forEach(arrow => {
+          arrow.classList.remove('active');
         });
 
         ScrollTrigger.refresh();
@@ -3280,6 +4695,173 @@
           });
         }
       });
+    });
+
+    // ============================================
+    // VOICE PREVIEW MODAL
+    // ============================================
+    const voiceSelectBtn = document.getElementById('voiceSelectBtn');
+    const voiceModalOverlay = document.getElementById('voiceModalOverlay');
+    const voiceModalClose = document.getElementById('voiceModalClose');
+    const voiceConfirmBtn = document.getElementById('voiceConfirmBtn');
+    const voiceOptions = document.querySelectorAll('.voice-option');
+    const voicePlayBtns = document.querySelectorAll('.voice-play-btn');
+
+    let previewAudio = null;
+    let currentlyPlayingBtn = null;
+    let selectedVoice = 'adam';
+
+    // Open modal
+    voiceSelectBtn.addEventListener('click', () => {
+      voiceModalOverlay.classList.add('active');
+    });
+
+    // Close modal
+    function closeVoiceModal() {
+      voiceModalOverlay.classList.remove('active');
+      // Stop any playing preview
+      if (previewAudio) {
+        previewAudio.pause();
+        previewAudio = null;
+      }
+      if (currentlyPlayingBtn) {
+        currentlyPlayingBtn.textContent = '▶';
+        currentlyPlayingBtn.classList.remove('playing');
+        currentlyPlayingBtn = null;
+      }
+    }
+
+    voiceModalClose.addEventListener('click', closeVoiceModal);
+    voiceModalOverlay.addEventListener('click', (e) => {
+      if (e.target === voiceModalOverlay) {
+        closeVoiceModal();
+      }
+    });
+
+    // Play preview
+    voicePlayBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const previewSrc = btn.dataset.preview;
+
+        // If clicking the same button that's playing, stop it
+        if (currentlyPlayingBtn === btn && previewAudio && !previewAudio.paused) {
+          previewAudio.pause();
+          btn.textContent = '▶';
+          btn.classList.remove('playing');
+          currentlyPlayingBtn = null;
+          return;
+        }
+
+        // Stop any currently playing preview
+        if (previewAudio) {
+          previewAudio.pause();
+        }
+        if (currentlyPlayingBtn) {
+          currentlyPlayingBtn.textContent = '▶';
+          currentlyPlayingBtn.classList.remove('playing');
+        }
+
+        // Play new preview
+        previewAudio = new Audio(previewSrc);
+        previewAudio.play().catch(err => {
+          console.error('Audio play failed:', err);
+          btn.textContent = '⚠';
+          setTimeout(() => { btn.textContent = '▶'; }, 2000);
+        });
+
+        btn.textContent = '⏸';
+        btn.classList.add('playing');
+        currentlyPlayingBtn = btn;
+
+        previewAudio.addEventListener('ended', () => {
+          btn.textContent = '▶';
+          btn.classList.remove('playing');
+          currentlyPlayingBtn = null;
+        });
+      });
+    });
+
+    // Select voice
+    voiceOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        // Remove selected from all
+        voiceOptions.forEach(opt => {
+          opt.classList.remove('selected');
+          opt.querySelector('.voice-select-btn').textContent = 'Select';
+        });
+
+        // Add selected to clicked
+        option.classList.add('selected');
+        option.querySelector('.voice-select-btn').textContent = 'Selected';
+        selectedVoice = option.dataset.voice;
+      });
+    });
+
+    // Confirm selection
+    voiceConfirmBtn.addEventListener('click', async () => {
+      const selectedOption = document.querySelector('.voice-option.selected');
+      if (selectedOption) {
+        const voiceFile = selectedOption.dataset.file;
+        const timingFile = selectedOption.dataset.timing;
+        const voiceName = selectedOption.querySelector('.voice-name').textContent;
+
+        // Stop current playback if any
+        if (isPlaying) {
+          stopAutoPlay();
+        }
+
+        // Update audio source
+        narrationAudio.src = voiceFile;
+
+        // Force load the new audio and wait for it to be ready
+        narrationAudio.load();
+
+        // Wait for the audio to load metadata AND have valid duration (don't trust stale readyState)
+        await new Promise((resolve) => {
+          let resolved = false;
+          const tryResolve = () => {
+            if (!resolved && narrationAudio.duration > 0 && !isNaN(narrationAudio.duration)) {
+              resolved = true;
+              resolve();
+            }
+          };
+          // Listen for multiple events to ensure we catch when audio is truly ready
+          narrationAudio.addEventListener('loadedmetadata', tryResolve, { once: true });
+          narrationAudio.addEventListener('canplay', tryResolve, { once: true });
+          narrationAudio.addEventListener('durationchange', tryResolve, { once: true });
+          // Timeout fallback in case load fails
+          setTimeout(() => {
+            if (!resolved) {
+              console.warn('Audio load timeout, proceeding anyway');
+              resolved = true;
+              resolve();
+            }
+          }, 3000);
+        });
+
+        // Reset audio position and clear old state
+        narrationAudio.currentTime = 0;
+        timingData = null;
+        highlightIndex = 0;
+        currentSectionIdx = 0;
+        await loadTimingData(timingFile, true);
+
+        // Update voice button to show selected voice
+        voiceSelectBtn.textContent = `🎙 ${voiceName.toUpperCase()}`;
+
+        console.log(`Voice changed to: ${voiceName} (${voiceFile})`);
+        console.log(`Audio duration: ${narrationAudio.duration}s, readyState: ${narrationAudio.readyState}`);
+        console.log(`Timing data loaded: ${timingFile}`);
+      }
+      closeVoiceModal();
+    });
+
+    // Keyboard close (Escape)
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && voiceModalOverlay.classList.contains('active')) {
+        closeVoiceModal();
+      }
     });
 
   </script>

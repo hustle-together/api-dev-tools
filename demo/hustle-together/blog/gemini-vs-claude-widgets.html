@@ -13,15 +13,17 @@
 
     :root {
       --bg: #0a0a0a;
-      --bg-secondary: #111;
+      --bg-secondary: #121212;
       --bg-tertiary: #1a1a1a;
-      --text: #e0e0e0;
-      --text-muted: #888;
-      --text-dim: #444;
+      --text: #e8e8e8;
+      --text-muted: #999;
+      --text-dim: #555;
       --accent: #fff;
       --accent-red: #BA0C2F;
       --accent-red-glow: rgba(186, 12, 47, 0.4);
       --border: #333;
+      --border-strong: #444;
+      --bg-card: #1a1a1a;
       --glow: rgba(255, 255, 255, 0.3);
     }
 
@@ -57,7 +59,7 @@
       justify-content: space-between;
       align-items: center;
       background: var(--bg);
-      border-bottom: 1px dashed var(--border);
+      border-bottom: 2px solid var(--border);
     }
 
     .logo {
@@ -100,7 +102,7 @@
 
     .theme-toggle {
       background: transparent;
-      border: 1px dashed var(--border);
+      border: 2px solid var(--border);
       color: var(--text);
       padding: 6px 12px;
       cursor: pointer;
@@ -164,7 +166,7 @@
 
     .audio-player {
       background: var(--bg-secondary);
-      border: 1px dashed var(--border);
+      border: 2px solid var(--border);
       padding: 25px;
       margin: 40px 0;
       opacity: 0;
@@ -236,7 +238,7 @@
 
     .comparison-table {
       margin: 40px 0;
-      border: 1px dashed var(--border);
+      border: 2px solid var(--border);
       opacity: 0;
     }
 
@@ -244,7 +246,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       background: var(--bg-secondary);
-      border-bottom: 1px dashed var(--border);
+      border-bottom: 2px solid var(--border);
     }
 
     .comparison-header div {
@@ -256,13 +258,13 @@
     }
 
     .comparison-header div:not(:last-child) {
-      border-right: 1px dashed var(--border);
+      border-right: 2px solid var(--border);
     }
 
     .comparison-row {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
-      border-bottom: 1px dashed var(--border);
+      border-bottom: 2px solid var(--border);
     }
 
     .comparison-row:last-child { border-bottom: none; }
@@ -274,7 +276,7 @@
     }
 
     .comparison-row div:not(:last-child) {
-      border-right: 1px dashed var(--border);
+      border-right: 2px solid var(--border);
     }
 
     .comparison-row div:first-child {
@@ -286,7 +288,7 @@
 
     .featured-media {
       margin: 40px 0;
-      border: 1px dashed var(--border);
+      border: 2px solid var(--border);
       opacity: 0;
     }
 
@@ -313,7 +315,7 @@
       padding: 15px;
       font-size: 0.8rem;
       color: var(--text-muted);
-      border-top: 1px dashed var(--border);
+      border-top: 2px solid var(--border);
     }
 
     .article-content { opacity: 0; }
@@ -337,13 +339,13 @@
     .article-content code {
       background: var(--bg-secondary);
       padding: 2px 8px;
-      border: 1px dashed var(--border);
+      border: 2px solid var(--border);
       font-size: 0.9em;
     }
 
     .article-content pre {
       background: var(--bg-secondary);
-      border: 1px dashed var(--border);
+      border: 2px solid var(--border);
       padding: 20px;
       margin: 25px 0;
       overflow-x: auto;
@@ -361,7 +363,7 @@
 
     .callout {
       background: var(--bg-secondary);
-      border: 1px dashed var(--border);
+      border: 2px solid var(--border);
       border-left: 3px solid var(--text);
       padding: 25px;
       margin: 30px 0;
@@ -390,14 +392,14 @@
 
     .ai-chat {
       background: var(--bg-secondary);
-      border: 1px dashed var(--border);
+      border: 2px solid var(--border);
       margin: 50px 0;
       opacity: 0;
     }
 
     .ai-chat-header {
       padding: 20px;
-      border-bottom: 1px dashed var(--border);
+      border-bottom: 2px solid var(--border);
       display: flex;
       align-items: center;
       gap: 15px;
@@ -432,7 +434,7 @@
     .chat-avatar {
       width: 30px;
       height: 30px;
-      border: 1px dashed var(--border);
+      border: 2px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -442,7 +444,7 @@
 
     .chat-bubble {
       background: var(--bg-tertiary);
-      border: 1px dashed var(--border);
+      border: 2px solid var(--border);
       padding: 12px 16px;
       max-width: 80%;
       font-size: 0.9rem;
@@ -465,7 +467,7 @@
 
     .quick-btn {
       background: transparent;
-      border: 1px dashed var(--border);
+      border: 2px solid var(--border);
       color: var(--text);
       padding: 8px 16px;
       font-family: inherit;
@@ -480,13 +482,13 @@
       display: flex;
       gap: 10px;
       padding: 15px 20px;
-      border-top: 1px dashed var(--border);
+      border-top: 2px solid var(--border);
     }
 
     .ai-chat-input input {
       flex: 1;
       background: transparent;
-      border: 1px dashed var(--border);
+      border: 2px solid var(--border);
       color: var(--text);
       padding: 12px 15px;
       font-family: inherit;
@@ -509,7 +511,7 @@
 
     .feedback-section {
       background: var(--bg-secondary);
-      border: 1px dashed var(--border);
+      border: 2px solid var(--border);
       padding: 30px;
       margin: 50px 0;
       text-align: center;
@@ -562,7 +564,7 @@
     }
 
     .related-card {
-      border: 1px dashed var(--border);
+      border: 2px solid var(--border);
       padding: 25px;
       text-decoration: none;
       color: var(--text);
@@ -588,7 +590,7 @@
     }
 
     footer {
-      border-top: 1px dashed var(--border);
+      border-top: 2px solid var(--border);
       padding: 40px;
       text-align: center;
       margin-top: 60px;
@@ -623,7 +625,7 @@
       .article-title { font-size: 2rem; }
       .comparison-header, .comparison-row { grid-template-columns: 1fr; }
       .comparison-header div:not(:last-child),
-      .comparison-row div:not(:last-child) { border-right: none; border-bottom: 1px dashed var(--border); }
+      .comparison-row div:not(:last-child) { border-right: none; border-bottom: 2px solid var(--border); }
       .related-grid { grid-template-columns: 1fr; }
       nav { padding: 15px 20px; }
       .nav-links { display: none; }

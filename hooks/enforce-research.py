@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """
 Hook: PreToolUse for Write/Edit
-Purpose: Block writing API code if research phase not complete
+Purpose: Block writing API code if research phase not complete WITH USER CHECKPOINT
 
-This hook runs BEFORE Claude can write or edit files in /api/ directories.
-It checks the api-dev-state.json file to ensure research was completed first.
+Phase 2 requires:
+  1. Execute 2-3 initial searches (Context7, WebSearch)
+  2. Present summary TABLE to user
+  3. USE AskUserQuestion: "Proceed? [Y] / Search more? [n]"
+  4. Loop back if user wants more research
 
 Returns:
   - {"permissionDecision": "allow"} - Let the tool run
@@ -14,97 +17,141 @@ import json
 import sys
 from pathlib import Path
 
-# State file is in .claude/ directory (sibling to hooks/)
 STATE_FILE = Path(__file__).parent.parent / "api-dev-state.json"
+
+# Minimum sources required
+MIN_SOURCES = 2
 
 
 def main():
-    # Read hook input from stdin (Claude Code passes tool info as JSON)
     try:
         input_data = json.load(sys.stdin)
     except json.JSONDecodeError:
-        # If we can't parse input, allow (fail open for safety)
         print(json.dumps({"permissionDecision": "allow"}))
         sys.exit(0)
 
-    tool_name = input_data.get("tool_name", "")
     tool_input = input_data.get("tool_input", {})
-
-    # Get the file path being written/edited
     file_path = tool_input.get("file_path", "")
 
     # Only enforce for API route files
-    # Check for both /api/ and /api-test/ patterns
     if "/api/" not in file_path and "/api-test/" not in file_path:
-        # Not an API file, allow without checking
         print(json.dumps({"permissionDecision": "allow"}))
         sys.exit(0)
 
-    # Also skip for test files - tests should be written before research completes
-    # (TDD Red phase)
+    # Skip test files - TDD Red allows tests before research complete
     if ".test." in file_path or "/__tests__/" in file_path:
         print(json.dumps({"permissionDecision": "allow"}))
         sys.exit(0)
 
-    # Skip for documentation/config files
     if file_path.endswith(".md") or file_path.endswith(".json"):
         print(json.dumps({"permissionDecision": "allow"}))
         sys.exit(0)
 
-    # Check if state file exists
     if not STATE_FILE.exists():
         print(json.dumps({
             "permissionDecision": "deny",
             "reason": """❌ API development state not initialized.
 
-Before writing API implementation code, you must:
-  1. Run /api-create [endpoint-name] to start the workflow
-  OR
-  2. Run /api-research [library-name] to research dependencies
-
-This ensures you're working with current documentation, not outdated training data."""
+Run /api-create [endpoint-name] to start the workflow."""
         }))
         sys.exit(0)
 
-    # Load and check state
     try:
         state = json.loads(STATE_FILE.read_text())
     except json.JSONDecodeError:
-        # Corrupted state file, allow but warn
         print(json.dumps({"permissionDecision": "allow"}))
         sys.exit(0)
 
-    # Check research phase status
+    endpoint = state.get("endpoint", "unknown")
     phases = state.get("phases", {})
     research = phases.get("research_initial", {})
-    research_status = research.get("status", "not_started")
+    status = research.get("status", "not_started")
 
-    if research_status != "complete":
-        sources_count = len(research.get("sources", []))
+    if status != "complete":
+        sources = research.get("sources", [])
+        user_question_asked = research.get("user_question_asked", False)
+        user_approved = research.get("user_approved", False)
+        summary_shown = research.get("summary_shown", False)
+
+        missing = []
+        if len(sources) < MIN_SOURCES:
+            missing.append(f"Sources ({len(sources)}/{MIN_SOURCES} minimum)")
+        if not summary_shown:
+            missing.append("Research summary table not shown to user")
+        if not user_question_asked:
+            missing.append("User checkpoint (AskUserQuestion not used)")
+        if not user_approved:
+            missing.append("User approval to proceed")
+
         print(json.dumps({
             "permissionDecision": "deny",
-            "reason": f"""❌ Cannot write API implementation code yet.
+            "reason": f"""❌ BLOCKED: Initial research (Phase 2) not complete.
 
-RESEARCH PHASE INCOMPLETE
-Current status: {research_status}
-Sources consulted: {sources_count}
+Status: {status}
+Sources consulted: {len(sources)}
+Summary shown: {summary_shown}
+User question asked: {user_question_asked}
+User approved: {user_approved}
 
-REQUIRED ACTIONS:
-  1. Complete research phase first
-  2. Run: /api-research [library-name]
-  3. Ensure Context7 or WebSearch has been used
+MISSING:
+{chr(10).join(f"  • {m}" for m in missing)}
 
-WHY THIS MATTERS:
-  - Implementation must match CURRENT API documentation
-  - Training data may be outdated
-  - All parameters must be discovered before coding
+═══════════════════════════════════════════════════════════
+⚠️  COMPLETE RESEARCH WITH USER CHECKPOINT
+═══════════════════════════════════════════════════════════
 
-Once research is complete, you can proceed with implementation."""
+REQUIRED STEPS:
+
+1. Execute 2-3 initial searches:
+   • Context7: "{endpoint}"
+   • WebSearch: "{endpoint} official documentation"
+   • WebSearch: "site:[official-domain] {endpoint} API reference"
+
+2. Present summary TABLE to user:
+   ┌───────────────────────────────────────────────────────┐
+   │ RESEARCH SUMMARY                                      │
+   │                                                       │
+   │ │ Source         │ Found                              │
+   │ ├────────────────┼────────────────────────────────────│
+   │ │ Official docs  │ ✓ [URL]                            │
+   │ │ API Reference  │ ✓ REST v2                          │
+   │ │ Auth method    │ ✓ Bearer token                     │
+   │ │ NPM package    │ ? Not found                        │
+   │                                                       │
+   │ Proceed? [Y] / Search more? [n] ____                  │
+   └───────────────────────────────────────────────────────┘
+
+3. USE AskUserQuestion:
+   question: "Research summary above. Proceed or search more?"
+   options: [
+     {{"value": "proceed", "label": "Proceed to interview"}},
+     {{"value": "more", "label": "Search more - I need [topic]"}},
+     {{"value": "specific", "label": "Search for something specific"}}
+   ]
+
+4. If user says "more" or "specific":
+   • Ask what they want to research
+   • Execute additional searches
+   • LOOP BACK and show updated summary
+
+5. If user says "proceed":
+   • Set research_initial.user_approved = true
+   • Set research_initial.user_question_asked = true
+   • Set research_initial.summary_shown = true
+   • Set research_initial.status = "complete"
+
+WHY: Implementation must match CURRENT API documentation."""
         }))
         sys.exit(0)
 
-    # Research complete, allow writing
-    print(json.dumps({"permissionDecision": "allow"}))
+    # Research complete - inject context
+    sources = research.get("sources", [])
+    print(json.dumps({
+        "permissionDecision": "allow",
+        "message": f"""✅ Initial research complete.
+Sources: {len(sources)}
+User approved proceeding to interview."""
+    }))
     sys.exit(0)
 
 

@@ -11,7 +11,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <style>
     /* ============================================
-       HUSTLE TOGETHER - RETRO TERMINAL AESTHETIC
+       HUSTLE TOGETHER - 90s BOXY AESTHETIC
        Light/Dark Mode Support
        ============================================ */
 
@@ -24,28 +24,32 @@
     :root {
       /* Dark Mode (default) - Bulls/Nike colorway: Red, White, Black */
       --bg: #0a0a0a;
-      --bg-secondary: #111;
-      --text: #e0e0e0;
-      --text-muted: #888;
-      --text-dim: #444;
+      --bg-secondary: #121212;
+      --bg-card: #1a1a1a;
+      --text: #e8e8e8;
+      --text-muted: #999;
+      --text-dim: #555;
       --accent: #fff;
       --accent-red: #BA0C2F;
       --accent-red-glow: rgba(186, 12, 47, 0.4);
       --border: #333;
+      --border-strong: #444;
       --glow: rgba(255, 255, 255, 0.3);
       --pattern-opacity: 0.03;
     }
 
     [data-theme="light"] {
-      --bg: #f5f5f5;
+      --bg: #f0f0f0;
       --bg-secondary: #fff;
+      --bg-card: #fafafa;
       --text: #1a1a1a;
       --text-muted: #666;
       --text-dim: #aaa;
       --accent: #000;
       --accent-red: #BA0C2F;
       --accent-red-glow: rgba(186, 12, 47, 0.3);
-      --border: #ccc;
+      --border: #ddd;
+      --border-strong: #ccc;
       --glow: rgba(0, 0, 0, 0.15);
       --pattern-opacity: 0.05;
     }
@@ -82,23 +86,23 @@
       fill: none;
     }
 
-    /* Navigation */
+    /* Navigation - clean boxy style */
     nav {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       z-index: 1000;
-      padding: 20px 40px;
+      padding: 15px 40px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       background: var(--bg);
-      border-bottom: 1px dashed var(--border);
+      border-bottom: 2px solid var(--border);
     }
 
     .logo {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-family: 'Fredoka', 'Bungee', sans-serif;
       font-weight: 700;
       letter-spacing: 2px;
@@ -108,50 +112,57 @@
     }
 
     .logo-icon {
-      width: 30px;
-      height: 30px;
-      border: 2px solid var(--text);
+      width: 32px;
+      height: 32px;
+      border: 2px solid var(--accent-red);
+      background: var(--accent-red);
+      color: var(--bg);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
+      font-weight: bold;
     }
 
     .nav-links {
       display: flex;
-      gap: 30px;
+      gap: 25px;
       align-items: center;
     }
 
     .nav-links a {
       color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       letter-spacing: 1px;
-      transition: all 0.3s;
-      padding: 8px 0;
-      border-bottom: 1px solid transparent;
+      text-transform: uppercase;
+      transition: all 0.2s;
+      padding: 8px 12px;
+      border: 2px solid transparent;
     }
 
     .nav-links a:hover {
       color: var(--accent-red);
-      border-bottom-color: var(--accent-red);
+      border-color: var(--accent-red);
     }
 
     .theme-toggle {
-      background: transparent;
-      border: 1px dashed var(--border);
+      background: var(--bg-card);
+      border: 2px solid var(--border);
       color: var(--text);
-      padding: 8px 12px;
+      padding: 8px 14px;
       cursor: pointer;
       font-family: inherit;
-      font-size: 0.8rem;
-      transition: all 0.3s;
+      font-size: 0.75rem;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .theme-toggle:hover {
-      background: var(--text);
-      color: var(--bg);
+      background: var(--accent-red);
+      color: #fff;
+      border-color: var(--accent-red);
     }
 
     /* Main Content */
@@ -181,13 +192,15 @@
 
     .hero-badge {
       display: inline-block;
-      border: 1px dashed var(--border);
-      padding: 8px 20px;
-      font-size: 0.75rem;
+      border: 2px solid var(--border);
+      background: var(--bg-card);
+      padding: 10px 25px;
+      font-size: 0.7rem;
       letter-spacing: 3px;
       color: var(--text-muted);
       margin-bottom: 40px;
       opacity: 0;
+      text-transform: uppercase;
     }
 
     h1 {
@@ -248,12 +261,13 @@
     .btn {
       display: inline-block;
       padding: 15px 40px;
-      border: 1px solid var(--text);
+      border: 2px solid var(--text);
       color: var(--text);
       text-decoration: none;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       letter-spacing: 2px;
-      transition: all 0.3s;
+      text-transform: uppercase;
+      transition: all 0.2s;
       background: transparent;
       cursor: pointer;
       font-family: inherit;
@@ -262,7 +276,6 @@
     .btn:hover {
       background: var(--text);
       color: var(--bg);
-      box-shadow: 0 0 30px var(--glow);
     }
 
     .btn-primary {
@@ -272,9 +285,9 @@
     }
 
     .btn-primary:hover {
-      background: transparent;
+      background: #fff;
       color: var(--accent-red);
-      box-shadow: 0 0 30px var(--accent-red-glow);
+      border-color: var(--accent-red);
     }
 
     /* Section Headers */
@@ -302,7 +315,7 @@
       color: var(--accent);
     }
 
-    /* Philosophy Section */
+    /* Philosophy Section - boxy cards */
     #philosophy {
       background: var(--bg-secondary);
     }
@@ -310,61 +323,65 @@
     .philosophy-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 30px;
+      gap: 25px;
       max-width: 1000px;
     }
 
     .philosophy-card {
-      border: 1px dashed var(--border);
+      border: 2px solid var(--border);
+      background: var(--bg-card);
       padding: 40px 30px;
       text-align: center;
-      transition: all 0.3s;
+      transition: all 0.2s;
       opacity: 0;
       transform: translateY(20px);
     }
 
     .philosophy-card:hover {
       border-color: var(--accent-red);
-      box-shadow: 0 0 30px var(--accent-red-glow);
+      transform: translateY(-3px);
     }
 
     .philosophy-icon {
-      width: 60px;
-      height: 60px;
+      width: 55px;
+      height: 55px;
       border: 2px solid var(--accent-red);
-      color: var(--accent-red);
+      background: var(--accent-red);
+      color: #fff;
       margin: 0 auto 25px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
+      font-size: 1.3rem;
     }
 
     .philosophy-title {
-      font-size: 1.1rem;
+      font-size: 1rem;
       letter-spacing: 2px;
       margin-bottom: 15px;
+      text-transform: uppercase;
     }
 
     .philosophy-desc {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: var(--text-muted);
       line-height: 1.8;
     }
 
-    /* Tools Section */
+    /* Tools Section - boxy cards */
     .tools-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 40px;
+      gap: 30px;
       max-width: 1000px;
       width: 100%;
     }
 
     .tool-card {
-      border: 1px dashed var(--border);
+      border: 2px solid var(--border);
+      background: var(--bg-card);
       padding: 40px;
-      transition: all 0.3s;
+      transition: all 0.2s;
       opacity: 0;
       transform: translateY(20px);
       position: relative;
@@ -376,34 +393,35 @@
       position: absolute;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 3px;
+      width: 4px;
+      height: 100%;
       background: var(--accent-red);
-      transform: scaleX(0);
-      transition: transform 0.3s;
+      transition: width 0.2s;
     }
 
     .tool-card:hover {
       border-color: var(--accent-red);
-      box-shadow: 0 0 40px var(--accent-red-glow);
     }
 
     .tool-card:hover::before {
-      transform: scaleX(1);
+      width: 100%;
+      opacity: 0.1;
     }
 
     .tool-badge {
       display: inline-block;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       letter-spacing: 2px;
-      color: var(--text-muted);
-      border: 1px dashed var(--border);
-      padding: 5px 12px;
+      color: var(--accent-red);
+      border: 2px solid var(--accent-red);
+      padding: 6px 14px;
       margin-bottom: 20px;
+      text-transform: uppercase;
+      font-weight: bold;
     }
 
     .tool-name {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       letter-spacing: 2px;
       margin-bottom: 15px;
       display: flex;
@@ -414,7 +432,9 @@
     .tool-name .icon {
       width: 40px;
       height: 40px;
-      border: 1px solid var(--text);
+      border: 2px solid var(--accent-red);
+      background: var(--accent-red);
+      color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -423,7 +443,7 @@
 
     .tool-desc {
       color: var(--text-muted);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       line-height: 1.8;
       margin-bottom: 25px;
     }
@@ -434,10 +454,10 @@
     }
 
     .tool-features li {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
-      padding: 8px 0;
-      border-bottom: 1px dashed var(--border);
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       gap: 10px;
@@ -446,20 +466,23 @@
     .tool-features li::before {
       content: '+';
       color: var(--accent-red);
+      font-weight: bold;
     }
 
     .tool-links {
       display: flex;
-      gap: 15px;
+      gap: 12px;
     }
 
     .tool-link {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: var(--text);
       text-decoration: none;
-      border: 1px dashed var(--border);
+      border: 2px solid var(--border);
       padding: 10px 20px;
-      transition: all 0.3s;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .tool-link:hover {
@@ -468,7 +491,7 @@
       border-color: var(--accent-red);
     }
 
-    /* Shop Section */
+    /* Shop Section - boxy style */
     #shop {
       background: var(--bg-secondary);
     }
@@ -479,7 +502,8 @@
     }
 
     .coming-soon-box {
-      border: 2px dashed var(--border);
+      border: 2px solid var(--border);
+      background: var(--bg-card);
       padding: 80px 60px;
       margin-top: 40px;
       position: relative;
@@ -492,34 +516,35 @@
       top: -12px;
       left: 50%;
       transform: translateX(-50%);
-      background: var(--bg-secondary);
-      padding: 0 20px;
-      font-size: 0.75rem;
+      background: var(--accent-red);
+      color: #fff;
+      padding: 5px 20px;
+      font-size: 0.7rem;
       letter-spacing: 3px;
-      color: var(--text-muted);
     }
 
     .merch-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 30px;
+      gap: 25px;
       margin-top: 40px;
     }
 
     .merch-placeholder {
       aspect-ratio: 1;
-      border: 1px dashed var(--border);
+      border: 2px solid var(--border);
+      background: var(--bg);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       color: var(--text-dim);
-      font-size: 0.8rem;
-      transition: all 0.3s;
+      font-size: 0.75rem;
+      transition: all 0.2s;
     }
 
     .merch-placeholder:hover {
-      border-color: var(--text-muted);
+      border-color: var(--accent-red);
     }
 
     .merch-placeholder .icon {
@@ -542,11 +567,11 @@
     .email-input {
       flex: 1;
       padding: 12px 20px;
-      border: 1px dashed var(--border);
-      background: transparent;
+      border: 2px solid var(--border);
+      background: var(--bg);
       color: var(--text);
       font-family: inherit;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
 
     .email-input::placeholder {
@@ -555,21 +580,22 @@
 
     .email-input:focus {
       outline: none;
-      border-color: var(--text);
+      border-color: var(--accent-red);
     }
 
-    /* Blog Section */
+    /* Blog Section - boxy cards */
     .blog-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 30px;
+      gap: 25px;
       max-width: 1100px;
       width: 100%;
     }
 
     .blog-card {
-      border: 1px dashed var(--border);
-      transition: all 0.3s;
+      border: 2px solid var(--border);
+      background: var(--bg-card);
+      transition: all 0.2s;
       opacity: 0;
       transform: translateY(20px);
       overflow: hidden;
@@ -577,26 +603,25 @@
 
     .blog-card:hover {
       border-color: var(--accent-red);
-      box-shadow: 0 0 40px var(--accent-red-glow);
     }
 
     .blog-card-image {
       width: 100%;
       aspect-ratio: 16/9;
-      background: var(--bg-secondary);
-      border-bottom: 1px dashed var(--border);
+      background: var(--bg);
+      border-bottom: 2px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 3rem;
       color: var(--text-dim);
       text-decoration: none;
-      transition: all 0.3s;
+      transition: all 0.2s;
     }
 
     .blog-card-image:hover {
-      background: var(--bg);
-      color: var(--text);
+      background: var(--accent-red);
+      color: #fff;
     }
 
     .blog-card-content {
@@ -610,12 +635,14 @@
     }
 
     .blog-tag {
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       letter-spacing: 2px;
-      color: var(--accent-red);
-      border: 1px dashed var(--accent-red);
-      padding: 4px 10px;
+      color: #fff;
+      background: var(--accent-red);
+      border: 2px solid var(--accent-red);
+      padding: 4px 12px;
       text-transform: uppercase;
+      font-weight: bold;
     }
 
     .blog-date {
@@ -688,15 +715,16 @@
       }
     }
 
-    /* Footer */
+    /* Footer - boxy style */
     footer {
-      border-top: 1px dashed var(--border);
+      border-top: 2px solid var(--border);
       padding: 60px 40px;
       text-align: center;
+      background: var(--bg-secondary);
     }
 
     .footer-logo {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-family: 'Fredoka', 'Bungee', sans-serif;
       font-weight: 700;
       letter-spacing: 3px;
@@ -705,7 +733,7 @@
 
     .footer-links {
       display: flex;
-      gap: 30px;
+      gap: 25px;
       justify-content: center;
       margin-bottom: 30px;
     }
@@ -713,23 +741,28 @@
     .footer-links a {
       color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.85rem;
-      transition: color 0.3s;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 8px 12px;
+      border: 2px solid transparent;
+      transition: all 0.2s;
     }
 
     .footer-links a:hover {
       color: var(--accent-red);
+      border-color: var(--accent-red);
     }
 
     .footer-copy {
       color: var(--text-dim);
-      font-size: 0.8rem;
+      font-size: 0.75rem;
     }
 
     /* Animated Elements */
     .float-element {
       position: absolute;
-      border: 1px dashed var(--border);
+      border: 2px solid var(--border);
       opacity: 0.3;
       pointer-events: none;
     }

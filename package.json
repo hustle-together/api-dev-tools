@@ -1,7 +1,7 @@
 {
   "name": "@hustle-together/api-dev-tools",
-  "version": "2.0.7",
-  "description": "Interview-driven API development workflow for Claude Code - Automates research, testing, and documentation",
+  "version": "3.6.0",
+  "description": "Interview-driven, research-first API development workflow with continuous verification loops for Claude Code",
   "main": "bin/cli.js",
   "bin": {
     "api-dev-tools": "./bin/cli.js"
@@ -10,6 +10,7 @@
     "bin/",
     "commands/",
     "hooks/",
+    "scripts/",
     "templates/",
     "demo/",
     "README.md",

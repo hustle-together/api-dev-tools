@@ -1,0 +1,30 @@
+{
+  "generated": "2025-12-08T06:50:32.727Z",
+  "text": "Welcome to Hustle API Dev Tools. Build APIs the right way. Research first. Interview second. Test before code. Document everything.",
+  "voices": [
+    {
+      "voice": "Mark",
+      "id": "UgBBYS2sOqTuMpoF3BR0",
+      "file": "preview-mark.mp3",
+      "size": 164302
+    },
+    {
+      "voice": "Hope",
+      "id": "tnSpp4vdxKPjI9w0GnoV",
+      "file": "preview-hope.mp3",
+      "size": 135881
+    },
+    {
+      "voice": "Creature",
+      "id": "Z7RrOqZFTyLpIlzCgfsp",
+      "file": "preview-creature.mp3",
+      "size": 288018
+    },
+    {
+      "voice": "Gaming",
+      "id": "YOq2y2Up4RgXP2HyXjE5",
+      "file": "preview-gaming.mp3",
+      "size": 329814
+    }
+  ]
+}

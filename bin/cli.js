@@ -65,14 +65,33 @@ function verifyInstallation(claudeDir, hooksDir) {
     { path: path.join(claudeDir, 'commands'), name: 'Commands directory' },
     { path: path.join(claudeDir, 'settings.json'), name: 'Settings file' },
     { path: path.join(claudeDir, 'api-dev-state.json'), name: 'State file' },
+    { path: path.join(claudeDir, 'research'), name: 'Research cache directory' },
+    { path: path.join(claudeDir, 'research', 'index.json'), name: 'Research index' },
   ];
 
-  // Add hook checks if hooks directory exists
+  // Add hook checks if hooks directory exists (v3.0 has 18 hooks for 100% phase enforcement with user checkpoints)
   if (fs.existsSync(hooksDir)) {
     checks.push(
-      { path: path.join(hooksDir, 'enforce-research.py'), name: 'enforce-research.py' },
+      // Core utility hooks (5)
+      { path: path.join(hooksDir, 'session-startup.py'), name: 'session-startup.py' },
+      { path: path.join(hooksDir, 'enforce-external-research.py'), name: 'enforce-external-research.py' },
       { path: path.join(hooksDir, 'track-tool-use.py'), name: 'track-tool-use.py' },
-      { path: path.join(hooksDir, 'api-workflow-check.py'), name: 'api-workflow-check.py' }
+      { path: path.join(hooksDir, 'periodic-reground.py'), name: 'periodic-reground.py' },
+      { path: path.join(hooksDir, 'api-workflow-check.py'), name: 'api-workflow-check.py' },
+      // Phase enforcement hooks with user checkpoints (12 - one per phase)
+      { path: path.join(hooksDir, 'enforce-disambiguation.py'), name: 'enforce-disambiguation.py' },
+      { path: path.join(hooksDir, 'enforce-scope.py'), name: 'enforce-scope.py' },
+      { path: path.join(hooksDir, 'enforce-research.py'), name: 'enforce-research.py' },
+      { path: path.join(hooksDir, 'enforce-interview.py'), name: 'enforce-interview.py' },
+      { path: path.join(hooksDir, 'enforce-deep-research.py'), name: 'enforce-deep-research.py' },
+      { path: path.join(hooksDir, 'enforce-schema.py'), name: 'enforce-schema.py' },
+      { path: path.join(hooksDir, 'enforce-environment.py'), name: 'enforce-environment.py' },
+      { path: path.join(hooksDir, 'enforce-tdd-red.py'), name: 'enforce-tdd-red.py' },
+      { path: path.join(hooksDir, 'verify-implementation.py'), name: 'verify-implementation.py' },
+      { path: path.join(hooksDir, 'verify-after-green.py'), name: 'verify-after-green.py' },
+      { path: path.join(hooksDir, 'enforce-verify.py'), name: 'enforce-verify.py' },
+      { path: path.join(hooksDir, 'enforce-refactor.py'), name: 'enforce-refactor.py' },
+      { path: path.join(hooksDir, 'enforce-documentation.py'), name: 'enforce-documentation.py' }
     );
   }
 
@@ -234,6 +253,147 @@ function main() {
   }
 
   // ========================================
+  // 4b. Install Research Cache Structure (v3.0)
+  // ========================================
+  const researchDir = path.join(claudeDir, 'research');
+  const researchIndexSource = path.join(sourceTemplatesDir, 'research-index.json');
+  const researchIndexDest = path.join(researchDir, 'index.json');
+
+  log('\n📚 Setting up research cache:', 'cyan');
+
+  if (!fs.existsSync(researchDir)) {
+    try {
+      fs.mkdirSync(researchDir, { recursive: true });
+      log('   ✅ Created .claude/research/ directory', 'green');
+    } catch (error) {
+      log(`   ❌ Failed to create research directory: ${error.message}`, 'red');
+    }
+  }
+
+  if (fs.existsSync(researchIndexSource) && !fs.existsSync(researchIndexDest)) {
+    try {
+      fs.copyFileSync(researchIndexSource, researchIndexDest);
+      log('   ✅ Created research/index.json for freshness tracking', 'green');
+    } catch (error) {
+      log(`   ❌ Failed to create research index: ${error.message}`, 'red');
+    }
+  } else if (fs.existsSync(researchIndexDest)) {
+    log('   ℹ️  Research index already exists (preserved)', 'blue');
+  }
+
+  // ========================================
+  // 4c. Install Test UI (Parser API + Page)
+  // ========================================
+  log('\n🧪 Setting up Test UI:', 'cyan');
+
+  const testUiSourceDir = path.join(sourceTemplatesDir, 'api-test');
+  const hasNextJs = fs.existsSync(path.join(targetDir, 'next.config.js')) ||
+                    fs.existsSync(path.join(targetDir, 'next.config.mjs')) ||
+                    fs.existsSync(path.join(targetDir, 'next.config.ts'));
+
+  if (!hasNextJs) {
+    log('   ⚠️  Next.js not detected - skipping Test UI installation', 'yellow');
+    log('   💡 Test UI requires Next.js App Router', 'yellow');
+  } else if (fs.existsSync(testUiSourceDir)) {
+    // Detect App Router structure
+    const appDir = fs.existsSync(path.join(targetDir, 'src', 'app'))
+      ? path.join(targetDir, 'src', 'app')
+      : fs.existsSync(path.join(targetDir, 'app'))
+        ? path.join(targetDir, 'app')
+        : null;
+
+    if (!appDir) {
+      log('   ⚠️  App Router not detected - skipping Test UI installation', 'yellow');
+      log('   💡 Test UI requires Next.js App Router (app/ or src/app/)', 'yellow');
+    } else {
+      // Install test-structure API route
+      const apiTestStructureDir = path.join(appDir, 'api', 'test-structure');
+      const apiTestStructureSource = path.join(testUiSourceDir, 'test-structure', 'route.ts');
+      const apiTestStructureDest = path.join(apiTestStructureDir, 'route.ts');
+
+      if (!fs.existsSync(apiTestStructureDir)) {
+        fs.mkdirSync(apiTestStructureDir, { recursive: true });
+      }
+
+      if (!fs.existsSync(apiTestStructureDest)) {
+        try {
+          fs.copyFileSync(apiTestStructureSource, apiTestStructureDest);
+          log('   ✅ Created /api/test-structure route (parses Vitest files)', 'green');
+        } catch (error) {
+          log(`   ❌ Failed to create test-structure API: ${error.message}`, 'red');
+        }
+      } else {
+        log('   ℹ️  /api/test-structure already exists (preserved)', 'blue');
+      }
+
+      // Install test UI page
+      const apiTestPageDir = path.join(appDir, 'api-test');
+      const apiTestPageSource = path.join(testUiSourceDir, 'page.tsx');
+      const apiTestPageDest = path.join(apiTestPageDir, 'page.tsx');
+
+      if (!fs.existsSync(apiTestPageDir)) {
+        fs.mkdirSync(apiTestPageDir, { recursive: true });
+      }
+
+      if (!fs.existsSync(apiTestPageDest)) {
+        try {
+          fs.copyFileSync(apiTestPageSource, apiTestPageDest);
+          log('   ✅ Created /api-test page (displays test structure)', 'green');
+        } catch (error) {
+          log(`   ❌ Failed to create test UI page: ${error.message}`, 'red');
+        }
+      } else {
+        log('   ℹ️  /api-test page already exists (preserved)', 'blue');
+      }
+
+      log('   💡 Test UI available at http://localhost:3000/api-test', 'yellow');
+    }
+  } else {
+    log('   ⚠️  Test UI templates not found in package', 'yellow');
+  }
+
+  // ========================================
+  // 4d. Install Manifest Generation Scripts
+  // ========================================
+  log('\n📊 Setting up manifest generation scripts:', 'cyan');
+
+  const sourceScriptsDir = path.join(packageDir, 'scripts');
+  const targetScriptsDir = path.join(targetDir, 'scripts', 'api-dev-tools');
+
+  if (fs.existsSync(sourceScriptsDir)) {
+    if (!fs.existsSync(targetScriptsDir)) {
+      fs.mkdirSync(targetScriptsDir, { recursive: true });
+    }
+
+    const scriptFiles = fs.readdirSync(sourceScriptsDir).filter(file =>
+      file.endsWith('.ts')
+    );
+
+    if (scriptFiles.length > 0) {
+      scriptFiles.forEach(file => {
+        const source = path.join(sourceScriptsDir, file);
+        const dest = path.join(targetScriptsDir, file);
+
+        try {
+          fs.copyFileSync(source, dest);
+          log(`   ✅ ${file}`, 'green');
+        } catch (error) {
+          log(`   ❌ Failed to copy ${file}: ${error.message}`, 'red');
+        }
+      });
+
+      log('\n   Script purposes:', 'blue');
+      log('   • generate-test-manifest.ts - Parses tests → manifest (NO LLM)', 'blue');
+      log('   • extract-parameters.ts     - Extracts Zod params → matrix', 'blue');
+      log('   • collect-test-results.ts   - Runs Vitest → results JSON', 'blue');
+      log('\n   💡 Scripts run automatically after tests pass (Phase 8 → 9)', 'yellow');
+      log('   💡 Manual: npx tsx scripts/api-dev-tools/generate-test-manifest.ts', 'yellow');
+    }
+  } else {
+    log('   ⚠️  Scripts directory not found in package', 'yellow');
+  }
+
+  // ========================================
   // 5. Install MCP Servers via CLI (Context7, GitHub)
   // ========================================
   // NOTE: We use `claude mcp add` directly because .mcp.json requires manual approval
@@ -269,31 +429,85 @@ function main() {
   log('   💡 Restart Claude Code for MCP tools to be available', 'yellow');
 
   // ========================================
+  // 6. Update CLAUDE.md with workflow documentation
+  // ========================================
+  const claudeMdSection = path.join(sourceTemplatesDir, 'CLAUDE-SECTION.md');
+  const projectClaudeMd = path.join(targetDir, 'CLAUDE.md');
+
+  if (fs.existsSync(claudeMdSection)) {
+    log('\n📝 CLAUDE.md workflow documentation:', 'cyan');
+
+    const sectionContent = fs.readFileSync(claudeMdSection, 'utf8');
+    const sectionMarker = '## API Development Workflow (v3.0)';
+
+    if (fs.existsSync(projectClaudeMd)) {
+      const existingContent = fs.readFileSync(projectClaudeMd, 'utf8');
+
+      if (existingContent.includes(sectionMarker)) {
+        // Update existing section
+        const beforeSection = existingContent.split(sectionMarker)[0];
+        // Find the next ## heading or end of file
+        const afterMatch = existingContent.match(/## API Development Workflow[\s\S]*?((?=\n## )|$)/);
+        const afterSection = afterMatch ? existingContent.substring(existingContent.indexOf(afterMatch[0]) + afterMatch[0].length) : '';
+
+        fs.writeFileSync(projectClaudeMd, beforeSection + sectionContent + afterSection);
+        log('   ✅ Updated API Development Workflow section in CLAUDE.md', 'green');
+      } else {
+        // Append section
+        fs.appendFileSync(projectClaudeMd, '\n\n' + sectionContent);
+        log('   ✅ Added API Development Workflow section to CLAUDE.md', 'green');
+      }
+    } else {
+      // Create new CLAUDE.md with section
+      fs.writeFileSync(projectClaudeMd, '# Project Instructions\n\n' + sectionContent);
+      log('   ✅ Created CLAUDE.md with API Development Workflow section', 'green');
+    }
+  }
+
+  // ========================================
   // Success Summary
   // ========================================
   log('\n' + '═'.repeat(60), 'green');
-  log('🎉 API Development Tools installed successfully!', 'green');
+  log('🎉 API Development Tools v3.0 installed successfully!', 'green');
   log('═'.repeat(60) + '\n', 'green');
 
   log('📋 What was installed:', 'bright');
   log('   Commands:  .claude/commands/*.md', 'blue');
-  log('   Hooks:     .claude/hooks/*.py', 'blue');
+  log('   Hooks:     .claude/hooks/*.py (18 hooks for 100% enforcement + user checkpoints)', 'blue');
   log('   Settings:  .claude/settings.json', 'blue');
   log('   State:     .claude/api-dev-state.json', 'blue');
+  log('   Research:  .claude/research/ (with freshness tracking)', 'blue');
+  log('   Scripts:   scripts/api-dev-tools/*.ts (manifest generation)', 'blue');
   log('   MCP:       context7, github (via claude mcp add)', 'blue');
+  log('   Test UI:   /api-test page + /api/test-structure API (if Next.js)', 'blue');
 
-  log('\n🔒 Enforcement Features:', 'bright');
-  log('   • Research MUST happen before code writing', 'cyan');
-  log('   • All research activity is logged to state file', 'cyan');
-  log('   • Workflow completion is verified before stopping', 'cyan');
-  log('   • Progress is tracked and visible in state file', 'cyan');
+  log('\n🆕 New in v3.0:', 'bright');
+  log('   • 12 phases, each with mandatory user checkpoint', 'cyan');
+  log('   • AskUserQuestion required at EVERY phase transition', 'cyan');
+  log('   • Loop-back support when user wants changes', 'cyan');
+  log('   • Adaptive research (propose-approve, not shotgun)', 'cyan');
+  log('   • 7-turn re-grounding (prevents context dilution)', 'cyan');
+  log('   • Research freshness (7-day cache validity)', 'cyan');
+
+  log('\n🔒 User Checkpoint Enforcement:', 'bright');
+  log('   • Phase 0: "Which interpretation?" (disambiguation)', 'cyan');
+  log('   • Phase 1: "Scope correct?" (scope confirmation)', 'cyan');
+  log('   • Phase 2: "Proceed to interview?" (research summary)', 'cyan');
+  log('   • Phase 3: "Interview complete?" (all questions answered)', 'cyan');
+  log('   • Phase 4: "Approve searches?" (deep research proposal)', 'cyan');
+  log('   • Phase 5: "Schema matches interview?" (schema review)', 'cyan');
+  log('   • Phase 6: "Ready for testing?" (environment check)', 'cyan');
+  log('   • Phase 7: "Test plan looks good?" (test matrix)', 'cyan');
+  log('   • Phase 9: "Fix gaps?" (verification decision)', 'cyan');
+  log('   • Phase 11: "Documentation complete?" (final checklist)', 'cyan');
 
   log('\n📚 Available Commands:', 'bright');
-  log('  /api-create [endpoint]    - Complete API development workflow', 'blue');
-  log('  /api-interview [endpoint] - Structured interview about endpoint', 'blue');
-  log('  /api-research [library]   - Deep research of external APIs/SDKs', 'blue');
+  log('  /api-create [endpoint]    - Complete 12-phase workflow', 'blue');
+  log('  /api-interview [endpoint] - Questions FROM research', 'blue');
+  log('  /api-research [library]   - Adaptive propose-approve research', 'blue');
+  log('  /api-verify [endpoint]    - Manual Phase 9 verification', 'blue');
   log('  /api-env [endpoint]       - Check API keys and environment', 'blue');
-  log('  /api-status [endpoint]    - Track implementation progress', 'blue');
+  log('  /api-status [endpoint]    - Track 12-phase progress', 'blue');
 
   log('\n🚀 Quick Start:', 'bright');
   log('   /api-create my-endpoint', 'blue');

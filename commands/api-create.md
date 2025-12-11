@@ -1,149 +1,479 @@
-# API Create - Comprehensive API Development Workflow
+# API Create - Comprehensive API Development Workflow v3.0
 
 **Usage:** `/api-create [endpoint-name]`
 
-**Purpose:** Orchestrates the complete API development workflow using interview-driven, test-first methodology.
+**Purpose:** Orchestrates the complete API development workflow using interview-driven, research-first, test-first methodology with continuous verification loops.
 
-## Workflow Steps
+## ⚠️ CRITICAL: MANDATORY USER INTERACTION
 
-This command executes the following phases automatically:
+**YOU MUST USE THE `AskUserQuestion` TOOL AT EVERY CHECKPOINT.**
 
-### Phase 1: Planning & Research
-1. **Documentation Discovery**
-   - Search for official API documentation
-   - Track all documentation links
-   - Identify available SDKs and libraries
-   - Document version requirements
+This workflow requires REAL user input at each phase. You are **FORBIDDEN** from:
+- Self-answering questions
+- Assuming user responses
+- Proceeding without explicit user confirmation
+- Making decisions on behalf of the user
 
-2. **User Interview** (Anthropic Interviewer methodology)
-   - What is this API endpoint for? (Purpose)
-   - Who will use it? (Users)
-   - When/where will it be used? (Context)
-   - What are common use cases? (Real-world scenarios)
-   - What are edge cases to handle? (Boundaries)
-   - What are dependencies? (External services, API keys)
+### How to Ask Questions Correctly
 
-### Phase 2: Documentation & Schema
-3. **Schema Documentation**
-   - Document ALL request parameters (required + optional)
-   - Document ALL response fields
-   - Create Zod request schema
-   - Create Zod response schema
-   - Document validation rules
-   - Document error cases
+At every `[Y/n]` or multiple-choice prompt in this workflow, you MUST call the `AskUserQuestion` tool with this EXACT schema:
 
-4. **Environment Setup**
-   - Identify required API keys
-   - Check .env.example for keys
-   - Verify environment variables
-   - Document custom header support
-   - Create setup instructions
+```json
+{
+  "questions": [
+    {
+      "question": "Your question here? (must end with ?)",
+      "header": "Phase",
+      "multiSelect": false,
+      "options": [
+        {"label": "Option A", "description": "What this option means"},
+        {"label": "Option B", "description": "What this option means"},
+        {"label": "Other", "description": "I'll type my own answer"}
+      ]
+    }
+  ]
+}
+```
 
-### Phase 3: TDD Implementation
-5. **Red Phase** - Write failing tests
-   - Test basic success case
-   - Test all parameter combinations
-   - Test validation failures
-   - Test error handling
-   - Test edge cases from interview
-   - Run tests (should fail)
+**CRITICAL REQUIREMENTS:**
+- `header`: Max 12 characters (e.g., "Scope", "Research", "Format")
+- `options`: 2-4 options, each with `label` (1-5 words) and `description`
+- `multiSelect`: Required boolean (true for checkboxes, false for radio)
+- `question`: Must end with a question mark
+- Users can always select "Other" to provide custom input
 
-6. **Green Phase** - Minimal implementation
-   - Create route handler
-   - Implement Zod validation
-   - Add AI SDK integration
-   - Pass all tests
-   - Run tests (should pass)
+**WAIT for the user's response before proceeding.** The tool will show a UI dialog and pause execution until the user answers. Do NOT continue until you receive the response.
 
-7. **Refactor Phase** - Clean up
-   - Extract reusable patterns
-   - Improve error messages
-   - Add JSDoc comments
-   - Optimize performance
-   - Run tests (should still pass)
+### Violation Detection
 
-### Phase 4: Documentation & Integration
-8. **Update Documentation**
-   - Add to `/src/app/api-test/api-tests-manifest.json`
-   - Update `/src/v2/docs/v2-api-implementation-status.md`
-   - Add OpenAPI spec to `/src/lib/openapi/`
-   - Include code examples
-   - Document real-world outputs
-   - Add testing notes
+The enforcement hooks will BLOCK your progress if:
+- `user_question_asked` is false for any phase
+- `user_confirmed`/`user_approved`/`user_completed` is false
+- `phase_exit_confirmed` is false (user must explicitly approve proceeding to next phase)
+- Questions were not asked via the AskUserQuestion tool
 
-9. **Final Validation**
-   - Run full test suite
-   - Check test coverage (must be 100%)
-   - Verify TypeScript compilation
-   - Test in API test interface
-   - Create commit with `/commit`
+If you see "BLOCKED" messages, it means you skipped user interaction.
 
-## Template for Interview
+### Phase Exit Confirmation (NEW in v3.5.0)
 
-When executing this command, conduct the following interview:
+**Every phase requires an EXIT CONFIRMATION question** before proceeding to the next phase. This prevents Claude from self-answering and moving on without explicit user approval.
+
+The exit confirmation question MUST:
+1. Summarize what was accomplished in the current phase
+2. Ask if user is ready to proceed to the next phase
+3. Include options like "Yes, proceed", "No, I have changes", "Add more"
+
+Example exit confirmation:
+```json
+{
+  "questions": [{
+    "question": "Phase complete. Research found 5 sources. Ready to proceed to Interview phase?",
+    "header": "Proceed",
+    "multiSelect": false,
+    "options": [
+      {"label": "Yes, proceed", "description": "Move to next phase"},
+      {"label": "No, more research", "description": "I need additional research on [topic]"},
+      {"label": "Review sources", "description": "Show me what was found"}
+    ]
+  }]
+}
+```
+
+The `phase_exit_confirmed` flag is automatically set when:
+1. An `AskUserQuestion` is called with a question containing words like "proceed", "continue", "ready", "confirm", "approve"
+2. The user responds with an affirmative answer (yes, proceed, confirm, approve, etc.)
+
+Both conditions must be true for the flag to be set.
+
+---
+
+## Key Principles
+
+1. **Loop Until Green** - Every verification phase loops back if not successful
+2. **Continuous Interviews** - Checkpoints at EVERY phase transition (USE AskUserQuestion!)
+3. **Adaptive Research** - Propose searches based on context, not shotgun approach
+4. **Self-Documenting** - State file captures everything for re-grounding
+5. **Verify After Green** - Re-research docs to catch memory-based implementation errors
+
+## Complete Phase Flow
 
 ```
-## API Endpoint: [endpoint-name]
+/api-create [endpoint]
+        │
+        ▼
+┌─ PHASE 0: DISAMBIGUATION ─────────────────────────────────┐
+│ Search 3-5 variations of the term:                        │
+│   • "[term]"                                              │
+│   • "[term] API"                                          │
+│   • "[term] SDK"                                          │
+│   • "[term] npm package"                                  │
+│                                                           │
+│ ⚠️ REQUIRED: Use AskUserQuestion tool with EXACT schema:  │
+│                                                           │
+│   {                                                       │
+│     "questions": [{                                       │
+│       "question": "Which interpretation of [term]?",      │
+│       "header": "Disambig",                               │
+│       "multiSelect": false,                               │
+│       "options": [                                        │
+│         {"label": "REST API", "description": "Official API"},│
+│         {"label": "SDK/Package", "description": "NPM wrapper"},│
+│         {"label": "Both", "description": "API + SDK"}     │
+│       ]                                                   │
+│     }]                                                    │
+│   }                                                      │
+│                                                           │
+│ WAIT for user response. Do NOT proceed without it.        │
+│ ──── Loop back if user selects "Something else" ────      │
+└───────────────────────────────────────────────────────────┘
+        │ Clear
+        ▼
+┌─ PHASE 1: SCOPE CONFIRMATION ─────────────────────────────┐
+│                                                           │
+│ Present your understanding, then:                         │
+│                                                           │
+│ ⚠️ REQUIRED: Use AskUserQuestion tool:                    │
+│                                                           │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "I understand you want /api/v2/[endpoint] │
+│                  to [purpose]. Using [external API].      │
+│                  Is this correct?",                       │
+│       header: "Scope",                                    │
+│       options: [                                          │
+│         "Yes, proceed",                                   │
+│         "I have modifications to add",                    │
+│         "No, let me clarify the purpose"                  │
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│                                                           │
+│ WAIT for user response. Do NOT assume "yes".              │
+│ ──── Loop back if user has modifications ────             │
+└───────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌─ PHASE 2: INITIAL RESEARCH ───────────────────────────────┐
+│                                                           │
+│ Execute 2-3 initial searches:                             │
+│   • Context7: "[library/api name]"                        │
+│   • WebSearch: "[name] official documentation"            │
+│   • WebSearch: "site:[domain] api reference"              │
+│                                                           │
+│ Present summary table, then:                              │
+│                                                           │
+│ ⚠️ REQUIRED: Use AskUserQuestion tool:                    │
+│                                                           │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "Research summary above. Found [N]        │
+│                  sources. Should I proceed or search      │
+│                  for more?",                              │
+│       header: "Research",                                 │
+│       options: [                                          │
+│         "Proceed to interview",                           │
+│         "Search more - I need [specific topic]",          │
+│         "Search for something specific (I'll describe)"   │
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│                                                           │
+│ WAIT for user response. Do NOT auto-proceed.              │
+│ ──── Loop back if user wants more research ────           │
+└───────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌─ PHASE 3: INTERVIEW (Generated FROM Research) ────────────┐
+│                                                           │
+│ For EACH parameter discovered in research, ask ONE        │
+│ question at a time using AskUserQuestion:                 │
+│                                                           │
+│ ⚠️ REQUIRED: Use AskUserQuestion for EACH question:       │
+│                                                           │
+│   // Question 1: Format preference                        │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "Which response formats do you need?",    │
+│       header: "Format",                                   │
+│       multiSelect: true,                                  │
+│       options: ["JSON", "SVG", "PNG", "All formats"]      │
+│     }]                                                    │
+│   })                                                      │
+│   // WAIT for response, record in state, then next Q      │
+│                                                           │
+│   // Question 2: Error handling                           │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "How should errors be handled?",          │
+│       header: "Errors",                                   │
+│       options: [                                          │
+│         "Throw exceptions",                               │
+│         "Return error objects",                           │
+│         "Both (configurable)"                             │
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│   // Continue for ALL parameters...                       │
+│                                                           │
+│ After ALL questions answered:                             │
+│                                                           │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "Interview complete. Your decisions:      │
+│                  [summary]. All correct?",                │
+│       header: "Confirm",                                  │
+│       options: [                                          │
+│         "Yes, proceed to schema",                         │
+│         "Change an answer",                               │
+│         "Add another question"                            │
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│                                                           │
+│ Decisions saved to state file for consistency.            │
+│ ──── Loop back if user wants to change answers ────       │
+└───────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌─ PHASE 4: DEEP RESEARCH (Adaptive) ───────────────────────┐
+│                                                           │
+│ Based on interview answers, PROPOSE additional research.  │
+│                                                           │
+│ ⚠️ REQUIRED: Use AskUserQuestion tool:                    │
+│                                                           │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "Based on your interview answers, I       │
+│                  want to research: [list]. Approve?",     │
+│       header: "Deep Research",                            │
+│       options: [                                          │
+│         "Yes, run these searches",                        │
+│         "Add more - I also need [topic]",                 │
+│         "Skip deep research, proceed to schema"           │
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│                                                           │
+│ WAIT for user response. Do NOT auto-approve.              │
+│ KEY: Research is PROPOSED, not automatic shotgun.         │
+│ ──── Loop back if user wants to add topics ────           │
+└───────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌─ PHASE 5: SCHEMA DESIGN ──────────────────────────────────┐
+│                                                           │
+│ Create Zod schema from research + interview, then:        │
+│                                                           │
+│ ⚠️ REQUIRED: Use AskUserQuestion tool:                    │
+│                                                           │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "Schema created based on your interview.  │
+│                  [show schema]. Does this match your      │
+│                  requirements?",                          │
+│       header: "Schema",                                   │
+│       options: [                                          │
+│         "Yes, schema looks correct",                      │
+│         "No, I need changes (I'll describe)",             │
+│         "Let's redo the interview"                        │
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│                                                           │
+│ WAIT for user response. Do NOT assume approval.           │
+│ ──── Loop back if schema needs changes ────               │
+└───────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌─ PHASE 6: ENVIRONMENT CHECK ──────────────────────────────┐
+│                                                           │
+│ Check required API keys, show status table, then:         │
+│                                                           │
+│ ⚠️ REQUIRED: Use AskUserQuestion tool:                    │
+│                                                           │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "Environment check: [N] keys found,       │
+│                  [M] missing. Ready to start TDD?",       │
+│       header: "Environment",                              │
+│       options: [                                          │
+│         "Yes, ready to write tests",                      │
+│         "No, need to set up API keys first",              │
+│         "No, need to fix something else"                  │
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│                                                           │
+│ WAIT for user response. Do NOT auto-proceed.              │
+│ ──── Loop back if keys missing ────                       │
+└───────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌─ PHASE 7: TDD RED (Write Failing Tests) ──────────────────┐
+│                                                           │
+│ Generate test matrix from schema + interview, then:       │
+│                                                           │
+│ ⚠️ REQUIRED: Use AskUserQuestion tool:                    │
+│                                                           │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "Test matrix: [N] test scenarios based    │
+│                  on your interview. Covers: [list].       │
+│                  Approve this test plan?",                │
+│       header: "Tests",                                    │
+│       options: [                                          │
+│         "Yes, write these tests",                         │
+│         "Add more scenarios (I'll describe)",             │
+│         "Change a scenario (I'll describe)"               │
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│                                                           │
+│ WAIT for user response. Do NOT auto-approve.              │
+│ HOOK: PreToolUse blocks Write if no research/interview    │
+│ ──── Loop back if user wants changes ────                 │
+└───────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌─ PHASE 8: TDD GREEN (Minimal Implementation) ─────────────┐
+│                                                           │
+│ Write minimal code to pass ALL tests.                     │
+│ Tests derived from schema.                                │
+│ Implementation validates with schema.                     │
+│                                                           │
+│ Run tests → All must pass before proceeding.              │
+│                                                           │
+│ HOOK: PreToolUse blocks Write if test file doesn't exist  │
+└───────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌─ PHASE 9: VERIFY (Re-Research After Green) ───────────────┐
+│                                                           │
+│ MANDATORY: Re-read original documentation.                │
+│ Compare implementation to docs, then:                     │
+│                                                           │
+│ ⚠️ REQUIRED: Use AskUserQuestion tool:                    │
+│                                                           │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "Verification found [N] gap(s) between    │
+│                  docs and implementation: [list].         │
+│                  How should I proceed?",                  │
+│       header: "Verify",                                   │
+│       options: [                                          │
+│         "Fix gaps - loop back to Red phase",              │
+│         "Skip - these are intentional omissions",         │
+│         "Fix some, skip others (I'll specify)"            │
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│                                                           │
+│ WAIT for user response. Do NOT auto-decide.               │
+│ HOOK: PostToolUse triggers after test pass                │
+│ ──── Loop back to Phase 7 if user wants fixes ────        │
+└───────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌─ PHASE 10: TDD REFACTOR ──────────────────────────────────┐
+│                                                           │
+│ Clean up code while tests stay green:                     │
+│   • Extract reusable patterns                             │
+│   • Improve error messages                                │
+│   • Add JSDoc comments                                    │
+│   • Optimize performance                                  │
+│                                                           │
+│ Run tests after EVERY change → Must still pass.           │
+└───────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌─ PHASE 11: DOCUMENTATION ─────────────────────────────────┐
+│                                                           │
+│ Update documentation files, then:                         │
+│                                                           │
+│ ⚠️ REQUIRED: Use AskUserQuestion tool:                    │
+│                                                           │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "Documentation checklist: [list files].   │
+│                  All documentation complete?",            │
+│       header: "Docs",                                     │
+│       options: [                                          │
+│         "Yes, all documentation is done",                 │
+│         "No, I need to add something (I'll describe)",    │
+│         "Skip docs for now (not recommended)"             │
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│                                                           │
+│ WAIT for user response. Do NOT auto-complete.             │
+│ HOOK: Stop hook blocks if docs incomplete                 │
+│ ──── Loop back if user needs to add docs ────             │
+└───────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌─ PHASE 12: COMPLETION ────────────────────────────────────┐
+│                                                           │
+│ Final verification:                                       │
+│   • All tests passing                                     │
+│   • 100% coverage                                         │
+│   • TypeScript compiles                                   │
+│   • Docs updated                                          │
+│   • State file shows all phases complete                  │
+│                                                           │
+│ Run /commit to create semantic commit.                    │
+└───────────────────────────────────────────────────────────┘
+```
 
-### 1. Purpose & Context
-- **What problem does this solve?**
-- **Who are the primary users?**
-- **What triggers usage of this API?**
+## State File Tracking
 
-### 2. Real-World Usage
-- **Describe a typical request scenario:**
-- **What are the most common parameters?**
-- **What does a successful response look like?**
+All phases are tracked in `.claude/api-dev-state.json`:
 
-### 3. Parameters & Configuration
-- **What parameters are REQUIRED?**
-- **What parameters are OPTIONAL?**
-- **What are valid value ranges/formats?**
-- **Are there parameter dependencies?**
-
-### 4. Dependencies & Integration
-- **What external services does this use?**
-- **What API keys are required?**
-- **What AI models/providers are involved?**
-- **Are there rate limits or quotas?**
-
-### 5. Edge Cases & Errors
-- **What can go wrong?**
-- **How should errors be handled?**
-- **What are boundary conditions?**
-- **What should be validated?**
-
-### 6. Documentation Sources
-- **Official documentation links:**
-- **SDK/library documentation:**
-- **Related endpoints or examples:**
+```json
+{
+  "endpoint": "brandfetch",
+  "turn_count": 23,
+  "phases": {
+    "disambiguation": { "status": "complete" },
+    "scope": { "status": "complete" },
+    "research_initial": { "status": "complete", "sources": [...] },
+    "interview": { "status": "complete", "decisions": {...} },
+    "research_deep": { "status": "complete" },
+    "schema_creation": { "status": "complete" },
+    "environment_check": { "status": "complete" },
+    "tdd_red": { "status": "complete", "test_count": 23 },
+    "tdd_green": { "status": "complete" },
+    "verify": { "status": "complete", "gaps_found": 2, "gaps_fixed": 2 },
+    "tdd_refactor": { "status": "complete" },
+    "documentation": { "status": "complete" }
+  }
+}
 ```
 
 ## Output Artifacts
 
 This command creates:
 
-1. **Interview Document**: `/src/v2/docs/endpoints/[endpoint-name].md`
-2. **Route Handler**: `/src/app/api/v2/[endpoint-name]/route.ts`
-3. **Test Suite**: `/src/app/api/v2/[endpoint-name]/__tests__/[endpoint-name].api.test.ts`
-4. **OpenAPI Spec**: `/src/lib/openapi/endpoints/[endpoint-name].ts`
-5. **Updated Manifests**:
+1. **State File**: `.claude/api-dev-state.json` (tracks all progress)
+2. **Research Cache**: `.claude/research/[api-name]/CURRENT.md`
+3. **Route Handler**: `/src/app/api/v2/[endpoint-name]/route.ts`
+4. **Test Suite**: `/src/app/api/v2/[endpoint-name]/__tests__/[endpoint-name].api.test.ts`
+5. **OpenAPI Spec**: `/src/lib/openapi/endpoints/[endpoint-name].ts`
+6. **Updated Manifests**:
    - `/src/app/api-test/api-tests-manifest.json`
    - `/src/v2/docs/v2-api-implementation-status.md`
 
-## Execution
+## Hooks That Enforce This Workflow
 
-Execute this command and I will:
-1. ✅ Start the interview to understand the endpoint
-2. ✅ Research and document all available options
-3. ✅ Create comprehensive Zod schemas
-4. ✅ Verify environment/API key requirements
-5. ✅ Write failing tests first (TDD Red)
-6. ✅ Implement minimal passing code (TDD Green)
-7. ✅ Refactor for quality (TDD Refactor)
-8. ✅ Update all documentation and manifests
-9. ✅ Verify 100% test coverage
-10. ✅ Create semantic commit
+| Phase | Hook | Purpose |
+|-------|------|---------|
+| 0 | `enforce-external-research.py` | Detects API terms, requires disambiguation |
+| 2-4 | `track-tool-use.py` | Logs all research, tracks turns |
+| 7-8 | `enforce-research.py` | Blocks Write if no research done |
+| 7-8 | `enforce-interview.py` | Injects interview decisions |
+| 8 | `verify-implementation.py` | Blocks route if no test file |
+| 9 | `verify-after-green.py` | Triggers verification after tests pass |
+| All | `periodic-reground.py` | Re-grounds every 7 turns |
+| 11 | `api-workflow-check.py` | Blocks completion if docs incomplete |
 
 <claude-commands-template>
 ## Project-Specific Rules
@@ -158,9 +488,12 @@ Execute this command and I will:
 8. **Test Command**: `pnpm test:run` before commits
 
 ## Never Skip
-- Interview phase (understand before coding)
-- Documentation research (find ALL parameters)
-- Failing tests first (TDD Red is mandatory)
-- Manifest updates (keep docs in sync)
-- Coverage verification (100% required)
+
+- Phase 0 (Disambiguation) - Clarify before research
+- Phase 2 (Initial Research) - Find ALL parameters
+- Phase 3 (Interview) - Questions FROM research, not templates
+- Phase 7 (TDD Red) - Failing tests FIRST
+- Phase 9 (Verify) - Re-research after Green
+- Phase 11 (Documentation) - Keep docs in sync
+- Coverage verification - 100% required
 </claude-commands-template>

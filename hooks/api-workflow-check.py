@@ -29,6 +29,8 @@ REQUIRED_PHASES = [
     ("interview", "User interview"),
     ("tdd_red", "TDD Red phase (failing tests written)"),
     ("tdd_green", "TDD Green phase (tests passing)"),
+    ("verify", "Verification phase (re-checked against docs)"),
+    ("documentation", "Documentation updates (manifest/research cached)"),
 ]
 
 # Phases that SHOULD be complete (warning but don't block)

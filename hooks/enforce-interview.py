@@ -259,8 +259,75 @@ Reset the interview and ask with options based on research."""
             }))
             sys.exit(0)
 
-    # All checks passed - inject interview decisions as context reminder
+    # Check 6: FINAL USER CONFIRMATION - must confirm interview is complete
+    user_question_asked_final = interview.get("user_question_asked", False)
+    user_completed = interview.get("user_completed", False)
+    phase_exit_confirmed = interview.get("phase_exit_confirmed", False)
     decisions = interview.get("decisions", {})
+
+    if not user_completed or not user_question_asked_final or not phase_exit_confirmed:
+        decision_summary = _build_decision_summary(decisions)
+        missing = []
+        if not user_question_asked_final:
+            missing.append("Final confirmation question (AskUserQuestion not used)")
+        if not user_completed:
+            missing.append("User hasn't confirmed interview complete")
+        if not phase_exit_confirmed:
+            missing.append("Phase exit confirmation (user must explicitly approve to proceed)")
+
+        print(json.dumps({
+            "permissionDecision": "deny",
+            "reason": f"""❌ BLOCKED: Interview needs FINAL USER CONFIRMATION.
+
+Questions asked: {len(questions)}
+Structured questions: {actual_structured}
+User final confirmation: {user_completed}
+Phase exit confirmed: {phase_exit_confirmed}
+
+MISSING:
+{chr(10).join(f"  • {m}" for m in missing)}
+
+═══════════════════════════════════════════════════════════
+⚠️  GET USER CONFIRMATION BEFORE PROCEEDING
+═══════════════════════════════════════════════════════════
+
+REQUIRED STEPS:
+
+1. SHOW interview summary to user:
+   ┌───────────────────────────────────────────────────────┐
+   │ INTERVIEW COMPLETE                                    │
+   │                                                       │
+   │ Your decisions:                                       │
+{chr(10).join(f"   │   • {line:<49} │" for line in decision_summary.split(chr(10))[:8]) if decision_summary else "   │   (no decisions recorded yet)                      │"}
+   │                                                       │
+   │ These will guide the schema, tests, and implementation│
+   │                                                       │
+   │ All correct? [Y]                                      │
+   │ Change an answer? [n] ____                            │
+   └───────────────────────────────────────────────────────┘
+
+2. USE AskUserQuestion:
+   question: "Interview decisions correct? Ready to proceed?"
+   options: [
+     {{"value": "confirm", "label": "Yes, proceed to schema creation"}},
+     {{"value": "change", "label": "No, I want to change [which question]"}},
+     {{"value": "add", "label": "Add another question about [topic]"}}
+   ]
+
+3. If user says "change" or "add":
+   • Ask which question/topic
+   • Re-ask with AskUserQuestion
+   • Update decisions
+   • LOOP BACK and show updated summary
+
+4. If user says "confirm":
+   • Set interview.user_question_asked = true
+   • Set interview.user_completed = true
+   • Set interview.status = "complete"
+
+WHY: User must approve their decisions before they drive implementation."""
+        }))
+        sys.exit(0)
 
     if decisions:
         # Build a reminder of what the user decided

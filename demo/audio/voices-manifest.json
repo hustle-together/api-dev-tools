@@ -1,0 +1,50 @@
+{
+  "generated": "2025-12-09T04:43:32.000Z",
+  "voices": [
+    {
+      "voice": "Adam",
+      "name": "adam",
+      "audioFile": "narration-adam.mp3",
+      "timingFile": "narration-adam-timing.json",
+      "duration": 507.543,
+      "wordCount": 875,
+      "audioSize": 8121409
+    },
+    {
+      "voice": "Mark",
+      "name": "mark",
+      "audioFile": "narration-mark.mp3",
+      "timingFile": "narration-mark-timing.json",
+      "duration": 440.671,
+      "wordCount": 875,
+      "audioSize": 7051434
+    },
+    {
+      "voice": "Hope",
+      "name": "hope",
+      "audioFile": "narration-hope.mp3",
+      "timingFile": "narration-hope-timing.json",
+      "duration": 407.181,
+      "wordCount": 875,
+      "audioSize": 6515610
+    },
+    {
+      "voice": "Creature",
+      "name": "creature",
+      "audioFile": "narration-creature.mp3",
+      "timingFile": "narration-creature-timing.json",
+      "duration": 620.62,
+      "wordCount": 875,
+      "audioSize": 9930755
+    },
+    {
+      "voice": "Gaming",
+      "name": "gaming",
+      "audioFile": "narration-gaming.mp3",
+      "timingFile": "narration-gaming-timing.json",
+      "duration": 845.811,
+      "wordCount": 875,
+      "audioSize": 13533563
+    }
+  ]
+}
