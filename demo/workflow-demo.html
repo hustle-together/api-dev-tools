@@ -1237,6 +1237,99 @@
       background: var(--border-light);
     }
 
+    /* Demo Audio Controls */
+    .demo-audio-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .demo-voice-select {
+      padding: 8px 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+
+    .demo-audio-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .demo-audio-toggle:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .demo-audio-toggle.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .demo-audio-toggle i {
+      font-size: 0.9rem;
+    }
+
+    /* Phase list clickable for audio */
+    .phase-list li {
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .phase-list li:hover {
+      color: var(--accent);
+    }
+
+    .phase-list li.speaking {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .phase-list li.speaking::before {
+      content: '\f028';
+      font-family: 'Font Awesome 6 Free';
+      font-weight: 900;
+      margin-right: 6px;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Demo audio progress mini-bar */
+    .demo-audio-progress {
+      position: relative;
+      width: 60px;
+      height: 4px;
+      background: var(--border-light);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .demo-audio-progress .fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      background: var(--accent);
+      transition: width 0.1s linear;
+    }
+
     .demo-container {
       display: grid;
       grid-template-columns: 2fr 1fr;
@@ -3298,6 +3391,20 @@ Required actions:
         <div class="control-group">
           <button class="control-btn" id="demo-skip-error">Skip to Error Demo</button>
         </div>
+        <div class="divider"></div>
+        <div class="control-group demo-audio-group">
+          <select class="demo-voice-select" id="demo-voice">
+            <option value="male">Aidan</option>
+            <option value="female">Bella</option>
+            <option value="santa" selected>Santa</option>
+          </select>
+          <button class="demo-audio-toggle" id="demo-audio-toggle" title="Toggle narration audio">
+            <i class="fa-solid fa-volume-xmark"></i> Audio Off
+          </button>
+          <div class="demo-audio-progress" id="demo-audio-progress" style="display: none;">
+            <div class="fill" id="demo-audio-fill"></div>
+          </div>
+        </div>
       </div>
 
       <div class="demo-container">
@@ -4429,6 +4536,289 @@ Required actions:
     // Initialize
     updateSceneIndicator();
     updateButtonStates();
+
+    // ============================================
+    // DEMO AUDIO CONTROLLER
+    // Syncs narration audio with demo scene transitions
+    // ============================================
+    const demoAudioController = {
+      audio: null,
+      timing: null,
+      enabled: false,
+      voice: 'santa',
+      isPlaying: false,
+      currentSceneId: null,
+
+      // Demo audio file paths
+      audioFiles: {
+        male: 'audio/demo-narration-male.mp3',
+        female: 'audio/demo-narration-female.mp3',
+        santa: 'audio/demo-narration-santa.mp3'
+      },
+
+      // Embedded timing data (will be populated)
+      timingData: {},
+
+      async init() {
+        // Load timing data for all voices
+        await this.loadTimingData();
+
+        // Set up event listeners
+        document.getElementById('demo-audio-toggle').addEventListener('click', () => this.toggle());
+        document.getElementById('demo-voice').addEventListener('change', (e) => this.setVoice(e.target.value));
+
+        // Add click listeners to phase list items
+        document.querySelectorAll('.phase-list li').forEach(item => {
+          item.addEventListener('click', () => {
+            const phase = parseInt(item.dataset.phase);
+            this.playPhaseAudio(phase);
+          });
+        });
+
+        console.log('DemoAudioController initialized');
+      },
+
+      async loadTimingData() {
+        // Load timing data for each voice
+        for (const voice of ['male', 'female', 'santa']) {
+          try {
+            const response = await fetch(`audio/demo-narration-${voice}-timing.json`);
+            if (response.ok) {
+              this.timingData[voice] = await response.json();
+              console.log(`Loaded timing for ${voice}:`, this.timingData[voice].sceneCount, 'scenes');
+            }
+          } catch (e) {
+            console.warn(`Could not load timing for ${voice}:`, e);
+          }
+        }
+      },
+
+      setVoice(voice) {
+        const wasPlaying = this.isPlaying;
+        const currentTime = this.audio ? this.audio.currentTime : 0;
+
+        // Stop current audio
+        if (this.audio) {
+          this.audio.pause();
+          this.audio = null;
+        }
+
+        this.voice = voice;
+
+        // If was playing, restart with new voice at same position
+        if (wasPlaying && this.enabled) {
+          this.loadAudio().then(() => {
+            if (this.audio && currentTime > 0) {
+              this.audio.currentTime = currentTime;
+              this.audio.play();
+            }
+          });
+        }
+      },
+
+      async loadAudio() {
+        if (!this.audioFiles[this.voice]) return;
+
+        this.audio = new Audio(this.audioFiles[this.voice]);
+        this.audio.preload = 'auto';
+        this.timing = this.timingData[this.voice];
+
+        // Set up audio event listeners
+        this.audio.addEventListener('timeupdate', () => this.onTimeUpdate());
+        this.audio.addEventListener('ended', () => this.onEnded());
+        this.audio.addEventListener('play', () => {
+          this.isPlaying = true;
+          this.updateUI();
+        });
+        this.audio.addEventListener('pause', () => {
+          this.isPlaying = false;
+          this.updateUI();
+        });
+
+        return new Promise((resolve) => {
+          this.audio.addEventListener('canplaythrough', () => resolve(), { once: true });
+          this.audio.addEventListener('error', () => resolve(), { once: true });
+        });
+      },
+
+      toggle() {
+        this.enabled = !this.enabled;
+        const btn = document.getElementById('demo-audio-toggle');
+        const progress = document.getElementById('demo-audio-progress');
+
+        if (this.enabled) {
+          btn.classList.add('active');
+          btn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Audio On';
+          progress.style.display = 'block';
+
+          // Load audio if not loaded
+          if (!this.audio) {
+            this.loadAudio();
+          }
+        } else {
+          btn.classList.remove('active');
+          btn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> Audio Off';
+          progress.style.display = 'none';
+
+          // Stop audio
+          if (this.audio) {
+            this.audio.pause();
+            this.isPlaying = false;
+          }
+
+          // Remove speaking indicators
+          document.querySelectorAll('.phase-list li').forEach(item => {
+            item.classList.remove('speaking');
+          });
+        }
+      },
+
+      onTimeUpdate() {
+        if (!this.timing || !this.audio) return;
+
+        const currentTime = this.audio.currentTime;
+
+        // Update progress bar
+        const progress = (currentTime / this.audio.duration) * 100;
+        document.getElementById('demo-audio-fill').style.width = `${progress}%`;
+
+        // Find current scene
+        let currentScene = null;
+        for (const scene of this.timing.scenes) {
+          if (currentTime >= scene.startTime && currentTime < scene.endTime) {
+            currentScene = scene;
+            break;
+          }
+        }
+
+        if (currentScene && currentScene.id !== this.currentSceneId) {
+          this.currentSceneId = currentScene.id;
+          this.highlightPhase(currentScene.id);
+        }
+      },
+
+      highlightPhase(sceneId) {
+        // Scene ID maps to demoScenes array index (1-based)
+        // Find the phase for this scene
+        const scene = demoScenes[sceneId - 1];
+        if (!scene) return;
+
+        const phase = scene.phase;
+
+        // Update speaking indicators
+        document.querySelectorAll('.phase-list li').forEach(item => {
+          const itemPhase = parseInt(item.dataset.phase);
+          if (itemPhase === phase) {
+            item.classList.add('speaking');
+          } else {
+            item.classList.remove('speaking');
+          }
+        });
+      },
+
+      onEnded() {
+        this.isPlaying = false;
+        this.currentSceneId = null;
+        document.querySelectorAll('.phase-list li').forEach(item => {
+          item.classList.remove('speaking');
+        });
+        this.updateUI();
+      },
+
+      updateUI() {
+        // Could add more UI updates here
+      },
+
+      // Play audio for a specific scene (called when scene changes in demo)
+      playSceneAudio(sceneId) {
+        if (!this.enabled || !this.audio || !this.timing) return;
+
+        const scene = this.timing.scenes.find(s => s.id === sceneId);
+        if (scene) {
+          this.audio.currentTime = scene.startTime;
+          this.audio.play();
+        }
+      },
+
+      // Play audio for a specific phase (called when clicking phase list)
+      playPhaseAudio(phase) {
+        // Find the scene for this phase
+        const sceneIndex = demoScenes.findIndex(s => s.phase === phase);
+        if (sceneIndex === -1) return;
+
+        const sceneId = sceneIndex + 1; // Scene IDs are 1-based
+
+        // Enable audio if not enabled
+        if (!this.enabled) {
+          this.toggle();
+        }
+
+        // Load audio if needed, then seek and play
+        const playScene = () => {
+          if (!this.timing) return;
+          const scene = this.timing.scenes.find(s => s.id === sceneId);
+          if (scene) {
+            this.audio.currentTime = scene.startTime;
+            this.audio.play();
+          }
+        };
+
+        if (!this.audio) {
+          this.loadAudio().then(playScene);
+        } else {
+          playScene();
+        }
+      },
+
+      // Pause audio (called when demo is paused)
+      pause() {
+        if (this.audio && this.isPlaying) {
+          this.audio.pause();
+        }
+      },
+
+      // Sync with demo scene change
+      syncToScene(sceneIndex) {
+        if (!this.enabled || !this.audio || !this.timing) return;
+
+        const sceneId = sceneIndex + 1; // Convert 0-based to 1-based
+        const scene = this.timing.scenes.find(s => s.id === sceneId);
+
+        if (scene) {
+          this.audio.currentTime = scene.startTime;
+          if (demoPlaying) {
+            this.audio.play();
+          }
+        }
+      }
+    };
+
+    // Initialize demo audio controller
+    demoAudioController.init();
+
+    // Hook into demo scene changes - modify showScene to sync audio
+    const originalShowScene = showScene;
+    showScene = function(sceneIndex, fromLine = 0) {
+      originalShowScene(sceneIndex, fromLine);
+      demoAudioController.syncToScene(sceneIndex);
+    };
+
+    // Hook into autoplay start to start audio
+    const originalStartAutoplay = startAutoplay;
+    startAutoplay = function() {
+      originalStartAutoplay();
+      if (demoAudioController.enabled && demoAudioController.audio) {
+        // Sync to current scene
+        demoAudioController.syncToScene(currentScene);
+      }
+    };
+
+    // Hook into autoplay stop to pause audio
+    const originalStopAutoplay = stopAutoplay;
+    stopAutoplay = function() {
+      originalStopAutoplay();
+      demoAudioController.pause();
+    };
 
     // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
