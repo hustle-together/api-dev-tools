@@ -2559,7 +2559,7 @@
   <!-- Section 1: Hero -->
   <section id="hero">
     <div class="section-inner">
-      <div class="hero-badge">v1.0.0 - Exit Code 2 Enforcement</div>
+      <div class="hero-badge">v3.4.0 - Continuous Verification Loop</div>
 
       <h1 class="hero-title">
         API Dev Tools
@@ -5131,9 +5131,14 @@ Required actions:
         // Audio event listeners (will be re-attached when voice changes)
         this.attachAudioListeners();
 
-        // Progress bar click to seek
-        if (this.progressTrack) {
-          this.progressTrack.addEventListener('click', (e) => this.seek(e));
+        // Progress bar click to seek - use the entire progress wrapper
+        const progressWrapper = document.querySelector('.narration-progress');
+        if (progressWrapper) {
+          progressWrapper.addEventListener('click', (e) => {
+            // Don't seek if clicking on the handle (that's for dragging)
+            if (e.target === this.handle) return;
+            this.seek(e);
+          });
         }
 
         // Handle drag for scrubbing
@@ -5396,20 +5401,42 @@ Required actions:
       }
 
       seek(event) {
-        if (!this.timing) return;
+        if (!this.timing) {
+          console.log('seek: no timing data');
+          return;
+        }
 
-        const rect = this.progressTrack.getBoundingClientRect();
+        if (!this.audio) {
+          console.log('seek: no audio element');
+          return;
+        }
+
+        // Get the progress track for accurate positioning
+        const progressTrack = document.querySelector('.narration-progress .progress-track');
+        if (!progressTrack) {
+          console.log('seek: no progress track');
+          return;
+        }
+
+        const rect = progressTrack.getBoundingClientRect();
         const percent = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
         const newTime = percent * this.timing.duration;
 
-        this.audio.currentTime = newTime;
+        console.log('seek: setting time to', newTime.toFixed(1), 'of', this.timing.duration.toFixed(1));
 
         // Update UI immediately
-        this.progressFill.style.width = `${percent * 100}%`;
-        this.handle.style.left = `${percent * 100}%`;
-        this.currentTimeEl.textContent = this.formatTime(newTime);
+        if (this.progressFill) this.progressFill.style.width = `${percent * 100}%`;
+        if (this.handle) this.handle.style.left = `${percent * 100}%`;
+        if (this.currentTimeEl) this.currentTimeEl.textContent = this.formatTime(newTime);
 
-        // Update subtitles to match new position
+        // Set audio time - wrap in try/catch in case audio isn't ready
+        try {
+          this.audio.currentTime = newTime;
+        } catch (e) {
+          console.warn('seek: could not set audio time', e);
+        }
+
+        // Update subtitles immediately to show text at new position
         this.updateSubtitles(newTime);
 
         // Allow re-scroll to current section
@@ -5630,12 +5657,6 @@ Required actions:
             gsap.set(el, { scale: 1, boxShadow: 'none' });
           });
 
-          // Load new audio
-          console.log('Creating new Audio element...');
-          this.audioUrl = audioUrl;
-          this.audio = new Audio(audioUrl);
-          this.audio.preload = 'auto';
-
           // Use embedded timing data directly (no fetch!)
           console.log('Setting timing data...');
           this.timing = timingData;
@@ -5654,6 +5675,12 @@ Required actions:
           // Rebuild section markers
           console.log('Adding section markers...');
           this.addSectionMarkers();
+
+          // Load new audio
+          console.log('Creating new Audio element...');
+          this.audioUrl = audioUrl;
+          this.audio = new Audio(audioUrl);
+          this.audio.preload = 'auto';
 
           // Re-attach event listeners to new audio
           console.log('Attaching audio event listeners...');
