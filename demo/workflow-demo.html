@@ -314,10 +314,10 @@
 
     .hero-meta {
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      gap: 20px;
-      flex-wrap: wrap;
+      gap: 12px;
       margin-bottom: 30px;
       opacity: 0;
       transform: translateY(20px);
@@ -334,7 +334,7 @@
     .npm-stats {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
     }
 
     .npm-downloads {
@@ -437,37 +437,6 @@
       font-size: 0.75rem;
       color: var(--text-light);
       margin-top: 8px;
-    }
-
-    .hero-features {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 40px;
-      opacity: 0;
-    }
-
-    .feature-pill {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 16px;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-light);
-      font-family: 'SF Mono', 'Monaco', monospace;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      transition: all 0.2s ease;
-    }
-
-    .feature-pill:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    .feature-pill i {
-      font-size: 0.85rem;
     }
 
     .terminal-title {
@@ -2725,15 +2694,15 @@
   <!-- Section 1: Hero -->
   <section id="hero">
     <div class="section-inner">
-      <!-- Version badge with NPM stats -->
+      <!-- NPM stats and version badge -->
       <div class="hero-meta">
-        <div class="hero-badge">v3.4.0 - Continuous Verification Loop</div>
         <div class="npm-stats">
-          <span class="npm-downloads"><i class="fa-solid fa-download"></i> 2,000+ downloads</span>
           <a href="https://www.npmjs.com/package/@hustle-together/api-dev-tools" class="npm-link" target="_blank">
-            <i class="fa-brands fa-npm"></i> npm
+            <i class="fa-brands fa-npm"></i>
           </a>
+          <span class="npm-downloads"><i class="fa-solid fa-download"></i> 2,000+ downloads</span>
         </div>
+        <div class="hero-badge">v3.4.0 - Continuous Verification Loop</div>
       </div>
 
       <h1 class="hero-title">
@@ -2766,16 +2735,8 @@
           <i class="fa-solid fa-triangle-exclamation"></i> See the Problem
         </a>
         <a href="#demo" class="btn accent">
-          <i class="fa-solid fa-play"></i> Watch Demo
+          <i class="fa-solid fa-terminal"></i> Watch Demo
         </a>
-      </div>
-
-      <!-- Feature highlights -->
-      <div class="hero-features">
-        <div class="feature-pill"><i class="fa-solid fa-shield-halved"></i> 18 Enforcement Hooks</div>
-        <div class="feature-pill"><i class="fa-solid fa-list-ol"></i> 12 Workflow Phases</div>
-        <div class="feature-pill"><i class="fa-solid fa-rotate"></i> Verification Loops</div>
-        <div class="feature-pill"><i class="fa-solid fa-code"></i> Exit Code 2 Blocking</div>
       </div>
     </div>
 
@@ -3965,11 +3926,6 @@ Required actions:
       duration: 0.6,
       ease: 'power2.out'
     }, '-=0.8')
-    .to('.hero-features', {
-      opacity: 1,
-      duration: 0.5,
-      ease: 'power2.out'
-    }, '-=0.4')
     .to('.scroll-indicator', {
       opacity: 1,
       duration: 0.6
