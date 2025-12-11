@@ -4707,28 +4707,40 @@ Required actions:
 
     // ============================================
     // DEMO AUDIO CONTROLLER
-    // Syncs narration audio with demo scene transitions
+    // Uses individual audio clips per phase for instant playback
     // ============================================
     const demoAudioController = {
       audio: null,
-      timing: null,
       enabled: false,
       isPlaying: false,
-      currentSceneId: null,
+      currentPhase: null,
 
-      // Single voice - Aidan (male)
-      audioFile: 'audio/demo-narration-aidan.mp3',
-      timingFile: 'audio/demo-narration-aidan-timing.json',
+      // Map of phase numbers to audio files
+      audioFiles: {
+        intro: 'audio/demo-intro.mp3',
+        0: 'audio/demo-phase-0.mp3',
+        1: 'audio/demo-phase-1.mp3',
+        2: 'audio/demo-phase-2.mp3',
+        3: 'audio/demo-phase-3.mp3',
+        4: 'audio/demo-phase-4.mp3',
+        5: 'audio/demo-phase-5.mp3',
+        6: 'audio/demo-phase-6.mp3',
+        7: 'audio/demo-phase-7.mp3',
+        8: 'audio/demo-phase-8.mp3',
+        9: 'audio/demo-phase-9.mp3',
+        10: 'audio/demo-phase-10.mp3',
+        11: 'audio/demo-phase-11.mp3',
+        12: 'audio/demo-phase-12.mp3'
+      },
+
+      // Preloaded audio elements for instant playback
+      preloadedAudio: {},
 
       async init() {
-        // Load timing data
-        await this.loadTimingData();
-
         // Set up event listeners
         document.getElementById('demo-audio-toggle').addEventListener('click', () => this.toggle());
 
         // Add click listeners to phase list items
-        // This now uses jumpToPhase which resets terminal AND syncs audio
         document.querySelectorAll('.phase-list li').forEach(item => {
           item.addEventListener('click', () => {
             const phase = parseInt(item.dataset.phase);
@@ -4736,41 +4748,40 @@ Required actions:
           });
         });
 
-        console.log('DemoAudioController initialized');
+        console.log('DemoAudioController initialized (individual clips mode)');
       },
 
-      async loadTimingData() {
-        try {
-          const response = await fetch(this.timingFile);
-          if (response.ok) {
-            this.timing = await response.json();
-            console.log('Demo audio timing loaded:', this.timing.sceneCount, 'scenes');
-          }
-        } catch (e) {
-          console.warn('Could not load demo audio timing:', e);
+      // Preload all audio files for instant playback
+      async preloadAll() {
+        console.log('Preloading demo audio clips...');
+        const promises = [];
+
+        for (const [phase, url] of Object.entries(this.audioFiles)) {
+          const audio = new Audio(url);
+          audio.preload = 'auto';
+
+          // Set up event listeners
+          audio.addEventListener('ended', () => this.onEnded());
+          audio.addEventListener('play', () => {
+            this.isPlaying = true;
+            this.updateUI();
+          });
+          audio.addEventListener('pause', () => {
+            this.isPlaying = false;
+            this.updateUI();
+          });
+
+          this.preloadedAudio[phase] = audio;
+
+          // Wait for audio to be ready
+          promises.push(new Promise(resolve => {
+            audio.addEventListener('canplaythrough', resolve, { once: true });
+            audio.addEventListener('error', resolve, { once: true });
+          }));
         }
-      },
 
-      async loadAudio() {
-        this.audio = new Audio(this.audioFile);
-        this.audio.preload = 'auto';
-
-        // Set up audio event listeners
-        this.audio.addEventListener('timeupdate', () => this.onTimeUpdate());
-        this.audio.addEventListener('ended', () => this.onEnded());
-        this.audio.addEventListener('play', () => {
-          this.isPlaying = true;
-          this.updateUI();
-        });
-        this.audio.addEventListener('pause', () => {
-          this.isPlaying = false;
-          this.updateUI();
-        });
-
-        return new Promise((resolve) => {
-          this.audio.addEventListener('canplaythrough', () => resolve(), { once: true });
-          this.audio.addEventListener('error', () => resolve(), { once: true });
-        });
+        await Promise.all(promises);
+        console.log('All demo audio clips preloaded');
       },
 
       toggle() {
@@ -4783,59 +4794,97 @@ Required actions:
           btn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Audio On';
           progress.style.display = 'block';
 
-          // Load audio if not loaded
-          if (!this.audio) {
-            this.loadAudio();
+          // Preload all clips on first enable
+          if (Object.keys(this.preloadedAudio).length === 0) {
+            this.preloadAll();
           }
         } else {
           btn.classList.remove('active');
           btn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> Audio Off';
           progress.style.display = 'none';
 
-          // Stop audio
-          if (this.audio) {
-            this.audio.pause();
-            this.isPlaying = false;
-          }
+          // Stop any playing audio
+          this.stopAll();
+        }
+      },
 
-          // Remove speaking indicators
-          document.querySelectorAll('.phase-list li').forEach(item => {
-            item.classList.remove('speaking');
+      // Stop all audio
+      stopAll() {
+        for (const audio of Object.values(this.preloadedAudio)) {
+          audio.pause();
+          audio.currentTime = 0;
+        }
+        this.audio = null;
+        this.isPlaying = false;
+        this.currentPhase = null;
+
+        // Remove speaking indicators
+        document.querySelectorAll('.phase-list li').forEach(item => {
+          item.classList.remove('speaking');
+        });
+      },
+
+      onEnded() {
+        this.isPlaying = false;
+        this.currentPhase = null;
+
+        // Remove speaking indicators
+        document.querySelectorAll('.phase-list li').forEach(item => {
+          item.classList.remove('speaking');
+        });
+
+        this.updateUI();
+      },
+
+      updateUI() {
+        const progress = document.getElementById('demo-audio-progress');
+        if (!this.audio || !this.isPlaying) {
+          document.getElementById('demo-audio-fill').style.width = '0%';
+          return;
+        }
+
+        // Update progress bar during playback
+        if (this.audio.duration > 0) {
+          const percent = (this.audio.currentTime / this.audio.duration) * 100;
+          document.getElementById('demo-audio-fill').style.width = `${percent}%`;
+        }
+      },
+
+      // Play audio for a specific phase
+      playPhaseAudio(phase) {
+        if (!this.enabled) return;
+
+        // Stop any currently playing audio
+        this.stopAll();
+
+        const audioKey = phase === 'intro' ? 'intro' : phase;
+        let audio = this.preloadedAudio[audioKey];
+
+        // If not preloaded, create new audio element
+        if (!audio) {
+          const url = this.audioFiles[audioKey];
+          if (!url) {
+            console.warn('No audio file for phase:', phase);
+            return;
+          }
+          audio = new Audio(url);
+          audio.addEventListener('ended', () => this.onEnded());
+          audio.addEventListener('play', () => {
+            this.isPlaying = true;
+            this.updateUI();
           });
-        }
-      },
-
-      onTimeUpdate() {
-        if (!this.timing || !this.audio) return;
-
-        const currentTime = this.audio.currentTime;
-
-        // Update progress bar
-        const progress = (currentTime / this.audio.duration) * 100;
-        document.getElementById('demo-audio-fill').style.width = `${progress}%`;
-
-        // Find current scene
-        let currentScene = null;
-        for (const scene of this.timing.scenes) {
-          if (currentTime >= scene.startTime && currentTime < scene.endTime) {
-            currentScene = scene;
-            break;
-          }
+          audio.addEventListener('pause', () => {
+            this.isPlaying = false;
+            this.updateUI();
+          });
+          this.preloadedAudio[audioKey] = audio;
         }
 
-        if (currentScene && currentScene.id !== this.currentSceneId) {
-          this.currentSceneId = currentScene.id;
-          this.highlightPhase(currentScene.id);
-        }
-      },
-
-      highlightPhase(sceneId) {
-        // Scene ID maps to demoScenes array index (1-based)
-        // Find the phase for this scene
-        const scene = demoScenes[sceneId - 1];
-        if (!scene) return;
-
-        const phase = scene.phase;
+        // Play the audio
+        this.audio = audio;
+        this.currentPhase = phase;
+        audio.currentTime = 0;
+        audio.play().catch(e => console.warn('Could not play audio:', e));
 
         // Update speaking indicators
         document.querySelectorAll('.phase-list li').forEach(item => {
@@ -4846,82 +4895,52 @@ Required actions:
             item.classList.remove('speaking');
           }
         });
-      },
 
-      onEnded() {
-        this.isPlaying = false;
-        this.currentSceneId = null;
-        document.querySelectorAll('.phase-list li').forEach(item => {
-          item.classList.remove('speaking');
-        });
-        this.updateUI();
-      },
-
-      updateUI() {
-        // Could add more UI updates here
-      },
-
-      // Play audio for a specific scene (called when scene changes in demo)
-      playSceneAudio(sceneId) {
-        if (!this.enabled || !this.audio || !this.timing) return;
-
-        const scene = this.timing.scenes.find(s => s.id === sceneId);
-        if (scene) {
-          this.audio.currentTime = scene.startTime;
-          this.audio.play();
-        }
-      },
-
-      // Play audio for a specific phase (called when clicking phase list)
-      playPhaseAudio(phase) {
-        // Find the scene for this phase
-        const sceneIndex = demoScenes.findIndex(s => s.phase === phase);
-        if (sceneIndex === -1) return;
-
-        const sceneId = sceneIndex + 1; // Scene IDs are 1-based
-
-        // Enable audio if not enabled
-        if (!this.enabled) {
-          this.toggle();
-        }
-
-        // Load audio if needed, then seek and play
-        const playScene = () => {
-          if (!this.timing) return;
-          const scene = this.timing.scenes.find(s => s.id === sceneId);
-          if (scene) {
-            this.audio.currentTime = scene.startTime;
-            this.audio.play();
+        // Update progress bar periodically
+        const updateInterval = setInterval(() => {
+          if (this.audio === audio && this.isPlaying) {
+            this.updateUI();
+          } else {
+            clearInterval(updateInterval);
           }
-        };
+        }, 100);
 
-        if (!this.audio) {
-          this.loadAudio().then(playScene);
-        } else {
-          playScene();
-        }
+        console.log('Playing audio for phase:', phase);
       },
 
-      // Pause audio (called when demo is paused)
+      // Play intro audio
+      playIntro() {
+        this.playPhaseAudio('intro');
+      },
+
+      // Pause current audio
       pause() {
         if (this.audio && this.isPlaying) {
           this.audio.pause();
         }
       },
 
-      // Sync with demo scene change
-      syncToScene(sceneIndex) {
-        if (!this.enabled || !this.audio || !this.timing) return;
-
-        const sceneId = sceneIndex + 1; // Convert 0-based to 1-based
-        const scene = this.timing.scenes.find(s => s.id === sceneId);
-
-        if (scene) {
-          this.audio.currentTime = scene.startTime;
-          if (demoPlaying) {
-            this.audio.play();
-          }
+      // Resume current audio
+      resume() {
+        if (this.audio && !this.isPlaying) {
+          this.audio.play().catch(e => console.warn('Could not resume audio:', e));
         }
+      },
+
+      // Sync with demo scene change - plays the appropriate phase audio
+      syncToScene(sceneIndex) {
+        if (!this.enabled) return;
+
+        const scene = demoScenes[sceneIndex];
+        if (!scene) return;
+
+        const phase = scene.phase;
+
+        // Don't restart if already playing this phase
+        if (this.currentPhase === phase && this.isPlaying) return;
+
+        // Play the phase audio
+        this.playPhaseAudio(phase);
       }
     };
 
@@ -5374,6 +5393,12 @@ Required actions:
       }
 
       seek(event) {
+        console.log('seek() called', {
+          hasTiming: !!this.timing,
+          hasAudio: !!this.audio,
+          audioReadyState: this.audio ? this.audio.readyState : 'no audio'
+        });
+
         if (!this.timing) {
           console.log('seek: no timing data');
           return;
@@ -5395,18 +5420,30 @@ Required actions:
         const percent = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
         const newTime = percent * this.timing.duration;
 
-        console.log('seek: setting time to', newTime.toFixed(1), 'of', this.timing.duration.toFixed(1));
+        console.log('seek: setting time to', newTime.toFixed(1), 'of', this.timing.duration.toFixed(1), 'percent:', (percent * 100).toFixed(1) + '%');
 
         // Update UI immediately
         if (this.progressFill) this.progressFill.style.width = `${percent * 100}%`;
         if (this.handle) this.handle.style.left = `${percent * 100}%`;
         if (this.currentTimeEl) this.currentTimeEl.textContent = this.formatTime(newTime);
 
-        // Set audio time - wrap in try/catch in case audio isn't ready
-        try {
-          this.audio.currentTime = newTime;
-        } catch (e) {
-          console.warn('seek: could not set audio time', e);
+        // Set audio time - need to ensure audio is ready to seek
+        if (this.audio.readyState >= 1) {
+          // HAVE_METADATA or higher - can set currentTime
+          try {
+            this.audio.currentTime = newTime;
+            console.log('seek: audio.currentTime set to', this.audio.currentTime);
+          } catch (e) {
+            console.warn('seek: could not set audio time', e);
+          }
+        } else {
+          // Audio not ready yet - queue the seek
+          console.log('seek: audio not ready, queuing seek to', newTime);
+          const pendingSeek = newTime;
+          this.audio.addEventListener('loadedmetadata', () => {
+            console.log('seek: audio now ready, seeking to', pendingSeek);
+            this.audio.currentTime = pendingSeek;
+          }, { once: true });
         }
 
         // Update subtitles immediately to show text at new position
@@ -5485,7 +5522,34 @@ Required actions:
           // Click to seek to section
           marker.addEventListener('click', (e) => {
             e.stopPropagation();
-            this.audio.currentTime = section.timestamp;
+            console.log('Section marker clicked:', section.id, 'timestamp:', section.timestamp);
+
+            if (!this.audio) {
+              console.log('Section marker click: no audio');
+              return;
+            }
+
+            const newTime = section.timestamp;
+            const percent = (newTime / this.timing.duration) * 100;
+
+            // Update UI immediately
+            if (this.progressFill) this.progressFill.style.width = `${percent}%`;
+            if (this.handle) this.handle.style.left = `${percent}%`;
+            if (this.currentTimeEl) this.currentTimeEl.textContent = this.formatTime(newTime);
+
+            // Set audio time
+            if (this.audio.readyState >= 1) {
+              this.audio.currentTime = newTime;
+              console.log('Section seek: audio.currentTime set to', this.audio.currentTime);
+            } else {
+              console.log('Section seek: audio not ready, queuing');
+              this.audio.addEventListener('loadedmetadata', () => {
+                this.audio.currentTime = newTime;
+              }, { once: true });
+            }
+
+            // Update subtitles
+            this.updateSubtitles(newTime);
             this.lastScrolledSection = null;
           });
 
