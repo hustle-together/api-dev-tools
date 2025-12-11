@@ -1466,6 +1466,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 40px;
       opacity: 0;
+      align-items: stretch;
     }
 
     .state-code {
@@ -1487,7 +1488,7 @@
     .state-explanation {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 15px;
     }
 
     .state-field {
@@ -1495,6 +1496,7 @@
       padding: 20px;
       opacity: 0;
       transform: translateX(20px);
+      flex: 1;
     }
 
     .state-field h4 {
@@ -1647,6 +1649,10 @@
       text-align: center;
     }
 
+    #install .section-header {
+      margin-bottom: 20px;
+    }
+
     .install-command {
       background: var(--grey-dark);
       border: 1px solid var(--border);
@@ -1655,7 +1661,7 @@
       font-size: 1.1rem;
       color: #f0f0f0;
       display: inline-block;
-      margin: 25px 0 30px;
+      margin: 15px 0 25px;
       opacity: 0;
       transform: translateY(20px);
     }
