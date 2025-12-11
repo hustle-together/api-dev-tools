@@ -5,16 +5,13 @@
  * This generates audio specifically for the interactive demo section,
  * explaining each phase as it happens in the "See It In Action" demo.
  *
- * Usage: ELEVENLABS_API_KEY=your_key node generate-demo-narration.js [voice]
+ * Usage: ELEVENLABS_API_KEY=your_key node generate-demo-narration.js
  *
- * Voice options:
- *   - male (Aidan) - Social media influencer
- *   - female (Bella) - Chatty social media influencer
- *   - santa (Jerry) - Jolly Santa Claus
+ * Uses Aidan (male) voice only for demo narration.
  *
  * Output:
- *   - demo-narration-{voice}.mp3 - The audio file
- *   - demo-narration-{voice}-timing.json - Scene timestamps
+ *   - demo-narration.mp3 - The audio file
+ *   - demo-narration-timing.json - Scene timestamps
  */
 
 const fs = require('fs');
@@ -24,206 +21,178 @@ const path = require('path');
 const API_BASE = 'https://api.elevenlabs.io/v1';
 const MODEL_ID = 'eleven_turbo_v2_5'; // Fast, high-quality model
 
-// Voice options
-const VOICES = {
-  male: { id: 'EOVAuWqgSZN2Oel78Psj', name: 'Aidan' },
-  female: { id: '4RZ84U1b4WCqpu57LvIq', name: 'Bella' },
-  santa: { id: 'MDLAMJ0jxkpYkjXbmG4t', name: 'Jerry' }
-};
+// Use Aidan (male) voice for demo narration
+const VOICE_ID = 'EOVAuWqgSZN2Oel78Psj';
+const VOICE_NAME = 'aidan';
 
-// Get voice from command line argument (default: male)
-const voiceArg = process.argv[2] || 'male';
-const selectedVoice = VOICES[voiceArg];
-
-if (!selectedVoice) {
-  console.error(`Unknown voice: ${voiceArg}`);
-  console.error('Available voices: male, female, santa');
-  process.exit(1);
-}
-
-const VOICE_ID = selectedVoice.id;
-const VOICE_NAME = voiceArg;
-
-// The demo narration script - explains each scene in the interactive demo
+// The demo narration script - explains each scene with Problem → Solution format
 // Format: [SCENE:id] marks a new scene (matches demoScenes[].id in workflow-demo.html)
 const DEMO_NARRATION_SCRIPT = `
 [SCENE:1]
-Phase zero: Disambiguation. The workflow starts with a critical question.
+Phase zero: Disambiguation.
 
-When you type /api-create brandfetch, Claude doesn't immediately start researching. First, it asks: what exactly does "brandfetch" mean?
+Here's the problem. When you say "brandfetch," what do you actually mean? It could be the Brandfetch REST API. Or the npm SDK. Or custom code you want to write.
 
-This matters because "brandfetch" could refer to three different things. The Brandfetch REST API at brand.dev. The official npm SDK. Or maybe you want custom brand fetching logic.
+If Claude guesses wrong, it researches the wrong thing. Then it builds the wrong implementation. You waste an hour before realizing the mistake.
 
-The enforce-disambiguation hook blocks all research until this is clarified. Claude presents numbered options and waits for your choice.
+Here's the solution. The enforce-disambiguation hook blocks ALL research until Claude asks you to clarify. Watch the terminal. Claude presents numbered options. You pick one. Now everyone's on the same page.
 
-Why does this matter? Because researching the wrong library wastes time and produces incorrect implementations. Disambiguation ensures Claude investigates exactly what you need.
+This takes five seconds. It saves an hour. That's the trade-off.
 
 [SCENE:2]
-Now watch what happens when Claude tries to skip the workflow.
+Now let's see what happens when Claude tries to cheat.
 
-The error demo. Exit code two enforcement.
+The problem: Claude is impatient. It wants to skip research and start writing code immediately. It thinks it "already knows" the API from training data.
 
-Claude gets impatient and tries to write route.ts without doing research first. Watch what happens.
+Watch what happens when Claude tries to write route.ts without researching first.
 
-Blocked. The enforce-research hook returns exit code two. This isn't just a warning. Exit code two creates a hard block. Claude cannot ignore it.
+BLOCKED. Exit code two.
 
-Look at the error message. Research phase incomplete. Sources consulted: zero. Minimum required: two. Use Context7 or WebSearch first.
+This is the key insight. Exit code two is not a warning. It's a hard stop. Claude cannot proceed. It cannot ignore this. It must respond to the error.
 
-Claude must respond to this error. It cannot proceed until it completes research. This is the enforcement mechanism that makes the entire workflow possible.
+Look at the message: "Research phase incomplete. Sources consulted: zero. Required: two."
 
-Exit code two equals mandatory compliance.
+Claude has no choice. It must do the research. This is enforcement, not suggestion.
 
 [SCENE:3]
 Phase one: Scope confirmation.
 
-Before researching, Claude confirms it understands what you want. This prevents wasted research on the wrong use case.
+The problem: Claude might misunderstand what you want. You say "fetch brand assets" but Claude thinks you want a database model.
 
-Claude summarizes: Purpose is to fetch brand assets by domain. Input is a domain name like github.com. Output is brand data including logos, colors, and fonts.
+The solution: Before spending time on research, Claude summarizes its understanding and asks: "Is this correct?"
 
-The enforce-scope hook requires explicit user confirmation. Claude asks: Is this correct? You respond: Yes.
+You see the summary. Purpose: fetch brand assets by domain. Input: domain name. Output: logos, colors, fonts.
 
-Only then does Claude proceed to research. Scope confirmation ensures alignment before investment.
+If it's wrong, you correct it now. If it's right, you confirm. Either way, you're aligned before any real work begins.
 
 [SCENE:4]
-Phase two: Initial research. This is where the magic happens.
+Phase two: Initial research.
 
-The enforce-research hook has been blocking Write and Edit operations. Now Claude earns the right to implement by fetching current documentation.
+The problem: Claude's training data might be months or years old. APIs change. Endpoints get deprecated. Authentication methods evolve. Building from stale knowledge means broken code.
 
-Watch the MCP calls. First, Context7 resolve-library-id to find the correct library. Found: /brandfetch/brandfetch-api.
+The solution: Claude must fetch CURRENT documentation before writing anything. Watch the MCP calls.
 
-Then Context7 get-library-docs. Retrieved twenty-three endpoints and forty-seven parameters. That's real data, not training memory.
+Context7 resolve-library-id finds the right library. Context7 get-library-docs retrieves twenty-three endpoints and forty-seven parameters. That's live data, not memory.
 
-Finally, a WebSearch for Brandfetch API authentication 2024. Found: Bearer token authentication required.
+Then WebSearch confirms: Bearer token authentication required.
 
-Two sources consulted. Minimum requirement met. Research complete. The hook now allows implementation to proceed.
-
-Why two sources? Because a single source might be outdated or incomplete. Cross-referencing ensures accuracy.
+Two sources. Cross-referenced. Now Claude has accurate, current information.
 
 [SCENE:5]
 Phase three: Structured interview.
 
-Here's what makes this different from generic AI assistants. These questions come FROM the research findings. Not from templates.
+The problem: Generic AI assistants ask template questions. "What format do you want?" They don't know what formats actually exist.
 
-Question one: Logo formats? The research discovered SVG, PNG, and JPG are available. Claude presents numbered options based on what actually exists.
+The solution: Questions come FROM the research findings. Claude discovered SVG, PNG, and JPG are available. So those are the options it presents.
 
-You choose option three: Both SVG and PNG. Claude records this decision.
+You pick "Both SVG and PNG." Claude records this as a decision.
 
-Question two: Cache duration? Options range from no caching to seven days. You choose twenty-four hours as recommended.
+The enforce-interview hook prevents self-answering. Claude can't ask a question then immediately answer itself. It must wait for YOUR response.
 
-The enforce-interview hook requires AskUserQuestion with numbered options. It detects self-answering and blocks until human confirmation.
-
-When you confirm the final question, phase_exit_confirmed is set to true. This prevents Claude from accidentally re-asking or overwriting your decisions.
+When you confirm, phase_exit_confirmed is set to true. Your decisions are locked in.
 
 [SCENE:6]
 Phase four: Deep research.
 
-Based on your interview answers, Claude proposes targeted follow-up searches. This isn't random. It's specific to your choices.
+The problem: Initial research gives you the overview. But your specific choices might need deeper investigation.
 
-You chose SVG and PNG formats. So Claude searches for Brandfetch SVG PNG format parameter. Discovered: format query parameter accepts comma-separated values.
+The solution: Based on YOUR interview answers, Claude proposes targeted follow-up searches.
 
-You chose twenty-four hour caching. So Claude searches for Brandfetch cache headers CDN. Discovered: supports Cache-Control and ETag headers.
+You chose SVG and PNG? Claude searches for "Brandfetch format parameter" to learn exactly how to request multiple formats.
 
-The enforce-deep-research hook ensures these targeted searches happen. Your requirements drive the investigation.
+You chose 24-hour caching? Claude searches for "Brandfetch cache headers" to implement it correctly.
+
+Your requirements drive the research. Not generic exploration.
 
 [SCENE:7]
 Phase five: Schema creation.
 
-Now Claude has real data AND your preferences. Time to define the contract.
+The problem: Without a contract, tests and implementation can drift apart. The API might return fields that aren't validated. Or expect fields that aren't typed.
 
-Zod schemas are created from research plus interview. The BrandfetchRequestSchema includes domain and format parameters. The BrandfetchResponseSchema defines the structure of logos and colors arrays.
+The solution: Zod schemas define the exact shape of requests and responses. BrandfetchRequestSchema specifies domain and format. BrandfetchResponseSchema defines logos and colors arrays.
 
-The enforce-schema hook requires schemas before implementation. This becomes the contract that tests verify and implementation fulfills.
-
-Every discovered parameter is typed. Every interview decision is encoded. The schema is the source of truth.
+Every discovered parameter is typed. Every interview decision is encoded. The schema becomes the source of truth that tests verify and implementation must match.
 
 [SCENE:8]
 Phase six: Environment check.
 
-Before writing tests, Claude verifies required API keys exist. This prevents the classic "tests pass locally but fail in CI" problem.
+The problem: Tests pass locally but fail in CI. Why? Missing API key. You waste thirty minutes debugging before realizing the environment isn't set up.
 
-Checking BRANDFETCH_API_KEY. Present in .env.local. Format is valid.
+The solution: Check environment BEFORE writing tests. Is BRANDFETCH_API_KEY present? Is the format valid?
 
-The enforce-environment hook blocks tests until environment is confirmed. No surprises during implementation.
+The enforce-environment hook blocks tests until environment is confirmed. No surprises later.
 
 [SCENE:9]
-Phase seven: TDD Red. Write failing tests first.
+Phase seven: TDD Red.
 
-This is test-driven development. Define success before writing implementation.
+The problem: Without tests, you don't know if your code works. You ship bugs. You break things in production.
 
-Claude writes tests to brandfetch.test.ts. Then runs pnpm test. Watch the failures.
+The solution: Write failing tests FIRST. Define what success looks like before writing implementation.
 
-Fail: returns brand data for valid domain. Fail: returns SVG and PNG formats. That's from your interview. Fail: respects twenty-four hour cache. Also from your interview. Fail: returns 401 without API key.
+Watch the test output. Four tests. All failing. Returns brand data? Fail. Returns SVG and PNG formats? Fail. Respects 24-hour cache? Fail. Returns 401 without API key? Fail.
 
-Four tests failing. Zero passing. This is exactly correct. Red phase complete.
-
-The enforce-tdd-red hook verifies tests exist AND fail before allowing implementation. No code until tests define the requirements.
+This is CORRECT. Red phase means tests exist and fail. Now we know exactly what to build.
 
 [SCENE:10]
-Phase eight: TDD Green. Make tests pass.
+Phase eight: TDD Green.
 
-Now Claude writes minimal implementation. Just enough code to pass the tests.
+The problem: Developers often write more code than needed. They add features that weren't requested. They over-engineer.
 
-Writing route.ts. Running pnpm test.
+The solution: Write MINIMAL implementation. Just enough to pass the tests. Nothing more.
 
-Pass: returns brand data for valid domain. Pass: returns SVG and PNG formats. Pass: respects twenty-four hour cache. Pass: returns 401 without API key.
+Watch the test output. Four tests. All passing. Brand data? Pass. Formats? Pass. Cache? Pass. Error handling? Pass.
 
-Four tests passing. Green phase complete.
+Green means tests pass. But wait... watch what happens automatically.
 
-But wait! Watch what happens automatically. The verify-after-green hook fires.
-
-Hook triggered. Tests passed. Auto-triggering verification. This is Phase nine happening automatically. The workflow enforces itself.
+The verify-after-green hook triggers Phase nine. No manual intervention needed. The workflow enforces itself.
 
 [SCENE:11]
-Phase nine: Verification. Re-research and compare.
+Phase nine: Verification.
 
-This catches memory-based drift. Even if Claude researched correctly, implementation might not match.
+The problem: Even after researching, Claude might implement from memory. It forgets details. It makes assumptions. The implementation drifts from what the docs actually say.
 
-Claude re-fetches documentation via Context7. Then builds a comparison table.
+The solution: After tests pass, RE-FETCH the documentation. Compare implementation to current docs. Build a verification table.
 
-Auth method. Docs say: Bearer token. Implementation: Match. Logo formats. Docs say: SVG, PNG, JPG. Implementation: Match. Cache header. Docs say: Cache-Control. Implementation: twenty-four hours. Match.
+Auth method? Docs say Bearer token. Implementation uses Bearer token. Match. Logo formats? Docs list SVG, PNG, JPG. Implementation supports all three. Match.
 
-Implementation matches documentation. Verification passes.
-
-If there were mismatches, the workflow would loop back to Phase seven. Write tests for missing features, then re-implement. Continuous verification until correct.
+If there's a mismatch, the workflow loops back. Write tests for missing features. Re-implement. Verify again. Continuous correction until correct.
 
 [SCENE:12]
-Phase ten: TDD Refactor. Clean up while tests stay green.
+Phase ten: TDD Refactor.
 
-Now that tests pass and verification confirms correctness, Claude can improve the code.
+The problem: First implementations are often messy. But cleaning up code might break things.
 
-Extracting a fetchBrandData helper function. Adding JSDoc comments for documentation.
+The solution: Refactor WHILE tests stay green. Every change is verified by the existing test suite.
 
-Running pnpm test. Four tests passing. Refactor complete.
+Extract a helper function? Run tests. Add documentation? Run tests. If anything breaks, you know immediately.
 
-The enforce-refactor hook allows refactoring only when tests pass. Every change is verified by the existing test suite.
+Four tests still passing. Refactor complete.
 
 [SCENE:13]
 Phase eleven: Documentation.
 
-Claude updates the research cache and API manifest. Writing to .claude/research/brandfetch/CURRENT.md. Research cached with seven-day freshness.
+The problem: Knowledge gets lost. The next developer, or the next Claude session, starts from scratch. They make the same mistakes. They ask the same questions.
 
-Editing api-tests-manifest.json. API manifest updated.
+The solution: Cache everything. Research findings go into .claude/research/brandfetch/CURRENT.md with a seven-day freshness timer. API manifest gets updated with endpoint details.
 
-The enforce-documentation hook requires documentation before completion. Future developers, including future Claude sessions, will benefit from this cached knowledge.
+Future sessions can skip research if the cache is fresh. Your work today benefits tomorrow's work.
 
 [SCENE:14]
-Phase twelve: Completion. The final verification.
+Phase twelve: Completion.
 
-The api-workflow-check hook runs at Stop time. It verifies all twelve phases completed successfully.
+The problem: How do you know everything is actually done? Claude might claim it's finished but skip steps.
 
-Check: Disambiguation complete. Scope complete. Initial research complete. Interview complete. Deep research complete. Schema creation complete. Environment complete. TDD Red complete. TDD Green complete. Verification complete. TDD Refactor complete. Documentation complete.
+The solution: The api-workflow-check hook runs at stop time. It verifies all twelve phases completed successfully.
 
-Files created: route.ts, brandfetch.test.ts, schema.ts.
+Disambiguation? Complete. Scope? Complete. Initial research? Complete. Interview? Complete. Deep research? Complete. Schema? Complete. Environment? Complete. TDD Red? Complete. TDD Green? Complete. Verification? Complete. Refactor? Complete. Documentation? Complete.
 
-Workflow complete. All twelve phases verified.
+All twelve phases verified. Files created. Tests passing. Documentation updated.
 
-This is the API Dev Tools workflow. Research first. Interview from findings. Test before code. Verify after green. Document always.
+That's the API Dev Tools workflow. Research first. Questions from findings. Test before code. Verify after green. Document always.
 
 Every step enforced by hooks. Every decision tracked in state. Every phase verified before proceeding.
 
-Twelve phases. Loop-back architecture. Continuous verification.
-
-Hustle together. Build stronger.
+Tap Next Scene to continue, or click any phase in the sidebar to hear its explanation again.
 `.trim();
 
 /**
@@ -390,7 +359,7 @@ async function main() {
     process.exit(1);
   }
 
-  console.log(`\n=== Generating DEMO narration with ${selectedVoice.name} (${VOICE_NAME}) ===\n`);
+  console.log(`\n=== Generating DEMO narration with Aidan (${VOICE_NAME}) ===\n`);
 
   const outputDir = __dirname;
   const audioPath = path.join(outputDir, `demo-narration-${VOICE_NAME}.mp3`);

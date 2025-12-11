@@ -1188,6 +1188,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      position: relative;
     }
 
     .demo-controls-bar .control-btn {
@@ -1219,6 +1220,56 @@
       background: var(--accent);
       border-color: var(--accent);
       color: white;
+    }
+
+    .demo-controls-bar .control-btn.pulse-hint {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+      animation: pulse-hint 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-hint {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(186, 12, 47, 0.4);
+      }
+      50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px 5px rgba(186, 12, 47, 0.3);
+      }
+    }
+
+    .demo-prompt-message {
+      position: absolute;
+      top: -35px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      white-space: nowrap;
+      animation: bounce-down 1s ease-in-out infinite;
+      z-index: 10;
+    }
+
+    .demo-prompt-message::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 8px solid var(--accent);
+    }
+
+    @keyframes bounce-down {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(5px); }
     }
 
     .demo-controls-bar .speed-select {
@@ -1536,6 +1587,31 @@
       padding: 3px 8px;
       margin-top: 10px;
       border-left: 2px solid var(--accent);
+    }
+
+    .explanation-problem,
+    .explanation-solution {
+      margin-bottom: 12px;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
+    .explanation-problem {
+      color: var(--text-muted);
+    }
+
+    .explanation-problem strong {
+      color: #ff6b6b;
+      font-weight: 600;
+    }
+
+    .explanation-solution {
+      color: var(--text);
+    }
+
+    .explanation-solution strong {
+      color: var(--accent-green);
+      font-weight: 600;
     }
 
     .demo-scene-indicator {
@@ -3393,11 +3469,6 @@ Required actions:
         </div>
         <div class="divider"></div>
         <div class="control-group demo-audio-group">
-          <select class="demo-voice-select" id="demo-voice">
-            <option value="male">Aidan</option>
-            <option value="female">Bella</option>
-            <option value="santa" selected>Santa</option>
-          </select>
           <button class="demo-audio-toggle" id="demo-audio-toggle" title="Toggle narration audio">
             <i class="fa-solid fa-volume-xmark"></i> Audio Off
           </button>
@@ -3937,8 +4008,9 @@ Required actions:
       {
         id: 1,
         phase: 0,
-        title: 'Disambiguation',
-        explanation: 'Before any research, Claude clarifies ambiguous terms to ensure accurate documentation lookup. This prevents wasted research on the wrong library.',
+        title: 'Phase 0: Disambiguation',
+        problem: 'Claude might research the wrong library. "Brandfetch" could mean the REST API, npm SDK, or custom code.',
+        solution: 'The enforce-disambiguation hook blocks ALL research until Claude asks you to clarify. You pick from numbered options.',
         hook: 'enforce-disambiguation.py',
         lines: [
           { text: '$ /api-create brandfetch', class: 'user' },
@@ -3963,8 +4035,9 @@ Required actions:
       {
         id: 2,
         phase: -1,
-        title: 'Exit Code 2 Enforcement',
-        explanation: 'What happens if Claude tries to skip research? Exit code 2 creates a HARD BLOCK. Claude MUST respond to this error - it cannot ignore it or proceed.',
+        title: 'Exit Code 2: Enforcement',
+        problem: 'Claude wants to skip research and start coding. It thinks it "already knows" the API from training data.',
+        solution: 'Exit code 2 creates a HARD BLOCK. Claude cannot proceed or ignore it. It MUST respond to the error and complete research.',
         hook: 'enforce-research.py (exit code 2)',
         lines: [
           { text: '', class: 'output' },
@@ -3991,8 +4064,9 @@ Required actions:
       {
         id: 3,
         phase: 1,
-        title: 'Scope Confirmation',
-        explanation: 'Claude confirms understanding of the endpoint purpose before researching. This ensures research is focused on the right use case.',
+        title: 'Phase 1: Scope Confirmation',
+        problem: 'Claude might misunderstand what you want. You say "fetch brand assets" but Claude thinks you want a database model.',
+        solution: 'Before research, Claude summarizes its understanding and asks "Is this correct?" You confirm or correct before any work begins.',
         hook: 'enforce-scope.py',
         lines: [
           { text: '', class: 'output' },
@@ -4014,8 +4088,9 @@ Required actions:
       {
         id: 4,
         phase: 2,
-        title: 'Initial Research',
-        explanation: 'Hook BLOCKS Write/Edit until Claude fetches CURRENT docs via Context7 MCP or WebSearch. LLM training data is not trusted.',
+        title: 'Phase 2: Initial Research',
+        problem: 'Claude\'s training data might be months or years old. APIs change, endpoints get deprecated, auth methods evolve.',
+        solution: 'Claude must fetch CURRENT docs via Context7 MCP or WebSearch. Two sources minimum. Cross-referenced for accuracy.',
         hook: 'enforce-research.py',
         lines: [
           { text: '', class: 'output' },
@@ -4047,8 +4122,9 @@ Required actions:
       {
         id: 5,
         phase: 3,
-        title: 'Structured Interview',
-        explanation: 'Questions generated FROM research findings, not templates. Hook requires AskUserQuestion with numbered options. Self-answers blocked.',
+        title: 'Phase 3: Structured Interview',
+        problem: 'Generic AI asks template questions without knowing what options exist. Or worse, it asks then immediately answers itself.',
+        solution: 'Questions come FROM research findings. Numbered options only. Self-answering blocked. Your decisions are locked in.',
         hook: 'enforce-interview.py',
         lines: [
           { text: '', class: 'output' },
@@ -4073,8 +4149,9 @@ Required actions:
       {
         id: 6,
         phase: 4,
-        title: 'Deep Research',
-        explanation: 'Based on interview answers, Claude proposes additional targeted searches. Discovers edge cases specific to user requirements.',
+        title: 'Phase 4: Deep Research',
+        problem: 'Initial research gives the overview, but your specific choices might need deeper investigation.',
+        solution: 'Based on YOUR interview answers, Claude proposes targeted follow-up searches. Your requirements drive the investigation.',
         hook: 'enforce-deep-research.py',
         lines: [
           { text: '', class: 'output' },
@@ -4097,8 +4174,9 @@ Required actions:
       {
         id: 7,
         phase: 5,
-        title: 'Schema Creation',
-        explanation: 'Zod schemas created from research + interview. Every discovered parameter is typed. Becomes contract for tests and implementation.',
+        title: 'Phase 5: Schema Creation',
+        problem: 'Without a contract, tests and implementation drift apart. Fields aren\'t validated or typed correctly.',
+        solution: 'Zod schemas define exact request/response shapes. Every discovered parameter typed. Becomes the source of truth.',
         hook: 'enforce-schema.py',
         lines: [
           { text: '', class: 'output' },
@@ -4118,8 +4196,9 @@ Required actions:
       {
         id: 8,
         phase: 6,
-        title: 'Environment Check',
-        explanation: 'Before tests, verify required API keys exist. Prevents "tests pass locally but fail in CI" scenarios.',
+        title: 'Phase 6: Environment Check',
+        problem: 'Tests pass locally but fail in CI. Why? Missing API key. You waste 30 minutes debugging.',
+        solution: 'Check environment BEFORE writing tests. Is the API key present? Is the format valid? No surprises later.',
         hook: 'enforce-environment.py',
         lines: [
           { text: '', class: 'output' },
@@ -4137,8 +4216,9 @@ Required actions:
       {
         id: 9,
         phase: 7,
-        title: 'TDD Red Phase',
-        explanation: 'Failing tests written BEFORE implementation. Tests cover all discovered params AND interview decisions. No code until tests exist.',
+        title: 'Phase 7: TDD Red',
+        problem: 'Without tests, you don\'t know if code works. You ship bugs. You break things in production.',
+        solution: 'Write failing tests FIRST. Define success before implementation. Tests cover research findings AND interview decisions.',
         hook: 'enforce-tdd-red.py',
         lines: [
           { text: '', class: 'output' },
@@ -4163,8 +4243,9 @@ Required actions:
       {
         id: 10,
         phase: 8,
-        title: 'TDD Green Phase',
-        explanation: 'Minimal implementation to pass tests. When ALL tests pass, verify-after-green.py AUTOMATICALLY triggers Phase 9.',
+        title: 'Phase 8: TDD Green',
+        problem: 'Developers write more code than needed. They add features not requested. They over-engineer.',
+        solution: 'Write MINIMAL implementation. Just enough to pass tests. When tests pass, verification triggers automatically.',
         hook: 'verify-after-green.py (PostToolUse)',
         lines: [
           { text: '', class: 'output' },
@@ -4192,8 +4273,9 @@ Required actions:
       {
         id: 11,
         phase: 9,
-        title: 'Verification Phase',
-        explanation: 'Re-fetches docs and compares to implementation. Catches memory-based drift during coding. Loops back if mismatched.',
+        title: 'Phase 9: Verification',
+        problem: 'Even after researching, Claude might implement from memory. It forgets details. Implementation drifts from docs.',
+        solution: 'After tests pass, RE-FETCH docs. Compare implementation to current docs. If mismatch, loop back to Red phase.',
         hook: 'verify-after-green.py',
         lines: [
           { text: '', class: 'output' },
@@ -4217,8 +4299,9 @@ Required actions:
       {
         id: 12,
         phase: 10,
-        title: 'TDD Refactor Phase',
-        explanation: 'Clean up code while keeping tests green. Improve readability, extract utilities. Tests must pass after each change.',
+        title: 'Phase 10: TDD Refactor',
+        problem: 'First implementations are often messy. But cleaning up code might break things without you knowing.',
+        solution: 'Refactor WHILE tests stay green. Every change verified by existing test suite. If anything breaks, you know immediately.',
         hook: 'enforce-refactor.py',
         lines: [
           { text: '', class: 'output' },
@@ -4238,8 +4321,9 @@ Required actions:
       {
         id: 13,
         phase: 11,
-        title: 'Documentation Phase',
-        explanation: 'Update API manifest, cache research findings, generate OpenAPI spec. All docs synced with implementation.',
+        title: 'Phase 11: Documentation',
+        problem: 'Knowledge gets lost. The next developer starts from scratch. They make the same mistakes, ask the same questions.',
+        solution: 'Cache everything. Research cached with 7-day freshness. API manifest updated. Future sessions benefit from today\'s work.',
         hook: 'enforce-documentation.py',
         lines: [
           { text: '', class: 'output' },
@@ -4258,8 +4342,9 @@ Required actions:
       {
         id: 14,
         phase: 12,
-        title: 'Workflow Complete',
-        explanation: 'All 12 phases verified complete. Git diff matches claimed changes. Files tracked. Ready to commit with full confidence.',
+        title: 'Phase 12: Completion',
+        problem: 'How do you know everything is actually done? Claude might claim finished but skip steps.',
+        solution: 'The api-workflow-check hook runs at stop time. Verifies all 12 phases completed. All files created, tests passing, docs updated.',
         hook: 'api-workflow-check.py (Stop)',
         lines: [
           { text: '', class: 'output' },
@@ -4324,7 +4409,22 @@ Required actions:
 
     function updateExplanation(scene) {
       document.getElementById('demo-explanation-title').textContent = scene.title;
-      document.getElementById('demo-explanation-text').textContent = scene.explanation;
+
+      // Build problem/solution format
+      const textEl = document.getElementById('demo-explanation-text');
+      if (scene.problem && scene.solution) {
+        textEl.innerHTML = `
+          <div class="explanation-problem">
+            <strong>The Problem:</strong> ${scene.problem}
+          </div>
+          <div class="explanation-solution">
+            <strong>The Solution:</strong> ${scene.solution}
+          </div>
+        `;
+      } else if (scene.explanation) {
+        // Fallback for any scenes without problem/solution
+        textEl.textContent = scene.explanation;
+      }
 
       const hookBadge = document.getElementById('demo-hook-badge');
       if (scene.hook) {
@@ -4452,18 +4552,38 @@ Required actions:
       prevScene();
     }
 
+    // Pause at end of each scene to let user read and let narration catch up
+    let pauseAtSceneEnd = true;
+
     function autoplayTick() {
       if (!demoPlaying) return;
 
+      const scene = demoScenes[currentScene];
+      const atSceneEnd = currentLine >= scene.lines.length;
+
+      // If at end of scene and pause is enabled, wait for user to tap Next
+      if (atSceneEnd && pauseAtSceneEnd && currentScene < demoScenes.length - 1) {
+        stopAutoplay();
+        // Show hint to continue
+        const playBtn = document.getElementById('demo-play');
+        playBtn.innerHTML = '<i class="fa-solid fa-forward-step"></i> Next Scene';
+        playBtn.classList.add('pulse-hint');
+        return;
+      }
+
       const hasMore = nextLine();
       if (hasMore) {
-        const scene = demoScenes[currentScene];
         const line = scene.lines[currentLine - 1];
-        let delay = 150 / playSpeed;
+        // Much slower delays for better readability
+        let delay = 400 / playSpeed;  // Base delay increased from 150ms to 400ms
 
-        if (line.text === '') delay = 80 / playSpeed;
-        else if (line.class === 'user') delay = 600 / playSpeed;
-        else if (line.class === 'highlight') delay = 400 / playSpeed;
+        if (line.text === '') delay = 200 / playSpeed;  // Empty lines
+        else if (line.class === 'user') delay = 1200 / playSpeed;  // User input - pause longer
+        else if (line.class === 'highlight') delay = 800 / playSpeed;  // Headers
+        else if (line.class === 'success') delay = 600 / playSpeed;  // Success messages
+        else if (line.class === 'hook-block') delay = 500 / playSpeed;  // Hook blocks
+        else if (line.class === 'warning') delay = 700 / playSpeed;  // Warnings
+        else if (line.class === 'mcp-call') delay = 500 / playSpeed;  // MCP calls
 
         demoTimeout = setTimeout(autoplayTick, delay);
       } else {
@@ -4473,6 +4593,9 @@ Required actions:
 
     function startAutoplay() {
       demoPlaying = true;
+      // Remove pulse hint if present
+      const playBtn = document.getElementById('demo-play');
+      playBtn.classList.remove('pulse-hint');
       updateButtonStates();
       autoplayTick();
     }
@@ -4523,6 +4646,51 @@ Required actions:
       }
     }
 
+    // Jump to a specific phase - shows all content up to and including that phase
+    function jumpToPhase(targetPhase) {
+      stopAutoplay();
+
+      // Clear terminal
+      document.getElementById('demo-content').innerHTML = '';
+
+      // Find all scenes up to and including this phase
+      let targetSceneIndex = -1;
+      for (let i = 0; i < demoScenes.length; i++) {
+        const scene = demoScenes[i];
+
+        // Skip scenes until we find one at or after the target phase
+        if (scene.phase <= targetPhase) {
+          // Show all lines from this scene
+          for (const line of scene.lines) {
+            addLine(line);
+          }
+          targetSceneIndex = i;
+        }
+
+        // Stop when we've shown the target phase
+        if (scene.phase === targetPhase) {
+          break;
+        }
+      }
+
+      // Set current scene to the target
+      if (targetSceneIndex >= 0) {
+        currentScene = targetSceneIndex;
+        const scene = demoScenes[targetSceneIndex];
+        currentLine = scene.lines.length;
+
+        updatePhaseList(scene.phase);
+        updateExplanation(scene);
+        updateSceneIndicator();
+        updateButtonStates();
+
+        // Sync audio if enabled
+        if (typeof demoAudioController !== 'undefined' && demoAudioController.enabled) {
+          demoAudioController.playPhaseAudio(targetPhase);
+        }
+      }
+    }
+
     // Event listeners
     document.getElementById('demo-play').addEventListener('click', toggleAutoplay);
     document.getElementById('demo-reset').addEventListener('click', resetDemo);
@@ -4545,33 +4713,26 @@ Required actions:
       audio: null,
       timing: null,
       enabled: false,
-      voice: 'santa',
       isPlaying: false,
       currentSceneId: null,
 
-      // Demo audio file paths
-      audioFiles: {
-        male: 'audio/demo-narration-male.mp3',
-        female: 'audio/demo-narration-female.mp3',
-        santa: 'audio/demo-narration-santa.mp3'
-      },
-
-      // Embedded timing data (will be populated)
-      timingData: {},
+      // Single voice - Aidan (male)
+      audioFile: 'audio/demo-narration-aidan.mp3',
+      timingFile: 'audio/demo-narration-aidan-timing.json',
 
       async init() {
-        // Load timing data for all voices
+        // Load timing data
         await this.loadTimingData();
 
         // Set up event listeners
         document.getElementById('demo-audio-toggle').addEventListener('click', () => this.toggle());
-        document.getElementById('demo-voice').addEventListener('change', (e) => this.setVoice(e.target.value));
 
         // Add click listeners to phase list items
+        // This now uses jumpToPhase which resets terminal AND syncs audio
         document.querySelectorAll('.phase-list li').forEach(item => {
           item.addEventListener('click', () => {
             const phase = parseInt(item.dataset.phase);
-            this.playPhaseAudio(phase);
+            jumpToPhase(phase);
           });
         });
 
@@ -4579,49 +4740,20 @@ Required actions:
       },
 
       async loadTimingData() {
-        // Load timing data for each voice
-        for (const voice of ['male', 'female', 'santa']) {
-          try {
-            const response = await fetch(`audio/demo-narration-${voice}-timing.json`);
-            if (response.ok) {
-              this.timingData[voice] = await response.json();
-              console.log(`Loaded timing for ${voice}:`, this.timingData[voice].sceneCount, 'scenes');
-            }
-          } catch (e) {
-            console.warn(`Could not load timing for ${voice}:`, e);
+        try {
+          const response = await fetch(this.timingFile);
+          if (response.ok) {
+            this.timing = await response.json();
+            console.log('Demo audio timing loaded:', this.timing.sceneCount, 'scenes');
           }
-        }
-      },
-
-      setVoice(voice) {
-        const wasPlaying = this.isPlaying;
-        const currentTime = this.audio ? this.audio.currentTime : 0;
-
-        // Stop current audio
-        if (this.audio) {
-          this.audio.pause();
-          this.audio = null;
-        }
-
-        this.voice = voice;
-
-        // If was playing, restart with new voice at same position
-        if (wasPlaying && this.enabled) {
-          this.loadAudio().then(() => {
-            if (this.audio && currentTime > 0) {
-              this.audio.currentTime = currentTime;
-              this.audio.play();
-            }
-          });
+        } catch (e) {
+          console.warn('Could not load demo audio timing:', e);
         }
       },
 
       async loadAudio() {
-        if (!this.audioFiles[this.voice]) return;
-
-        this.audio = new Audio(this.audioFiles[this.voice]);
+        this.audio = new Audio(this.audioFile);
         this.audio.preload = 'auto';
-        this.timing = this.timingData[this.voice];
 
         // Set up audio event listeners
         this.audio.addEventListener('timeupdate', () => this.onTimeUpdate());
@@ -4882,6 +5014,7 @@ Required actions:
         this.isMuted = false;
         this.lastScrolledSection = null;
         this.isDragging = false;
+        this.demoPauseTriggered = false; // Track if we've already paused for demo section
 
         // DOM elements - will be set in init()
         this.bar = null;
@@ -5179,6 +5312,12 @@ Required actions:
                 boxShadow: '0 0 25px rgba(186, 12, 47, 0.5)',
                 duration: 0.3
               });
+
+              // Special behavior for demo controls - pause and highlight play button
+              if (highlight.selector === '.demo-controls' && !this.demoPauseTriggered) {
+                this.demoPauseTriggered = true;
+                this.pauseForDemo();
+              }
             } else if (!isActive && el.classList.contains('narration-highlight')) {
               el.classList.remove('narration-highlight');
               gsap.to(el, {
@@ -5190,6 +5329,47 @@ Required actions:
           } catch (e) {
             // Invalid selector, skip
           }
+        }
+      }
+
+      // Pause main narration and highlight demo play button
+      pauseForDemo() {
+        // Pause the narration
+        if (this.audio && this.isPlaying) {
+          this.audio.pause();
+          this.isPlaying = false;
+          if (this.playBtn) this.playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+        }
+
+        // Highlight the demo play button
+        const demoPlayBtn = document.getElementById('demo-play');
+        if (demoPlayBtn) {
+          demoPlayBtn.classList.add('pulse-hint');
+          demoPlayBtn.innerHTML = '<i class="fa-solid fa-play"></i> Tap to Start Demo';
+
+          // Show a tooltip/message
+          const message = document.createElement('div');
+          message.className = 'demo-prompt-message';
+          message.innerHTML = '<i class="fa-solid fa-arrow-down"></i> Try the interactive demo!';
+          demoPlayBtn.parentElement.insertBefore(message, demoPlayBtn);
+
+          // Remove message and hint after demo starts or after timeout
+          const cleanup = () => {
+            demoPlayBtn.classList.remove('pulse-hint');
+            demoPlayBtn.innerHTML = '<i class="fa-solid fa-play"></i> Auto-play';
+            if (message.parentElement) message.remove();
+          };
+
+          // Cleanup when demo starts playing
+          demoPlayBtn.addEventListener('click', cleanup, { once: true });
+
+          // Also cleanup after 30 seconds if user doesn't interact
+          setTimeout(cleanup, 30000);
+        }
+
+        // Update subtitles to prompt user
+        if (this.subtitles) {
+          this.subtitles.textContent = 'Try the interactive demo below, then tap Play to continue...';
         }
       }
 
