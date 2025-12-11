@@ -2504,6 +2504,125 @@
           <div class="result-blocked">[ BLOCKED ]<br><small>Missing requirements</small></div>
         </div>
       </div>
+
+      <!-- Exit Code 2 Enforcement Demo -->
+      <div class="enforcement-demo" style="margin-top: 48px; padding: 32px; background: #0a0a0a; border: 2px solid var(--accent-red); border-radius: 8px;">
+        <h3 style="color: var(--accent-red); margin-bottom: 24px; font-family: 'JetBrains Mono', monospace;">
+          🚫 EXIT CODE 2: HARD BLOCKING (v3.6.0)
+        </h3>
+
+        <div class="explanation" style="margin-bottom: 24px;">
+          <div class="explanation-title">Active Enforcement vs Passive Denial</div>
+          <p>
+            In v3.6.0, hooks use <strong>exit code 2</strong> instead of JSON denial. This creates an
+            <strong>active feedback loop</strong> - Claude must respond to the error and try something different.
+          </p>
+        </div>
+
+        <!-- Demo: Trying to skip research -->
+        <div style="margin-bottom: 32px;">
+          <div style="color: #888; font-size: 0.85rem; margin-bottom: 8px;">SCENARIO: AI tries to write code without researching first</div>
+          <div class="hook-error-demo" style="background: #111; border-left: 4px solid var(--accent-red); padding: 16px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; overflow-x: auto;">
+            <div style="color: #666; margin-bottom: 8px;">$ claude hook: enforce-research.py</div>
+            <pre style="color: #ef4444; margin: 0; white-space: pre-wrap;">BLOCKED: API development state not initialized.
+
+Before writing API implementation code, you must:
+  1. Run /api-create [endpoint-name] to start the workflow
+  OR
+  2. Run /api-research [library-name] to research dependencies
+
+This ensures you're working with current documentation, not outdated training data.</pre>
+            <div style="color: #666; margin-top: 8px;">exit code: 2</div>
+          </div>
+        </div>
+
+        <!-- Demo: Trying to skip interview -->
+        <div style="margin-bottom: 32px;">
+          <div style="color: #888; font-size: 0.85rem; margin-bottom: 8px;">SCENARIO: AI tries to write schema without completing interview</div>
+          <div class="hook-error-demo" style="background: #111; border-left: 4px solid var(--accent-red); padding: 16px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; overflow-x: auto;">
+            <div style="color: #666; margin-bottom: 8px;">$ claude hook: enforce-interview.py</div>
+            <pre style="color: #ef4444; margin: 0; white-space: pre-wrap;">BLOCKED: Interview phase not complete.
+
+Current status: in_progress
+AskUserQuestion calls: 2
+Structured questions: 1
+
+═══════════════════════════════════════════════════════════
+  USE STRUCTURED QUESTIONS WITH OPTIONS
+═══════════════════════════════════════════════════════════
+
+Based on your research, ask questions using AskUserQuestion with
+the 'options' parameter to provide multiple-choice selections:
+
+Example based on your research:
+  "Which of these should be the primary focus?"
+  1. Full Brand Kit
+  2. Logo Only
+  3. Colors and Fonts
+  4. Type something else...
+
+You need at least 3 structured questions with options.
+Current: 1</pre>
+            <div style="color: #666; margin-top: 8px;">exit code: 2</div>
+          </div>
+        </div>
+
+        <!-- Demo: Trying to complete without all phases -->
+        <div style="margin-bottom: 32px;">
+          <div style="color: #888; font-size: 0.85rem; margin-bottom: 8px;">SCENARIO: AI tries to stop before completing all phases</div>
+          <div class="hook-error-demo" style="background: #111; border-left: 4px solid var(--accent-red); padding: 16px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; overflow-x: auto;">
+            <div style="color: #666; margin-bottom: 8px;">$ claude hook: api-workflow-check.py</div>
+            <pre style="color: #ef4444; margin: 0; white-space: pre-wrap;">BLOCKED: Workflow incomplete.
+
+❌ REQUIRED phases incomplete:
+  - TDD Green phase (in_progress)
+  - Documentation updates (not_started)
+
+⚠️ Gap 2: Files changed but not tracked:
+  - src/lib/schemas/brandfetch.ts
+
+⚠️ Gap 4: Implementation verification:
+  - No test files tracked in files_created
+
+To continue:
+  1. Complete required phases above
+  2. Use /api-status to see detailed progress
+  3. Run `git diff --name-only` to verify changes</pre>
+            <div style="color: #666; margin-top: 8px;">exit code: 2</div>
+          </div>
+        </div>
+
+        <!-- Demo: Implementation mismatch -->
+        <div>
+          <div style="color: #888; font-size: 0.85rem; margin-bottom: 8px;">SCENARIO: AI implementation doesn't match interview decisions</div>
+          <div class="hook-error-demo" style="background: #111; border-left: 4px solid var(--accent-red); padding: 16px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; overflow-x: auto;">
+            <div style="color: #666; margin-bottom: 8px;">$ claude hook: verify-implementation.py</div>
+            <pre style="color: #ef4444; margin: 0; white-space: pre-wrap;">BLOCKED: Implementation verification failed.
+
+⚠️ Gap 1 Warning: User-specified terms not found in research:
+   Terms from interview: ['Vercel AI Gateway']
+   These EXACT terms should have been searched.
+
+⚠️ Gap 5 Warning: Test may be checking wrong environment variables.
+   Interview mentioned: gateway/single key pattern
+   Test checks: ['OPENAI_API_KEY', 'ANTHROPIC_API_KEY']
+   Consider: Should test check AI_GATEWAY_API_KEY instead?
+
+REQUIRED ACTIONS:
+  1. Re-research using the EXACT terms from the interview
+  2. Ensure test files check the correct environment variables
+  3. Verify implementation matches user's stated requirements
+
+Review .claude/api-dev-state.json for full details.</pre>
+            <div style="color: #666; margin-top: 8px;">exit code: 2</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px; padding: 16px; background: rgba(34, 197, 94, 0.1); border-left: 4px solid #22c55e; border-radius: 4px;">
+          <strong style="color: #22c55e;">Result:</strong> Claude Code MUST respond to these errors. It cannot ignore them and proceed.
+          The AI is forced to adjust its approach and complete the required steps.
+        </div>
+      </div>
     </div>
   </section>
 
@@ -2513,13 +2632,13 @@
   <section id="phases">
     <div class="ascii-border">
       <h2>THE WORKFLOW</h2>
-      <h3>12 Enforced Phases (v3.0)</h3>
+      <h3>12 Enforced Phases (v3.6.0)</h3>
 
       <div class="explanation">
         <div class="explanation-title">The Complete Process</div>
         <p>
           Every API goes through these 12 phases. The system tracks progress and won't let
-          the AI skip ahead. <strong>Phase 0 (Disambiguation)</strong> and <strong>Phase 9 (Verify)</strong> are new in v3.0!
+          the AI skip ahead. Hooks now use <strong>exit code 2</strong> for hard blocking!
         </p>
       </div>
 
@@ -2627,14 +2746,15 @@
   <section id="demo">
     <div class="ascii-border" style="max-width: 1400px;">
       <h2>LIVE SIMULATION</h2>
-      <h3>12-Phase Workflow (v3.0)</h3>
+      <h3>12-Phase Workflow (v3.6.0)</h3>
 
       <div class="explanation">
-        <div class="explanation-title">The Complete v3.0 Flow</div>
+        <div class="explanation-title">The Complete v3.6.0 Flow</div>
         <p>
           Watch the full <strong>/api-create brandfetch</strong> command in action.
-          The side panel explains each step as it happens. Notice the AI/User conversation format
-          and how research findings drive the interview questions.
+          The side panel explains each step as it happens. Notice how <strong>hooks enforce</strong>
+          each phase transition - research findings drive the interview questions, interview
+          decisions are injected during implementation, and verification catches gaps.
         </p>
       </div>
 
@@ -3192,6 +3312,9 @@
               <div class="explanation-step-why">
                 Questions will be generated FROM these findings - not generic templates.
               </div>
+              <div class="explanation-step-hook" style="margin-top: 8px; padding: 8px; background: rgba(239, 68, 68, 0.1); border-radius: 4px; font-size: 0.8rem;">
+                <strong style="color: #ef4444;">🔒 enforce-research.py</strong> — Blocks any code writing if this phase incomplete
+              </div>
             </div>
 
             <div class="explanation-step" data-phase="3">
@@ -3204,6 +3327,9 @@
               </div>
               <div class="explanation-step-why">
                 Every decision is recorded and injected during implementation.
+              </div>
+              <div class="explanation-step-hook" style="margin-top: 8px; padding: 8px; background: rgba(239, 68, 68, 0.1); border-radius: 4px; font-size: 0.8rem;">
+                <strong style="color: #ef4444;">🔒 enforce-interview.py</strong> — Blocks schema/TDD if &lt;5 questions or self-answered
               </div>
             </div>
 
@@ -3257,6 +3383,9 @@
               <div class="explanation-step-why">
                 No implementation until tests exist. Enforced by hooks.
               </div>
+              <div class="explanation-step-hook" style="margin-top: 8px; padding: 8px; background: rgba(239, 68, 68, 0.1); border-radius: 4px; font-size: 0.8rem;">
+                <strong style="color: #ef4444;">🔒 enforce-tdd-red.py</strong> — Blocks route.ts until test file exists
+              </div>
             </div>
 
             <div class="explanation-step" data-phase="8">
@@ -3270,6 +3399,9 @@
               <div class="explanation-step-why">
                 Hook reminds Claude of YOUR decisions on every write.
               </div>
+              <div class="explanation-step-hook" style="margin-top: 8px; padding: 8px; background: rgba(34, 197, 94, 0.1); border-radius: 4px; font-size: 0.8rem;">
+                <strong style="color: #22c55e;">💉 enforce-interview.py</strong> — Injects user decisions into context on every write
+              </div>
             </div>
 
             <div class="explanation-step" data-phase="9">
@@ -3282,6 +3414,9 @@
               </div>
               <div class="explanation-step-why">
                 Catches memory-based errors. Loops back if gaps found.
+              </div>
+              <div class="explanation-step-hook" style="margin-top: 8px; padding: 8px; background: rgba(239, 68, 68, 0.1); border-radius: 4px; font-size: 0.8rem;">
+                <strong style="color: #ef4444;">🔒 verify-implementation.py</strong> — Blocks if terms from interview not found in research
               </div>
             </div>
 
@@ -3320,7 +3455,10 @@
                 All phases verified. API is ready for use!
               </div>
               <div class="explanation-step-why">
-                api-workflow-check.py blocks completion if anything incomplete.
+                Stop hook verifies all phases complete + git diff tracking.
+              </div>
+              <div class="explanation-step-hook" style="margin-top: 8px; padding: 8px; background: rgba(239, 68, 68, 0.1); border-radius: 4px; font-size: 0.8rem;">
+                <strong style="color: #ef4444;">🔒 api-workflow-check.py</strong> — Blocks stop if any required phase incomplete (exit 2)
               </div>
             </div>
           </div>
@@ -3429,8 +3567,8 @@
         <div class="install-step">
           <div class="install-icon">📝</div>
           <div class="install-content">
-            <div class="install-from">21 Slash Commands</div>
-            <div class="install-note">/api-create, /api-interview, /red, /green, /refactor...</div>
+            <div class="install-from">24 Slash Commands</div>
+            <div class="install-note">/api-create, /api-interview, /api-verify, /red, /green, /refactor...</div>
           </div>
           <div class="install-arrow">→</div>
           <div class="install-to">.claude/commands/</div>
@@ -3438,8 +3576,8 @@
         <div class="install-step">
           <div class="install-icon">🐍</div>
           <div class="install-content">
-            <div class="install-from">5 Python Hooks</div>
-            <div class="install-note">enforce-research, enforce-interview, verify-implementation...</div>
+            <div class="install-from">18 Python Hooks</div>
+            <div class="install-note">enforce-research, enforce-interview, verify-implementation, periodic-reground...</div>
           </div>
           <div class="install-arrow">→</div>
           <div class="install-to">.claude/hooks/</div>
@@ -3534,7 +3672,7 @@
       <div class="made-with">
         <p>Made for developers who want AI assistants<br>that actually follow instructions.</p>
         <p style="margin-top: 20px; color: var(--dark-grey);">
-          v3.0.0 | MIT License<br>
+          v3.6.0 | MIT License<br>
           "Interview first, test first, document always"
         </p>
       </div>
