@@ -2,10 +2,10 @@
   "meta": {
     "title": "Combine: AI Blog Post Generator",
     "description": "Orchestrating OpenAI + WordPress APIs into a combined endpoint",
-    "workflow": "combine",
-    "version": "3.9.2",
+    "workflow": "combine-api",
+    "version": "3.10.0",
     "duration_estimate": "~3 min simulated",
-    "total_steps": 67
+    "total_steps": 97
   },
   "steps": [
     {
@@ -23,7 +23,7 @@
       "id": 2,
       "type": "system",
       "delay": 800,
-      "content": "╭─────────────────────────────────────────────────────╮\n│  Claude Code v1.0.0                                 │\n│  Hustle API Dev Tools v3.9.2                        │\n│                                                     │\n│  Type /help for available commands                  │\n╰─────────────────────────────────────────────────────╯",
+      "content": "╭─────────────────────────────────────────────────────╮\n│  Claude Code v1.0.0                                 │\n│  Hustle API Dev Tools v3.10.0                       │\n│                                                     │\n│  Type /help for available commands                  │\n╰─────────────────────────────────────────────────────╯",
       "style": {
         "color": "#64748B",
         "font": "mono"
@@ -102,6 +102,16 @@
         "color": "#22C55E",
         "background": "rgba(34,197,94,0.1)",
         "prefix": "✓"
+      }
+    },
+    {
+      "id": "9a",
+      "type": "info",
+      "delay": 400,
+      "content": "⚠️  Combine workflow requires 2+ existing APIs in registry",
+      "style": {
+        "color": "#F59E0B",
+        "prefix": "ℹ"
       }
     },
     {
@@ -422,10 +432,31 @@
       "id": 40,
       "type": "claude",
       "delay": 400,
-      "content": "Based on your answers, I'll research additional patterns...",
+      "content": "Based on your interview answers, I need additional research.\n\nPROPOSED SEARCHES:\n┌─────────────────────────────────────────────────────────────┐\n│  1. \"WordPress REST API retry patterns authentication\"      │\n│     Reason: You chose retry on failure                      │\n│                                                             │\n│  2. \"OpenAI API SEO metadata generation best practices\"     │\n│     Reason: You want SEO generation included                │\n│                                                             │\n│  3. \"API orchestration draft fallback patterns\"             │\n│     Reason: You want draft save on publish failure          │\n└─────────────────────────────────────────────────────────────┘",
       "style": {
         "color": "#8B5CF6",
         "prefix": ">"
+      }
+    },
+    {
+      "id": "40a",
+      "type": "question",
+      "delay": 400,
+      "content": "Run these 3 searches? (yes/modify/skip)",
+      "style": {
+        "color": "#EC4899",
+        "prefix": "?"
+      }
+    },
+    {
+      "id": "40b",
+      "type": "user",
+      "delay": 1000,
+      "content": "yes",
+      "style": {
+        "color": "#22C55E",
+        "prefix": "$",
+        "typewriter": true
       }
     },
     {
@@ -449,10 +480,20 @@
       }
     },
     {
+      "id": "42a",
+      "type": "info",
+      "delay": 400,
+      "content": "WebSearch: \"API orchestration draft fallback patterns\"",
+      "style": {
+        "color": "#3B82F6",
+        "prefix": "ℹ"
+      }
+    },
+    {
       "id": 43,
       "type": "success",
       "delay": 600,
-      "content": "Deep research complete - patterns identified for retry logic and SEO generation",
+      "content": "Deep research complete - 3/3 searches executed",
       "style": {
         "color": "#22C55E",
         "prefix": "✓"
@@ -471,20 +512,50 @@
       }
     },
     {
-      "id": 40,
+      "id": "44a",
       "type": "claude",
       "delay": 400,
-      "content": "Creating combined input/output schema...",
+      "content": "Creating combined schema from source APIs...",
       "style": {
         "color": "#8B5CF6",
         "prefix": ">"
       }
     },
     {
-      "id": 41,
+      "id": "44b",
+      "type": "info",
+      "delay": 400,
+      "content": "Importing: src/lib/schemas/chat.schema.ts",
+      "style": {
+        "color": "#3B82F6",
+        "prefix": "ℹ"
+      }
+    },
+    {
+      "id": "44c",
+      "type": "info",
+      "delay": 300,
+      "content": "Importing: src/lib/schemas/wordpress.schema.ts",
+      "style": {
+        "color": "#3B82F6",
+        "prefix": "ℹ"
+      }
+    },
+    {
+      "id": "44d",
+      "type": "success",
+      "delay": 300,
+      "content": "Source schemas loaded - creating combined wrapper",
+      "style": {
+        "color": "#22C55E",
+        "prefix": "✓"
+      }
+    },
+    {
+      "id": 45,
       "type": "code",
       "delay": 800,
-      "content": "// Combined Schema\nexport const CreateAIBlogPostSchema = z.object({\n  // AI Generation inputs\n  topic: z.string().min(1).describe('Blog post topic'),\n  tone: z.enum(['professional', 'casual', 'technical']).default('professional'),\n  wordCount: z.number().min(100).max(5000).default(1000),\n  \n  // WordPress inputs\n  wpSiteUrl: z.string().url().describe('WordPress site URL'),\n  status: z.enum(['publish', 'draft', 'pending']).default('draft'),\n  categories: z.array(z.number()).optional(),\n  tags: z.array(z.string()).optional(),\n  \n  // Orchestration options\n  generateSeo: z.boolean().default(true),\n  autoPublish: z.boolean().default(false),\n});\n\nexport const CreateAIBlogPostResponseSchema = z.object({\n  success: z.boolean(),\n  content: z.object({\n    title: z.string(),\n    body: z.string(),\n    excerpt: z.string().optional(),\n    seoMeta: z.object({...}).optional(),\n  }),\n  wordpress: z.object({\n    postId: z.number(),\n    postUrl: z.string().url(),\n    status: z.string(),\n  }).optional(),\n  errors: z.array(z.string()).optional(),\n});",
+      "content": "// Combined Schema (imports from source APIs)\nexport const CreateAIBlogPostSchema = z.object({\n  // AI Generation inputs\n  topic: z.string().min(1).describe('Blog post topic'),\n  tone: z.enum(['professional', 'casual', 'technical']).default('professional'),\n  wordCount: z.number().min(100).max(5000).default(1000),\n  \n  // WordPress inputs\n  wpSiteUrl: z.string().url().describe('WordPress site URL'),\n  status: z.enum(['publish', 'draft', 'pending']).default('draft'),\n  categories: z.array(z.number()).optional(),\n  tags: z.array(z.string()).optional(),\n  \n  // Orchestration options\n  generateSeo: z.boolean().default(true),\n  autoPublish: z.boolean().default(false),\n});\n\nexport const CreateAIBlogPostResponseSchema = z.object({\n  success: z.boolean(),\n  content: z.object({\n    title: z.string(),\n    body: z.string(),\n    excerpt: z.string().optional(),\n    seoMeta: z.object({...}).optional(),\n  }),\n  wordpress: z.object({\n    postId: z.number(),\n    postUrl: z.string().url(),\n    status: z.string(),\n  }).optional(),\n  errors: z.array(z.string()).optional(),\n});",
       "style": {
         "color": "#F59E0B",
         "background": "#1E1E1E",
@@ -525,30 +596,51 @@
       }
     },
     {
-      "id": 45,
+      "id": "46a",
       "type": "claude",
       "delay": 400,
-      "content": "Checking required API keys for both source APIs...\n\n┌────────────────────────────────────────────┐\n│  Environment Check                         │\n├────────────────────────────────────────────┤\n│  OPENAI_API_KEY          ✓ Configured      │\n│  WORDPRESS_APP_PASSWORD  ✓ Configured      │\n│  WORDPRESS_USER          ✓ Configured      │\n└────────────────────────────────────────────┘",
+      "content": "Checking API keys for ALL source APIs...\n\n┌─────────────────────────────────────────────────────────────┐\n│  COMBINED ENVIRONMENT CHECK                                 │\n├─────────────────────────────────────────────────────────────┤\n│  Source: /api/v2/chat (OpenAI)                              │\n│  ├── OPENAI_API_KEY          ✓ Configured                   │\n├─────────────────────────────────────────────────────────────┤\n│  Source: /api/v2/wordpress                                  │\n│  ├── WORDPRESS_APP_PASSWORD  ✓ Configured                   │\n│  └── WORDPRESS_USER          ✓ Configured                   │\n├─────────────────────────────────────────────────────────────┤\n│  TOTAL: 3 keys required, 3 configured                       │\n└─────────────────────────────────────────────────────────────┘",
       "style": {
         "color": "#8B5CF6",
         "prefix": ">"
       }
     },
     {
-      "id": 46,
+      "id": "46b",
       "type": "success",
       "delay": 300,
-      "content": "All required API keys configured",
+      "content": "All source API keys configured",
       "style": {
         "color": "#22C55E",
         "prefix": "✓"
       }
     },
     {
+      "id": "46c",
+      "type": "question",
+      "delay": 400,
+      "content": "Environment ready. Proceed to write integration tests?",
+      "style": {
+        "color": "#EC4899",
+        "prefix": "?"
+      }
+    },
+    {
+      "id": "46d",
+      "type": "user",
+      "delay": 1000,
+      "content": "yes",
+      "style": {
+        "color": "#22C55E",
+        "prefix": "$",
+        "typewriter": true
+      }
+    },
+    {
       "id": 47,
       "type": "phase",
       "delay": 500,
-      "content": "PHASE 8-9: TDD RED/GREEN",
+      "content": "PHASE 8: TDD RED",
       "style": {
         "color": "#BA0C2F",
         "background": "rgba(186,12,47,0.1)",
@@ -560,7 +652,38 @@
       "id": 48,
       "type": "claude",
       "delay": 400,
-      "content": "Creating integration tests for orchestrated flow...",
+      "content": "Planning integration tests for combined flow...\n\n┌─────────────────────────────────────────────────────────────┐\n│  TEST MATRIX FOR COMBINED ENDPOINT                          │\n├─────────────────────────────────────────────────────────────┤\n│  1. Happy path: Generate → SEO → Publish                    │\n│  2. AI failure: Retry 3x then error                         │\n│  3. WordPress failure: Save as draft fallback               │\n│  4. SEO generation: Title + excerpt + meta                  │\n│  5. Status options: publish | draft | pending               │\n├─────────────────────────────────────────────────────────────┤\n│  MOCKING: Source APIs will be mocked                        │\n│  • Mock /api/v2/chat responses                              │\n│  • Mock /api/v2/wordpress responses                         │\n└─────────────────────────────────────────────────────────────┘",
+      "style": {
+        "color": "#8B5CF6",
+        "prefix": ">"
+      }
+    },
+    {
+      "id": "48a",
+      "type": "question",
+      "delay": 400,
+      "content": "Approve this test matrix? (yes/add more/modify)",
+      "style": {
+        "color": "#EC4899",
+        "prefix": "?"
+      }
+    },
+    {
+      "id": "48b",
+      "type": "user",
+      "delay": 1000,
+      "content": "yes",
+      "style": {
+        "color": "#22C55E",
+        "prefix": "$",
+        "typewriter": true
+      }
+    },
+    {
+      "id": "48c",
+      "type": "claude",
+      "delay": 400,
+      "content": "Writing integration tests with mocked source APIs...",
       "style": {
         "color": "#8B5CF6",
         "prefix": ">"
@@ -570,7 +693,7 @@
       "id": 49,
       "type": "code",
       "delay": 600,
-      "content": "// Integration tests for combined endpoint\ndescribe('POST /api/v2/create-ai-blog-post', () => {\n  it('generates content and saves as WordPress draft', async () => {\n    const response = await POST({\n      topic: 'Benefits of TypeScript',\n      status: 'draft',\n      wpSiteUrl: 'https://example.com',\n    });\n    expect(response.success).toBe(true);\n    expect(response.content.title).toBeDefined();\n    expect(response.wordpress.postId).toBeDefined();\n  });\n\n  it('handles AI generation failure with retry', async () => {...});\n  it('saves draft when WordPress publish fails', async () => {...});\n  it('generates SEO metadata when requested', async () => {...});\n  it('respects caller-specified post status', async () => {...});\n});",
+      "content": "// Integration tests for combined endpoint (mocked sources)\ndescribe('POST /api/v2/create-ai-blog-post', () => {\n  it('generates content and saves as WordPress draft', async () => {\n    const response = await POST({\n      topic: 'Benefits of TypeScript',\n      status: 'draft',\n      wpSiteUrl: 'https://example.com',\n    });\n    expect(response.success).toBe(true);\n    expect(response.content.title).toBeDefined();\n    expect(response.wordpress.postId).toBeDefined();\n  });\n\n  it('handles AI generation failure with retry', async () => {...});\n  it('saves draft when WordPress publish fails', async () => {...});\n  it('generates SEO metadata when requested', async () => {...});\n  it('respects caller-specified post status', async () => {...});\n});",
       "style": {
         "color": "#F59E0B",
         "background": "#1E1E1E",
@@ -591,7 +714,7 @@
       "id": 51,
       "type": "error",
       "delay": 600,
-      "content": "FAIL  5 tests failed (as expected in RED phase)",
+      "content": "FAIL  5 tests failed (expected in RED phase)",
       "style": {
         "color": "#EF4444",
         "background": "rgba(239,68,68,0.1)",
@@ -599,10 +722,22 @@
       }
     },
     {
+      "id": "51a",
+      "type": "phase",
+      "delay": 500,
+      "content": "PHASE 9: TDD GREEN",
+      "style": {
+        "color": "#BA0C2F",
+        "background": "rgba(186,12,47,0.1)",
+        "bold": true,
+        "prefix": "◆"
+      }
+    },
+    {
       "id": 52,
       "type": "claude",
       "delay": 500,
-      "content": "Implementing orchestration logic...",
+      "content": "Implementing orchestration logic to pass tests...",
       "style": {
         "color": "#8B5CF6",
         "prefix": ">"
@@ -656,17 +791,68 @@
       "id": 57,
       "type": "claude",
       "delay": 400,
-      "content": "Verifying end-to-end integration...\n\n  ✓ AI generation produces valid content\n  ✓ WordPress API accepts generated content\n  ✓ Error handling works correctly\n  ✓ Draft fallback triggers on failure\n  ✓ SEO metadata properly formatted",
+      "content": "Re-reading source API docs to verify orchestration...",
       "style": {
         "color": "#8B5CF6",
         "prefix": ">"
       }
     },
     {
+      "id": "57a",
+      "type": "info",
+      "delay": 400,
+      "content": "Reading: .claude/research/chat/CURRENT.md",
+      "style": {
+        "color": "#3B82F6",
+        "prefix": "ℹ"
+      }
+    },
+    {
+      "id": "57b",
+      "type": "info",
+      "delay": 300,
+      "content": "Reading: .claude/research/wordpress/CURRENT.md",
+      "style": {
+        "color": "#3B82F6",
+        "prefix": "ℹ"
+      }
+    },
+    {
+      "id": "57c",
+      "type": "claude",
+      "delay": 800,
+      "content": "Gap Analysis Results:\n\n┌─────────────────────────────────────────────────────────────┐\n│  ORCHESTRATION vs SOURCE APIS                               │\n├─────────────────────────────────────────────────────────────┤\n│  ✓ Chat API integration        Correctly mocked             │\n│  ✓ WordPress API integration   Correctly mocked             │\n│  ✓ Sequential flow            Generate → SEO → Publish      │\n│  ✓ Error handling             Retry + draft fallback        │\n│  ✓ SEO generation             Title + excerpt + meta        │\n│  ✓ Status options             publish | draft | pending     │\n├─────────────────────────────────────────────────────────────┤\n│  GAPS FOUND: 0                                              │\n│  All interview decisions implemented correctly              │\n└─────────────────────────────────────────────────────────────┘",
+      "style": {
+        "color": "#8B5CF6",
+        "prefix": ">"
+      }
+    },
+    {
+      "id": "57d",
+      "type": "question",
+      "delay": 400,
+      "content": "Verification passed. Continue to refactor? (yes/re-test)",
+      "style": {
+        "color": "#EC4899",
+        "prefix": "?"
+      }
+    },
+    {
+      "id": "57e",
+      "type": "user",
+      "delay": 1000,
+      "content": "yes",
+      "style": {
+        "color": "#22C55E",
+        "prefix": "$",
+        "typewriter": true
+      }
+    },
+    {
       "id": 58,
       "type": "success",
       "delay": 400,
-      "content": "Integration verified",
+      "content": "End-to-end integration verified",
       "style": {
         "color": "#22C55E",
         "prefix": "✓"
@@ -676,7 +862,7 @@
       "id": 59,
       "type": "phase",
       "delay": 500,
-      "content": "PHASE 11-13: REFACTOR, DOCUMENTATION, COMPLETION",
+      "content": "PHASE 11: TDD REFACTOR",
       "style": {
         "color": "#BA0C2F",
         "background": "rgba(186,12,47,0.1)",
@@ -688,14 +874,118 @@
       "id": 60,
       "type": "claude",
       "delay": 400,
-      "content": "Final steps:\n\n  ✓ Code refactored with shared utilities\n  ✓ Registry.json updated (combined section)\n  ✓ API Showcase updated\n  ✓ All 5 integration tests passing\n  ✓ OpenAPI documentation generated",
+      "content": "Refactoring orchestration code while keeping tests green...\n\n  ✓ Extracted retryAsync utility\n  ✓ Created shared error handler\n  ✓ Cleaned up type imports",
       "style": {
         "color": "#8B5CF6",
         "prefix": ">"
       }
     },
     {
+      "id": "60a",
+      "type": "info",
+      "delay": 400,
+      "content": "Running tests after refactor...",
+      "style": {
+        "color": "#3B82F6",
+        "prefix": "ℹ"
+      }
+    },
+    {
+      "id": "60b",
+      "type": "success",
+      "delay": 400,
+      "content": "PASS  5 tests still passing after refactor",
+      "style": {
+        "color": "#22C55E",
+        "prefix": "✓"
+      }
+    },
+    {
       "id": 61,
+      "type": "phase",
+      "delay": 500,
+      "content": "PHASE 12: DOCUMENTATION",
+      "style": {
+        "color": "#BA0C2F",
+        "background": "rgba(186,12,47,0.1)",
+        "bold": true,
+        "prefix": "◆"
+      }
+    },
+    {
+      "id": 62,
+      "type": "claude",
+      "delay": 400,
+      "content": "Generating documentation and manifest entries...",
+      "style": {
+        "color": "#8B5CF6",
+        "prefix": ">"
+      }
+    },
+    {
+      "id": "62a",
+      "type": "info",
+      "delay": 400,
+      "content": "Updated: .claude/registry.json (combined section)",
+      "style": {
+        "color": "#3B82F6",
+        "prefix": "ℹ"
+      }
+    },
+    {
+      "id": "62b",
+      "type": "info",
+      "delay": 300,
+      "content": "Updated: src/app/api-test/api-tests-manifest.json",
+      "style": {
+        "color": "#3B82F6",
+        "prefix": "ℹ"
+      }
+    },
+    {
+      "id": "62c",
+      "type": "claude",
+      "delay": 800,
+      "content": "Generated 5 orchestration examples:\n\n┌─────────────────────────────────────────────────────────────┐\n│  MANIFEST EXAMPLES                                          │\n├─────────────────────────────────────────────────────────────┤\n│  1. Basic: Generate → Publish as draft                      │\n│  2. With SEO: Generate → SEO → Publish                      │\n│  3. Auto-publish: Generate → Publish immediately            │\n│  4. Error handling: Simulate failure + retry                │\n│  5. Categories: Generate with WordPress categories          │\n└─────────────────────────────────────────────────────────────┘",
+      "style": {
+        "color": "#8B5CF6",
+        "prefix": ">"
+      }
+    },
+    {
+      "id": "62d",
+      "type": "success",
+      "delay": 400,
+      "content": "5 orchestration examples added to manifest",
+      "style": {
+        "color": "#22C55E",
+        "prefix": "✓"
+      }
+    },
+    {
+      "id": 63,
+      "type": "phase",
+      "delay": 500,
+      "content": "PHASE 13: COMPLETION",
+      "style": {
+        "color": "#BA0C2F",
+        "background": "rgba(186,12,47,0.1)",
+        "bold": true,
+        "prefix": "◆"
+      }
+    },
+    {
+      "id": 64,
+      "type": "claude",
+      "delay": 400,
+      "content": "Combined endpoint metadata:\n\n┌─────────────────────────────────────────────────────────────┐\n│  COMBINED API METADATA                                      │\n├─────────────────────────────────────────────────────────────┤\n│  isCombined:    true                                        │\n│  flowType:      sequential                                  │\n│  sourceApis:    [/api/v2/chat, /api/v2/wordpress]          │\n│  errorStrategy: retry + draft-fallback                      │\n└─────────────────────────────────────────────────────────────┘",
+      "style": {
+        "color": "#8B5CF6",
+        "prefix": ">"
+      }
+    },
+    {
+      "id": 65,
       "type": "success",
       "delay": 600,
       "content": "Combined endpoint /api/v2/create-ai-blog-post created!",
@@ -707,17 +997,27 @@
       }
     },
     {
-      "id": 62,
+      "id": 66,
       "type": "info",
       "delay": 400,
-      "content": "View at /api-showcase or run: pnpm dev",
+      "content": "View at /api-showcase (combined badge) or run: pnpm dev",
       "style": {
         "color": "#3B82F6",
         "prefix": "ℹ"
       }
     },
     {
-      "id": 63,
+      "id": 67,
+      "type": "info",
+      "delay": 400,
+      "content": "Ready to commit. Run /commit to create semantic commit.",
+      "style": {
+        "color": "#F59E0B",
+        "prefix": "→"
+      }
+    },
+    {
+      "id": 68,
       "type": "system",
       "delay": 500,
       "content": "╭─────────────────────────────────────────────────────╮\n│  Combined Workflow Complete                         │\n│                                                     │\n│  Orchestrates:                                      │\n│  • /api/v2/chat (OpenAI)                           │\n│  • /api/v2/wordpress                               │\n│                                                     │\n│  Flow: Generate → SEO → Publish (with fallback)    │\n│                                                     │\n│  Files created:                                     │\n│  • src/app/api/v2/create-ai-blog-post/route.ts    │\n│  • src/lib/schemas/create-ai-blog-post.ts         │\n│  • src/app/api/v2/create-ai-blog-post/__tests__/  │\n│                                                     │\n│  Time: 2m 31s                                       │\n╰─────────────────────────────────────────────────────╯",

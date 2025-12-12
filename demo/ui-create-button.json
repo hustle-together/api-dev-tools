@@ -1,11 +1,11 @@
 {
   "meta": {
     "title": "UI Create: Button Component",
-    "description": "Complete workflow demonstrating component creation with Storybook integration",
-    "workflow": "ui-create",
-    "version": "3.9.2",
-    "duration_estimate": "~3 min simulated",
-    "total_steps": 72
+    "description": "Complete 13-phase workflow demonstrating component creation with Storybook integration",
+    "workflow": "ui-create-component",
+    "version": "3.10.0",
+    "duration_estimate": "~4 min simulated",
+    "total_steps": 92
   },
   "steps": [
     {
@@ -174,7 +174,7 @@
       "id": 16,
       "type": "claude",
       "delay": 400,
-      "content": "Researching button component patterns...",
+      "content": "Step 3a: Checking for brand guide...",
       "style": {
         "color": "#8B5CF6",
         "prefix": ">"
@@ -182,6 +182,36 @@
     },
     {
       "id": 17,
+      "type": "info",
+      "delay": 300,
+      "content": "Found .claude/BRAND_GUIDE.md - applying brand colors",
+      "style": {
+        "color": "#3B82F6",
+        "prefix": "ℹ"
+      }
+    },
+    {
+      "id": 18,
+      "type": "success",
+      "delay": 200,
+      "content": "Brand guide loaded: use_brand_guide = true",
+      "style": {
+        "color": "#22C55E",
+        "prefix": "✓"
+      }
+    },
+    {
+      "id": 19,
+      "type": "claude",
+      "delay": 400,
+      "content": "Step 3b: Researching button component patterns...",
+      "style": {
+        "color": "#8B5CF6",
+        "prefix": ">"
+      }
+    },
+    {
+      "id": 20,
       "type": "info",
       "delay": 300,
       "content": "Using Context7: resolve-library-id \"shadcn/ui\"",
@@ -444,7 +474,7 @@
       "id": 42,
       "type": "claude",
       "delay": 400,
-      "content": "Based on your choices, I'd like to research:\n\n  1. CVA pattern for 6 variants + 4 sizes\n  2. Radix Slot implementation for asChild\n\nThese are proposed, not automatic.",
+      "content": "Checking for existing components before creating new...",
       "style": {
         "color": "#8B5CF6",
         "prefix": ">"
@@ -452,6 +482,56 @@
     },
     {
       "id": 43,
+      "type": "info",
+      "delay": 300,
+      "content": "Scanning src/components/ui/ for ShadCN components...",
+      "style": {
+        "color": "#3B82F6",
+        "prefix": "ℹ"
+      }
+    },
+    {
+      "id": 44,
+      "type": "info",
+      "delay": 300,
+      "content": "Scanning .claude/registry.json for custom components...",
+      "style": {
+        "color": "#3B82F6",
+        "prefix": "ℹ"
+      }
+    },
+    {
+      "id": 45,
+      "type": "claude",
+      "delay": 600,
+      "content": "Component Analysis Results:\n\n┌─────────────────────────────────────────────────────────────┐\n│  EXISTING COMPONENTS                                        │\n├─────────────────────────────────────────────────────────────┤\n│  src/components/ui/                                         │\n│  ✗ No existing button component found                       │\n│                                                             │\n│  .claude/registry.json                                      │\n│  ✗ No button in registry                                    │\n├─────────────────────────────────────────────────────────────┤\n│  DEPENDENCIES NEEDED:                                       │\n│  • @radix-ui/react-slot (for asChild)                       │\n│  • class-variance-authority (for variants)                  │\n│  • clsx + tailwind-merge (for cn utility)                   │\n└─────────────────────────────────────────────────────────────┘",
+      "style": {
+        "color": "#8B5CF6",
+        "prefix": ">"
+      }
+    },
+    {
+      "id": 46,
+      "type": "success",
+      "delay": 300,
+      "content": "No existing button to reuse - will create new component",
+      "style": {
+        "color": "#22C55E",
+        "prefix": "✓"
+      }
+    },
+    {
+      "id": 47,
+      "type": "claude",
+      "delay": 400,
+      "content": "Based on interview, proposing deep research:\n\n  1. CVA pattern for 6 variants + 4 sizes\n  2. Radix Slot implementation for asChild\n\nThese are proposed, not automatic.",
+      "style": {
+        "color": "#8B5CF6",
+        "prefix": ">"
+      }
+    },
+    {
+      "id": 48,
       "type": "question",
       "delay": 400,
       "content": "Approve these additional searches? (yes/no/skip)",
@@ -461,7 +541,7 @@
       }
     },
     {
-      "id": 44,
+      "id": 49,
       "type": "user",
       "delay": 1000,
       "content": "yes",
@@ -472,7 +552,7 @@
       }
     },
     {
-      "id": 45,
+      "id": 50,
       "type": "info",
       "delay": 500,
       "content": "WebSearch: \"CVA cva class-variance-authority multi variant\"",
@@ -482,7 +562,7 @@
       }
     },
     {
-      "id": 46,
+      "id": 51,
       "type": "info",
       "delay": 500,
       "content": "WebSearch: \"Radix UI Slot asChild pattern\"",
@@ -492,7 +572,7 @@
       }
     },
     {
-      "id": 47,
+      "id": 52,
       "type": "success",
       "delay": 600,
       "content": "Deep research complete",
@@ -696,10 +776,10 @@
       }
     },
     {
-      "id": 66,
+      "id": 70,
       "type": "phase",
       "delay": 500,
-      "content": "PHASE 10: VERIFY",
+      "content": "PHASE 10: VERIFY (4-Step)",
       "style": {
         "color": "#BA0C2F",
         "background": "rgba(186,12,47,0.1)",
@@ -708,7 +788,27 @@
       }
     },
     {
-      "id": 67,
+      "id": 71,
+      "type": "claude",
+      "delay": 400,
+      "content": "Running 4-step verification...\n\n┌─────────────────────────────────────────────────────────────┐\n│  4-STEP VERIFICATION                                        │\n├─────────────────────────────────────────────────────────────┤\n│  Step 1: RESPONSIVE                                         │\n│  Testing at 1920px, 768px, 375px viewports...               │\n│  ✓ All breakpoints render correctly                         │\n├─────────────────────────────────────────────────────────────┤\n│  Step 2: BRAND                                              │\n│  Checking colors against BRAND_GUIDE.md...                  │\n│  ✓ Primary color matches brand                              │\n│  ✓ Focus ring uses brand accent                             │\n├─────────────────────────────────────────────────────────────┤\n│  Step 3: TESTS                                              │\n│  ✓ 18/18 Vitest tests passing                               │\n│  ✓ WCAG 2.1 AA: No violations found                         │\n├─────────────────────────────────────────────────────────────┤\n│  Step 4: MEMORY                                             │\n│  ✓ Re-renders on mount: 1                                   │\n│  ✓ Re-renders on prop change: 1                             │\n│  ✓ Bundle impact: +2.3kb (acceptable)                       │\n└─────────────────────────────────────────────────────────────┘",
+      "style": {
+        "color": "#8B5CF6",
+        "prefix": ">"
+      }
+    },
+    {
+      "id": 72,
+      "type": "success",
+      "delay": 400,
+      "content": "4-step verification passed",
+      "style": {
+        "color": "#22C55E",
+        "prefix": "✓"
+      }
+    },
+    {
+      "id": 73,
       "type": "claude",
       "delay": 400,
       "content": "Generating Storybook stories for all variants...",
@@ -739,10 +839,10 @@
       }
     },
     {
-      "id": 70,
+      "id": 78,
       "type": "phase",
       "delay": 500,
-      "content": "PHASE 11-13: REFACTOR, DOCUMENTATION, COMPLETION",
+      "content": "PHASE 11: TDD REFACTOR",
       "style": {
         "color": "#BA0C2F",
         "background": "rgba(186,12,47,0.1)",
@@ -751,17 +851,71 @@
       }
     },
     {
-      "id": 71,
+      "id": 79,
       "type": "claude",
       "delay": 400,
-      "content": "Final steps:\n\n  ✓ Code cleaned and documented\n  ✓ Registry.json updated\n  ✓ UI Showcase updated\n  ✓ All 18 tests passing\n  ✓ 10 Storybook stories created",
+      "content": "Cleaning up code while tests stay green...\n\n  • Added JSDoc comments\n  • Extracted cn utility to lib/utils\n  • Optimized forwardRef pattern",
       "style": {
         "color": "#8B5CF6",
         "prefix": ">"
       }
     },
     {
-      "id": 72,
+      "id": 80,
+      "type": "success",
+      "delay": 300,
+      "content": "18/18 tests still passing after refactor",
+      "style": {
+        "color": "#22C55E",
+        "prefix": "✓"
+      }
+    },
+    {
+      "id": 81,
+      "type": "phase",
+      "delay": 500,
+      "content": "PHASE 12: DOCUMENTATION",
+      "style": {
+        "color": "#BA0C2F",
+        "background": "rgba(186,12,47,0.1)",
+        "bold": true,
+        "prefix": "◆"
+      }
+    },
+    {
+      "id": 82,
+      "type": "claude",
+      "delay": 400,
+      "content": "Updating documentation...\n\n  ✓ Registry.json updated (components.Button)\n  ✓ 10 Storybook stories created\n  ✓ TypeScript JSDoc complete",
+      "style": {
+        "color": "#8B5CF6",
+        "prefix": ">"
+      }
+    },
+    {
+      "id": 83,
+      "type": "phase",
+      "delay": 500,
+      "content": "PHASE 13: COMPLETION",
+      "style": {
+        "color": "#BA0C2F",
+        "background": "rgba(186,12,47,0.1)",
+        "bold": true,
+        "prefix": "◆"
+      }
+    },
+    {
+      "id": 84,
+      "type": "claude",
+      "delay": 400,
+      "content": "Final verification:\n\n  ✓ All 18 tests passing\n  ✓ 4-step verification complete\n  ✓ 10 Storybook stories generated\n  ✓ Registry updated\n  ✓ UI Showcase data.json updated",
+      "style": {
+        "color": "#8B5CF6",
+        "prefix": ">"
+      }
+    },
+    {
+      "id": 85,
       "type": "success",
       "delay": 600,
       "content": "Button component created successfully!",
@@ -773,7 +927,7 @@
       }
     },
     {
-      "id": 73,
+      "id": 86,
       "type": "info",
       "delay": 400,
       "content": "View at /ui-showcase or run: pnpm storybook",
@@ -783,10 +937,20 @@
       }
     },
     {
-      "id": 74,
+      "id": 87,
+      "type": "success",
+      "delay": 300,
+      "content": "Ready to commit! Run /commit to create semantic commit",
+      "style": {
+        "color": "#22C55E",
+        "prefix": "✓"
+      }
+    },
+    {
+      "id": 88,
       "type": "system",
       "delay": 500,
-      "content": "╭─────────────────────────────────────────────────────╮\n│  Workflow Complete                                  │\n│                                                     │\n│  Files created:                                     │\n│  • src/components/Button/Button.tsx                │\n│  • src/components/Button/Button.types.ts           │\n│  • src/components/Button/Button.test.tsx           │\n│  • src/components/Button/Button.stories.tsx        │\n│  • src/components/Button/index.ts                  │\n│                                                     │\n│  Time: 2m 58s                                       │\n╰─────────────────────────────────────────────────────╯",
+      "content": "╭─────────────────────────────────────────────────────╮\n│  Workflow Complete                                  │\n│                                                     │\n│  Files created:                                     │\n│  • src/components/Button/Button.tsx                │\n│  • src/components/Button/Button.types.ts           │\n│  • src/components/Button/Button.test.tsx           │\n│  • src/components/Button/Button.stories.tsx        │\n│  • src/components/Button/index.ts                  │\n│                                                     │\n│  Hustle API Dev Tools v3.10.0                       │\n│  Time: 3m 28s                                       │\n╰─────────────────────────────────────────────────────╯",
       "style": {
         "color": "#64748B",
         "font": "mono"

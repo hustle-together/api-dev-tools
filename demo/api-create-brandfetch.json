@@ -3,9 +3,9 @@
     "title": "API Create: Brandfetch Integration",
     "description": "Complete 13-phase workflow demonstrating interview-driven, research-first API development",
     "workflow": "api-create",
-    "version": "3.9.2",
-    "duration_estimate": "~4 min simulated",
-    "total_steps": 85
+    "version": "3.10.0",
+    "duration_estimate": "~5 min simulated",
+    "total_steps": 95
   },
   "steps": [
     {
@@ -609,6 +609,27 @@
     },
     {
       "id": 58,
+      "type": "question",
+      "delay": 400,
+      "content": "Environment is ready. Proceed to write tests?",
+      "style": {
+        "color": "#EC4899",
+        "prefix": "?"
+      }
+    },
+    {
+      "id": 59,
+      "type": "user",
+      "delay": 1200,
+      "content": "yes",
+      "style": {
+        "color": "#22C55E",
+        "prefix": "$",
+        "typewriter": true
+      }
+    },
+    {
+      "id": 60,
       "type": "success",
       "delay": 300,
       "content": "All required API keys are configured",
@@ -618,7 +639,7 @@
       }
     },
     {
-      "id": 59,
+      "id": 61,
       "type": "phase",
       "delay": 500,
       "content": "PHASE 8: TDD RED",
@@ -630,17 +651,48 @@
       }
     },
     {
-      "id": 60,
+      "id": 62,
       "type": "claude",
       "delay": 400,
-      "content": "Creating test file based on schema and interview decisions...",
+      "content": "Based on schema and interview decisions, here's the test matrix:\n\n┌─────────────────────────────────────────────────────────────┐\n│  TEST SCENARIOS (from research + interview)                 │\n├─────────────────────────────────────────────────────────────┤\n│  1. Valid domain → returns brand data                       │\n│  2. Include colors flag → colors in response                │\n│  3. Logo format filter → only requested formats             │\n│  4. Invalid domain → 400 error                              │\n│  5. Rate limit → exponential backoff (from interview)       │\n└─────────────────────────────────────────────────────────────┘",
       "style": {
         "color": "#8B5CF6",
         "prefix": ">"
       }
     },
     {
-      "id": 61,
+      "id": 63,
+      "type": "question",
+      "delay": 400,
+      "content": "Approve this test matrix? (yes/add more/modify)",
+      "style": {
+        "color": "#EC4899",
+        "prefix": "?"
+      }
+    },
+    {
+      "id": 64,
+      "type": "user",
+      "delay": 1500,
+      "content": "yes",
+      "style": {
+        "color": "#22C55E",
+        "prefix": "$",
+        "typewriter": true
+      }
+    },
+    {
+      "id": 65,
+      "type": "claude",
+      "delay": 400,
+      "content": "Creating test file based on approved matrix...",
+      "style": {
+        "color": "#8B5CF6",
+        "prefix": ">"
+      }
+    },
+    {
+      "id": 66,
       "type": "code",
       "delay": 600,
       "content": "// src/app/api/v2/brandfetch/__tests__/brandfetch.api.test.ts\n\ndescribe('POST /api/v2/brandfetch', () => {\n  it('should fetch brand data for valid domain', async () => {\n    const response = await POST({ domain: 'google.com' });\n    expect(response.status).toBe(200);\n    expect(response.body.logos).toBeDefined();\n  });\n\n  it('should include colors when requested', async () => {\n    const response = await POST({ domain: 'google.com', includeColors: true });\n    expect(response.body.colors).toBeDefined();\n  });\n\n  it('should filter logo formats', async () => {\n    const response = await POST({ domain: 'google.com', logoFormats: ['svg'] });\n    response.body.logos.forEach(logo => {\n      logo.formats.forEach(f => expect(f.format).toBe('svg'));\n    });\n  });\n\n  it('should return 400 for invalid domain', async () => {\n    const response = await POST({ domain: '' });\n    expect(response.status).toBe(400);\n  });\n\n  it('should handle rate limiting with retry', async () => {\n    // Mock rate limit response, verify retry behavior\n  });\n});",
@@ -748,7 +800,7 @@
       }
     },
     {
-      "id": 71,
+      "id": 76,
       "type": "claude",
       "delay": 400,
       "content": "Re-reading Brandfetch documentation to verify implementation...",
@@ -758,27 +810,48 @@
       }
     },
     {
-      "id": 72,
+      "id": 77,
       "type": "info",
       "delay": 600,
-      "content": "Comparing implementation to official docs...",
+      "content": "WebSearch: \"Brandfetch API documentation 2025\" (re-verify)",
       "style": {
         "color": "#3B82F6",
         "prefix": "ℹ"
       }
     },
     {
-      "id": 73,
+      "id": 78,
       "type": "claude",
       "delay": 1000,
-      "content": "Verification Results:\n\n  ✓ Endpoint URL correct\n  ✓ Authentication header format correct\n  ✓ Response schema matches documentation\n  ✓ Logo formats handled correctly\n  ✓ Rate limiting retry implemented\n\nNo gaps found between implementation and documentation.",
+      "content": "Gap Analysis Results:\n\n┌─────────────────────────────────────────────────────────────┐\n│  IMPLEMENTATION vs DOCUMENTATION                            │\n├─────────────────────────────────────────────────────────────┤\n│  ✓ Endpoint URL               Matches                       │\n│  ✓ Auth header format         Matches                       │\n│  ✓ Response schema            Matches                       │\n│  ✓ Logo formats               Implemented (SVG, PNG)        │\n│  ✓ Rate limit retry           Implemented (exp backoff)     │\n│  ✓ Colors/fonts optional      Implemented                   │\n├─────────────────────────────────────────────────────────────┤\n│  GAPS FOUND: 0                                              │\n└─────────────────────────────────────────────────────────────┘",
       "style": {
         "color": "#8B5CF6",
         "prefix": ">"
       }
     },
     {
-      "id": 74,
+      "id": 79,
+      "type": "question",
+      "delay": 400,
+      "content": "No gaps found. Proceed to refactor, or loop back to fix something?",
+      "style": {
+        "color": "#EC4899",
+        "prefix": "?"
+      }
+    },
+    {
+      "id": 80,
+      "type": "user",
+      "delay": 1200,
+      "content": "proceed",
+      "style": {
+        "color": "#22C55E",
+        "prefix": "$",
+        "typewriter": true
+      }
+    },
+    {
+      "id": 81,
       "type": "success",
       "delay": 300,
       "content": "Verification passed - implementation matches docs",
@@ -886,7 +959,7 @@
       }
     },
     {
-      "id": 84,
+      "id": 91,
       "type": "info",
       "delay": 400,
       "content": "View at /api-showcase or run: pnpm dev",
@@ -896,10 +969,20 @@
       }
     },
     {
-      "id": 85,
+      "id": 92,
+      "type": "success",
+      "delay": 300,
+      "content": "Ready to commit! Run /commit to create semantic commit",
+      "style": {
+        "color": "#22C55E",
+        "prefix": "✓"
+      }
+    },
+    {
+      "id": 93,
       "type": "system",
       "delay": 500,
-      "content": "╭─────────────────────────────────────────────────────╮\n│  Workflow Complete                                  │\n│                                                     │\n│  Files created:                                     │\n│  • src/app/api/v2/brandfetch/route.ts              │\n│  • src/lib/schemas/brandfetch.ts                   │\n│  • src/app/api/v2/brandfetch/__tests__/...         │\n│                                                     │\n│  Time: 3m 42s                                       │\n╰─────────────────────────────────────────────────────╯",
+      "content": "╭─────────────────────────────────────────────────────╮\n│  Workflow Complete                                  │\n│                                                     │\n│  Files created:                                     │\n│  • src/app/api/v2/brandfetch/route.ts              │\n│  • src/lib/schemas/brandfetch.ts                   │\n│  • src/app/api/v2/brandfetch/__tests__/...         │\n│                                                     │\n│  Hustle API Dev Tools v3.10.0                       │\n│  Time: 4m 12s                                       │\n╰─────────────────────────────────────────────────────╯",
       "style": {
         "color": "#64748B",
         "font": "mono"
