@@ -49,6 +49,127 @@ RECOMMENDED_PHASES = [
     ("documentation", "Documentation updates"),
 ]
 
+# Combine workflow specific phases
+COMBINE_REQUIRED_PHASES = [
+    ("selection", "API selection (2+ APIs required)"),
+    ("scope", "Scope confirmation"),
+    ("research_initial", "Initial research"),
+    ("interview", "User interview"),
+    ("research_deep", "Deep research"),
+    ("schema_creation", "Combined schema creation"),
+    ("environment_check", "Environment check"),
+    ("tdd_red", "TDD Red phase"),
+    ("tdd_green", "TDD Green phase"),
+    ("verify", "Verification phase"),
+    ("documentation", "Documentation updates"),
+]
+
+# UI workflow specific phases
+UI_REQUIRED_PHASES = [
+    ("disambiguation", "Component/Page type disambiguation"),
+    ("scope", "Scope confirmation"),
+    ("design_research", "Design research"),
+    ("interview", "User interview"),
+    ("tdd_red", "TDD Red phase"),
+    ("tdd_green", "TDD Green phase"),
+    ("verify", "Verification phase (4-step)"),
+    ("documentation", "Documentation updates"),
+]
+
+
+def get_workflow_type(state):
+    """Detect the workflow type from state."""
+    workflow = state.get("workflow", "")
+    if workflow:
+        return workflow
+
+    # Infer from state structure
+    if state.get("combine_config"):
+        return "combine-api"
+    if state.get("ui_config"):
+        mode = state.get("ui_config", {}).get("mode", "")
+        return f"ui-create-{mode}" if mode else "ui-create-component"
+
+    return "api-create"
+
+
+def get_required_phases_for_workflow(workflow_type):
+    """Get the required phases list for a given workflow type."""
+    if workflow_type == "combine-api":
+        return COMBINE_REQUIRED_PHASES
+    elif workflow_type.startswith("ui-create"):
+        return UI_REQUIRED_PHASES
+    else:
+        return REQUIRED_PHASES
+
+
+def validate_combine_workflow(state):
+    """Validate combine-specific requirements.
+
+    Returns list of issues if validation fails, empty list if OK.
+    """
+    issues = []
+
+    combine_config = state.get("combine_config", {})
+    if not combine_config:
+        issues.append("❌ Combine config not found in state")
+        return issues
+
+    # Check that at least 2 APIs are selected
+    source_elements = combine_config.get("source_elements", [])
+    if len(source_elements) < 2:
+        issues.append(f"❌ Combine requires 2+ APIs, found {len(source_elements)}")
+        issues.append("   Select more APIs in Phase 1 (SELECTION)")
+
+    # Verify all source APIs exist in registry
+    try:
+        registry_path = STATE_FILE.parent / "registry.json"
+        if registry_path.exists():
+            registry = json.loads(registry_path.read_text())
+            apis = registry.get("apis", {})
+
+            for elem in source_elements:
+                elem_name = elem.get("name", "") if isinstance(elem, dict) else str(elem)
+                if elem_name and elem_name not in apis:
+                    issues.append(f"⚠️ Source API '{elem_name}' not found in registry")
+                    issues.append(f"   Run /api-create {elem_name} first")
+    except Exception:
+        pass
+
+    # Check flow type is defined
+    flow_type = combine_config.get("flow_type", "")
+    if not flow_type:
+        issues.append("⚠️ Flow type not defined (sequential/parallel/conditional)")
+
+    return issues
+
+
+def validate_ui_workflow(state):
+    """Validate UI-specific requirements.
+
+    Returns list of issues if validation fails, empty list if OK.
+    """
+    issues = []
+
+    ui_config = state.get("ui_config", {})
+    if not ui_config:
+        # Try to get from active element
+        active = state.get("active_element", "")
+        if active:
+            elements = state.get("elements", {})
+            element = elements.get(active, {})
+            ui_config = element.get("ui_config", {})
+
+    if not ui_config:
+        issues.append("⚠️ UI config not found in state")
+        return issues
+
+    # Check brand guide was applied
+    if not ui_config.get("use_brand_guide"):
+        issues.append("⚠️ Brand guide not applied - design may not match project standards")
+
+    return issues
+
 
 def get_active_endpoint(state):
     """Get active endpoint - supports both old and new state formats."""
@@ -58,10 +179,22 @@ def get_active_endpoint(state):
             return active, state["endpoints"][active]
         return None, None
 
+    # Support for elements (UI workflow)
+    if "elements" in state and "active_element" in state:
+        active = state.get("active_element")
+        if active and active in state["elements"]:
+            return active, state["elements"][active]
+        return None, None
+
     # Old format: single endpoint
     endpoint = state.get("endpoint")
     if endpoint:
         return endpoint, state
+
+    # Try active_element without elements dict
+    active = state.get("active_element")
+    if active:
+        return active, state
 
     return None, None
 
@@ -465,6 +598,9 @@ def main():
         print(json.dumps({"decision": "approve"}))
         sys.exit(0)
 
+    # Detect workflow type
+    workflow_type = get_workflow_type(state)
+
     # Get active endpoint (multi-API support)
     endpoint, endpoint_data = get_active_endpoint(state)
 
@@ -476,7 +612,12 @@ def main():
 
     # Check if workflow was even started
     research = phases.get("research_initial", {})
-    if research.get("status") == "not_started":
+    design_research = phases.get("design_research", {})  # For UI workflows
+    selection = phases.get("selection", {})  # For combine workflows
+
+    if (research.get("status") == "not_started" and
+        design_research.get("status") == "not_started" and
+        selection.get("status") == "not_started"):
         # Workflow not started, allow stop
         print(json.dumps({"decision": "approve"}))
         sys.exit(0)
@@ -484,9 +625,26 @@ def main():
     # Collect all issues
     all_issues = []
 
+    # Workflow-specific validation
+    if workflow_type == "combine-api":
+        combine_issues = validate_combine_workflow(state)
+        if combine_issues:
+            all_issues.append("❌ COMBINE WORKFLOW VALIDATION FAILED:")
+            all_issues.extend(combine_issues)
+            all_issues.append("")
+
+    elif workflow_type.startswith("ui-create"):
+        ui_issues = validate_ui_workflow(state)
+        if ui_issues:
+            all_issues.extend(ui_issues)
+            all_issues.append("")
+
+    # Get the correct required phases for this workflow
+    required_phases = get_required_phases_for_workflow(workflow_type)
+
     # Check required phases
     incomplete_required = []
-    for phase_key, phase_name in REQUIRED_PHASES:
+    for phase_key, phase_name in required_phases:
         phase = phases.get(phase_key, {})
         status = phase.get("status", "not_started")
         if status != "complete":

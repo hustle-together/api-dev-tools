@@ -119,6 +119,18 @@
           {
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-playwright-setup.py"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-api-routes.py"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/enforce-page-components.py"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/enforce-page-data-schema.py"
           }
         ]
       },
@@ -181,6 +193,10 @@
           {
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/update-ui-showcase.py"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/enforce-a11y-audit.py"
           }
         ]
       }

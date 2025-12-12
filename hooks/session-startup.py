@@ -30,6 +30,22 @@ STATE_FILE = Path(__file__).parent.parent / "api-dev-state.json"
 RESEARCH_INDEX = Path(__file__).parent.parent / "research" / "index.json"
 
 
+def get_workflow_type(state):
+    """Detect the workflow type from state."""
+    workflow = state.get("workflow", "")
+    if workflow:
+        return workflow
+
+    # Infer from state structure
+    if state.get("combine_config"):
+        return "combine-api"
+    if state.get("ui_config"):
+        mode = state.get("ui_config", {}).get("mode", "")
+        return f"ui-create-{mode}" if mode else "ui-create-component"
+
+    return "api-create"
+
+
 def get_active_endpoint(state):
     """Get active endpoint - supports both old and new state formats."""
     # New format (v3.6.7+): endpoints object with active_endpoint pointer
@@ -39,11 +55,23 @@ def get_active_endpoint(state):
             return active, state["endpoints"][active]
         return None, None
 
+    # Support for elements (UI workflow)
+    if "elements" in state and "active_element" in state:
+        active = state.get("active_element")
+        if active and active in state["elements"]:
+            return active, state["elements"][active]
+        return None, None
+
     # Old format: single endpoint field
     endpoint = state.get("endpoint")
     if endpoint:
         # Return endpoint name and the entire state as endpoint data
         return endpoint, state
+
+    # Try active_element without elements dict
+    active = state.get("active_element")
+    if active:
+        return active, state
 
     return None, None
 
@@ -99,11 +127,64 @@ def main():
         print(json.dumps({"continue": True}))
         sys.exit(0)
 
+    # Detect workflow type
+    workflow_type = get_workflow_type(state)
+
     # Build context summary
     context_parts = []
-    context_parts.append("## API Development Session Context")
+
+    # Header based on workflow type
+    if workflow_type == "combine-api":
+        context_parts.append("## Combined API Development Session Context")
+    elif workflow_type.startswith("ui-create"):
+        mode = "Page" if "page" in workflow_type else "Component"
+        context_parts.append(f"## UI {mode} Development Session Context")
+    else:
+        context_parts.append("## API Development Session Context")
+
     context_parts.append("")
-    context_parts.append(f"**Active Endpoint:** {endpoint}")
+    context_parts.append(f"**Workflow:** {workflow_type}")
+    context_parts.append(f"**Active Element:** {endpoint}")
+
+    # Add combine-specific context
+    if workflow_type == "combine-api":
+        combine_config = state.get("combine_config", {})
+        source_elements = combine_config.get("source_elements", [])
+        flow_type = combine_config.get("flow_type", "sequential")
+        error_strategy = combine_config.get("error_strategy", "fail-fast")
+
+        if source_elements:
+            source_names = []
+            for elem in source_elements:
+                if isinstance(elem, dict):
+                    source_names.append(elem.get("name", "unknown"))
+                else:
+                    source_names.append(str(elem))
+
+            context_parts.append("")
+            context_parts.append("**Combining APIs:**")
+            for name in source_names:
+                context_parts.append(f"  - {name}")
+            context_parts.append(f"  Flow: {flow_type}")
+            context_parts.append(f"  Error Strategy: {error_strategy}")
+
+    # Add UI-specific context
+    elif workflow_type.startswith("ui-create"):
+        ui_config = state.get("ui_config", {})
+        if not ui_config and endpoint_data:
+            ui_config = endpoint_data.get("ui_config", {})
+
+        if ui_config:
+            context_parts.append("")
+            context_parts.append("**UI Configuration:**")
+            if ui_config.get("use_brand_guide"):
+                context_parts.append("  - Brand guide: Applied")
+            if ui_config.get("component_type"):
+                context_parts.append(f"  - Type: {ui_config['component_type']}")
+            if ui_config.get("accessibility_level"):
+                context_parts.append(f"  - A11y: {ui_config['accessibility_level']}")
+            if ui_config.get("data_sources"):
+                context_parts.append(f"  - Data sources: {len(ui_config['data_sources'])}")
 
     # Get phase status (from endpoint_data for multi-API, or state for legacy)
     phases = endpoint_data.get("phases", {})
@@ -183,10 +264,19 @@ def main():
     context_parts.append("  - Research: .claude/research/")
     context_parts.append("  - Manifest: src/app/api-test/api-tests-manifest.json (if exists)")
 
-    # Workflow reminder
+    # Workflow reminder based on type
     context_parts.append("")
-    context_parts.append("**Workflow Reminder:** This project uses interview-driven API development.")
-    context_parts.append("Phases loop back if verification fails. Research before answering API questions.")
+    if workflow_type == "combine-api":
+        context_parts.append("**Workflow Reminder:** This is a combined API workflow.")
+        context_parts.append("Ensure all source APIs exist in registry before orchestration.")
+        context_parts.append("Test both individual APIs and the combined flow.")
+    elif workflow_type.startswith("ui-create"):
+        context_parts.append("**Workflow Reminder:** This is a UI development workflow.")
+        context_parts.append("Check registry for reusable components before creating new ones.")
+        context_parts.append("Ensure brand guide compliance and accessibility requirements.")
+    else:
+        context_parts.append("**Workflow Reminder:** This project uses interview-driven API development.")
+        context_parts.append("Phases loop back if verification fails. Research before answering API questions.")
 
     # Build the output
     additional_context = "\n".join(context_parts)

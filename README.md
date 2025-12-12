@@ -1,4 +1,4 @@
-# Hustle Development Tools for Claude Code v3.9.2
+# Hustle Development Tools for Claude Code v3.10.0
 
 **Interview-driven, research-first API and UI development with 100% phase enforcement**
 
@@ -20,13 +20,13 @@ npx @hustle-together/api-dev-tools --with-sandpack --with-storybook
 ```
 
 **What Gets Installed:**
-- 10 Hustle slash commands (API + UI + Combine)
-- 34 enforcement hooks (Python scripts)
+- 11 Hustle slash commands (API + UI + Page + Combine)
+- 38 enforcement hooks (Python scripts)
 - Multi-element state tracking (`api-dev-state.json`)
 - **Central registry** (`registry.json`) - tracks all APIs, components, pages
 - **Brand guide** (`BRAND_GUIDE.md`) - default branding template
-- **Showcase pages** - `/dev-tools`, `/api-showcase`, `/ui-showcase` *(NEW)*
-- **Component/Page templates** - Storybook stories, Playwright E2E tests *(NEW)*
+- **Showcase pages** - `/dev-tools`, `/api-showcase`, `/ui-showcase`
+- **Component/Page templates** - Storybook stories, Playwright E2E tests
 - Research cache with 7-day freshness (`research/`)
 - Session logging (`api-sessions/`)
 - MCP server integrations (Context7, GitHub)
@@ -34,8 +34,60 @@ npx @hustle-together/api-dev-tools --with-sandpack --with-storybook
 **Start Your First Workflow:**
 ```bash
 /hustle-api-create my-endpoint     # For APIs
-/hustle-ui-create                  # For UI components/pages (NEW)
+/hustle-ui-create                  # For UI components
+/hustle-ui-create-page             # For Next.js pages (NEW in v3.10)
+/hustle-combine                    # For API orchestration
 ```
+
+## What's New in v3.10.0
+
+### UI Page Mode Complete
+Full `/hustle-ui-create-page` workflow with dedicated documentation and hooks:
+- **Page Types**: landing, dashboard, form, list, detail, auth
+- **Page-Specific Hooks**: `check-api-routes.py`, `enforce-page-components.py`, `enforce-page-data-schema.py`
+- **Playwright E2E**: Full test suite generation with 15+ test cases
+- **Data Schema Validation**: Ensures API response types defined before implementation
+
+### Combine Workflow Completion
+Enhanced API orchestration with validation:
+- **2+ API Selection**: Validation that at least 2 APIs are selected
+- **Flow Types**: sequential, parallel, conditional orchestration patterns
+- **Orchestration Examples**: Auto-generated curl examples for combined endpoints
+- **Registry Verification**: Checks all source APIs exist before orchestration
+
+### Accessibility Automation
+New `enforce-a11y-audit.py` hook:
+- Triggers after TDD Green phase for UI workflows
+- WCAG 2.1 Level AA/AAA checklist injection
+- axe-core command generation for Storybook and pages
+- 4-step verification reminder (Responsive, Data, Tests, A11y)
+
+### Brand Color Validation
+Enhanced `enforce-brand-guide.py`:
+- Extracts allowed colors from BRAND_GUIDE.md
+- Validates hex colors, Tailwind classes, CSS variables
+- Notifies on non-brand color usage
+- Supports common utility colors (primary, secondary, accent, etc.)
+
+### UI Showcase Auto-Population
+`update-ui-showcase.py` now generates `data.json` from registry:
+- Components: id, name, type, path, storybook_url, variants, props
+- Pages: id, name, route, page_type, data_sources, requires_auth
+- Automatic refresh on each UI workflow completion
+
+### Enhanced State Template
+`api-dev-state.json` now includes:
+- `workflow` field: api-create, combine-api, ui-create-component, ui-create-page
+- `combine_config`: source_elements, flow_type, error_strategy, orchestration
+- `ui_config`: mode, component_type, page_type, accessibility_level, data_sources
+
+### Session Startup Context
+`session-startup.py` now shows workflow-specific context:
+- Combine workflows: source APIs, flow type, error strategy
+- UI workflows: brand guide status, component/page type, a11y level
+- Workflow-specific reminders and key files
+
+---
 
 ## What's New in v3.9.2
 

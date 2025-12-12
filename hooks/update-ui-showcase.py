@@ -2,12 +2,15 @@
 """
 Hook: PostToolUse for Write/Edit
 Purpose: Auto-create UI Showcase page when first component/page is created
+         and auto-populate showcase data from registry.
 
 This hook monitors for new component or page registrations. When the first
 UI element is added to registry.json, it creates the UI Showcase page
 at src/app/ui-showcase/ if it doesn't exist.
 
-Version: 3.9.0
+Also generates src/app/ui-showcase/data.json from registry for auto-population.
+
+Version: 3.10.0
 
 Returns:
   - {"continue": true} - Always continues
@@ -17,10 +20,64 @@ import json
 import sys
 from pathlib import Path
 import shutil
+from datetime import datetime
 
 # State and registry files in .claude/ directory
 STATE_FILE = Path(__file__).parent.parent / "api-dev-state.json"
 REGISTRY_FILE = Path(__file__).parent.parent / "registry.json"
+
+
+def generate_showcase_data(registry, cwd):
+    """Generate showcase data file from registry for auto-population.
+
+    Creates src/app/ui-showcase/data.json with component/page listings.
+    """
+    components = registry.get("components", {})
+    pages = registry.get("pages", {})
+
+    showcase_data = {
+        "version": "3.10.0",
+        "generated_at": datetime.now().isoformat(),
+        "components": [],
+        "pages": []
+    }
+
+    # Process components
+    for name, comp in components.items():
+        showcase_data["components"].append({
+            "id": name,
+            "name": comp.get("name", name),
+            "description": comp.get("description", ""),
+            "type": comp.get("type", "atom"),
+            "path": comp.get("path", f"src/components/{name}/{name}.tsx"),
+            "storybook_url": comp.get("storybook_url", f"/?path=/story/{name.lower()}--default"),
+            "variants": comp.get("variants", []),
+            "props": list(comp.get("props", {}).keys()) if isinstance(comp.get("props"), dict) else [],
+            "created_at": comp.get("created_at", ""),
+            "status": comp.get("status", "ready")
+        })
+
+    # Process pages
+    for name, page in pages.items():
+        showcase_data["pages"].append({
+            "id": name,
+            "name": page.get("name", name),
+            "description": page.get("description", ""),
+            "route": page.get("route", f"/{name}"),
+            "page_type": page.get("page_type", "landing"),
+            "path": page.get("path", f"src/app/{name}/page.tsx"),
+            "requires_auth": page.get("requires_auth", False),
+            "data_sources": page.get("data_sources", []),
+            "created_at": page.get("created_at", ""),
+            "status": page.get("status", "ready")
+        })
+
+    # Write data file
+    data_file = cwd / "src" / "app" / "ui-showcase" / "data.json"
+    data_file.parent.mkdir(parents=True, exist_ok=True)
+    data_file.write_text(json.dumps(showcase_data, indent=2))
+
+    return str(data_file.relative_to(cwd))
 
 
 def copy_showcase_templates(cwd):
@@ -131,13 +188,20 @@ def main():
     if components or pages:
         created_files = copy_showcase_templates(cwd)
 
+        # Always update data.json from registry
+        data_file = generate_showcase_data(registry, cwd)
+
         if created_files:
             print(json.dumps({
                 "continue": True,
-                "notify": f"Created UI Showcase at /ui-showcase ({len(created_files)} files)"
+                "notify": f"Created UI Showcase at /ui-showcase ({len(created_files)} files) + data.json"
             }))
         else:
-            print(json.dumps({"continue": True}))
+            # Just updated data.json
+            print(json.dumps({
+                "continue": True,
+                "notify": f"Updated UI Showcase data ({len(components)} components, {len(pages)} pages)"
+            }))
     else:
         print(json.dumps({"continue": True}))
 

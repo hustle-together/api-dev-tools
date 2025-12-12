@@ -1,25 +1,122 @@
 #!/usr/bin/env python3
 """
 Hook: PreToolUse for Write/Edit
-Purpose: Inject brand guide content during UI implementation
+Purpose: Inject brand guide content and validate color compliance during UI implementation
 
 This hook runs before writing component/page files. When use_brand_guide=true
 in the state, it logs the brand guide summary to remind Claude to apply
-consistent branding.
+consistent branding and validates that only approved colors are used.
 
-Version: 3.9.0
+Version: 3.10.0
 
 Returns:
-  - {"continue": true} - Always continues
-  - May include "notify" with brand guide summary
+  - {"continue": true} - Always continues (notifies on violations)
+  - May include "notify" with brand guide summary or color violations
 """
 import json
 import sys
+import re
 from pathlib import Path
 
 # State file is in .claude/ directory (sibling to hooks/)
 STATE_FILE = Path(__file__).parent.parent / "api-dev-state.json"
 BRAND_GUIDE_FILE = Path(__file__).parent.parent / "BRAND_GUIDE.md"
+
+
+def extract_brand_colors(content):
+    """Extract all brand colors from brand guide markdown.
+
+    Returns a set of allowed colors (hex values, CSS variables, Tailwind classes).
+    """
+    allowed_colors = set()
+
+    # Extract hex colors from brand guide
+    hex_pattern = r'#[0-9A-Fa-f]{3,8}'
+    for match in re.finditer(hex_pattern, content):
+        allowed_colors.add(match.group(0).upper())
+
+    # Extract CSS variable names
+    css_var_pattern = r'var\(--([a-zA-Z0-9-]+)\)'
+    for match in re.finditer(css_var_pattern, content):
+        allowed_colors.add(f"--{match.group(1)}")
+
+    # Extract Tailwind color classes mentioned in brand guide
+    tailwind_pattern = r'(?:bg|text|border|ring)-([a-zA-Z]+-[0-9]+|[a-zA-Z]+)'
+    for match in re.finditer(tailwind_pattern, content):
+        allowed_colors.add(match.group(0))
+
+    # Always allow these common values
+    allowed_colors.update([
+        'transparent', 'inherit', 'currentColor', 'current',
+        'white', 'black', 'bg-white', 'bg-black', 'text-white', 'text-black',
+        'bg-transparent', 'border-transparent',
+        # Common utility colors
+        'bg-background', 'text-foreground', 'border-border',
+        'bg-primary', 'text-primary', 'border-primary',
+        'bg-secondary', 'text-secondary', 'border-secondary',
+        'bg-accent', 'text-accent', 'border-accent',
+        'bg-muted', 'text-muted', 'border-muted',
+        'bg-destructive', 'text-destructive', 'border-destructive',
+    ])
+
+    return allowed_colors
+
+
+def extract_colors_from_code(code_content):
+    """Extract colors used in component code.
+
+    Returns a list of color usages found.
+    """
+    used_colors = []
+
+    # Find hex colors
+    hex_pattern = r'#[0-9A-Fa-f]{3,8}'
+    for match in re.finditer(hex_pattern, code_content):
+        used_colors.append(('hex', match.group(0).upper()))
+
+    # Find Tailwind color classes (excluding allowed dynamic patterns)
+    tailwind_pattern = r'(?:bg|text|border|ring|from|to|via)-([a-zA-Z]+-[0-9]+)'
+    for match in re.finditer(tailwind_pattern, code_content):
+        # Skip if it's a dynamic value like bg-[#xxx]
+        full_match = match.group(0)
+        if '[' not in full_match:
+            used_colors.append(('tailwind', full_match))
+
+    # Find inline style colors
+    style_pattern = r'(?:color|backgroundColor|borderColor):\s*["\']([^"\']+)["\']'
+    for match in re.finditer(style_pattern, code_content):
+        value = match.group(1)
+        if value.startswith('#'):
+            used_colors.append(('style', value.upper()))
+
+    return used_colors
+
+
+def validate_color_compliance(code_content, allowed_colors):
+    """Check if code uses only brand-approved colors.
+
+    Returns list of violations found.
+    """
+    violations = []
+    used_colors = extract_colors_from_code(code_content)
+
+    for color_type, color_value in used_colors:
+        # Check if color is allowed
+        is_allowed = False
+
+        if color_type == 'hex':
+            is_allowed = color_value in allowed_colors
+        elif color_type == 'tailwind':
+            is_allowed = color_value in allowed_colors or color_value.split('-')[0] in ['bg', 'text', 'border']
+        elif color_type == 'style':
+            is_allowed = color_value in allowed_colors
+
+        if not is_allowed:
+            # Check against all allowed colors more loosely
+            if color_value not in allowed_colors:
+                violations.append(f"{color_type}: {color_value}")
+
+    return violations
 
 
 def extract_brand_summary(content):
@@ -117,6 +214,19 @@ def main():
     # Extract brand summary
     brand_content = BRAND_GUIDE_FILE.read_text()
     summary = extract_brand_summary(brand_content)
+
+    # For Edit operations, check color compliance
+    tool_input = input_data.get("tool_input", {})
+    if tool_name == "Edit":
+        new_content = tool_input.get("new_string", "")
+        if new_content:
+            allowed_colors = extract_brand_colors(brand_content)
+            violations = validate_color_compliance(new_content, allowed_colors)
+
+            if violations:
+                notify_msg = f"⚠️ Brand color check: {len(violations)} potential non-brand colors: " + ", ".join(violations[:3])
+                print(json.dumps({"continue": True, "notify": notify_msg}))
+                sys.exit(0)
 
     if summary:
         notify_msg = "Applying brand guide: " + " | ".join(summary[:5])

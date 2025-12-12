@@ -787,8 +787,169 @@ def generate_test_cases(schema: dict) -> list:
     return test_cases
 
 
+def generate_orchestration_examples(endpoint: str, combine_config: dict, method: str) -> list:
+    """Generate orchestration examples for combined API endpoints.
+
+    Shows how multiple APIs are called in sequence/parallel and how data flows.
+    """
+    examples = []
+    source_elements = combine_config.get("source_elements", [])
+    flow_type = combine_config.get("flow_type", "sequential")
+    error_strategy = combine_config.get("error_strategy", "fail-fast")
+
+    if len(source_elements) < 2:
+        return examples
+
+    base_url = f"http://localhost:3001/api/v2/{endpoint}"
+
+    # Get source API names
+    source_names = []
+    for elem in source_elements:
+        if isinstance(elem, dict):
+            source_names.append(elem.get("name", "unknown"))
+        else:
+            source_names.append(str(elem))
+
+    # ================================================================
+    # Example 1: Sequential flow
+    # ================================================================
+    if flow_type == "sequential":
+        seq_body = {
+            "steps": [
+                {"api": source_names[0], "params": {"input": "example"}},
+                {"api": source_names[1], "params": {"useResultFrom": source_names[0]}}
+            ]
+        }
+        curl = f'curl -X {method} {base_url} \\\n'
+        curl += '  -H "Content-Type: application/json" \\\n'
+        curl += f"  -d '{json.dumps(seq_body, indent=2)}'"
+
+        examples.append({
+            "name": "Sequential orchestration",
+            "description": f"Calls {source_names[0]} first, then {source_names[1]} with results",
+            "request": seq_body,
+            "curl": curl,
+            "flow": f"{source_names[0]} → {source_names[1]}"
+        })
+
+    # ================================================================
+    # Example 2: Parallel flow
+    # ================================================================
+    elif flow_type == "parallel":
+        par_body = {
+            "parallel": True,
+            "apis": [
+                {"name": source_names[0], "params": {"query": "example1"}},
+                {"name": source_names[1], "params": {"query": "example2"}}
+            ],
+            "merge_strategy": "combine"
+        }
+        curl = f'curl -X {method} {base_url} \\\n'
+        curl += '  -H "Content-Type: application/json" \\\n'
+        curl += f"  -d '{json.dumps(par_body, indent=2)}'"
+
+        examples.append({
+            "name": "Parallel orchestration",
+            "description": f"Calls {source_names[0]} and {source_names[1]} simultaneously",
+            "request": par_body,
+            "curl": curl,
+            "flow": f"[{source_names[0]} || {source_names[1]}] → merge"
+        })
+
+    # ================================================================
+    # Example 3: Conditional flow
+    # ================================================================
+    elif flow_type == "conditional":
+        cond_body = {
+            "condition": {
+                "check": source_names[0],
+                "if_success": source_names[1],
+                "if_failure": "fallback"
+            },
+            "params": {"input": "example"}
+        }
+        curl = f'curl -X {method} {base_url} \\\n'
+        curl += '  -H "Content-Type: application/json" \\\n'
+        curl += f"  -d '{json.dumps(cond_body, indent=2)}'"
+
+        examples.append({
+            "name": "Conditional orchestration",
+            "description": f"Calls {source_names[1]} only if {source_names[0]} succeeds",
+            "request": cond_body,
+            "curl": curl,
+            "flow": f"{source_names[0]} ? {source_names[1]} : fallback"
+        })
+
+    # ================================================================
+    # Example 4: With error handling
+    # ================================================================
+    error_body = {
+        "steps": [
+            {"api": source_names[0], "params": {"input": "data"}},
+            {"api": source_names[1], "params": {"input": "data"}}
+        ],
+        "error_strategy": error_strategy,
+        "retry": {"attempts": 3, "delay_ms": 1000}
+    }
+    curl = f'curl -X {method} {base_url} \\\n'
+    curl += '  -H "Content-Type: application/json" \\\n'
+    curl += f"  -d '{json.dumps(error_body, indent=2)}'"
+
+    examples.append({
+        "name": f"With {error_strategy} error handling",
+        "description": f"Orchestration with {error_strategy} strategy and retry logic",
+        "request": error_body,
+        "curl": curl
+    })
+
+    # ================================================================
+    # Example 5: Full data flow
+    # ================================================================
+    full_body = {
+        "input": {
+            "source": "user-provided",
+            "data": {"query": "example query", "options": {"format": "json"}}
+        },
+        "flow": [
+            {
+                "step": 1,
+                "api": source_names[0],
+                "transform": "extract.content"
+            },
+            {
+                "step": 2,
+                "api": source_names[1],
+                "input_mapping": {"content": "$.step1.result"},
+                "transform": "format.output"
+            }
+        ],
+        "output": {"include": ["final_result", "metadata"]}
+    }
+    curl = f'curl -X {method} {base_url} \\\n'
+    curl += '  -H "Content-Type: application/json" \\\n'
+    curl += f"  -d '{json.dumps(full_body, indent=2)}'"
+
+    examples.append({
+        "name": "Complete orchestration with transforms",
+        "description": "Full data flow with input mapping and output transformation",
+        "request": full_body,
+        "curl": curl,
+        "flow_diagram": f"""
+Input → [{source_names[0]}] → transform → [{source_names[1]}] → Output
+           ↑                                    ↑
+      extract.content                    format.output
+"""
+    })
+
+    return examples
+
+
 def generate_manifest_entry(endpoint: str, endpoint_data: dict, state: dict) -> dict:
     """Generate a complete manifest entry for the endpoint."""
+    # Check if this is a combined workflow
+    combine_config = state.get("combine_config", {})
+    is_combined = bool(combine_config.get("source_elements"))
+
     # Find schema file
     schema_file = endpoint_data.get("phases", {}).get("schema_creation", {}).get("schema_file")
     if not schema_file:
@@ -818,6 +979,11 @@ def generate_manifest_entry(endpoint: str, endpoint_data: dict, state: dict) -> 
 
     # Generate examples
     examples = generate_curl_examples(endpoint, method, request_schema)
+
+    # Add orchestration examples for combined endpoints
+    if is_combined:
+        orchestration_examples = generate_orchestration_examples(endpoint, combine_config, method)
+        examples.extend(orchestration_examples)
 
     # Generate test cases
     test_cases = generate_test_cases(request_schema)
@@ -853,11 +1019,25 @@ def generate_manifest_entry(endpoint: str, endpoint_data: dict, state: dict) -> 
         "testCases": test_cases,
         "metadata": {
             "generatedAt": datetime.now().isoformat(),
-            "generatedBy": "api-dev-tools v3.6.7",
+            "generatedBy": "api-dev-tools v3.10.0",
             "schemaFile": schema_file,
             "researchFresh": True
         }
     }
+
+    # Add combined workflow metadata
+    if is_combined:
+        source_names = []
+        for elem in combine_config.get("source_elements", []):
+            if isinstance(elem, dict):
+                source_names.append(elem.get("name", "unknown"))
+            else:
+                source_names.append(str(elem))
+
+        entry["metadata"]["isCombined"] = True
+        entry["metadata"]["sourceApis"] = source_names
+        entry["metadata"]["flowType"] = combine_config.get("flow_type", "sequential")
+        entry["metadata"]["errorStrategy"] = combine_config.get("error_strategy", "fail-fast")
 
     return entry
 

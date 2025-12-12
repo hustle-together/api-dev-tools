@@ -1,8 +1,46 @@
 {
-  "version": "3.7.0",
+  "version": "3.10.0",
   "created_at": null,
+  "workflow": null,
+  "_workflow_options": ["api-create", "combine-api", "ui-create-component", "ui-create-page"],
   "active_endpoint": null,
+  "active_element": null,
   "endpoints": {},
+  "elements": {},
+  "combine_config": {
+    "_comment": "Configuration for combine-api workflow",
+    "mode": null,
+    "_mode_options": ["api", "ui"],
+    "source_elements": [],
+    "_source_elements_example": [
+      { "type": "api", "name": "openai", "registry_ref": "apis.openai" },
+      { "type": "api", "name": "wordpress", "registry_ref": "apis.wordpress" }
+    ],
+    "flow_type": null,
+    "_flow_type_options": ["sequential", "parallel", "conditional"],
+    "error_strategy": null,
+    "_error_strategy_options": ["fail-fast", "partial", "retry"],
+    "orchestration": {
+      "input_mapping": {},
+      "output_mapping": {},
+      "transforms": []
+    }
+  },
+  "ui_config": {
+    "_comment": "Configuration for ui-create-* workflows",
+    "mode": null,
+    "_mode_options": ["component", "page"],
+    "use_brand_guide": false,
+    "component_type": null,
+    "_component_type_options": ["atom", "molecule", "organism", "template"],
+    "page_type": null,
+    "_page_type_options": ["landing", "dashboard", "form", "list", "detail", "auth"],
+    "accessibility_level": null,
+    "_accessibility_level_options": ["AA", "AAA"],
+    "data_sources": [],
+    "variants": [],
+    "sizes": []
+  },
   "turn_count": 0,
   "last_turn_timestamp": null,
   "research_queries": [],
