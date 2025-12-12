@@ -175,7 +175,7 @@ During Phase 3, Claude prompts: *"NOW is the time to update your brand guide!"*
 - `update-ui-showcase.py` - Auto-update UI Showcase registry
 - `update-api-showcase.py` - Auto-update API Showcase registry
 
-## What's in v3.8.0
+## What's New in v3.8.0
 
 ### `/hustle-combine` Command
 Combine existing APIs from the registry into orchestration endpoints:
@@ -4125,7 +4125,7 @@ const researchCache = `.claude/research/${endpoint}/CURRENT.md`;
 When you install with `npx @hustle-together/api-dev-tools --scope=project`, the following files are created in your project's `.claude/` directory:
 
 ```
-@hustle-together/api-dev-tools v3.7.0
+@hustle-together/api-dev-tools v3.10.0
 │
 ├── bin/
 │   └── cli.js                              # NPX installer
@@ -4221,7 +4221,7 @@ When you install with `npx @hustle-together/api-dev-tools --scope=project`, the 
 │   ├── extract-parameters.ts               # Extract Zod params
 │   └── collect-test-results.ts             # Run tests → results
 │
-└── package.json                            # v3.9.2
+└── package.json                            # v3.10.0
 ```
 
 ### Files Installed to Your Project
@@ -4698,40 +4698,106 @@ npx @hustle-together/api-dev-tools --scope=project
 
 ### Optional Development Tools
 
-After running the installer, you may want to set up additional development tools:
+The following tools enhance UI development but are **optional**. You can install them:
+1. **During NPX install** - Using `--with-*` flags (see below)
+2. **During UI workflow** - Hooks will prompt when needed
+
+#### Installation Methods
+
+**Option 1: Install with NPX Flags**
+```bash
+# Install all optional tools at once
+npx @hustle-together/api-dev-tools --with-storybook --with-playwright --with-sandpack
+
+# Or selectively
+npx @hustle-together/api-dev-tools --with-storybook
+```
+
+**Option 2: Install During UI Workflow**
+When you run `/hustle-ui-create` without the required tools:
+1. The hook **blocks** writing test/story files
+2. You see the exact install command needed
+3. Claude offers to run the install for you
+4. After installing, the workflow continues automatically
+
+This "just-in-time" installation means you only install what you actually need.
+
+---
+
+#### Tool Details
 
 **Storybook (Component Development)**
-```bash
-npx storybook@latest init
-```
+| Property | Value |
+|----------|-------|
+| Size | ~50MB |
+| Purpose | Visual component testing, interactive docs |
+| Required for | `/hustle-ui-create` (component mode) |
+| Without it | Cannot write `.stories.tsx` files |
+| Install flag | `--with-storybook` |
+| Manual command | `npx storybook@latest init` |
+| Hook | `check-storybook-setup.py` |
+
 Used for:
 - Interactive component development
 - Visual testing of variants
 - Component documentation
 
-The installer creates Storybook story templates (`Component.stories.tsx`) but does **not** install Storybook itself. The `check-storybook-setup.py` hook will detect if Storybook is installed and guide you through setup.
+---
 
 **Playwright (E2E Testing)**
-```bash
-npm init playwright@latest
-```
+| Property | Value |
+|----------|-------|
+| Size | ~200MB (includes browser binaries) |
+| Purpose | End-to-end page testing, cross-browser |
+| Required for | `/hustle-ui-create` (page mode) |
+| Without it | Cannot write `.e2e.test.ts` files |
+| Install flag | `--with-playwright` |
+| Manual command | `npm init playwright@latest` |
+| Hook | `check-playwright-setup.py` |
+
 Used for:
 - Page-level E2E tests
 - Accessibility testing
 - Cross-browser verification
 
-The installer creates Playwright test templates (`page.e2e.test.ts`) but does **not** install Playwright itself. The `check-playwright-setup.py` hook will detect if Playwright is installed and guide you through setup.
+---
 
 **Sandpack (Live UI Previews)**
-```bash
-pnpm add @codesandbox/sandpack-react
-```
+| Property | Value |
+|----------|-------|
+| Size | ~5MB |
+| Purpose | Live code editing in UI Showcase |
+| Required for | Interactive component playground |
+| Without it | Static previews only (still functional) |
+| Install flag | `--with-sandpack` |
+| Manual command | `npm install @codesandbox/sandpack-react` |
+
 Used for:
 - Live component editing in UI Showcase
 - Interactive code previews
 - No server required
 
-The UI Showcase page uses Sandpack for live component previews. Without it, components will display in a static iframe.
+---
+
+#### UI Workflow Hook Behavior
+
+When Storybook or Playwright is not installed:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  HOOK BLOCKED: check-storybook-setup.py                     │
+├─────────────────────────────────────────────────────────────┤
+│  Cannot write .stories.tsx without Storybook installed.     │
+│                                                             │
+│  Install with: npx storybook@latest init                    │
+│                                                             │
+│  Or skip stories and continue (Phase 8-10 will be blocked)  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+Claude will then offer: "Would you like me to install Storybook now?"
+
+This ensures you're always informed about what's needed without forcing installation upfront.
 
 ### Showcase Pages
 
@@ -4803,6 +4869,9 @@ page.e2e.test.ts      # Playwright E2E test
 When `/hustle-ui-create` runs, it uses these templates as starting points, customizing them based on your interview answers and brand guide.
 
 ---
+
+<details>
+<summary>📜 Older Version History (v3.6.0 - v3.7.0)</summary>
 
 ## What's New in v3.7.0
 
@@ -4927,6 +4996,8 @@ Upgraded hooks:
 ### phase_exit_confirmed Enforcement
 
 Every phase requires an "exit confirmation" question and affirmative user response before advancing. Prevents Claude from self-answering questions.
+
+</details>
 
 ---
 

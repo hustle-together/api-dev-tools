@@ -758,7 +758,7 @@ function main() {
   // Success Summary
   // ========================================
   log('\n' + '═'.repeat(60), 'green');
-  log('🎉 API Development Tools v3.9.2 installed successfully!', 'green');
+  log('🎉 API Development Tools v3.10.0 installed successfully!', 'green');
   log('═'.repeat(60) + '\n', 'green');
 
   log('📋 What was installed:', 'bright');
@@ -774,7 +774,10 @@ function main() {
   log('   MCP:       context7, github (via claude mcp add)', 'blue');
   log('   Test UI:   /api-test page + /api/test-structure API (if Next.js)', 'blue');
 
-  log('\n🆕 New in v3.9.2:', 'bright');
+  log('\n🆕 New in v3.10.0:', 'bright');
+  log('   • Enhanced installer with detailed optional tools info', 'cyan');
+  log('   • UI workflow auto-prompts for Storybook/Playwright installation', 'cyan');
+  log('   • Demo JSONs updated for 13-phase workflow accuracy', 'cyan');
   log('   • Animated 3D grid hero header on showcase pages', 'cyan');
   log('   • Dev Tools landing page at /dev-tools', 'cyan');
   log('   • Multi-endpoint API selector (e.g., /tts, /voices, /models)', 'cyan');
@@ -840,11 +843,55 @@ function main() {
   log('   /api-showcase  - Interactive API testing', 'blue');
   log('   /ui-showcase   - Live component previews', 'blue');
 
-  log('\n📦 Optional Tools (use --with-* flags to auto-install):', 'yellow');
-  log('   --with-sandpack    Live component editing in UI Showcase', 'yellow');
-  log('   --with-storybook   Component development environment', 'yellow');
-  log('   --with-playwright  E2E testing framework', 'yellow');
-  log('\n   Example: npx @hustle-together/api-dev-tools --with-sandpack --with-storybook\n', 'yellow');
+  // Enhanced Optional Development Tools Section
+  log('\n' + '─'.repeat(60), 'yellow');
+  log('📦 OPTIONAL DEVELOPMENT TOOLS', 'yellow');
+  log('─'.repeat(60), 'yellow');
+  log('   The following tools are OPTIONAL but enhance UI development.', 'bright');
+  log('   Install now with flags, or later when prompted during /hustle-ui-create.\n', 'bright');
+
+  log('   ┌──────────────────────────────────────────────────────────┐', 'cyan');
+  log('   │  STORYBOOK (Component Development)                       │', 'cyan');
+  log('   ├──────────────────────────────────────────────────────────┤', 'cyan');
+  log('   │  Size:      ~50MB                                        │', 'cyan');
+  log('   │  Purpose:   Visual component testing, interactive docs   │', 'cyan');
+  log('   │  Required:  /hustle-ui-create (component mode)           │', 'cyan');
+  log('   │  Without:   Cannot write .stories.tsx files              │', 'cyan');
+  log('   │  Install:   --with-storybook flag OR during UI workflow  │', 'cyan');
+  log('   │  Command:   npx storybook@latest init                    │', 'cyan');
+  log('   └──────────────────────────────────────────────────────────┘', 'cyan');
+
+  log('   ┌──────────────────────────────────────────────────────────┐', 'magenta');
+  log('   │  PLAYWRIGHT (E2E Testing)                                │', 'magenta');
+  log('   ├──────────────────────────────────────────────────────────┤', 'magenta');
+  log('   │  Size:      ~200MB (includes browser binaries)           │', 'magenta');
+  log('   │  Purpose:   End-to-end page testing, cross-browser       │', 'magenta');
+  log('   │  Required:  /hustle-ui-create-page (page mode)           │', 'magenta');
+  log('   │  Without:   Cannot write .e2e.test.ts files              │', 'magenta');
+  log('   │  Install:   --with-playwright flag OR during UI workflow │', 'magenta');
+  log('   │  Command:   npm init playwright@latest                   │', 'magenta');
+  log('   └──────────────────────────────────────────────────────────┘', 'magenta');
+
+  log('   ┌──────────────────────────────────────────────────────────┐', 'blue');
+  log('   │  SANDPACK (Live Editing)                                 │', 'blue');
+  log('   ├──────────────────────────────────────────────────────────┤', 'blue');
+  log('   │  Size:      ~5MB                                         │', 'blue');
+  log('   │  Purpose:   Live code editing in UI Showcase             │', 'blue');
+  log('   │  Required:  Interactive component playground             │', 'blue');
+  log('   │  Without:   Static previews only (still functional)      │', 'blue');
+  log('   │  Install:   --with-sandpack flag                         │', 'blue');
+  log('   │  Command:   npm install @codesandbox/sandpack-react      │', 'blue');
+  log('   └──────────────────────────────────────────────────────────┘', 'blue');
+
+  log('\n   💡 UI Workflow Behavior:', 'bright');
+  log('   When you run /hustle-ui-create without Storybook or Playwright:', 'bright');
+  log('   1. The hook will BLOCK writing test/story files', 'bright');
+  log('   2. You\'ll see the install command and be prompted to install', 'bright');
+  log('   3. After installing, the workflow continues automatically', 'bright');
+  log('   4. You can skip and install later, but Phase 8-10 will be blocked', 'bright');
+
+  log('\n   Example with all optional tools:', 'yellow');
+  log('   npx @hustle-together/api-dev-tools --with-storybook --with-playwright --with-sandpack\n', 'yellow');
 
   // ========================================
   // 5. Verify Installation

@@ -237,7 +237,7 @@ export function HeroHeader({ title, description, badge }: HeroHeaderProps) {
       {/* Animated Grid Canvas */}
       <canvas
         ref={canvasRef}
-        className="pointer-events-none absolute inset-0 z-0 opacity-60 blur-[1.5px]"
+        className="pointer-events-none absolute inset-0 z-0 opacity-80 dark:opacity-60 dark:blur-[0.5px]"
       />
 
       {/* Content - Uses same container as main content for alignment */}
