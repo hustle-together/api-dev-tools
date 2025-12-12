@@ -20,8 +20,8 @@ The goal: Questions like Claude Code shows - with numbered options and
 "Type something" at the end, all based on research findings.
 
 Returns:
-  - {"permissionDecision": "allow"} + exit 0 - Let the tool run
-  - stderr message + exit 2 - Block and force Claude to address the issue
+  - {"permissionDecision": "allow"} - Let the tool run
+  - {"permissionDecision": "deny", "reason": "..."} - Block with explanation
 """
 import json
 import sys
@@ -82,10 +82,13 @@ def main():
 
     # Check if state file exists
     if not STATE_FILE.exists():
-        print("""BLOCKED: API workflow not started.
+        print(json.dumps({
+            "permissionDecision": "deny",
+            "reason": """❌ API workflow not started.
 
-Run /api-create [endpoint-name] to begin the interview-driven workflow.""", file=sys.stderr)
-        sys.exit(2)
+Run /api-create [endpoint-name] to begin the interview-driven workflow."""
+        }))
+        sys.exit(0)
 
     # Load state
     try:
@@ -106,14 +109,16 @@ Run /api-create [endpoint-name] to begin the interview-driven workflow.""", file
     research_status = research.get("status", "not_started")
     if research_status != "complete":
         sources_count = len(research.get("sources", []))
-        print(f"""BLOCKED: Research phase must complete BEFORE interview.
+        print(json.dumps({
+            "permissionDecision": "deny",
+            "reason": f"""❌ BLOCKED: Research phase must complete BEFORE interview.
 
 Research status: {research_status}
 Sources consulted: {sources_count}
 Research queries: {len(research_queries)}
 
 ═══════════════════════════════════════════════════════════
-  COMPLETE RESEARCH FIRST - THEN ASK QUESTIONS
+⚠️  COMPLETE RESEARCH FIRST - THEN ASK QUESTIONS
 ═══════════════════════════════════════════════════════════
 
 The interview questions MUST be based on research findings:
@@ -129,22 +134,25 @@ Example: If research found 5 available models, ask:
   3. gemini-pro (multimodal)
   4. Type something else...
 
-Research INFORMS the options. No research = no good options.""", file=sys.stderr)
-        sys.exit(2)
+Research INFORMS the options. No research = no good options."""
+        }))
+        sys.exit(0)
 
     # Check 1: Interview must be complete
     if interview_status != "complete":
         # Build example based on actual research
         research_based_example = _build_research_based_example(research_queries)
 
-        print(f"""BLOCKED: Interview phase not complete.
+        print(json.dumps({
+            "permissionDecision": "deny",
+            "reason": f"""❌ BLOCKED: Interview phase not complete.
 
 Current status: {interview_status}
 AskUserQuestion calls: {interview.get('user_question_count', 0)}
 Structured questions: {interview.get('structured_question_count', 0)}
 
 ═══════════════════════════════════════════════════════════
-  USE STRUCTURED QUESTIONS WITH OPTIONS
+⚠️  USE STRUCTURED QUESTIONS WITH OPTIONS
 ═══════════════════════════════════════════════════════════
 
 Based on your research, ask questions using AskUserQuestion with
@@ -164,37 +172,44 @@ You need at least {MIN_STRUCTURED_QUESTIONS} structured questions with options.
 Current: {interview.get('structured_question_count', 0)}
 
 DO NOT:
-- Ask open-ended questions without options
-- Make up options not based on research
-- Skip the AskUserQuestion tool
-- Self-answer questions""", file=sys.stderr)
-        sys.exit(2)
+❌ Ask open-ended questions without options
+❌ Make up options not based on research
+❌ Skip the AskUserQuestion tool
+❌ Self-answer questions"""
+        }))
+        sys.exit(0)
 
     # Check 2: Must have minimum questions
     if len(questions) < MIN_QUESTIONS:
-        print(f"""BLOCKED: Interview incomplete - not enough questions asked.
+        print(json.dumps({
+            "permissionDecision": "deny",
+            "reason": f"""❌ Interview incomplete - not enough questions asked.
 
 Questions recorded: {len(questions)}
 Minimum required: {MIN_QUESTIONS}
 
 You must ask the user more questions about their requirements.
-Use AskUserQuestion with structured options based on your research.""", file=sys.stderr)
-        sys.exit(2)
+Use AskUserQuestion with structured options based on your research."""
+        }))
+        sys.exit(0)
 
     # Check 3: Verify AskUserQuestion tool was actually used
     user_question_count = interview.get("user_question_count", 0)
     tool_used_count = sum(1 for q in questions if q.get("tool_used", False))
 
     if tool_used_count < MIN_QUESTIONS:
-        print(f"""BLOCKED: Interview not conducted properly.
+        print(json.dumps({
+            "permissionDecision": "deny",
+            "reason": f"""❌ Interview not conducted properly.
 
 AskUserQuestion tool uses tracked: {tool_used_count}
 Minimum required: {MIN_QUESTIONS}
 
 You MUST use the AskUserQuestion tool to ask the user directly.
 Do NOT make up answers or mark the interview as complete without
-actually asking the user and receiving their responses.""", file=sys.stderr)
-        sys.exit(2)
+actually asking the user and receiving their responses."""
+        }))
+        sys.exit(0)
 
     # Check 4: Verify structured questions were used
     structured_count = interview.get("structured_question_count", 0)
@@ -202,7 +217,9 @@ actually asking the user and receiving their responses.""", file=sys.stderr)
     actual_structured = max(structured_count, questions_with_options)
 
     if actual_structured < MIN_STRUCTURED_QUESTIONS:
-        print(f"""BLOCKED: Not enough STRUCTURED questions with options.
+        print(json.dumps({
+            "permissionDecision": "deny",
+            "reason": f"""❌ Not enough STRUCTURED questions with options.
 
 Structured questions (with options): {actual_structured}
 Minimum required: {MIN_STRUCTURED_QUESTIONS}
@@ -222,24 +239,95 @@ Example:
     ]
   )
 
-This gives the user clear choices based on what you researched.""", file=sys.stderr)
-        sys.exit(2)
+This gives the user clear choices based on what you researched."""
+        }))
+        sys.exit(0)
 
     # Check 5: Look for self-answer indicators
     for indicator in SELF_ANSWER_INDICATORS:
         if indicator in interview_desc:
-            print(f"""BLOCKED: Interview appears to be self-answered.
+            print(json.dumps({
+                "permissionDecision": "deny",
+                "reason": f"""❌ Interview appears to be self-answered.
 
 Detected: "{indicator}" in interview description.
 
 You MUST actually ask the user questions using AskUserQuestion
 with structured options. Self-answering defeats the purpose.
 
-Reset the interview and ask with options based on research.""", file=sys.stderr)
-            sys.exit(2)
+Reset the interview and ask with options based on research."""
+            }))
+            sys.exit(0)
 
-    # All checks passed - inject interview decisions as context reminder
+    # Check 6: FINAL USER CONFIRMATION - must confirm interview is complete
+    user_question_asked_final = interview.get("user_question_asked", False)
+    user_completed = interview.get("user_completed", False)
+    phase_exit_confirmed = interview.get("phase_exit_confirmed", False)
     decisions = interview.get("decisions", {})
+
+    if not user_completed or not user_question_asked_final or not phase_exit_confirmed:
+        decision_summary = _build_decision_summary(decisions)
+        missing = []
+        if not user_question_asked_final:
+            missing.append("Final confirmation question (AskUserQuestion not used)")
+        if not user_completed:
+            missing.append("User hasn't confirmed interview complete")
+        if not phase_exit_confirmed:
+            missing.append("Phase exit confirmation (user must explicitly approve to proceed)")
+
+        print(json.dumps({
+            "permissionDecision": "deny",
+            "reason": f"""❌ BLOCKED: Interview needs FINAL USER CONFIRMATION.
+
+Questions asked: {len(questions)}
+Structured questions: {actual_structured}
+User final confirmation: {user_completed}
+Phase exit confirmed: {phase_exit_confirmed}
+
+MISSING:
+{chr(10).join(f"  • {m}" for m in missing)}
+
+═══════════════════════════════════════════════════════════
+⚠️  GET USER CONFIRMATION BEFORE PROCEEDING
+═══════════════════════════════════════════════════════════
+
+REQUIRED STEPS:
+
+1. SHOW interview summary to user:
+   ┌───────────────────────────────────────────────────────┐
+   │ INTERVIEW COMPLETE                                    │
+   │                                                       │
+   │ Your decisions:                                       │
+{chr(10).join(f"   │   • {line:<49} │" for line in decision_summary.split(chr(10))[:8]) if decision_summary else "   │   (no decisions recorded yet)                      │"}
+   │                                                       │
+   │ These will guide the schema, tests, and implementation│
+   │                                                       │
+   │ All correct? [Y]                                      │
+   │ Change an answer? [n] ____                            │
+   └───────────────────────────────────────────────────────┘
+
+2. USE AskUserQuestion:
+   question: "Interview decisions correct? Ready to proceed?"
+   options: [
+     {{"value": "confirm", "label": "Yes, proceed to schema creation"}},
+     {{"value": "change", "label": "No, I want to change [which question]"}},
+     {{"value": "add", "label": "Add another question about [topic]"}}
+   ]
+
+3. If user says "change" or "add":
+   • Ask which question/topic
+   • Re-ask with AskUserQuestion
+   • Update decisions
+   • LOOP BACK and show updated summary
+
+4. If user says "confirm":
+   • Set interview.user_question_asked = true
+   • Set interview.user_completed = true
+   • Set interview.status = "complete"
+
+WHY: User must approve their decisions before they drive implementation."""
+        }))
+        sys.exit(0)
 
     if decisions:
         # Build a reminder of what the user decided

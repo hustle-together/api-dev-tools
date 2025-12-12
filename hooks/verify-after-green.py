@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Hook: PostToolUse (after test runs)
-Purpose: Trigger Phase 9 (Verify) + Manifest Generation after tests pass
+Purpose: Trigger Phase 10 (Verify) + Manifest Generation after tests pass
 
 This hook detects when tests pass (TDD Green phase complete) and:
   1. Runs the programmatic manifest generation scripts
@@ -243,7 +243,7 @@ def main():
         context_parts.append("---")
         context_parts.append("")
 
-    context_parts.append("## Phase 9: Implementation Verification Required")
+    context_parts.append("## Phase 10: Implementation Verification Required")
     context_parts.append("")
     context_parts.append("Tests are passing. Before proceeding, you MUST verify your implementation:")
     context_parts.append("")

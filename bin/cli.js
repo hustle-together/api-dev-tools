@@ -15,12 +15,20 @@ const { execSync } = require('child_process');
  *   - Settings configuration for hook registration
  *   - State file template for progress tracking
  *
- * Usage: npx @mirror-factory/api-dev-tools --scope=project
+ * Usage: npx @hustle-together/api-dev-tools --scope=project
+ *
+ * Optional flags:
+ *   --with-storybook   Auto-initialize Storybook for component development
+ *   --with-playwright  Auto-initialize Playwright for E2E testing
+ *   --with-sandpack    Auto-install Sandpack for live UI previews
  */
 
 // Parse command-line arguments
 const args = process.argv.slice(2);
 const scope = args.find(arg => arg.startsWith('--scope='))?.split('=')[1] || 'project';
+const withStorybook = args.includes('--with-storybook');
+const withPlaywright = args.includes('--with-playwright');
+const withSandpack = args.includes('--with-sandpack');
 
 // Colors for terminal output
 const colors = {
@@ -65,6 +73,8 @@ function verifyInstallation(claudeDir, hooksDir) {
     { path: path.join(claudeDir, 'commands'), name: 'Commands directory' },
     { path: path.join(claudeDir, 'settings.json'), name: 'Settings file' },
     { path: path.join(claudeDir, 'api-dev-state.json'), name: 'State file' },
+    { path: path.join(claudeDir, 'registry.json'), name: 'Registry file' },
+    { path: path.join(claudeDir, 'performance-budgets.json'), name: 'Performance budgets' },
     { path: path.join(claudeDir, 'research'), name: 'Research cache directory' },
     { path: path.join(claudeDir, 'research', 'index.json'), name: 'Research index' },
   ];
@@ -91,7 +101,8 @@ function verifyInstallation(claudeDir, hooksDir) {
       { path: path.join(hooksDir, 'verify-after-green.py'), name: 'verify-after-green.py' },
       { path: path.join(hooksDir, 'enforce-verify.py'), name: 'enforce-verify.py' },
       { path: path.join(hooksDir, 'enforce-refactor.py'), name: 'enforce-refactor.py' },
-      { path: path.join(hooksDir, 'enforce-documentation.py'), name: 'enforce-documentation.py' }
+      { path: path.join(hooksDir, 'enforce-documentation.py'), name: 'enforce-documentation.py' },
+      { path: path.join(hooksDir, 'update-registry.py'), name: 'update-registry.py' }
     );
   }
 
@@ -253,7 +264,70 @@ function main() {
   }
 
   // ========================================
-  // 4b. Install Research Cache Structure (v3.0)
+  // 4b. Install Registry (v3.8.0)
+  // ========================================
+  const registrySource = path.join(sourceTemplatesDir, 'registry.json');
+  const registryDest = path.join(claudeDir, 'registry.json');
+
+  if (fs.existsSync(registrySource)) {
+    log('\n📋 Setting up central registry:', 'cyan');
+
+    if (!fs.existsSync(registryDest)) {
+      try {
+        fs.copyFileSync(registrySource, registryDest);
+        log('   ✅ Created registry.json (tracks APIs, components, pages)', 'green');
+      } catch (error) {
+        log(`   ❌ Failed to create registry: ${error.message}`, 'red');
+      }
+    } else {
+      log('   ℹ️  Registry already exists (preserved)', 'blue');
+    }
+  }
+
+  // ========================================
+  // 4c. Install Brand Guide Template (v3.9.0)
+  // ========================================
+  const brandGuideSource = path.join(sourceTemplatesDir, 'BRAND_GUIDE.md');
+  const brandGuideDest = path.join(claudeDir, 'BRAND_GUIDE.md');
+
+  if (fs.existsSync(brandGuideSource)) {
+    log('\n🎨 Setting up brand guide:', 'cyan');
+
+    if (!fs.existsSync(brandGuideDest)) {
+      try {
+        fs.copyFileSync(brandGuideSource, brandGuideDest);
+        log('   ✅ Created BRAND_GUIDE.md (customize for your project branding)', 'green');
+      } catch (error) {
+        log(`   ❌ Failed to create brand guide: ${error.message}`, 'red');
+      }
+    } else {
+      log('   ℹ️  Brand guide already exists (preserved)', 'blue');
+    }
+  }
+
+  // ========================================
+  // 4d. Install Performance Budgets (v3.9.0)
+  // ========================================
+  const perfBudgetsSource = path.join(sourceTemplatesDir, 'performance-budgets.json');
+  const perfBudgetsDest = path.join(claudeDir, 'performance-budgets.json');
+
+  if (fs.existsSync(perfBudgetsSource)) {
+    log('\n📊 Setting up performance budgets:', 'cyan');
+
+    if (!fs.existsSync(perfBudgetsDest)) {
+      try {
+        fs.copyFileSync(perfBudgetsSource, perfBudgetsDest);
+        log('   ✅ Created performance-budgets.json (thresholds for TDD gates)', 'green');
+      } catch (error) {
+        log(`   ❌ Failed to create performance budgets: ${error.message}`, 'red');
+      }
+    } else {
+      log('   ℹ️  Performance budgets already exist (preserved)', 'blue');
+    }
+  }
+
+  // ========================================
+  // 4e. Install Research Cache Structure (v3.0)
   // ========================================
   const researchDir = path.join(claudeDir, 'research');
   const researchIndexSource = path.join(sourceTemplatesDir, 'research-index.json');
@@ -353,7 +427,175 @@ function main() {
   }
 
   // ========================================
-  // 4d. Install Manifest Generation Scripts
+  // 4f. Install Showcase Pages (v3.9.2)
+  // ========================================
+  log('\n🎨 Setting up showcase pages:', 'cyan');
+
+  if (hasNextJs && appDir) {
+    const showcaseTemplates = [
+      // Shared components first (required by other pages)
+      {
+        source: 'shared',
+        dest: path.join(appDir, 'shared'),
+        files: ['HeroHeader.tsx', 'index.ts'],
+        name: 'Shared components (HeroHeader)'
+      },
+      // API Showcase
+      {
+        source: 'api-showcase',
+        dest: path.join(appDir, 'api-showcase'),
+        files: ['page.tsx'],
+        componentsDir: '_components',
+        componentFiles: ['APIShowcase.tsx', 'APICard.tsx', 'APIModal.tsx', 'APITester.tsx'],
+        name: 'API Showcase'
+      },
+      // UI Showcase
+      {
+        source: 'ui-showcase',
+        dest: path.join(appDir, 'ui-showcase'),
+        files: ['page.tsx'],
+        componentsDir: '_components',
+        componentFiles: ['UIShowcase.tsx', 'PreviewCard.tsx', 'PreviewModal.tsx'],
+        name: 'UI Showcase'
+      },
+      // Dev Tools Landing
+      {
+        source: 'dev-tools',
+        dest: path.join(appDir, 'dev-tools'),
+        files: ['page.tsx'],
+        componentsDir: '_components',
+        componentFiles: ['DevToolsLanding.tsx'],
+        name: 'Dev Tools Landing'
+      }
+    ];
+
+    for (const template of showcaseTemplates) {
+      const sourceDir = path.join(sourceTemplatesDir, template.source);
+
+      if (!fs.existsSync(sourceDir)) {
+        log(`   ⚠️  ${template.name} template not found`, 'yellow');
+        continue;
+      }
+
+      // Create destination directory
+      if (!fs.existsSync(template.dest)) {
+        fs.mkdirSync(template.dest, { recursive: true });
+      }
+
+      let installedFiles = [];
+
+      // Copy main files (page.tsx, etc.)
+      for (const file of template.files) {
+        const srcFile = path.join(sourceDir, file);
+        const destFile = path.join(template.dest, file);
+
+        if (fs.existsSync(srcFile) && !fs.existsSync(destFile)) {
+          try {
+            fs.copyFileSync(srcFile, destFile);
+            installedFiles.push(file);
+          } catch (error) {
+            log(`   ❌ Failed to copy ${file}: ${error.message}`, 'red');
+          }
+        }
+      }
+
+      // Copy _components directory if exists
+      if (template.componentsDir && template.componentFiles) {
+        const srcComponentsDir = path.join(sourceDir, template.componentsDir);
+        const destComponentsDir = path.join(template.dest, template.componentsDir);
+
+        if (fs.existsSync(srcComponentsDir)) {
+          if (!fs.existsSync(destComponentsDir)) {
+            fs.mkdirSync(destComponentsDir, { recursive: true });
+          }
+
+          for (const file of template.componentFiles) {
+            const srcFile = path.join(srcComponentsDir, file);
+            const destFile = path.join(destComponentsDir, file);
+
+            if (fs.existsSync(srcFile) && !fs.existsSync(destFile)) {
+              try {
+                fs.copyFileSync(srcFile, destFile);
+                installedFiles.push(`_components/${file}`);
+              } catch (error) {
+                log(`   ❌ Failed to copy ${file}: ${error.message}`, 'red');
+              }
+            }
+          }
+        }
+      }
+
+      if (installedFiles.length > 0) {
+        log(`   ✅ ${template.name} (${installedFiles.length} files)`, 'green');
+      } else {
+        log(`   ℹ️  ${template.name} already exists (preserved)`, 'blue');
+      }
+    }
+
+    log('\n   💡 Showcase pages available at:', 'yellow');
+    log('      /dev-tools     - Landing page with all dev tools', 'yellow');
+    log('      /api-showcase  - Interactive API testing', 'yellow');
+    log('      /ui-showcase   - Live component previews', 'yellow');
+  } else {
+    log('   ⚠️  Next.js App Router not detected - skipping showcase pages', 'yellow');
+  }
+
+  // ========================================
+  // 4g. Install Component/Page Templates (v3.9.0)
+  // ========================================
+  log('\n📦 Setting up component/page templates:', 'cyan');
+
+  const componentPageTemplates = [
+    {
+      source: 'component',
+      dest: path.join(claudeDir, 'templates', 'component'),
+      name: 'Component templates'
+    },
+    {
+      source: 'page',
+      dest: path.join(claudeDir, 'templates', 'page'),
+      name: 'Page templates'
+    }
+  ];
+
+  for (const template of componentPageTemplates) {
+    const sourceDir = path.join(sourceTemplatesDir, template.source);
+
+    if (!fs.existsSync(sourceDir)) {
+      log(`   ⚠️  ${template.name} not found`, 'yellow');
+      continue;
+    }
+
+    if (!fs.existsSync(template.dest)) {
+      fs.mkdirSync(template.dest, { recursive: true });
+    }
+
+    const files = fs.readdirSync(sourceDir);
+    let copiedCount = 0;
+
+    for (const file of files) {
+      const srcFile = path.join(sourceDir, file);
+      const destFile = path.join(template.dest, file);
+
+      if (fs.statSync(srcFile).isFile() && !fs.existsSync(destFile)) {
+        try {
+          fs.copyFileSync(srcFile, destFile);
+          copiedCount++;
+        } catch (error) {
+          log(`   ❌ Failed to copy ${file}: ${error.message}`, 'red');
+        }
+      }
+    }
+
+    if (copiedCount > 0) {
+      log(`   ✅ ${template.name} (${copiedCount} files)`, 'green');
+    } else {
+      log(`   ℹ️  ${template.name} already exists (preserved)`, 'blue');
+    }
+  }
+
+  // ========================================
+  // 4h. Install Manifest Generation Scripts
   // ========================================
   log('\n📊 Setting up manifest generation scripts:', 'cyan');
 
@@ -465,58 +707,144 @@ function main() {
   }
 
   // ========================================
+  // 7. Install Optional Development Tools
+  // ========================================
+  if (withStorybook || withPlaywright || withSandpack) {
+    log('\n🔧 Installing optional development tools:', 'cyan');
+
+    if (withSandpack) {
+      try {
+        log('   📦 Installing Sandpack for live component previews...', 'blue');
+        execSync('pnpm add @codesandbox/sandpack-react 2>&1', { cwd: targetDir, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
+        log('   ✅ Sandpack installed successfully', 'green');
+      } catch (error) {
+        // Try npm if pnpm fails
+        try {
+          execSync('npm install @codesandbox/sandpack-react 2>&1', { cwd: targetDir, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
+          log('   ✅ Sandpack installed successfully (via npm)', 'green');
+        } catch (npmError) {
+          log('   ⚠️  Could not install Sandpack automatically. Run manually:', 'yellow');
+          log('      pnpm add @codesandbox/sandpack-react', 'yellow');
+        }
+      }
+    }
+
+    if (withStorybook) {
+      try {
+        log('   📖 Initializing Storybook (this may take a moment)...', 'blue');
+        execSync('npx storybook@latest init --yes 2>&1', { cwd: targetDir, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'], timeout: 300000 });
+        log('   ✅ Storybook initialized successfully', 'green');
+        log('   💡 Run with: pnpm storybook', 'yellow');
+      } catch (error) {
+        log('   ⚠️  Storybook init failed. Run manually:', 'yellow');
+        log('      npx storybook@latest init', 'yellow');
+      }
+    }
+
+    if (withPlaywright) {
+      try {
+        log('   🎭 Initializing Playwright (this may take a moment)...', 'blue');
+        execSync('npm init playwright@latest -- --yes 2>&1', { cwd: targetDir, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'], timeout: 300000 });
+        log('   ✅ Playwright initialized successfully', 'green');
+        log('   💡 Run tests with: npx playwright test', 'yellow');
+      } catch (error) {
+        log('   ⚠️  Playwright init failed. Run manually:', 'yellow');
+        log('      npm init playwright@latest', 'yellow');
+      }
+    }
+  }
+
+  // ========================================
   // Success Summary
   // ========================================
   log('\n' + '═'.repeat(60), 'green');
-  log('🎉 API Development Tools v3.0 installed successfully!', 'green');
+  log('🎉 API Development Tools v3.9.2 installed successfully!', 'green');
   log('═'.repeat(60) + '\n', 'green');
 
   log('📋 What was installed:', 'bright');
   log('   Commands:  .claude/commands/*.md', 'blue');
-  log('   Hooks:     .claude/hooks/*.py (18 hooks for 100% enforcement + user checkpoints)', 'blue');
+  log('   Hooks:     .claude/hooks/*.py (enforcement + user checkpoints)', 'blue');
   log('   Settings:  .claude/settings.json', 'blue');
   log('   State:     .claude/api-dev-state.json', 'blue');
+  log('   Registry:  .claude/registry.json (tracks APIs, components, pages)', 'blue');
+  log('   Brand:     .claude/BRAND_GUIDE.md (customize for your branding)', 'blue');
+  log('   Budgets:   .claude/performance-budgets.json (TDD gate thresholds)', 'blue');
   log('   Research:  .claude/research/ (with freshness tracking)', 'blue');
   log('   Scripts:   scripts/api-dev-tools/*.ts (manifest generation)', 'blue');
   log('   MCP:       context7, github (via claude mcp add)', 'blue');
   log('   Test UI:   /api-test page + /api/test-structure API (if Next.js)', 'blue');
 
-  log('\n🆕 New in v3.0:', 'bright');
-  log('   • 12 phases, each with mandatory user checkpoint', 'cyan');
-  log('   • AskUserQuestion required at EVERY phase transition', 'cyan');
-  log('   • Loop-back support when user wants changes', 'cyan');
-  log('   • Adaptive research (propose-approve, not shotgun)', 'cyan');
-  log('   • 7-turn re-grounding (prevents context dilution)', 'cyan');
-  log('   • Research freshness (7-day cache validity)', 'cyan');
+  log('\n🆕 New in v3.9.2:', 'bright');
+  log('   • Animated 3D grid hero header on showcase pages', 'cyan');
+  log('   • Dev Tools landing page at /dev-tools', 'cyan');
+  log('   • Multi-endpoint API selector (e.g., /tts, /voices, /models)', 'cyan');
+  log('   • Audio playback for TTS/voice API responses', 'cyan');
+  log('   • Enhanced Hustle branding (#BA0C2F)', 'cyan');
+  log('   • Dark mode support throughout', 'cyan');
+
+  log('\n📦 v3.9.0 Features (included):', 'bright');
+  log('   • /hustle-ui-create command for components and pages', 'cyan');
+  log('   • UI Showcase page (grid + modal preview at /ui-showcase)', 'cyan');
+  log('   • API Showcase page (interactive testing at /api-showcase)', 'cyan');
+  log('   • Brand guide integration (.claude/BRAND_GUIDE.md)', 'cyan');
+  log('   • Performance budgets as TDD gates (memory, re-renders, timing)', 'cyan');
+  log('   • ShadCN component detection in src/components/ui/', 'cyan');
+  log('   • 4-step verification (responsive + brand + tests + memory)', 'cyan');
+  log('   • Storybook + Playwright testing templates with thresholds', 'cyan');
+
+  log('\n📦 v3.8.0 Features (included):', 'bright');
+  log('   • /hustle-combine command for API orchestration', 'cyan');
+  log('   • Central registry (registry.json) tracks all created elements', 'cyan');
 
   log('\n🔒 User Checkpoint Enforcement:', 'bright');
-  log('   • Phase 0: "Which interpretation?" (disambiguation)', 'cyan');
-  log('   • Phase 1: "Scope correct?" (scope confirmation)', 'cyan');
-  log('   • Phase 2: "Proceed to interview?" (research summary)', 'cyan');
-  log('   • Phase 3: "Interview complete?" (all questions answered)', 'cyan');
-  log('   • Phase 4: "Approve searches?" (deep research proposal)', 'cyan');
-  log('   • Phase 5: "Schema matches interview?" (schema review)', 'cyan');
-  log('   • Phase 6: "Ready for testing?" (environment check)', 'cyan');
-  log('   • Phase 7: "Test plan looks good?" (test matrix)', 'cyan');
-  log('   • Phase 9: "Fix gaps?" (verification decision)', 'cyan');
-  log('   • Phase 11: "Documentation complete?" (final checklist)', 'cyan');
+  log('   • Phase 1: "Which interpretation?" (disambiguation)', 'cyan');
+  log('   • Phase 2: "Scope correct?" (scope confirmation)', 'cyan');
+  log('   • Phase 3: "Proceed to interview?" (research summary)', 'cyan');
+  log('   • Phase 4: "Interview complete?" (all questions answered)', 'cyan');
+  log('   • Phase 5: "Approve searches?" (deep research proposal)', 'cyan');
+  log('   • Phase 6: "Schema matches interview?" (schema review)', 'cyan');
+  log('   • Phase 7: "Ready for testing?" (environment check)', 'cyan');
+  log('   • Phase 8: "Test plan looks good?" (test matrix)', 'cyan');
+  log('   • Phase 10: "Fix gaps?" (verification decision)', 'cyan');
+  log('   • Phase 12: "Documentation complete?" (final checklist)', 'cyan');
 
   log('\n📚 Available Commands:', 'bright');
-  log('  /api-create [endpoint]    - Complete 12-phase workflow', 'blue');
-  log('  /api-interview [endpoint] - Questions FROM research', 'blue');
-  log('  /api-research [library]   - Adaptive propose-approve research', 'blue');
-  log('  /api-verify [endpoint]    - Manual Phase 9 verification', 'blue');
-  log('  /api-env [endpoint]       - Check API keys and environment', 'blue');
-  log('  /api-status [endpoint]    - Track 12-phase progress', 'blue');
+  log('  API Development:', 'bright');
+  log('  /hustle-api-create [endpoint] - Complete 13-phase API workflow', 'blue');
+  log('  /hustle-combine [api|ui]      - Combine existing APIs into orchestration', 'blue');
+  log('  /hustle-api-interview [endpoint] - Questions FROM research', 'blue');
+  log('  /hustle-api-research [library]   - Adaptive propose-approve research', 'blue');
+  log('  /hustle-api-verify [endpoint]    - Manual Phase 10 verification', 'blue');
+  log('  /hustle-api-env [endpoint]       - Check API keys and environment', 'blue');
+  log('  /hustle-api-status [endpoint]    - Track 13-phase progress', 'blue');
+  log('', 'blue');
+  log('  UI Development:', 'bright');
+  log('  /hustle-ui-create [name]      - Create component or page (13-phase)', 'blue');
+  log('                                  • Brand guide integration', 'blue');
+  log('                                  • ShadCN component detection', 'blue');
+  log('                                  • 4-step verification', 'blue');
+  log('                                  • UI Showcase auto-update', 'blue');
 
   log('\n🚀 Quick Start:', 'bright');
-  log('   /api-create my-endpoint', 'blue');
+  log('   API: /hustle-api-create my-endpoint', 'blue');
+  log('   UI:  /hustle-ui-create Button', 'blue');
 
   log('\n💡 Check progress anytime:', 'yellow');
   log('   cat .claude/api-dev-state.json | jq \'.phases\'', 'yellow');
 
   log('\n📖 Documentation:', 'bright');
   log(`   ${path.join(commandsDir, 'README.md')}\n`, 'blue');
+
+  log('\n🎨 Showcase Pages:', 'bright');
+  log('   /dev-tools     - Landing page with all dev tools', 'blue');
+  log('   /api-showcase  - Interactive API testing', 'blue');
+  log('   /ui-showcase   - Live component previews', 'blue');
+
+  log('\n📦 Optional Tools (use --with-* flags to auto-install):', 'yellow');
+  log('   --with-sandpack    Live component editing in UI Showcase', 'yellow');
+  log('   --with-storybook   Component development environment', 'yellow');
+  log('   --with-playwright  E2E testing framework', 'yellow');
+  log('\n   Example: npx @hustle-together/api-dev-tools --with-sandpack --with-storybook\n', 'yellow');
 
   // ========================================
   // 5. Verify Installation

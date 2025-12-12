@@ -3045,11 +3045,11 @@ Required actions:
       </div>
 
       <div class="phases-grid">
-        <!-- Phase 0: Disambiguation -->
+        <!-- Phase 1: Disambiguation -->
         <div class="phase-card">
           <div class="phase-card-main">
             <div class="phase-info">
-              <span class="phase-number">PHASE 0</span>
+              <span class="phase-number">PHASE 1</span>
               <h4>Disambiguation</h4>
               <p>Clarify ambiguous terms before any research begins.</p>
               <span class="phase-hook"><i class="fa-solid fa-lock"></i> enforce-disambiguation.py</span>
@@ -3085,11 +3085,11 @@ Required actions:
           </div>
         </div>
 
-        <!-- Phase 1: Scope -->
+        <!-- Phase 2: Scope -->
         <div class="phase-card">
           <div class="phase-card-main">
             <div class="phase-info">
-              <span class="phase-number">PHASE 1</span>
+              <span class="phase-number">PHASE 2</span>
               <h4>Scope Confirmation</h4>
               <p>Confirm understanding of what endpoint should do.</p>
               <span class="phase-hook"><i class="fa-solid fa-lock"></i> enforce-scope.py</span>
@@ -3126,11 +3126,11 @@ Required actions:
           </div>
         </div>
 
-        <!-- Phase 2: Initial Research -->
+        <!-- Phase 3: Initial Research -->
         <div class="phase-card">
           <div class="phase-card-main">
             <div class="phase-info">
-              <span class="phase-number">PHASE 2</span>
+              <span class="phase-number">PHASE 3</span>
               <h4>Initial Research</h4>
               <p>Fetch documentation via Context7 or WebSearch.</p>
               <span class="phase-hook"><i class="fa-solid fa-lock"></i> enforce-research.py</span>
@@ -3169,11 +3169,11 @@ Required actions:
           </div>
         </div>
 
-        <!-- Phase 3: Interview -->
+        <!-- Phase 4: Interview -->
         <div class="phase-card">
           <div class="phase-card-main">
             <div class="phase-info">
-              <span class="phase-number">PHASE 3</span>
+              <span class="phase-number">PHASE 4</span>
               <h4>Interview</h4>
               <p>Ask questions FROM research findings, not templates.</p>
               <span class="phase-hook"><i class="fa-solid fa-lock"></i> enforce-interview.py</span>
@@ -3211,11 +3211,11 @@ Required actions:
           </div>
         </div>
 
-        <!-- Phase 4: Deep Research -->
+        <!-- Phase 5: Deep Research -->
         <div class="phase-card">
           <div class="phase-card-main">
             <div class="phase-info">
-              <span class="phase-number">PHASE 4</span>
+              <span class="phase-number">PHASE 5</span>
               <h4>Deep Research</h4>
               <p>Research additional topics based on interview answers.</p>
               <span class="phase-hook"><i class="fa-solid fa-lock"></i> enforce-deep-research.py</span>
@@ -3251,11 +3251,11 @@ Required actions:
           </div>
         </div>
 
-        <!-- Phase 5: Schema Creation -->
+        <!-- Phase 6: Schema Creation -->
         <div class="phase-card">
           <div class="phase-card-main">
             <div class="phase-info">
-              <span class="phase-number">PHASE 5</span>
+              <span class="phase-number">PHASE 6</span>
               <h4>Schema Creation</h4>
               <p>Create Zod schemas from research + interview decisions.</p>
               <span class="phase-hook"><i class="fa-solid fa-lock"></i> enforce-schema.py</span>
@@ -3294,11 +3294,11 @@ Required actions:
           </div>
         </div>
 
-        <!-- Phase 6: Environment Check -->
+        <!-- Phase 7: Environment Check -->
         <div class="phase-card">
           <div class="phase-card-main">
             <div class="phase-info">
-              <span class="phase-number">PHASE 6</span>
+              <span class="phase-number">PHASE 7</span>
               <h4>Environment Check</h4>
               <p>Verify required API keys and environment setup.</p>
               <span class="phase-hook"><i class="fa-solid fa-lock"></i> enforce-environment.py</span>
@@ -3335,11 +3335,11 @@ Required actions:
           </div>
         </div>
 
-        <!-- Phase 7: TDD Red -->
+        <!-- Phase 8: TDD Red -->
         <div class="phase-card">
           <div class="phase-card-main">
             <div class="phase-info">
-              <span class="phase-number">PHASE 7</span>
+              <span class="phase-number">PHASE 8</span>
               <h4>TDD Red Phase</h4>
               <p>Write failing tests BEFORE any implementation.</p>
               <span class="phase-hook"><i class="fa-solid fa-lock"></i> enforce-tdd-red.py</span>
@@ -3377,11 +3377,11 @@ Required actions:
           </div>
         </div>
 
-        <!-- Phase 8: TDD Green -->
+        <!-- Phase 9: TDD Green -->
         <div class="phase-card">
           <div class="phase-card-main">
             <div class="phase-info">
-              <span class="phase-number">PHASE 8</span>
+              <span class="phase-number">PHASE 9</span>
               <h4>TDD Green Phase</h4>
               <p>Minimal implementation to make tests pass.</p>
               <span class="phase-hook"><i class="fa-solid fa-lock"></i> verify-after-green.py</span>
@@ -3396,7 +3396,7 @@ Required actions:
   <span class="success"><i class="fa-solid fa-check"></i></span> <span class="output">respects format parameter</span>
 
 <span class="success">3 tests passed</span>
-<span class="warning">Triggering Phase 9: Verify</span></pre>
+<span class="warning">Triggering Phase 10: Verify</span></pre>
             </div>
           </div>
           <button class="expand-btn" onclick="toggleExpand(this)">
@@ -3420,11 +3420,11 @@ Required actions:
           </div>
         </div>
 
-        <!-- Phase 9: Verify -->
+        <!-- Phase 10: Verify -->
         <div class="phase-card">
           <div class="phase-card-main">
             <div class="phase-info">
-              <span class="phase-number">PHASE 9</span>
+              <span class="phase-number">PHASE 10</span>
               <h4>Verification</h4>
               <p>Re-research docs and compare to implementation.</p>
               <span class="phase-hook"><i class="fa-solid fa-lock"></i> enforce-verify.py</span>
@@ -3464,11 +3464,11 @@ Required actions:
           </div>
         </div>
 
-        <!-- Phase 10: TDD Refactor -->
+        <!-- Phase 11: TDD Refactor -->
         <div class="phase-card">
           <div class="phase-card-main">
             <div class="phase-info">
-              <span class="phase-number">PHASE 10</span>
+              <span class="phase-number">PHASE 11</span>
               <h4>TDD Refactor</h4>
               <p>Clean up code while keeping tests green.</p>
               <span class="phase-hook"><i class="fa-solid fa-lock"></i> enforce-refactor.py</span>
@@ -3506,11 +3506,11 @@ Required actions:
           </div>
         </div>
 
-        <!-- Phase 11: Documentation -->
+        <!-- Phase 12: Documentation -->
         <div class="phase-card">
           <div class="phase-card-main">
             <div class="phase-info">
-              <span class="phase-number">PHASE 11</span>
+              <span class="phase-number">PHASE 12</span>
               <h4>Documentation</h4>
               <p>Update manifests and cache research findings.</p>
               <span class="phase-hook"><i class="fa-solid fa-lock"></i> enforce-documentation.py</span>
@@ -3547,11 +3547,11 @@ Required actions:
           </div>
         </div>
 
-        <!-- Phase 12: Completion -->
+        <!-- Phase 13: Completion -->
         <div class="phase-card">
           <div class="phase-card-main">
             <div class="phase-info">
-              <span class="phase-number">PHASE 12</span>
+              <span class="phase-number">PHASE 13</span>
               <h4>Completion</h4>
               <p>Final verification and commit.</p>
               <span class="phase-hook"><i class="fa-solid fa-lock"></i> api-workflow-check.py</span>
@@ -4177,7 +4177,7 @@ Required actions:
       {
         id: 1,
         phase: 0,
-        title: 'Phase 0: Disambiguation',
+        title: 'Phase 1: Disambiguation',
         problem: 'Claude might research the wrong library. "Brandfetch" could mean the REST API, npm SDK, or custom code.',
         solution: 'The enforce-disambiguation hook blocks ALL research until Claude asks you to clarify. You pick from numbered options.',
         hook: 'enforce-disambiguation.py',
@@ -4187,7 +4187,7 @@ Required actions:
           { text: 'Starting API workflow for "brandfetch"...', class: 'ai' },
           { text: '', class: 'output' },
           { text: '╔══════════════════════════════════════════════════════════════╗', class: 'highlight' },
-          { text: '║  PHASE 0: DISAMBIGUATION                                      ║', class: 'highlight' },
+          { text: '║  PHASE 1: DISAMBIGUATION                                      ║', class: 'highlight' },
           { text: '╚══════════════════════════════════════════════════════════════╝', class: 'highlight' },
           { text: '', class: 'output' },
           { text: 'Claude: The term "brandfetch" could refer to:', class: 'ai' },
@@ -4233,14 +4233,14 @@ Required actions:
       {
         id: 3,
         phase: 1,
-        title: 'Phase 1: Scope Confirmation',
+        title: 'Phase 2: Scope Confirmation',
         problem: 'Claude might misunderstand what you want. You say "fetch brand assets" but Claude thinks you want a database model.',
         solution: 'Before research, Claude summarizes its understanding and asks "Is this correct?" You confirm or correct before any work begins.',
         hook: 'enforce-scope.py',
         lines: [
           { text: '', class: 'output' },
           { text: '╔══════════════════════════════════════════════════════════════╗', class: 'highlight' },
-          { text: '║  PHASE 1: SCOPE CONFIRMATION                                  ║', class: 'highlight' },
+          { text: '║  PHASE 2: SCOPE CONFIRMATION                                  ║', class: 'highlight' },
           { text: '╚══════════════════════════════════════════════════════════════╝', class: 'highlight' },
           { text: '', class: 'output' },
           { text: 'Claude: Let me confirm the scope:', class: 'ai' },
@@ -4257,14 +4257,14 @@ Required actions:
       {
         id: 4,
         phase: 2,
-        title: 'Phase 2: Initial Research',
+        title: 'Phase 3: Initial Research',
         problem: 'Claude\'s training data might be months or years old. APIs change, endpoints get deprecated, auth methods evolve.',
         solution: 'Claude must fetch CURRENT docs via Context7 MCP or WebSearch. Two sources minimum. Cross-referenced for accuracy.',
         hook: 'enforce-research.py',
         lines: [
           { text: '', class: 'output' },
           { text: '╔══════════════════════════════════════════════════════════════╗', class: 'highlight' },
-          { text: '║  PHASE 2: INITIAL RESEARCH                                    ║', class: 'highlight' },
+          { text: '║  PHASE 3: INITIAL RESEARCH                                    ║', class: 'highlight' },
           { text: '╚══════════════════════════════════════════════════════════════╝', class: 'highlight' },
           { text: '', class: 'output' },
           { text: 'Claude: Fetching current documentation via MCP...', class: 'ai' },
@@ -4291,14 +4291,14 @@ Required actions:
       {
         id: 5,
         phase: 3,
-        title: 'Phase 3: Structured Interview',
+        title: 'Phase 4: Structured Interview',
         problem: 'Generic AI asks template questions without knowing what options exist. Or worse, it asks then immediately answers itself.',
         solution: 'Questions come FROM research findings. Numbered options only. Self-answering blocked. Your decisions are locked in.',
         hook: 'enforce-interview.py',
         lines: [
           { text: '', class: 'output' },
           { text: '╔══════════════════════════════════════════════════════════════╗', class: 'highlight' },
-          { text: '║  PHASE 3: STRUCTURED INTERVIEW                                ║', class: 'highlight' },
+          { text: '║  PHASE 4: STRUCTURED INTERVIEW                                ║', class: 'highlight' },
           { text: '╚══════════════════════════════════════════════════════════════╝', class: 'highlight' },
           { text: '', class: 'output' },
           { text: 'Q1: Logo formats? (discovered: svg|png|jpg)', class: 'output' },
@@ -4318,14 +4318,14 @@ Required actions:
       {
         id: 6,
         phase: 4,
-        title: 'Phase 4: Deep Research',
+        title: 'Phase 5: Deep Research',
         problem: 'Initial research gives the overview, but your specific choices might need deeper investigation.',
         solution: 'Based on YOUR interview answers, Claude proposes targeted follow-up searches. Your requirements drive the investigation.',
         hook: 'enforce-deep-research.py',
         lines: [
           { text: '', class: 'output' },
           { text: '╔══════════════════════════════════════════════════════════════╗', class: 'highlight' },
-          { text: '║  PHASE 4: DEEP RESEARCH                                       ║', class: 'highlight' },
+          { text: '║  PHASE 5: DEEP RESEARCH                                       ║', class: 'highlight' },
           { text: '╚══════════════════════════════════════════════════════════════╝', class: 'highlight' },
           { text: '', class: 'output' },
           { text: 'Claude: Researching specific areas from your choices...', class: 'ai' },
@@ -4343,14 +4343,14 @@ Required actions:
       {
         id: 7,
         phase: 5,
-        title: 'Phase 5: Schema Creation',
+        title: 'Phase 6: Schema Creation',
         problem: 'Without a contract, tests and implementation drift apart. Fields aren\'t validated or typed correctly.',
         solution: 'Zod schemas define exact request/response shapes. Every discovered parameter typed. Becomes the source of truth.',
         hook: 'enforce-schema.py',
         lines: [
           { text: '', class: 'output' },
           { text: '╔══════════════════════════════════════════════════════════════╗', class: 'highlight' },
-          { text: '║  PHASE 5: SCHEMA CREATION                                     ║', class: 'highlight' },
+          { text: '║  PHASE 6: SCHEMA CREATION                                     ║', class: 'highlight' },
           { text: '╚══════════════════════════════════════════════════════════════╝', class: 'highlight' },
           { text: '', class: 'output' },
           { text: '→ Write: src/lib/schemas/brandfetch.ts', class: 'mcp-call' },
@@ -4365,14 +4365,14 @@ Required actions:
       {
         id: 8,
         phase: 6,
-        title: 'Phase 6: Environment Check',
+        title: 'Phase 7: Environment Check',
         problem: 'Tests pass locally but fail in CI. Why? Missing API key. You waste 30 minutes debugging.',
         solution: 'Check environment BEFORE writing tests. Is the API key present? Is the format valid? No surprises later.',
         hook: 'enforce-environment.py',
         lines: [
           { text: '', class: 'output' },
           { text: '╔══════════════════════════════════════════════════════════════╗', class: 'highlight' },
-          { text: '║  PHASE 6: ENVIRONMENT CHECK                                   ║', class: 'highlight' },
+          { text: '║  PHASE 7: ENVIRONMENT CHECK                                   ║', class: 'highlight' },
           { text: '╚══════════════════════════════════════════════════════════════╝', class: 'highlight' },
           { text: '', class: 'output' },
           { text: '  BRANDFETCH_API_KEY: ✓ present (.env.local)', class: 'success' },
@@ -4385,14 +4385,14 @@ Required actions:
       {
         id: 9,
         phase: 7,
-        title: 'Phase 7: TDD Red',
+        title: 'Phase 8: TDD Red',
         problem: 'Without tests, you don\'t know if code works. You ship bugs. You break things in production.',
         solution: 'Write failing tests FIRST. Define success before implementation. Tests cover research findings AND interview decisions.',
         hook: 'enforce-tdd-red.py',
         lines: [
           { text: '', class: 'output' },
           { text: '╔══════════════════════════════════════════════════════════════╗', class: 'highlight' },
-          { text: '║  PHASE 7: TDD RED - Write Failing Tests                       ║', class: 'highlight' },
+          { text: '║  PHASE 8: TDD RED - Write Failing Tests                       ║', class: 'highlight' },
           { text: '╚══════════════════════════════════════════════════════════════╝', class: 'highlight' },
           { text: '', class: 'output' },
           { text: '→ Write: brandfetch/__tests__/brandfetch.test.ts', class: 'mcp-call' },
@@ -4412,14 +4412,14 @@ Required actions:
       {
         id: 10,
         phase: 8,
-        title: 'Phase 8: TDD Green',
+        title: 'Phase 9: TDD Green',
         problem: 'Developers write more code than needed. They add features not requested. They over-engineer.',
         solution: 'Write MINIMAL implementation. Just enough to pass tests. When tests pass, verification triggers automatically.',
         hook: 'verify-after-green.py (PostToolUse)',
         lines: [
           { text: '', class: 'output' },
           { text: '╔══════════════════════════════════════════════════════════════╗', class: 'highlight' },
-          { text: '║  PHASE 8: TDD GREEN - Make Tests Pass                         ║', class: 'highlight' },
+          { text: '║  PHASE 9: TDD GREEN - Make Tests Pass                         ║', class: 'highlight' },
           { text: '╚══════════════════════════════════════════════════════════════╝', class: 'highlight' },
           { text: '', class: 'output' },
           { text: '→ Write: src/app/api/v2/brandfetch/route.ts', class: 'mcp-call' },
@@ -4442,14 +4442,14 @@ Required actions:
       {
         id: 11,
         phase: 9,
-        title: 'Phase 9: Verification',
+        title: 'Phase 10: Verification',
         problem: 'Even after researching, Claude might implement from memory. It forgets details. Implementation drifts from docs.',
         solution: 'After tests pass, RE-FETCH docs. Compare implementation to current docs. If mismatch, loop back to Red phase.',
         hook: 'verify-after-green.py',
         lines: [
           { text: '', class: 'output' },
           { text: '╔══════════════════════════════════════════════════════════════╗', class: 'highlight' },
-          { text: '║  PHASE 9: VERIFY - Re-Research & Compare                      ║', class: 'highlight' },
+          { text: '║  PHASE 10: VERIFY - Re-Research & Compare                      ║', class: 'highlight' },
           { text: '╚══════════════════════════════════════════════════════════════╝', class: 'highlight' },
           { text: '', class: 'output' },
           { text: '→ mcp__context7__get-library-docs (re-fetch)', class: 'mcp-call' },
@@ -4468,14 +4468,14 @@ Required actions:
       {
         id: 12,
         phase: 10,
-        title: 'Phase 10: TDD Refactor',
+        title: 'Phase 11: TDD Refactor',
         problem: 'First implementations are often messy. But cleaning up code might break things without you knowing.',
         solution: 'Refactor WHILE tests stay green. Every change verified by existing test suite. If anything breaks, you know immediately.',
         hook: 'enforce-refactor.py',
         lines: [
           { text: '', class: 'output' },
           { text: '╔══════════════════════════════════════════════════════════════╗', class: 'highlight' },
-          { text: '║  PHASE 10: TDD REFACTOR - Clean Up Code                       ║', class: 'highlight' },
+          { text: '║  PHASE 11: TDD REFACTOR - Clean Up Code                       ║', class: 'highlight' },
           { text: '╚══════════════════════════════════════════════════════════════╝', class: 'highlight' },
           { text: '', class: 'output' },
           { text: '→ Edit: Extract fetchBrandData helper', class: 'mcp-call' },
@@ -4490,14 +4490,14 @@ Required actions:
       {
         id: 13,
         phase: 11,
-        title: 'Phase 11: Documentation',
+        title: 'Phase 12: Documentation',
         problem: 'Knowledge gets lost. The next developer starts from scratch. They make the same mistakes, ask the same questions.',
         solution: 'Cache everything. Research cached with 7-day freshness. API manifest updated. Future sessions benefit from today\'s work.',
         hook: 'enforce-documentation.py',
         lines: [
           { text: '', class: 'output' },
           { text: '╔══════════════════════════════════════════════════════════════╗', class: 'highlight' },
-          { text: '║  PHASE 11: DOCUMENTATION                                      ║', class: 'highlight' },
+          { text: '║  PHASE 12: DOCUMENTATION                                      ║', class: 'highlight' },
           { text: '╚══════════════════════════════════════════════════════════════╝', class: 'highlight' },
           { text: '', class: 'output' },
           { text: '→ Write: .claude/research/brandfetch/CURRENT.md', class: 'mcp-call' },
@@ -4511,14 +4511,14 @@ Required actions:
       {
         id: 14,
         phase: 12,
-        title: 'Phase 12: Completion',
+        title: 'Phase 13: Completion',
         problem: 'How do you know everything is actually done? Claude might claim finished but skip steps.',
         solution: 'The api-workflow-check hook runs at stop time. Verifies all 12 phases completed. All files created, tests passing, docs updated.',
         hook: 'api-workflow-check.py (Stop)',
         lines: [
           { text: '', class: 'output' },
           { text: '╔══════════════════════════════════════════════════════════════╗', class: 'highlight' },
-          { text: '║  PHASE 12: COMPLETION                                         ║', class: 'highlight' },
+          { text: '║  PHASE 13: COMPLETION                                         ║', class: 'highlight' },
           { text: '╚══════════════════════════════════════════════════════════════╝', class: 'highlight' },
           { text: '', class: 'output' },
           { text: '→ api-workflow-check.py verifying all 12 phases...', class: 'mcp-call' },

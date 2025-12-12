@@ -1,7 +1,7 @@
 {
   "name": "@hustle-together/api-dev-tools",
-  "version": "3.6.1",
-  "description": "Interview-driven, research-first API development workflow with continuous verification loops for Claude Code",
+  "version": "3.9.2",
+  "description": "Interview-driven, research-first API and UI development workflow with continuous verification loops for Claude Code",
   "main": "bin/cli.js",
   "bin": {
     "api-dev-tools": "./bin/cli.js"
@@ -12,7 +12,6 @@
     "hooks/",
     "scripts/",
     "templates/",
-    "demo/",
     "README.md",
     "LICENSE"
   ],
@@ -23,10 +22,16 @@
     "claude",
     "claude-code",
     "api-development",
+    "ui-development",
+    "components",
+    "storybook",
+    "playwright",
     "tdd",
     "test-driven-development",
     "interview-driven",
     "api-testing",
+    "api-orchestration",
+    "combine",
     "documentation",
     "workflow",
     "automation"

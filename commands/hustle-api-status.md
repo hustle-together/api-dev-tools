@@ -1,6 +1,6 @@
 # API Status - Track Implementation Progress
 
-**Usage:** `/api-status [endpoint-name]` or `/api-status --all`
+**Usage:** `/hustle-api-status [endpoint-name]` or `/hustle-api-status --all`
 
 **Purpose:** View and update API implementation status, track progress, and manage V2 migration.
 
@@ -123,14 +123,14 @@ Last updated: 2025-12-06
 
 ### View Status
 ```bash
-/api-status generate-css    # Specific endpoint
-/api-status --all           # All endpoints
+/hustle-api-status generate-css    # Specific endpoint
+/hustle-api-status --all           # All endpoints
 ```
 
 ### Update Status
 ```bash
-/api-status generate-css --phase=testing
-/api-status generate-css --complete
+/hustle-api-status generate-css --phase=testing
+/hustle-api-status generate-css --complete
 ```
 
 ## Status Tracking File
@@ -176,32 +176,32 @@ Updates: `/src/v2/docs/v2-api-implementation-status.md`
 
 ### After Interview
 ```bash
-/api-interview generate-css
-/api-status generate-css --phase=interview-complete
+/hustle-api-interview generate-css
+/hustle-api-status generate-css --phase=interview-complete
 ```
 
 ### After Research
 ```bash
-/api-research gemini-flash
-/api-status generate-css --phase=research-complete
+/hustle-api-research gemini-flash
+/hustle-api-status generate-css --phase=research-complete
 ```
 
 ### After TDD Cycle
 ```bash
 /cycle generate CSS with Gemini
-/api-status generate-css --complete
+/hustle-api-status generate-css --complete
 ```
 
 ### Before Commit
 ```bash
 pnpm test:run
-/api-status --all  # Verify all green
+/hustle-api-status --all  # Verify all green
 /commit
 ```
 
 ## Automatic Updates
 
-The `/api-create` command automatically updates status:
+The `/hustle-api-create` command automatically updates status:
 - Interview phase → "Interview Complete"
 - Red phase → "Tests Written"
 - Green phase → "Implementation Complete"
@@ -225,19 +225,19 @@ The `/api-create` command automatically updates status:
 
 ### Coverage Report
 ```bash
-/api-status --coverage
+/hustle-api-status --coverage
 ```
 Shows test coverage for all V2 endpoints.
 
 ### Migration Report
 ```bash
-/api-status --migration
+/hustle-api-status --migration
 ```
 Shows progress from legacy to V2.
 
 ### Blockers Report
 ```bash
-/api-status --blocked
+/hustle-api-status --blocked
 ```
 Shows endpoints blocked by missing keys, dependencies, etc.
 
@@ -252,7 +252,7 @@ Shows endpoints blocked by missing keys, dependencies, etc.
 
 ## Integration Points
 
-- Used by /api-create to track progress
+- Used by /hustle-api-create to track progress
 - Used by /commit to verify readiness
 - Used by team to see what's done
 - Used for planning future work

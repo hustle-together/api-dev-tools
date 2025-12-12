@@ -18,7 +18,7 @@
 
 ## Research Phases
 
-### Phase 1: Initial Discovery (Automatic)
+### Initial Discovery (Automatic)
 
 Run 2-3 targeted searches:
 ```
@@ -47,7 +47,7 @@ Present initial summary:
 └────────────────────────────────────────────────────────────┘
 ```
 
-### Phase 2: Deep Research (Proposed)
+### Deep Research (Proposed)
 
 After interview, PROPOSE targeted searches based on user's selections:
 
@@ -78,7 +78,7 @@ After interview, PROPOSE targeted searches based on user's selections:
 └────────────────────────────────────────────────────────────┘
 ```
 
-### Phase 3: Execute Approved Searches
+### Execute Approved Searches
 
 Only run searches that were explicitly approved:
 - Track which searches were proposed vs approved vs skipped
@@ -257,7 +257,7 @@ Creates: `.claude/research/[library-name]/CURRENT.md`
    - Every field has a source (docs, SDK types, API response)
    - Don't guess - verify each capability
 
-3. **Verify with Phase 9**
+3. **Verify with Phase 10**
    - After implementation, re-research
    - Compare docs to implementation
    - Fix gaps or document intentional omissions
@@ -324,8 +324,8 @@ All research is tracked in `.claude/api-dev-state.json`:
 
 ## Integration with API Development
 
-- Phase 2 of `/api-create` uses this for initial research
-- Phase 4 uses adaptive proposal flow
-- Phase 9 (Verify) triggers re-research
+- Phase 3 of `/api-create` uses this for initial research
+- Phase 5 uses adaptive proposal flow
+- Phase 10 (Verify) triggers re-research
 - Freshness check prevents stale data
 </claude-commands-template>

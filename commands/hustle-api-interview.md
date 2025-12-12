@@ -1,6 +1,6 @@
 # API Interview - Research-Driven Dynamic Discovery v3.0
 
-**Usage:** `/api-interview [endpoint-name]`
+**Usage:** `/hustle-api-interview [endpoint-name]`
 
 **Purpose:** Conduct structured interview where questions are GENERATED FROM research findings, not generic templates. Every question is specific to the discovered API capabilities.
 
@@ -35,7 +35,7 @@ Based on research, Brandfetch API has 7 parameters:
 
 ## Interview Flow
 
-### Phase 0: PREREQUISITE - Research Must Be Complete
+### PREREQUISITE - Research Must Be Complete (Phase 3)
 
 **Interview is BLOCKED until research is done.**
 
@@ -52,7 +52,7 @@ Discovered parameters:
   - 2 continuous ranges
 ```
 
-### Phase 1: Parameter-Based Questions
+### Parameter-Based Questions
 
 For each discovered parameter, generate an appropriate question:
 
@@ -119,7 +119,7 @@ For each discovered parameter, generate an appropriate question:
 └────────────────────────────────────────────────────────────┘
 ```
 
-### Phase 2: Feature Questions
+### Feature Questions
 
 Based on discovered features, ask about priorities:
 
@@ -139,7 +139,7 @@ Based on discovered features, ask about priorities:
 └────────────────────────────────────────────────────────────┘
 ```
 
-### Phase 3: Error Handling Questions
+### Error Handling Questions
 
 ```
 ┌────────────────────────────────────────────────────────────┐
@@ -162,7 +162,7 @@ Based on discovered features, ask about priorities:
 └────────────────────────────────────────────────────────────┘
 ```
 
-### Phase 4: Deep Research Proposal
+### Deep Research Proposal (Phase 5)
 
 After interview, propose additional research:
 

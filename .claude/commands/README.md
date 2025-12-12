@@ -4,8 +4,8 @@
 
 ## What's New in v3.0
 
-- **Phase 0: Disambiguation** - Search variations before research
-- **Phase 9: Verify** - Re-research after tests pass to catch memory errors
+- **Phase 1: Disambiguation** - Search variations before research
+- **Phase 10: Verify** - Re-research after tests pass to catch memory errors
 - **Adaptive Research** - Propose searches based on context, not shotgun
 - **Questions FROM Research** - Interview generates questions from discovered params
 - **7-Turn Re-grounding** - Periodic context injection prevents dilution
@@ -22,7 +22,7 @@
 | `verify-implementation.py` | PreToolUse | Require test file before route |
 | `track-tool-use.py` | PostToolUse | Log research, count turns |
 | `periodic-reground.py` | PostToolUse | Re-ground every 7 turns |
-| `verify-after-green.py` | PostToolUse | Trigger Phase 9 after test pass |
+| `verify-after-green.py` | PostToolUse | Trigger Phase 10 after test pass |
 | `api-workflow-check.py` | Stop | Block if phases incomplete |
 
 ## Available Commands
@@ -30,7 +30,7 @@
 ### Complete Workflow
 
 **`/api-create [endpoint-name]`**
-- Runs all 12 phases automatically
+- Runs all 13 phases automatically
 - Loop-back architecture at every checkpoint
 - See [api-create.md](api-create.md) for full flow
 
@@ -47,7 +47,7 @@
 - See [api-research.md](api-research.md)
 
 **`/api-verify [endpoint-name]`** (NEW)
-- Manual Phase 9 verification
+- Manual Phase 10 verification
 - Re-read docs, compare to implementation
 - Report gaps, loop back or document omissions
 - See [api-verify.md](api-verify.md)
@@ -57,7 +57,7 @@
 - See [api-env.md](api-env.md)
 
 **`/api-status [endpoint-name]`**
-- Track progress through 12 phases
+- Track progress through 13 phases
 - See [api-status.md](api-status.md)
 
 ### TDD Commands
@@ -68,22 +68,22 @@ From [@wbern/claude-instructions](https://github.com/wbern/claude-instructions):
 - `/refactor` - Clean up while tests pass
 - `/cycle [description]` - Full Red → Green → Refactor
 
-## 12-Phase Flow
+## 13-Phase Flow
 
 ```
-Phase 0:  DISAMBIGUATION     - Clarify ambiguous terms
-Phase 1:  SCOPE              - Confirm understanding
-Phase 2:  INITIAL RESEARCH   - 2-3 targeted searches
-Phase 3:  INTERVIEW          - Questions FROM research
-Phase 4:  DEEP RESEARCH      - Adaptive propose-approve
-Phase 5:  SCHEMA             - Zod from research + interview
-Phase 6:  ENVIRONMENT        - Verify API keys
-Phase 7:  TDD RED            - Write failing tests
-Phase 8:  TDD GREEN          - Minimal implementation
-Phase 9:  VERIFY             - Re-research, find gaps
-Phase 10: TDD REFACTOR       - Clean up code
-Phase 11: DOCUMENTATION      - Update manifests
-Phase 12: COMPLETION         - Final verification
+Phase 1:  DISAMBIGUATION     - Clarify ambiguous terms
+Phase 2:  SCOPE              - Confirm understanding
+Phase 3:  INITIAL RESEARCH   - 2-3 targeted searches
+Phase 4:  INTERVIEW          - Questions FROM research
+Phase 5:  DEEP RESEARCH      - Adaptive propose-approve
+Phase 6:  SCHEMA             - Zod from research + interview
+Phase 7:  ENVIRONMENT        - Verify API keys
+Phase 8:  TDD RED            - Write failing tests
+Phase 9:  TDD GREEN          - Minimal implementation
+Phase 10: VERIFY             - Re-research, find gaps
+Phase 11: TDD REFACTOR       - Clean up code
+Phase 12: DOCUMENTATION      - Update manifests
+Phase 13: COMPLETION         - Final verification
 ```
 
 ## State File

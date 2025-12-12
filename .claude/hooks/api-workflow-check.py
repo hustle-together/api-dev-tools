@@ -12,8 +12,8 @@ Gap Fixes Applied:
 - Gap 4: Requires explicit verification that implementation matches interview
 
 Returns:
-  - {"decision": "approve"} + exit 0 - Allow stopping
-  - stderr message + exit 2 - Block and force Claude to complete workflow
+  - {"decision": "approve"} - Allow stopping
+  - {"decision": "block", "reason": "..."} - Prevent stopping with explanation
 """
 import json
 import sys
@@ -29,6 +29,8 @@ REQUIRED_PHASES = [
     ("interview", "User interview"),
     ("tdd_red", "TDD Red phase (failing tests written)"),
     ("tdd_green", "TDD Green phase (tests passing)"),
+    ("verify", "Verification phase (re-checked against docs)"),
+    ("documentation", "Documentation updates (manifest/research cached)"),
 ]
 
 # Phases that SHOULD be complete (warning but don't block)
@@ -184,8 +186,11 @@ def main():
         all_issues.append("  2. Use /api-status to see detailed progress")
         all_issues.append("  3. Run `git diff --name-only` to verify changes")
 
-        print("BLOCKED: Workflow incomplete.\n\n" + "\n".join(all_issues), file=sys.stderr)
-        sys.exit(2)
+        print(json.dumps({
+            "decision": "block",
+            "reason": "\n".join(all_issues)
+        }))
+        sys.exit(0)
 
     # Build completion message
     message_parts = ["✅ API workflow completing"]

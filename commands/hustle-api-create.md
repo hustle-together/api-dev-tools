@@ -1,6 +1,6 @@
 # API Create - Comprehensive API Development Workflow v3.0
 
-**Usage:** `/api-create [endpoint-name]`
+**Usage:** `/hustle-api-create [endpoint-name]`
 
 **Purpose:** Orchestrates the complete API development workflow using interview-driven, research-first, test-first methodology with continuous verification loops.
 
@@ -98,10 +98,10 @@ Both conditions must be true for the flag to be set.
 ## Complete Phase Flow
 
 ```
-/api-create [endpoint]
+/hustle-api-create [endpoint]
         │
         ▼
-┌─ PHASE 0: DISAMBIGUATION ─────────────────────────────────┐
+┌─ PHASE 1: DISAMBIGUATION ─────────────────────────────────┐
 │ Search 3-5 variations of the term:                        │
 │   • "[term]"                                              │
 │   • "[term] API"                                          │
@@ -128,7 +128,7 @@ Both conditions must be true for the flag to be set.
 └───────────────────────────────────────────────────────────┘
         │ Clear
         ▼
-┌─ PHASE 1: SCOPE CONFIRMATION ─────────────────────────────┐
+┌─ PHASE 2: SCOPE ──────────────────────────────────────────┐
 │                                                           │
 │ Present your understanding, then:                         │
 │                                                           │
@@ -153,7 +153,7 @@ Both conditions must be true for the flag to be set.
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 2: INITIAL RESEARCH ───────────────────────────────┐
+┌─ PHASE 3: INITIAL RESEARCH ───────────────────────────────┐
 │                                                           │
 │ Execute 2-3 initial searches:                             │
 │   • Context7: "[library/api name]"                        │
@@ -183,7 +183,7 @@ Both conditions must be true for the flag to be set.
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 3: INTERVIEW (Generated FROM Research) ────────────┐
+┌─ PHASE 4: INTERVIEW (Generated FROM Research) ────────────┐
 │                                                           │
 │ For EACH parameter discovered in research, ask ONE        │
 │ question at a time using AskUserQuestion:                 │
@@ -235,7 +235,7 @@ Both conditions must be true for the flag to be set.
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 4: DEEP RESEARCH (Adaptive) ───────────────────────┐
+┌─ PHASE 5: DEEP RESEARCH (Adaptive) ───────────────────────┐
 │                                                           │
 │ Based on interview answers, PROPOSE additional research.  │
 │                                                           │
@@ -260,7 +260,7 @@ Both conditions must be true for the flag to be set.
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 5: SCHEMA DESIGN ──────────────────────────────────┐
+┌─ PHASE 6: SCHEMA ─────────────────────────────────────────┐
 │                                                           │
 │ Create Zod schema from research + interview, then:        │
 │                                                           │
@@ -285,7 +285,7 @@ Both conditions must be true for the flag to be set.
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 6: ENVIRONMENT CHECK ──────────────────────────────┐
+┌─ PHASE 7: ENVIRONMENT ────────────────────────────────────┐
 │                                                           │
 │ Check required API keys, show status table, then:         │
 │                                                           │
@@ -309,7 +309,7 @@ Both conditions must be true for the flag to be set.
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 7: TDD RED (Write Failing Tests) ──────────────────┐
+┌─ PHASE 8: TDD RED (Write Failing Tests) ──────────────────┐
 │                                                           │
 │ Generate test matrix from schema + interview, then:       │
 │                                                           │
@@ -335,7 +335,7 @@ Both conditions must be true for the flag to be set.
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 8: TDD GREEN (Minimal Implementation) ─────────────┐
+┌─ PHASE 9: TDD GREEN (Minimal Implementation) ─────────────┐
 │                                                           │
 │ Write minimal code to pass ALL tests.                     │
 │ Tests derived from schema.                                │
@@ -347,7 +347,7 @@ Both conditions must be true for the flag to be set.
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 9: VERIFY (Re-Research After Green) ───────────────┐
+┌─ PHASE 10: VERIFY (Re-Research After Green) ──────────────┐
 │                                                           │
 │ MANDATORY: Re-read original documentation.                │
 │ Compare implementation to docs, then:                     │
@@ -370,11 +370,11 @@ Both conditions must be true for the flag to be set.
 │                                                           │
 │ WAIT for user response. Do NOT auto-decide.               │
 │ HOOK: PostToolUse triggers after test pass                │
-│ ──── Loop back to Phase 7 if user wants fixes ────        │
+│ ──── Loop back to Phase 8 if user wants fixes ────        │
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 10: TDD REFACTOR ──────────────────────────────────┐
+┌─ PHASE 11: TDD REFACTOR ──────────────────────────────────┐
 │                                                           │
 │ Clean up code while tests stay green:                     │
 │   • Extract reusable patterns                             │
@@ -386,7 +386,7 @@ Both conditions must be true for the flag to be set.
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 11: DOCUMENTATION ─────────────────────────────────┐
+┌─ PHASE 12: DOCUMENTATION ─────────────────────────────────┐
 │                                                           │
 │ Update documentation files, then:                         │
 │                                                           │
@@ -411,7 +411,7 @@ Both conditions must be true for the flag to be set.
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 12: COMPLETION ────────────────────────────────────┐
+┌─ PHASE 13: COMPLETION ────────────────────────────────────┐
 │                                                           │
 │ Final verification:                                       │
 │   • All tests passing                                     │
@@ -421,8 +421,28 @@ Both conditions must be true for the flag to be set.
 │   • State file shows all phases complete                  │
 │                                                           │
 │ Run /commit to create semantic commit.                    │
+│                                                           │
+│ API Showcase: http://localhost:3000/api-showcase          │
+│ Your API is now available for interactive testing!       │
 └───────────────────────────────────────────────────────────┘
 ```
+
+### Showcase Redirect
+
+After successful API creation, output:
+
+```
+Your API has been added to the showcase!
+
+View it at: http://localhost:3000/api-showcase
+
+Or run `pnpm dev` and navigate to /api-showcase to:
+  - Test your API interactively
+  - View auto-generated curl examples
+  - See request/response schemas
+```
+
+Registry is automatically updated with the new API entry.
 
 ## State File Tracking
 
@@ -489,11 +509,11 @@ This command creates:
 
 ## Never Skip
 
-- Phase 0 (Disambiguation) - Clarify before research
-- Phase 2 (Initial Research) - Find ALL parameters
-- Phase 3 (Interview) - Questions FROM research, not templates
-- Phase 7 (TDD Red) - Failing tests FIRST
-- Phase 9 (Verify) - Re-research after Green
-- Phase 11 (Documentation) - Keep docs in sync
+- Phase 1 (Disambiguation) - Clarify before research
+- Phase 3 (Initial Research) - Find ALL parameters
+- Phase 4 (Interview) - Questions FROM research, not templates
+- Phase 8 (TDD Red) - Failing tests FIRST
+- Phase 10 (Verify) - Re-research after Green
+- Phase 12 (Documentation) - Keep docs in sync
 - Coverage verification - 100% required
 </claude-commands-template>

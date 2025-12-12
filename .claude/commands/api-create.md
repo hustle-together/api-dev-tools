@@ -4,10 +4,93 @@
 
 **Purpose:** Orchestrates the complete API development workflow using interview-driven, research-first, test-first methodology with continuous verification loops.
 
+## ⚠️ CRITICAL: MANDATORY USER INTERACTION
+
+**YOU MUST USE THE `AskUserQuestion` TOOL AT EVERY CHECKPOINT.**
+
+This workflow requires REAL user input at each phase. You are **FORBIDDEN** from:
+- Self-answering questions
+- Assuming user responses
+- Proceeding without explicit user confirmation
+- Making decisions on behalf of the user
+
+### How to Ask Questions Correctly
+
+At every `[Y/n]` or multiple-choice prompt in this workflow, you MUST call the `AskUserQuestion` tool with this EXACT schema:
+
+```json
+{
+  "questions": [
+    {
+      "question": "Your question here? (must end with ?)",
+      "header": "Phase",
+      "multiSelect": false,
+      "options": [
+        {"label": "Option A", "description": "What this option means"},
+        {"label": "Option B", "description": "What this option means"},
+        {"label": "Other", "description": "I'll type my own answer"}
+      ]
+    }
+  ]
+}
+```
+
+**CRITICAL REQUIREMENTS:**
+- `header`: Max 12 characters (e.g., "Scope", "Research", "Format")
+- `options`: 2-4 options, each with `label` (1-5 words) and `description`
+- `multiSelect`: Required boolean (true for checkboxes, false for radio)
+- `question`: Must end with a question mark
+- Users can always select "Other" to provide custom input
+
+**WAIT for the user's response before proceeding.** The tool will show a UI dialog and pause execution until the user answers. Do NOT continue until you receive the response.
+
+### Violation Detection
+
+The enforcement hooks will BLOCK your progress if:
+- `user_question_asked` is false for any phase
+- `user_confirmed`/`user_approved`/`user_completed` is false
+- `phase_exit_confirmed` is false (user must explicitly approve proceeding to next phase)
+- Questions were not asked via the AskUserQuestion tool
+
+If you see "BLOCKED" messages, it means you skipped user interaction.
+
+### Phase Exit Confirmation (NEW in v3.5.0)
+
+**Every phase requires an EXIT CONFIRMATION question** before proceeding to the next phase. This prevents Claude from self-answering and moving on without explicit user approval.
+
+The exit confirmation question MUST:
+1. Summarize what was accomplished in the current phase
+2. Ask if user is ready to proceed to the next phase
+3. Include options like "Yes, proceed", "No, I have changes", "Add more"
+
+Example exit confirmation:
+```json
+{
+  "questions": [{
+    "question": "Phase complete. Research found 5 sources. Ready to proceed to Interview phase?",
+    "header": "Proceed",
+    "multiSelect": false,
+    "options": [
+      {"label": "Yes, proceed", "description": "Move to next phase"},
+      {"label": "No, more research", "description": "I need additional research on [topic]"},
+      {"label": "Review sources", "description": "Show me what was found"}
+    ]
+  }]
+}
+```
+
+The `phase_exit_confirmed` flag is automatically set when:
+1. An `AskUserQuestion` is called with a question containing words like "proceed", "continue", "ready", "confirm", "approve"
+2. The user responds with an affirmative answer (yes, proceed, confirm, approve, etc.)
+
+Both conditions must be true for the flag to be set.
+
+---
+
 ## Key Principles
 
 1. **Loop Until Green** - Every verification phase loops back if not successful
-2. **Continuous Interviews** - Checkpoints at EVERY phase transition
+2. **Continuous Interviews** - Checkpoints at EVERY phase transition (USE AskUserQuestion!)
 3. **Adaptive Research** - Propose searches based on context, not shotgun approach
 4. **Self-Documenting** - State file captures everything for re-grounding
 5. **Verify After Green** - Re-research docs to catch memory-based implementation errors
@@ -18,180 +101,241 @@
 /api-create [endpoint]
         │
         ▼
-┌─ PHASE 0: DISAMBIGUATION ─────────────────────────────────┐
+┌─ PHASE 1: DISAMBIGUATION ─────────────────────────────────┐
 │ Search 3-5 variations of the term:                        │
 │   • "[term]"                                              │
 │   • "[term] API"                                          │
 │   • "[term] SDK"                                          │
 │   • "[term] npm package"                                  │
 │                                                           │
-│ If multiple interpretations found, ask:                   │
-│ ┌───────────────────────────────────────────────────────┐ │
-│ │ I found multiple things matching "[term]":            │ │
-│ │                                                       │ │
-│ │ [A] Option A - Description                            │ │
-│ │ [B] Option B - Description                            │ │
-│ │ [C] Both                                              │ │
-│ │ [D] Something else: ____                              │ │
-│ └───────────────────────────────────────────────────────┘ │
+│ ⚠️ REQUIRED: Use AskUserQuestion tool with EXACT schema:  │
 │                                                           │
-│ ──── Loop back if ambiguous ────                          │
+│   {                                                       │
+│     "questions": [{                                       │
+│       "question": "Which interpretation of [term]?",      │
+│       "header": "Disambig",                               │
+│       "multiSelect": false,                               │
+│       "options": [                                        │
+│         {"label": "REST API", "description": "Official API"},│
+│         {"label": "SDK/Package", "description": "NPM wrapper"},│
+│         {"label": "Both", "description": "API + SDK"}     │
+│       ]                                                   │
+│     }]                                                    │
+│   }                                                      │
+│                                                           │
+│ WAIT for user response. Do NOT proceed without it.        │
+│ ──── Loop back if user selects "Something else" ────      │
 └───────────────────────────────────────────────────────────┘
         │ Clear
         ▼
-┌─ PHASE 1: SCOPE CONFIRMATION ─────────────────────────────┐
+┌─ PHASE 2: SCOPE CONFIRMATION ─────────────────────────────┐
 │                                                           │
-│ ┌───────────────────────────────────────────────────────┐ │
-│ │ SCOPE CONFIRMATION                                    │ │
-│ │                                                       │ │
-│ │ I understand you want: /api/v2/[endpoint]             │ │
-│ │ Purpose: [inferred purpose]                           │ │
-│ │ External API: [service name] (URL)                    │ │
-│ │                                                       │ │
-│ │ Is this correct? [Y/n]                                │ │
-│ │ Additional context? ____                              │ │
-│ └───────────────────────────────────────────────────────┘ │
+│ Present your understanding, then:                         │
 │                                                           │
+│ ⚠️ REQUIRED: Use AskUserQuestion tool:                    │
+│                                                           │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "I understand you want /api/v2/[endpoint] │
+│                  to [purpose]. Using [external API].      │
+│                  Is this correct?",                       │
+│       header: "Scope",                                    │
+│       options: [                                          │
+│         "Yes, proceed",                                   │
+│         "I have modifications to add",                    │
+│         "No, let me clarify the purpose"                  │
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│                                                           │
+│ WAIT for user response. Do NOT assume "yes".              │
+│ ──── Loop back if user has modifications ────             │
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 2: INITIAL RESEARCH ───────────────────────────────┐
+┌─ PHASE 3: INITIAL RESEARCH ───────────────────────────────┐
 │                                                           │
 │ Execute 2-3 initial searches:                             │
 │   • Context7: "[library/api name]"                        │
 │   • WebSearch: "[name] official documentation"            │
 │   • WebSearch: "site:[domain] api reference"              │
 │                                                           │
-│ Present summary:                                          │
-│ ┌───────────────────────────────────────────────────────┐ │
-│ │ RESEARCH SUMMARY                                      │ │
-│ │                                                       │ │
-│ │ │ Source         │ Found                              │ │
-│ │ ├────────────────┼────────────────────────────────────│ │
-│ │ │ Official docs  │ ✓ [URL]                            │ │
-│ │ │ API Reference  │ ✓ REST v2                          │ │
-│ │ │ Auth method    │ ✓ Bearer token                     │ │
-│ │ │ NPM package    │ ? Not found                        │ │
-│ │                                                       │ │
-│ │ Proceed? [Y] / Search more? [n] ____                  │ │
-│ └───────────────────────────────────────────────────────┘ │
+│ Present summary table, then:                              │
 │                                                           │
+│ ⚠️ REQUIRED: Use AskUserQuestion tool:                    │
+│                                                           │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "Research summary above. Found [N]        │
+│                  sources. Should I proceed or search      │
+│                  for more?",                              │
+│       header: "Research",                                 │
+│       options: [                                          │
+│         "Proceed to interview",                           │
+│         "Search more - I need [specific topic]",          │
+│         "Search for something specific (I'll describe)"   │
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│                                                           │
+│ WAIT for user response. Do NOT auto-proceed.              │
 │ ──── Loop back if user wants more research ────           │
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 3: INTERVIEW (Generated FROM Research) ────────────┐
+┌─ PHASE 4: INTERVIEW (Generated FROM Research) ────────────┐
 │                                                           │
-│ Generate questions based on discovered parameters:        │
+│ For EACH parameter discovered in research, ask ONE        │
+│ question at a time using AskUserQuestion:                 │
 │                                                           │
-│ ┌───────────────────────────────────────────────────────┐ │
-│ │ Based on research, [API] has N parameters:            │ │
-│ │                                                       │ │
-│ │ 1. DOMAIN (required) - string                         │ │
-│ │    → No question needed (always required)             │ │
-│ │                                                       │ │
-│ │ 2. FORMAT: ["json", "svg", "png", "raw"]              │ │
-│ │    Q: Which formats do you need?                      │ │
-│ │    [x] json  [x] svg  [x] png  [ ] raw                │ │
-│ │                                                       │ │
-│ │ 3. QUALITY: 1-100 (continuous range)                  │ │
-│ │    Q: How should we TEST this?                        │ │
-│ │    [ ] All values (100 tests)                         │ │
-│ │    [x] Boundary (1, 50, 100)                          │ │
-│ │    [ ] Sample (1, 25, 50, 75, 100)                    │ │
-│ │    [ ] Custom: ____                                   │ │
-│ │                                                       │ │
-│ │ ... (continues for ALL discovered parameters)         │ │
-│ └───────────────────────────────────────────────────────┘ │
+│ ⚠️ REQUIRED: Use AskUserQuestion for EACH question:       │
 │                                                           │
-│ Decisions are saved to state file for consistency.        │
+│   // Question 1: Format preference                        │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "Which response formats do you need?",    │
+│       header: "Format",                                   │
+│       multiSelect: true,                                  │
+│       options: ["JSON", "SVG", "PNG", "All formats"]      │
+│     }]                                                    │
+│   })                                                      │
+│   // WAIT for response, record in state, then next Q      │
+│                                                           │
+│   // Question 2: Error handling                           │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "How should errors be handled?",          │
+│       header: "Errors",                                   │
+│       options: [                                          │
+│         "Throw exceptions",                               │
+│         "Return error objects",                           │
+│         "Both (configurable)"                             │
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│   // Continue for ALL parameters...                       │
+│                                                           │
+│ After ALL questions answered:                             │
+│                                                           │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "Interview complete. Your decisions:      │
+│                  [summary]. All correct?",                │
+│       header: "Confirm",                                  │
+│       options: [                                          │
+│         "Yes, proceed to schema",                         │
+│         "Change an answer",                               │
+│         "Add another question"                            │
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│                                                           │
+│ Decisions saved to state file for consistency.            │
+│ ──── Loop back if user wants to change answers ────       │
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 4: DEEP RESEARCH (Adaptive) ───────────────────────┐
+┌─ PHASE 5: DEEP RESEARCH (Adaptive) ───────────────────────┐
 │                                                           │
-│ Based on interview answers, PROPOSE additional research:  │
+│ Based on interview answers, PROPOSE additional research.  │
 │                                                           │
-│ ┌───────────────────────────────────────────────────────┐ │
-│ │ PROPOSED DEEP RESEARCH                                │ │
-│ │                                                       │ │
-│ │ Based on your selections, I want to research:         │ │
-│ │                                                       │ │
-│ │ [x] Error response format (for error handling)        │ │
-│ │ [x] Rate limiting behavior (short cache selected)     │ │
-│ │ [ ] Webhook support (not selected)                    │ │
-│ │ [x] SVG optimization (SVG format selected)            │ │
-│ │                                                       │ │
-│ │ Approve these searches? [Y]                           │ │
-│ │ Add more: ____                                        │ │
-│ │ Skip and proceed: [n]                                 │ │
-│ └───────────────────────────────────────────────────────┘ │
+│ ⚠️ REQUIRED: Use AskUserQuestion tool:                    │
 │                                                           │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "Based on your interview answers, I       │
+│                  want to research: [list]. Approve?",     │
+│       header: "Deep Research",                            │
+│       options: [                                          │
+│         "Yes, run these searches",                        │
+│         "Add more - I also need [topic]",                 │
+│         "Skip deep research, proceed to schema"           │
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│                                                           │
+│ WAIT for user response. Do NOT auto-approve.              │
 │ KEY: Research is PROPOSED, not automatic shotgun.         │
+│ ──── Loop back if user wants to add topics ────           │
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 5: SCHEMA DESIGN ──────────────────────────────────┐
+┌─ PHASE 6: SCHEMA DESIGN ──────────────────────────────────┐
 │                                                           │
-│ Create Zod schema from research + interview:              │
+│ Create Zod schema from research + interview, then:        │
 │                                                           │
-│ ┌───────────────────────────────────────────────────────┐ │
-│ │ SCHEMA REVIEW                                         │ │
-│ │                                                       │ │
-│ │ const RequestSchema = z.object({                      │ │
-│ │   domain: z.string().min(1),                          │ │
-│ │   format: z.enum(["json", "svg", "png"]),             │ │
-│ │   quality: z.number().min(1).max(100).default(80)     │ │
-│ │ });                                                   │ │
-│ │                                                       │ │
-│ │ Schema matches interview answers? [Y/n]               │ │
-│ │ Missing fields? ____                                  │ │
-│ └───────────────────────────────────────────────────────┘ │
+│ ⚠️ REQUIRED: Use AskUserQuestion tool:                    │
 │                                                           │
-│ ──── Loop back if schema wrong ────                       │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "Schema created based on your interview.  │
+│                  [show schema]. Does this match your      │
+│                  requirements?",                          │
+│       header: "Schema",                                   │
+│       options: [                                          │
+│         "Yes, schema looks correct",                      │
+│         "No, I need changes (I'll describe)",             │
+│         "Let's redo the interview"                        │
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│                                                           │
+│ WAIT for user response. Do NOT assume approval.           │
+│ ──── Loop back if schema needs changes ────               │
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 6: ENVIRONMENT CHECK ──────────────────────────────┐
+┌─ PHASE 7: ENVIRONMENT CHECK ──────────────────────────────┐
 │                                                           │
-│ ┌───────────────────────────────────────────────────────┐ │
-│ │ ENVIRONMENT CHECK                                     │ │
-│ │                                                       │ │
-│ │ │ Variable         │ Status   │ Source               │ │
-│ │ ├──────────────────┼──────────┼──────────────────────│ │
-│ │ │ API_KEY          │ ✓ Found  │ .env.local           │ │
-│ │                                                       │ │
-│ │ Ready for testing? [Y/n]                              │ │
-│ └───────────────────────────────────────────────────────┘ │
+│ Check required API keys, show status table, then:         │
 │                                                           │
+│ ⚠️ REQUIRED: Use AskUserQuestion tool:                    │
+│                                                           │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "Environment check: [N] keys found,       │
+│                  [M] missing. Ready to start TDD?",       │
+│       header: "Environment",                              │
+│       options: [                                          │
+│         "Yes, ready to write tests",                      │
+│         "No, need to set up API keys first",              │
+│         "No, need to fix something else"                  │
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│                                                           │
+│ WAIT for user response. Do NOT auto-proceed.              │
 │ ──── Loop back if keys missing ────                       │
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 7: TDD RED (Write Failing Tests) ──────────────────┐
+┌─ PHASE 8: TDD RED (Write Failing Tests) ──────────────────┐
 │                                                           │
-│ Generate test matrix from schema + interview decisions:   │
+│ Generate test matrix from schema + interview, then:       │
 │                                                           │
-│ ┌───────────────────────────────────────────────────────┐ │
-│ │ TEST MATRIX REVIEW                                    │ │
-│ │                                                       │ │
-│ │ │ Parameter  │ Valid Values       │ Invalid Values    │ │
-│ │ ├────────────┼────────────────────┼───────────────────│ │
-│ │ │ domain     │ "x.com", "a.co"    │ "", null          │ │
-│ │ │ format     │ "json", "svg"      │ "gif", "webp"     │ │
-│ │ │ quality    │ 1, 50, 100         │ 0, 101, -1        │ │
-│ │                                                       │ │
-│ │ Total tests: 23 (pairwise reduction from 156)         │ │
-│ │                                                       │ │
-│ │ Approve test matrix? [Y/n]                            │ │
-│ │ Add test cases? ____                                  │ │
-│ └───────────────────────────────────────────────────────┘ │
+│ ⚠️ REQUIRED: Use AskUserQuestion tool:                    │
 │                                                           │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "Test matrix: [N] test scenarios based    │
+│                  on your interview. Covers: [list].       │
+│                  Approve this test plan?",                │
+│       header: "Tests",                                    │
+│       options: [                                          │
+│         "Yes, write these tests",                         │
+│         "Add more scenarios (I'll describe)",             │
+│         "Change a scenario (I'll describe)"               │
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│                                                           │
+│ WAIT for user response. Do NOT auto-approve.              │
 │ HOOK: PreToolUse blocks Write if no research/interview    │
+│ ──── Loop back if user wants changes ────                 │
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 8: TDD GREEN (Minimal Implementation) ─────────────┐
+┌─ PHASE 9: TDD GREEN (Minimal Implementation) ─────────────┐
 │                                                           │
 │ Write minimal code to pass ALL tests.                     │
 │ Tests derived from schema.                                │
@@ -203,34 +347,34 @@
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 9: VERIFY (Re-Research After Green) ───────────────┐
+┌─ PHASE 10: VERIFY (Re-Research After Green) ───────────────┐
 │                                                           │
 │ MANDATORY: Re-read original documentation.                │
-│ Compare implementation to docs feature-by-feature:        │
+│ Compare implementation to docs, then:                     │
 │                                                           │
-│ ┌───────────────────────────────────────────────────────┐ │
-│ │ IMPLEMENTATION VERIFICATION                           │ │
-│ │                                                       │ │
-│ │ │ Feature       │ In Docs │ Implemented │ Status      │ │
-│ │ ├───────────────┼─────────┼─────────────┼─────────────│ │
-│ │ │ domain param  │ ✓       │ ✓           │ ✅ Match    │ │
-│ │ │ format opts   │ 4       │ 3           │ ⚠️ Missing  │ │
-│ │ │ size max      │ 4096    │ 2048        │ ⚠️ Wrong    │ │
-│ │ │ webhook       │ ✓       │ ✗           │ ℹ️ Optional │ │
-│ │                                                       │ │
-│ │ DISCREPANCIES: 2 found                                │ │
-│ │                                                       │ │
-│ │ Fix these gaps? [Y] → Returns to Phase 7 (Red)        │ │
-│ │ Skip (intentional)? [n] → Document as omissions       │ │
-│ └───────────────────────────────────────────────────────┘ │
+│ ⚠️ REQUIRED: Use AskUserQuestion tool:                    │
 │                                                           │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "Verification found [N] gap(s) between    │
+│                  docs and implementation: [list].         │
+│                  How should I proceed?",                  │
+│       header: "Verify",                                   │
+│       options: [                                          │
+│         "Fix gaps - loop back to Red phase",              │
+│         "Skip - these are intentional omissions",         │
+│         "Fix some, skip others (I'll specify)"            │
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│                                                           │
+│ WAIT for user response. Do NOT auto-decide.               │
 │ HOOK: PostToolUse triggers after test pass                │
-│                                                           │
-│ ──── Loop back to Phase 7 if gaps need fixing ────        │
+│ ──── Loop back to Phase 8 if user wants fixes ────        │
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 10: TDD REFACTOR ──────────────────────────────────┐
+┌─ PHASE 11: TDD REFACTOR ──────────────────────────────────┐
 │                                                           │
 │ Clean up code while tests stay green:                     │
 │   • Extract reusable patterns                             │
@@ -242,25 +386,32 @@
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 11: DOCUMENTATION ─────────────────────────────────┐
+┌─ PHASE 12: DOCUMENTATION ─────────────────────────────────┐
 │                                                           │
-│ ┌───────────────────────────────────────────────────────┐ │
-│ │ DOCUMENTATION REVIEW                                  │ │
-│ │                                                       │ │
-│ │ Files to update:                                      │ │
-│ │                                                       │ │
-│ │ [x] api-tests-manifest.json - Manifest entry          │ │
-│ │ [x] OpenAPI spec - Endpoint documented                │ │
-│ │ [x] .claude/research/[api]/CURRENT.md - Cached        │ │
-│ │                                                       │ │
-│ │ Documentation complete? [Y/n]                         │ │
-│ └───────────────────────────────────────────────────────┘ │
+│ Update documentation files, then:                         │
 │                                                           │
+│ ⚠️ REQUIRED: Use AskUserQuestion tool:                    │
+│                                                           │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "Documentation checklist: [list files].   │
+│                  All documentation complete?",            │
+│       header: "Docs",                                     │
+│       options: [                                          │
+│         "Yes, all documentation is done",                 │
+│         "No, I need to add something (I'll describe)",    │
+│         "Skip docs for now (not recommended)"             │
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│                                                           │
+│ WAIT for user response. Do NOT auto-complete.             │
 │ HOOK: Stop hook blocks if docs incomplete                 │
+│ ──── Loop back if user needs to add docs ────             │
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 12: COMPLETION ────────────────────────────────────┐
+┌─ PHASE 13: COMPLETION ────────────────────────────────────┐
 │                                                           │
 │ Final verification:                                       │
 │   • All tests passing                                     │
@@ -338,11 +489,11 @@ This command creates:
 
 ## Never Skip
 
-- Phase 0 (Disambiguation) - Clarify before research
-- Phase 2 (Initial Research) - Find ALL parameters
-- Phase 3 (Interview) - Questions FROM research, not templates
-- Phase 7 (TDD Red) - Failing tests FIRST
-- Phase 9 (Verify) - Re-research after Green
-- Phase 11 (Documentation) - Keep docs in sync
+- Phase 1 (Disambiguation) - Clarify before research
+- Phase 3 (Initial Research) - Find ALL parameters
+- Phase 4 (Interview) - Questions FROM research, not templates
+- Phase 8 (TDD Red) - Failing tests FIRST
+- Phase 10 (Verify) - Re-research after Green
+- Phase 12 (Documentation) - Keep docs in sync
 - Coverage verification - 100% required
 </claude-commands-template>

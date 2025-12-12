@@ -8,29 +8,29 @@ This project uses **@hustle-together/api-dev-tools** for interview-driven, resea
 
 | Command | Purpose |
 |---------|---------|
-| `/api-create [endpoint]` | Complete 12-phase workflow |
+| `/api-create [endpoint]` | Complete 13-phase workflow |
 | `/api-interview [endpoint]` | Questions FROM research findings |
 | `/api-research [library]` | Adaptive propose-approve research |
 | `/api-verify [endpoint]` | Re-research and verify implementation |
 | `/api-env [endpoint]` | Check API keys |
 | `/api-status [endpoint]` | Track progress |
 
-### 12-Phase Flow
+### 13-Phase Flow
 
 ```
-Phase 0:  DISAMBIGUATION     - Clarify ambiguous terms before research
-Phase 1:  SCOPE              - Confirm understanding of endpoint
-Phase 2:  INITIAL RESEARCH   - 2-3 targeted searches (Context7, WebSearch)
-Phase 3:  INTERVIEW          - Questions generated FROM discovered params
-Phase 4:  DEEP RESEARCH      - Propose additional searches based on answers
-Phase 5:  SCHEMA             - Create Zod schema from research + interview
-Phase 6:  ENVIRONMENT        - Verify API keys exist
-Phase 7:  TDD RED            - Write failing tests from schema
-Phase 8:  TDD GREEN          - Minimal implementation to pass tests
-Phase 9:  VERIFY             - Re-research docs, compare to implementation
-Phase 10: TDD REFACTOR       - Clean up code while tests pass
-Phase 11: DOCUMENTATION      - Update manifests, cache research
-Phase 12: COMPLETION         - Final verification, commit
+Phase 1:  DISAMBIGUATION     - Clarify ambiguous terms before research
+Phase 2:  SCOPE              - Confirm understanding of endpoint
+Phase 3:  INITIAL RESEARCH   - 2-3 targeted searches (Context7, WebSearch)
+Phase 4:  INTERVIEW          - Questions generated FROM discovered params
+Phase 5:  DEEP RESEARCH      - Propose additional searches based on answers
+Phase 6:  SCHEMA             - Create Zod schema from research + interview
+Phase 7:  ENVIRONMENT        - Verify API keys exist
+Phase 8:  TDD RED            - Write failing tests from schema
+Phase 9:  TDD GREEN          - Minimal implementation to pass tests
+Phase 10: VERIFY             - Re-research docs, compare to implementation
+Phase 11: TDD REFACTOR       - Clean up code while tests pass
+Phase 12: DOCUMENTATION      - Update manifests, cache research
+Phase 13: COMPLETION         - Final verification, commit
 ```
 
 ### Key Principles

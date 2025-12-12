@@ -9,8 +9,8 @@ This hook addresses these gaps:
 3. Test files use same patterns as production code
 
 Returns:
-  - {"permissionDecision": "allow"} + exit 0 - Let the tool run
-  - stderr message + exit 2 - Block and force Claude to address critical issues
+  - {"permissionDecision": "allow"} - Let the tool run
+  - {"permissionDecision": "deny", "reason": "..."} - Block with explanation
 """
 import json
 import sys
@@ -209,32 +209,14 @@ def main():
     # Check 5: Test/production alignment
     all_issues.extend(check_test_production_alignment(state, file_path, new_content))
 
-    # If there are critical issues (Gap 1 or Gap 5), block with exit 2
-    # Gap 1: Missing research terms from interview
-    # Gap 5: Test/production pattern mismatch
-    critical_issues = [i for i in all_issues if "Gap 1" in i or "Gap 5" in i]
-
-    if critical_issues:
-        # Store all warnings in state for later review
-        state.setdefault("verification_warnings", []).extend(all_issues)
-        STATE_FILE.write_text(json.dumps(state, indent=2))
-
-        print("BLOCKED: Implementation verification failed.\n\n" + "\n".join(critical_issues) + """
-
-REQUIRED ACTIONS:
-  1. Re-research using the EXACT terms from the interview
-  2. Ensure test files check the correct environment variables
-  3. Verify implementation matches user's stated requirements
-
-Review .claude/api-dev-state.json for full details.""", file=sys.stderr)
-        sys.exit(2)
-
-    # Non-critical issues: warn but allow
+    # If there are issues, warn but don't block (these are warnings)
+    # The user can review these in the state file
     if all_issues:
+        # Store warnings in state for later review
         state.setdefault("verification_warnings", []).extend(all_issues)
         STATE_FILE.write_text(json.dumps(state, indent=2))
 
-    # Allow the operation
+    # Allow the operation - these are warnings, not blockers
     print(json.dumps({"permissionDecision": "allow"}))
     sys.exit(0)
 

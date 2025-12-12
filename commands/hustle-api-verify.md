@@ -1,8 +1,8 @@
-# API Verify - Implementation Verification (Phase 9) v3.0
+# API Verify - Implementation Verification (Phase 10) v3.0
 
-**Usage:** `/api-verify [endpoint-name]`
+**Usage:** `/hustle-api-verify [endpoint-name]`
 
-**Purpose:** Manually trigger Phase 9 verification - re-research documentation and compare to implementation to catch memory-based errors.
+**Purpose:** Manually trigger Phase 10 verification - re-research documentation and compare to implementation to catch memory-based errors.
 
 ## When to Use
 
@@ -170,7 +170,7 @@ Creates: `.claude/research/[api-name]/verification.md`
 ## Intentional Omissions
 
 1. **webhook support**
-   - Reason: User declined in interview (Phase 3)
+   - Reason: User declined in interview (Phase 4)
    - Decision recorded: api-dev-state.json
    - May add in v2
 
@@ -197,17 +197,17 @@ Manual invocation is useful when:
 ## Workflow Position
 
 ```
-Phase 7: TDD Red (write tests)
+Phase 8: TDD Red (write tests)
     │
     ▼
-Phase 8: TDD Green (implementation)
+Phase 9: TDD Green (implementation)
     │
     ▼
-Phase 9: VERIFY ← /api-verify triggers this
+Phase 10: VERIFY ← /hustle-api-verify triggers this
     │
-    ├─► Gaps found? → Loop back to Phase 7
+    ├─► Gaps found? → Loop back to Phase 8
     │
-    └─► All verified → Proceed to Phase 10 (Refactor)
+    └─► All verified → Proceed to Phase 11 (Refactor)
 ```
 
 <claude-commands-template>

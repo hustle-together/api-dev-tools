@@ -3,7 +3,7 @@
 Hook: PreToolUse for Write/Edit (and Stop)
 Purpose: Block completion until documentation confirmed WITH USER REVIEW
 
-Phase 11 (Documentation) requires:
+Phase 12 (Documentation) requires:
   1. Update api-tests-manifest.json
   2. Cache research to .claude/research/
   3. Update OpenAPI spec if applicable
@@ -14,12 +14,50 @@ Phase 11 (Documentation) requires:
 Returns:
   - {"permissionDecision": "allow"} - Let the tool run
   - {"permissionDecision": "deny", "reason": "..."} - Block with explanation
+
+Updated in v3.6.7:
+  - Support multi-API state structure
+  - Don't block on missing cache files (cache-research.py creates them)
+  - Check actual file existence, not just state flags
 """
 import json
 import sys
 from pathlib import Path
 
 STATE_FILE = Path(__file__).parent.parent / "api-dev-state.json"
+RESEARCH_DIR = Path(__file__).parent.parent / "research"
+
+
+def get_active_endpoint(state):
+    """Get active endpoint - supports both old and new state formats."""
+    # New format (v3.6.7+): endpoints object with active_endpoint pointer
+    if "endpoints" in state and "active_endpoint" in state:
+        active = state.get("active_endpoint")
+        if active and active in state["endpoints"]:
+            return active, state["endpoints"][active]
+        return None, None
+
+    # Old format: single endpoint field
+    endpoint = state.get("endpoint")
+    if endpoint:
+        return endpoint, state
+
+    return None, None
+
+
+def check_research_cache_exists(endpoint):
+    """Check if research cache files actually exist."""
+    cache_dir = RESEARCH_DIR / endpoint
+    if not cache_dir.exists():
+        return False, []
+
+    expected_files = ["sources.json", "interview.json", "schema.json"]
+    existing = []
+    for f in expected_files:
+        if (cache_dir / f).exists():
+            existing.append(f)
+
+    return len(existing) >= 2, existing  # At least 2 of 3 files should exist
 
 
 def main():
@@ -54,8 +92,13 @@ def main():
         print(json.dumps({"permissionDecision": "allow"}))
         sys.exit(0)
 
-    endpoint = state.get("endpoint", "unknown")
-    phases = state.get("phases", {})
+    # Get active endpoint (supports both old and new formats)
+    endpoint, endpoint_data = get_active_endpoint(state)
+    if not endpoint or not endpoint_data:
+        print(json.dumps({"permissionDecision": "allow"}))
+        sys.exit(0)
+
+    phases = endpoint_data.get("phases", {})
     tdd_refactor = phases.get("tdd_refactor", {})
     documentation = phases.get("documentation", {})
 
@@ -74,14 +117,19 @@ def main():
         user_confirmed = documentation.get("user_confirmed", False)
         checklist_shown = documentation.get("checklist_shown", False)
         manifest_updated = documentation.get("manifest_updated", False)
-        research_cached = documentation.get("research_cached", False)
         openapi_updated = documentation.get("openapi_updated", False)
+
+        # v3.6.7: Check actual file existence for research cache
+        # (cache-research.py PostToolUse hook creates these files automatically)
+        cache_exists, cache_files = check_research_cache_exists(endpoint)
+        research_cached = cache_exists or documentation.get("research_cached", False)
 
         missing = []
         if not manifest_updated:
             missing.append("api-tests-manifest.json not updated")
         if not research_cached:
-            missing.append("Research not cached to .claude/research/")
+            # Don't block - cache-research.py will create files when docs are written
+            missing.append(f"Research cache pending (will be created automatically)")
         if not checklist_shown:
             missing.append("Documentation checklist not shown to user")
         if not user_question_asked:
@@ -93,7 +141,7 @@ def main():
 
         print(json.dumps({
             "permissionDecision": "deny",
-            "reason": f"""❌ BLOCKED: Documentation (Phase 11) not complete.
+            "reason": f"""❌ BLOCKED: Documentation (Phase 12) not complete.
 
 Status: {status}
 Manifest updated: {manifest_updated}
@@ -176,12 +224,16 @@ WHY: Documentation ensures next developer (or future Claude) has context."""
         }))
         sys.exit(0)
 
-    # Documentation complete
+    # Documentation complete - check actual file existence for status
+    cache_exists, cache_files = check_research_cache_exists(endpoint)
+    manifest_updated = documentation.get("manifest_updated", False)
+    openapi_updated = documentation.get("openapi_updated", False)
+
     print(json.dumps({
         "permissionDecision": "allow",
         "message": f"""✅ Documentation complete for {endpoint}.
 Manifest updated: {manifest_updated}
-Research cached: {research_cached}
+Research cached: {cache_exists} ({', '.join(cache_files) if cache_files else 'no files'})
 OpenAPI updated: {openapi_updated}
 User confirmed documentation is complete."""
     }))

@@ -1,6 +1,6 @@
 # API Environment - Check API Keys & Configuration
 
-**Usage:** `/api-env [endpoint-name]`
+**Usage:** `/hustle-api-env [endpoint-name]`
 
 **Purpose:** Quick check for required API keys and environment setup before implementation.
 
@@ -32,9 +32,9 @@ Status: BLOCKED - Cannot proceed without FIRECRAWL_API_KEY
 
 ```bash
 # Before starting implementation
-/api-interview generate-css
-/api-research firecrawl
-/api-env generate-css  ← Check keys
+/hustle-api-interview generate-css
+/hustle-api-research firecrawl
+/hustle-api-env generate-css  ← Check keys
 /red                   ← Start TDD if ready
 ```
 

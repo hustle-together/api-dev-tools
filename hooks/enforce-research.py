@@ -3,7 +3,7 @@
 Hook: PreToolUse for Write/Edit
 Purpose: Block writing API code if research phase not complete WITH USER CHECKPOINT
 
-Phase 2 requires:
+Phase 3 requires:
   1. Execute 2-3 initial searches (Context7, WebSearch)
   2. Present summary TABLE to user
   3. USE AskUserQuestion: "Proceed? [Y] / Search more? [n]"
@@ -85,7 +85,7 @@ Run /api-create [endpoint-name] to start the workflow."""
 
         print(json.dumps({
             "permissionDecision": "deny",
-            "reason": f"""❌ BLOCKED: Initial research (Phase 2) not complete.
+            "reason": f"""❌ BLOCKED: Initial research (Phase 3) not complete.
 
 Status: {status}
 Sources consulted: {len(sources)}

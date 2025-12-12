@@ -1,0 +1,640 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "3.7.0",
+  "name": "@hustle-together/api-dev-tools",
+  "description": "Interview-driven, research-first API development with 13-phase enforcement for Claude Code",
+
+  "phases": {
+    "1_disambiguation": {
+      "number": 1,
+      "name": "Disambiguation",
+      "state_key": "disambiguation",
+      "description": "Clarify ambiguous terms before research",
+      "enforcement_hook": "enforce-disambiguation.py",
+      "required_for_completion": false,
+      "blocks_writes": true,
+      "requires_user_confirmation": true,
+      "required_state_fields": {
+        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete"] },
+        "clarified": { "type": "string", "nullable": true },
+        "search_variations": { "type": "array" },
+        "user_question_asked": { "type": "boolean" },
+        "user_selected": { "type": "string", "nullable": true },
+        "phase_exit_confirmed": { "type": "boolean" }
+      },
+      "completion_conditions": ["user_question_asked", "phase_exit_confirmed"]
+    },
+    "2_scope": {
+      "number": 2,
+      "name": "Scope Confirmation",
+      "state_key": "scope",
+      "description": "Confirm understanding of endpoint purpose",
+      "enforcement_hook": "enforce-scope.py",
+      "required_for_completion": false,
+      "blocks_writes": true,
+      "requires_user_confirmation": true,
+      "required_state_fields": {
+        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete"] },
+        "confirmed": { "type": "boolean" },
+        "user_question_asked": { "type": "boolean" },
+        "user_confirmed": { "type": "boolean" },
+        "phase_exit_confirmed": { "type": "boolean" }
+      },
+      "completion_conditions": ["user_question_asked", "user_confirmed", "phase_exit_confirmed"]
+    },
+    "3_research_initial": {
+      "number": 3,
+      "name": "Initial Research",
+      "state_key": "research_initial",
+      "description": "Context7/WebSearch research for live documentation",
+      "enforcement_hook": "enforce-research.py",
+      "required_for_completion": true,
+      "blocks_writes": true,
+      "requires_user_confirmation": true,
+      "required_state_fields": {
+        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete"] },
+        "sources": { "type": "array" },
+        "summary_shown": { "type": "boolean" },
+        "user_question_asked": { "type": "boolean" },
+        "user_approved": { "type": "boolean" },
+        "phase_exit_confirmed": { "type": "boolean" }
+      },
+      "completion_conditions": ["sources.length > 0", "user_approved", "phase_exit_confirmed"]
+    },
+    "4_interview": {
+      "number": 4,
+      "name": "Interview",
+      "state_key": "interview",
+      "description": "Structured interview about requirements (generated FROM research)",
+      "enforcement_hook": "enforce-interview.py",
+      "required_for_completion": true,
+      "blocks_writes": true,
+      "requires_user_confirmation": true,
+      "required_state_fields": {
+        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete"] },
+        "questions": { "type": "array" },
+        "user_question_count": { "type": "number" },
+        "structured_question_count": { "type": "number" },
+        "decisions": { "type": "object" },
+        "user_question_asked": { "type": "boolean" },
+        "user_completed": { "type": "boolean" },
+        "phase_exit_confirmed": { "type": "boolean" }
+      },
+      "completion_conditions": ["user_question_count >= 1", "user_completed", "phase_exit_confirmed"]
+    },
+    "5_research_deep": {
+      "number": 5,
+      "name": "Deep Research",
+      "state_key": "research_deep",
+      "description": "Deep dive based on interview answers (adaptive, not shotgun)",
+      "enforcement_hook": "enforce-deep-research.py",
+      "required_for_completion": false,
+      "blocks_writes": true,
+      "requires_user_confirmation": true,
+      "required_state_fields": {
+        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete", "skipped"] },
+        "sources": { "type": "array" },
+        "proposed_searches": { "type": "array" },
+        "approved_searches": { "type": "array" },
+        "executed_searches": { "type": "array" },
+        "skipped_searches": { "type": "array" },
+        "user_question_asked": { "type": "boolean" },
+        "user_approved": { "type": "boolean" },
+        "phase_exit_confirmed": { "type": "boolean" }
+      },
+      "completion_conditions": ["user_approved", "phase_exit_confirmed"]
+    },
+    "6_schema": {
+      "number": 6,
+      "name": "Schema Creation",
+      "state_key": "schema_creation",
+      "description": "Zod schema creation from research + interview",
+      "enforcement_hook": "enforce-schema.py",
+      "required_for_completion": false,
+      "blocks_writes": true,
+      "requires_user_confirmation": true,
+      "required_state_fields": {
+        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete"] },
+        "schema_file": { "type": "string", "nullable": true },
+        "fields_count": { "type": "number" },
+        "schema_shown": { "type": "boolean" },
+        "user_question_asked": { "type": "boolean" },
+        "user_confirmed": { "type": "boolean" },
+        "phase_exit_confirmed": { "type": "boolean" }
+      },
+      "completion_conditions": ["schema_file !== null", "user_confirmed", "phase_exit_confirmed"]
+    },
+    "7_environment": {
+      "number": 7,
+      "name": "Environment Check",
+      "state_key": "environment_check",
+      "description": "API key and environment verification",
+      "enforcement_hook": "enforce-environment.py",
+      "required_for_completion": false,
+      "blocks_writes": true,
+      "requires_user_confirmation": true,
+      "required_state_fields": {
+        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete"] },
+        "keys_required": { "type": "array" },
+        "keys_found": { "type": "array" },
+        "keys_missing": { "type": "array" },
+        "env_shown": { "type": "boolean" },
+        "user_question_asked": { "type": "boolean" },
+        "user_ready": { "type": "boolean" },
+        "phase_exit_confirmed": { "type": "boolean" }
+      },
+      "completion_conditions": ["user_ready", "phase_exit_confirmed"]
+    },
+    "8_tdd_red": {
+      "number": 8,
+      "name": "TDD Red",
+      "state_key": "tdd_red",
+      "description": "Write failing tests first",
+      "enforcement_hook": "enforce-tdd-red.py",
+      "required_for_completion": true,
+      "blocks_writes": true,
+      "requires_user_confirmation": true,
+      "required_state_fields": {
+        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete"] },
+        "test_file": { "type": "string", "nullable": true },
+        "test_count": { "type": "number" },
+        "test_scenarios": { "type": "array" },
+        "matrix_shown": { "type": "boolean" },
+        "user_question_asked": { "type": "boolean" },
+        "user_approved": { "type": "boolean" },
+        "phase_exit_confirmed": { "type": "boolean" }
+      },
+      "completion_conditions": ["test_file !== null", "test_count > 0", "user_approved", "phase_exit_confirmed"]
+    },
+    "9_tdd_green": {
+      "number": 9,
+      "name": "TDD Green",
+      "state_key": "tdd_green",
+      "description": "Minimal implementation to pass tests",
+      "enforcement_hook": "verify-implementation.py",
+      "required_for_completion": true,
+      "blocks_writes": true,
+      "requires_user_confirmation": false,
+      "required_state_fields": {
+        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete"] },
+        "implementation_file": { "type": "string", "nullable": true },
+        "all_tests_passing": { "type": "boolean" },
+        "phase_exit_confirmed": { "type": "boolean" }
+      },
+      "completion_conditions": ["all_tests_passing"]
+    },
+    "10_verify": {
+      "number": 10,
+      "name": "Verification",
+      "state_key": "verify",
+      "description": "Re-research after Green to verify implementation matches docs",
+      "enforcement_hook": "enforce-verify.py",
+      "required_for_completion": true,
+      "blocks_writes": true,
+      "requires_user_confirmation": true,
+      "required_state_fields": {
+        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete"] },
+        "gaps_found": { "type": "number" },
+        "gaps_fixed": { "type": "number" },
+        "gaps_skipped": { "type": "number" },
+        "intentional_omissions": { "type": "array" },
+        "re_research_done": { "type": "boolean" },
+        "gap_analysis_shown": { "type": "boolean" },
+        "user_question_asked": { "type": "boolean" },
+        "user_decided": { "type": "boolean" },
+        "user_decision": { "type": "string", "nullable": true },
+        "phase_exit_confirmed": { "type": "boolean" }
+      },
+      "completion_conditions": ["re_research_done", "user_decided", "phase_exit_confirmed"]
+    },
+    "11_refactor": {
+      "number": 11,
+      "name": "TDD Refactor",
+      "state_key": "tdd_refactor",
+      "description": "Code cleanup while keeping tests green",
+      "enforcement_hook": "enforce-refactor.py",
+      "required_for_completion": false,
+      "blocks_writes": false,
+      "requires_user_confirmation": false,
+      "required_state_fields": {
+        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete", "skipped"] },
+        "phase_exit_confirmed": { "type": "boolean" }
+      },
+      "completion_conditions": ["status === 'complete' || status === 'skipped'"]
+    },
+    "12_documentation": {
+      "number": 12,
+      "name": "Documentation",
+      "state_key": "documentation",
+      "description": "Update manifests, OpenAPI, cache research",
+      "enforcement_hook": "enforce-documentation.py",
+      "required_for_completion": true,
+      "blocks_writes": true,
+      "requires_user_confirmation": true,
+      "required_state_fields": {
+        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete"] },
+        "files_updated": { "type": "array" },
+        "manifest_updated": { "type": "boolean" },
+        "openapi_updated": { "type": "boolean" },
+        "research_cached": { "type": "boolean" },
+        "checklist_shown": { "type": "boolean" },
+        "user_question_asked": { "type": "boolean" },
+        "user_confirmed": { "type": "boolean" },
+        "phase_exit_confirmed": { "type": "boolean" }
+      },
+      "completion_conditions": ["manifest_updated", "research_cached", "user_confirmed", "phase_exit_confirmed"]
+    },
+    "13_completion": {
+      "number": 13,
+      "name": "Completion",
+      "state_key": "completion",
+      "description": "Final verification and output generation",
+      "enforcement_hook": "api-workflow-check.py",
+      "required_for_completion": true,
+      "blocks_writes": false,
+      "requires_user_confirmation": false,
+      "required_state_fields": {
+        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete"] },
+        "all_tests_passing": { "type": "boolean" },
+        "coverage_100_percent": { "type": "boolean" },
+        "typescript_compiles": { "type": "boolean" },
+        "docs_updated": { "type": "boolean" },
+        "commit_ready": { "type": "boolean" },
+        "files_created": { "type": "array" },
+        "files_modified": { "type": "array" },
+        "phase_exit_confirmed": { "type": "boolean" }
+      },
+      "completion_conditions": ["all_tests_passing", "docs_updated"],
+      "output_generates": ["summary", "files_created", "files_modified", "test_commands", "curl_examples", "parameter_table", "scope_coverage", "research_cache_location", "next_steps"]
+    }
+  },
+
+  "hooks": {
+    "SessionStart": {
+      "session-startup.py": {
+        "description": "Inject state context at session start",
+        "actions": ["read_state", "inject_context", "check_freshness"]
+      },
+      "detect-interruption.py": {
+        "description": "Detect and prompt for interrupted workflows",
+        "actions": ["check_in_progress", "prompt_resume"],
+        "added_in": "3.6.7"
+      }
+    },
+    "UserPromptSubmit": {
+      "enforce-external-research.py": {
+        "description": "Require research for API-related prompts",
+        "actions": ["detect_api_terms", "inject_research_reminder"]
+      }
+    },
+    "PreToolUse": {
+      "enforce-disambiguation.py": {
+        "description": "Phase 1 enforcement - clarify before research",
+        "matcher": "Write|Edit",
+        "blocks": true,
+        "phase": 1
+      },
+      "enforce-scope.py": {
+        "description": "Phase 2 enforcement - confirm scope",
+        "matcher": "Write|Edit",
+        "blocks": true,
+        "phase": 2
+      },
+      "enforce-research.py": {
+        "description": "Phase 3 enforcement - research before implementation",
+        "matcher": "Write|Edit",
+        "blocks": true,
+        "phase": 3
+      },
+      "enforce-interview.py": {
+        "description": "Phase 4 enforcement - interview with questions from research",
+        "matcher": "Write|Edit",
+        "blocks": true,
+        "phase": 4
+      },
+      "enforce-deep-research.py": {
+        "description": "Phase 5 enforcement - adaptive deep research",
+        "matcher": "Write|Edit",
+        "blocks": true,
+        "phase": 5
+      },
+      "enforce-schema.py": {
+        "description": "Phase 6 enforcement - schema from research + interview",
+        "matcher": "Write|Edit",
+        "blocks": true,
+        "phase": 6
+      },
+      "enforce-environment.py": {
+        "description": "Phase 7 enforcement - verify API keys",
+        "matcher": "Write|Edit",
+        "blocks": true,
+        "phase": 7
+      },
+      "enforce-tdd-red.py": {
+        "description": "Phase 8 enforcement - tests before implementation",
+        "matcher": "Write|Edit",
+        "blocks": true,
+        "phase": 8
+      },
+      "verify-implementation.py": {
+        "description": "Phase 9 helper - ensure test file exists before route",
+        "matcher": "Write|Edit",
+        "blocks": true,
+        "phase": 9
+      },
+      "enforce-verify.py": {
+        "description": "Phase 10 enforcement - re-research after green",
+        "matcher": "Write|Edit",
+        "blocks": true,
+        "phase": 10
+      },
+      "enforce-refactor.py": {
+        "description": "Phase 11 enforcement - cleanup while tests pass",
+        "matcher": "Write|Edit",
+        "blocks": false,
+        "phase": 11
+      },
+      "enforce-documentation.py": {
+        "description": "Phase 12 enforcement - update docs before completion",
+        "matcher": "Write|Edit",
+        "blocks": true,
+        "phase": 12
+      },
+      "enforce-questions-sourced.py": {
+        "description": "Validate interview questions come from research",
+        "matcher": "AskUserQuestion",
+        "blocks": true,
+        "phase": 4,
+        "added_in": "3.6.7"
+      },
+      "enforce-schema-from-interview.py": {
+        "description": "Validate schema fields match interview decisions",
+        "matcher": "Write|Edit",
+        "blocks": true,
+        "phase": 6,
+        "added_in": "3.6.7"
+      },
+      "enforce-freshness.py": {
+        "description": "Block API-related writes if research is stale (>7 days) for active endpoint",
+        "matcher": "Write|Edit",
+        "blocks": true,
+        "phase": "*",
+        "configurable": {
+          "enforce_freshness": "boolean (default: true)",
+          "freshness_threshold_days": "number (default: 7)"
+        },
+        "added_in": "3.7.0"
+      }
+    },
+    "PostToolUse": {
+      "track-tool-use.py": {
+        "description": "Log research and tool usage, update state",
+        "matcher": "WebSearch|WebFetch|mcp__context7.*|AskUserQuestion",
+        "actions": ["log_research", "update_state", "count_turns", "populate_research_index"]
+      },
+      "periodic-reground.py": {
+        "description": "Re-inject context every 7 turns",
+        "matcher": "WebSearch|WebFetch|mcp__context7.*|AskUserQuestion",
+        "interval": 7,
+        "actions": ["inject_endpoint", "inject_phase", "inject_decisions", "inject_freshness_warning"]
+      },
+      "verify-after-green.py": {
+        "description": "Trigger Phase 10 verification after tests pass",
+        "matcher": "Bash",
+        "actions": ["detect_test_pass", "trigger_verification"]
+      },
+      "cache-research.py": {
+        "description": "Create research cache files from state",
+        "matcher": "Write|Edit",
+        "actions": ["create_sources_json", "create_interview_json", "create_schema_json", "update_current_md", "update_index_json"],
+        "added_in": "3.6.7"
+      },
+      "track-scope-coverage.py": {
+        "description": "Track implemented vs deferred features",
+        "matcher": "AskUserQuestion",
+        "actions": ["record_feature_decision", "update_coverage"],
+        "added_in": "3.6.7"
+      }
+    },
+    "Stop": {
+      "api-workflow-check.py": {
+        "description": "Block if phases incomplete, generate completion output",
+        "actions": ["verify_phases", "generate_output", "block_if_incomplete"]
+      },
+      "session-logger.py": {
+        "description": "Save session to .claude/api-sessions/",
+        "actions": ["copy_jsonl", "convert_to_markdown", "snapshot_state", "generate_summary"],
+        "added_in": "3.6.7"
+      }
+    }
+  },
+
+  "commands": {
+    "api-create": {
+      "usage": "/api-create [endpoint-name]",
+      "description": "Complete 13-phase API development workflow",
+      "file": "commands/api-create.md",
+      "phases_used": "all",
+      "required": true
+    },
+    "api-interview": {
+      "usage": "/api-interview [endpoint-name]",
+      "description": "Run Phase 4 interview with questions from research",
+      "file": "commands/api-interview.md",
+      "phases_used": ["interview"]
+    },
+    "api-research": {
+      "usage": "/api-research [library-name]",
+      "description": "Run Phase 3/5 research with Context7 and WebSearch",
+      "file": "commands/api-research.md",
+      "phases_used": ["research_initial", "research_deep"]
+    },
+    "api-verify": {
+      "usage": "/api-verify [endpoint-name]",
+      "description": "Run Phase 10 verification against current docs",
+      "file": "commands/api-verify.md",
+      "phases_used": ["verify"]
+    },
+    "api-env": {
+      "usage": "/api-env [endpoint-name]",
+      "description": "Run Phase 7 environment check",
+      "file": "commands/api-env.md",
+      "phases_used": ["environment_check"]
+    },
+    "api-status": {
+      "usage": "/api-status [endpoint-name] [--all]",
+      "description": "Show progress through 13 phases",
+      "file": "commands/api-status.md",
+      "phases_used": []
+    },
+    "api-continue": {
+      "usage": "/api-continue [endpoint-name]",
+      "description": "Resume interrupted workflow from last completed phase",
+      "file": "commands/api-continue.md",
+      "phases_used": [],
+      "added_in": "3.6.7"
+    },
+    "api-sessions": {
+      "usage": "/api-sessions [--list|--view|--export|--search]",
+      "description": "Browse and export saved session logs",
+      "file": "commands/api-sessions.md",
+      "phases_used": [],
+      "added_in": "3.6.7"
+    }
+  },
+
+  "state_structure": {
+    "root": {
+      "version": { "type": "string", "description": "State file version" },
+      "created_at": { "type": "string", "nullable": true, "description": "ISO timestamp of creation" },
+      "active_endpoint": { "type": "string", "nullable": true, "description": "Currently active endpoint name" },
+      "endpoints": { "type": "object", "description": "All endpoint workflows" },
+      "turn_count": { "type": "number", "description": "Total turns in session" },
+      "last_turn_timestamp": { "type": "string", "nullable": true },
+      "research_queries": { "type": "array", "description": "All research queries made" },
+      "prompt_detections": { "type": "array", "description": "Detected API terms in prompts" },
+      "decisions_history": { "type": "array", "description": "History of interview decision changes", "added_in": "3.6.7" },
+      "reground_history": { "type": "array", "description": "History of re-grounding injections" }
+    },
+    "endpoint": {
+      "started_at": { "type": "string", "description": "ISO timestamp when workflow started" },
+      "status": { "type": "enum", "values": ["not_started", "in_progress", "complete"], "description": "Overall workflow status" },
+      "library": { "type": "string", "nullable": true, "description": "External library/API name" },
+      "phases": { "type": "object", "description": "Phase-specific state" },
+      "scope": {
+        "type": "object",
+        "description": "Feature scope tracking",
+        "added_in": "3.6.7",
+        "fields": {
+          "discovered_features": { "type": "array" },
+          "implemented_features": { "type": "array" },
+          "deferred_features": { "type": "array" },
+          "coverage_percent": { "type": "number" }
+        }
+      },
+      "session": {
+        "type": "object",
+        "description": "Session interruption tracking",
+        "added_in": "3.6.7",
+        "fields": {
+          "interrupted_at": { "type": "string", "nullable": true },
+          "interrupted_phase": { "type": "string", "nullable": true },
+          "recovery_checkpoint": { "type": "object", "nullable": true }
+        }
+      }
+    }
+  },
+
+  "file_structure": {
+    ".claude/api-dev-state.json": {
+      "description": "Main state file tracking all workflows",
+      "created_by": "installer"
+    },
+    ".claude/api-sessions/": {
+      "description": "Session logs directory",
+      "created_by": "session-logger.py",
+      "added_in": "3.6.7",
+      "contents": {
+        "{endpoint}_{timestamp}/": {
+          "session.jsonl": "Raw Claude conversation",
+          "session.md": "Human-readable markdown",
+          "state-snapshot.json": "State at completion",
+          "files-created.txt": "List of files made",
+          "summary.md": "Executive summary"
+        },
+        "index.json": "Session index with metadata"
+      }
+    },
+    ".claude/research/": {
+      "description": "Research cache directory",
+      "created_by": "cache-research.py",
+      "contents": {
+        "{endpoint}/": {
+          "CURRENT.md": "Aggregated research (main reference)",
+          "sources.json": "Research sources with URLs and summaries",
+          "interview.json": "Interview decisions",
+          "schema.json": "Schema snapshot"
+        },
+        "index.json": "Research freshness index"
+      }
+    },
+    ".claude/hooks/": {
+      "description": "Python enforcement hooks",
+      "created_by": "installer"
+    },
+    ".claude/commands/": {
+      "description": "Slash command markdown files",
+      "created_by": "installer"
+    }
+  },
+
+  "completion_output": {
+    "description": "Structured output generated at Phase 13 completion",
+    "sections": [
+      {
+        "name": "summary",
+        "title": "API Implementation Complete",
+        "includes": ["status", "phases_completed", "test_count", "coverage", "duration"]
+      },
+      {
+        "name": "files_created",
+        "title": "Files Created",
+        "includes": ["route_file", "test_file", "schema_file"]
+      },
+      {
+        "name": "files_modified",
+        "title": "Files Modified",
+        "includes": ["manifest", "research_cache"]
+      },
+      {
+        "name": "test_commands",
+        "title": "Test Commands",
+        "format": "bash",
+        "includes": ["endpoint_tests", "full_suite", "watch_mode"]
+      },
+      {
+        "name": "curl_examples",
+        "title": "API Usage (curl)",
+        "format": "bash",
+        "includes": ["basic_request", "with_auth", "with_headers"]
+      },
+      {
+        "name": "parameter_table",
+        "title": "Parameters Discovered",
+        "format": "markdown_table",
+        "columns": ["name", "type", "required", "description"]
+      },
+      {
+        "name": "scope_coverage",
+        "title": "Implementation Scope",
+        "includes": ["implemented_features", "deferred_features", "coverage_percent"],
+        "added_in": "3.6.7"
+      },
+      {
+        "name": "research_cache_location",
+        "title": "Research Cache",
+        "includes": ["current_md_path", "sources_json_path"]
+      },
+      {
+        "name": "next_steps",
+        "title": "Next Steps",
+        "includes": ["review_tests", "manual_testing", "deploy"]
+      }
+    ]
+  },
+
+  "constants": {
+    "REGROUND_INTERVAL": 7,
+    "RESEARCH_FRESHNESS_DAYS": 7,
+    "MIN_INTERVIEW_QUESTIONS": 1,
+    "EXIT_CODE_BLOCK": 2
+  },
+
+  "migration": {
+    "from_single_endpoint": {
+      "description": "Migrate from single endpoint to multi-API state",
+      "detect": "state.endpoint !== undefined && state.endpoints === undefined",
+      "action": "wrap_in_endpoints_object"
+    }
+  }
+}

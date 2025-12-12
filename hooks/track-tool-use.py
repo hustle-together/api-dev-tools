@@ -10,7 +10,11 @@ It logs each research action to api-dev-state.json for:
   - Providing visibility to the user
   - Tracking turn counts for periodic re-grounding
 
-Version: 3.0.0
+Version: 3.6.7
+
+Updated in v3.6.7:
+  - Support multi-API state structure
+  - Populate .claude/research/index.json for freshness tracking
 
 Returns:
   - {"continue": true} - Always continues (logging only, no blocking)
@@ -22,9 +26,80 @@ from pathlib import Path
 
 # State file is in .claude/ directory (sibling to hooks/)
 STATE_FILE = Path(__file__).parent.parent / "api-dev-state.json"
+RESEARCH_DIR = Path(__file__).parent.parent / "research"
+RESEARCH_INDEX = RESEARCH_DIR / "index.json"
 
 # Re-grounding interval (also used by periodic-reground.py)
 REGROUND_INTERVAL = 7
+
+
+def get_active_endpoint(state):
+    """Get active endpoint - supports both old and new state formats."""
+    # New format (v3.6.7+): endpoints object with active_endpoint pointer
+    if "endpoints" in state and "active_endpoint" in state:
+        active = state.get("active_endpoint")
+        if active and active in state["endpoints"]:
+            return active, state["endpoints"][active]
+        return None, None
+
+    # Old format: single endpoint field
+    endpoint = state.get("endpoint")
+    if endpoint:
+        return endpoint, state
+
+    return None, None
+
+
+def update_research_index(endpoint, source_entry):
+    """Update the research index.json with new research activity."""
+    RESEARCH_DIR.mkdir(parents=True, exist_ok=True)
+
+    # Load existing index
+    if RESEARCH_INDEX.exists():
+        try:
+            index = json.loads(RESEARCH_INDEX.read_text())
+        except json.JSONDecodeError:
+            index = {"version": "3.6.7", "apis": {}}
+    else:
+        index = {"version": "3.6.7", "apis": {}}
+
+    if "apis" not in index:
+        index["apis"] = {}
+
+    # Update endpoint entry
+    now = datetime.now().isoformat()
+    if endpoint not in index["apis"]:
+        index["apis"][endpoint] = {
+            "last_updated": now,
+            "freshness_days": 0,
+            "source_count": 0,
+            "sources": []
+        }
+
+    entry = index["apis"][endpoint]
+    entry["last_updated"] = now
+    entry["freshness_days"] = 0
+    entry["source_count"] = entry.get("source_count", 0) + 1
+
+    # Add source summary (keep last 10)
+    sources = entry.get("sources", [])
+    source_summary = {
+        "type": source_entry.get("type", "unknown"),
+        "timestamp": now
+    }
+    if source_entry.get("query"):
+        source_summary["query"] = source_entry.get("query", "")[:100]
+    if source_entry.get("url"):
+        source_summary["url"] = source_entry.get("url", "")[:200]
+    if source_entry.get("library"):
+        source_summary["library"] = source_entry.get("library", "")
+
+    sources.append(source_summary)
+    entry["sources"] = sources[-10:]  # Keep last 10
+
+    # Save index
+    RESEARCH_INDEX.write_text(json.dumps(index, indent=2))
+    return True
 
 
 def main():
@@ -260,6 +335,11 @@ def main():
 
     # Add to sources list
     sources.append(source_entry)
+
+    # v3.6.7: Update research index.json for freshness tracking
+    endpoint, _ = get_active_endpoint(state)
+    if endpoint:
+        update_research_index(endpoint, source_entry)
 
     # Also add to research_queries for prompt verification
     research_queries = state.setdefault("research_queries", [])

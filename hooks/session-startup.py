@@ -13,6 +13,11 @@ helping to re-ground Claude on:
 
 Returns:
   - JSON with additionalContext to inject into Claude's context
+
+Updated in v3.6.7:
+  - Support multi-API state structure (endpoints object)
+  - Read research index from .claude/research/index.json file
+  - Calculate freshness from timestamps
 """
 import json
 import sys
@@ -23,6 +28,47 @@ from pathlib import Path
 # State file is in .claude/ directory (sibling to hooks/)
 STATE_FILE = Path(__file__).parent.parent / "api-dev-state.json"
 RESEARCH_INDEX = Path(__file__).parent.parent / "research" / "index.json"
+
+
+def get_active_endpoint(state):
+    """Get active endpoint - supports both old and new state formats."""
+    # New format (v3.6.7+): endpoints object with active_endpoint pointer
+    if "endpoints" in state and "active_endpoint" in state:
+        active = state.get("active_endpoint")
+        if active and active in state["endpoints"]:
+            return active, state["endpoints"][active]
+        return None, None
+
+    # Old format: single endpoint field
+    endpoint = state.get("endpoint")
+    if endpoint:
+        # Return endpoint name and the entire state as endpoint data
+        return endpoint, state
+
+    return None, None
+
+
+def load_research_index():
+    """Load research index from .claude/research/index.json file."""
+    if not RESEARCH_INDEX.exists():
+        return {}
+    try:
+        index = json.loads(RESEARCH_INDEX.read_text())
+        return index.get("apis", {})
+    except (json.JSONDecodeError, IOError):
+        return {}
+
+
+def calculate_days_old(timestamp_str):
+    """Calculate how many days old a timestamp is."""
+    if not timestamp_str:
+        return 0
+    try:
+        last_updated = datetime.fromisoformat(timestamp_str.replace('Z', '+00:00'))
+        now = datetime.now(last_updated.tzinfo) if last_updated.tzinfo else datetime.now()
+        return (now - last_updated).days
+    except (ValueError, TypeError):
+        return 0
 
 
 def main():
@@ -46,9 +92,9 @@ def main():
         print(json.dumps({"continue": True}))
         sys.exit(0)
 
-    # Check if there's an active workflow
-    endpoint = state.get("endpoint")
-    if not endpoint:
+    # Get active endpoint (supports both old and new formats)
+    endpoint, endpoint_data = get_active_endpoint(state)
+    if not endpoint or not endpoint_data:
         # No active endpoint - just continue
         print(json.dumps({"continue": True}))
         sys.exit(0)
@@ -59,8 +105,8 @@ def main():
     context_parts.append("")
     context_parts.append(f"**Active Endpoint:** {endpoint}")
 
-    # Get phase status
-    phases = state.get("phases", {})
+    # Get phase status (from endpoint_data for multi-API, or state for legacy)
+    phases = endpoint_data.get("phases", {})
     completed = []
     in_progress = []
     not_started = []
@@ -103,17 +149,26 @@ def main():
             if response:
                 context_parts.append(f"  - {key}: {str(response)[:100]}")
 
-    # Research cache info
-    research_index = state.get("research_index", {})
+    # Research cache info - READ FROM index.json FILE (v3.6.7 fix)
+    research_index = load_research_index()
     if endpoint in research_index:
         entry = research_index[endpoint]
-        days_old = entry.get("days_old", 0)
+        last_updated = entry.get("last_updated", "")
+        days_old = calculate_days_old(last_updated)
         context_parts.append("")
         context_parts.append("**Research Cache:**")
         context_parts.append(f"  - Location: .claude/research/{endpoint}/CURRENT.md")
-        context_parts.append(f"  - Last Updated: {entry.get('last_updated', 'Unknown')}")
+        context_parts.append(f"  - Last Updated: {last_updated or 'Unknown'}")
         if days_old > 7:
-            context_parts.append(f"  - WARNING: Research is {days_old} days old. Consider re-researching.")
+            context_parts.append(f"  - ⚠️ WARNING: Research is {days_old} days old. Consider re-researching.")
+    else:
+        # Check if research directory exists even without index entry
+        research_dir = Path(__file__).parent.parent / "research" / endpoint
+        if research_dir.exists():
+            context_parts.append("")
+            context_parts.append("**Research Cache:**")
+            context_parts.append(f"  - Location: .claude/research/{endpoint}/")
+            context_parts.append(f"  - ⚠️ Not indexed - run /api-research to update")
 
     # Turn count for re-grounding awareness
     turn_count = state.get("turn_count", 0)
