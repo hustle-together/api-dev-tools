@@ -6939,6 +6939,180 @@ Browse sessions: /hustle-api-sessions --list
 
 </details>
 
+<details>
+<summary><strong>enforce-a11y-audit.py</strong> - Accessibility Audit (v3.10.0+)</summary>
+
+**Event:** PostToolUse (Write|Edit)
+**Purpose:** Trigger WCAG accessibility audit after TDD Green phase for UI workflows
+
+**The Problem It Solves:**
+UI components and pages often ship with accessibility violations:
+- Missing alt text
+- Poor color contrast
+- No keyboard navigation
+- Missing ARIA labels
+
+**How It Works:**
+1. Detects UI workflow (ui-create-component or ui-create-page)
+2. Checks if TDD Green phase is complete
+3. Injects WCAG 2.1 checklist into context
+4. Provides axe-core commands for automated testing
+
+**Example 1: Accessibility Audit Required**
+```
+Accessibility audit required for Button (WCAG 2.1 AA)
+
+Quick Commands:
+# Storybook accessibility check
+pnpm storybook --ci
+pnpm dlx @storybook/test-runner --url http://localhost:6006
+
+WCAG 2.1 AA Checklist:
+  - Color contrast: 4.5:1 for normal text, 3:1 for large text
+  - Focus visible: All interactive elements show focus state
+  - Keyboard nav: All functionality accessible via keyboard
+  - Labels: All form inputs have associated labels
+  - Alt text: All images have meaningful alt text
+```
+
+**Example 2: Page Accessibility Check**
+```
+# Page accessibility check
+pnpm dev
+# Then in another terminal:
+pnpm dlx @axe-core/cli http://localhost:3000/dashboard
+
+# Or use Playwright accessibility tests:
+pnpm test:e2e --grep 'accessibility'
+```
+
+</details>
+
+<details>
+<summary><strong>check-api-routes.py</strong> - Verify API Routes Exist (v3.10.0+)</summary>
+
+**Event:** PreToolUse (Write|Edit)
+**Purpose:** Block page implementation until required API routes exist
+
+**The Problem It Solves:**
+Pages are implemented before their data sources exist:
+- Page expects `/api/users` but route doesn't exist
+- Frontend code calls APIs that haven't been created
+- Runtime errors in production
+
+**How It Works:**
+1. Detects ui-create-page workflow
+2. Checks Phase 7 (ENVIRONMENT) status
+3. Scans project for existing API routes
+4. Blocks page.tsx creation if environment check incomplete
+
+**Example 1: Environment Check Required**
+```
+ENVIRONMENT CHECK REQUIRED (Phase 7)
+
+You are implementing the main page, but the Environment phase is not complete.
+
+Before implementing page.tsx:
+1. Verify required API routes exist
+2. Check authentication configuration
+3. Verify required packages are installed
+4. Update state: phases.environment_check.status = "complete"
+
+Existing API Routes Found:
+  - /api/v2/brandfetch
+  - /api/v2/openai
+  - /api/v2/wordpress
+  ... and 12 more
+
+If you need new API routes, use /api-create to create them first.
+```
+
+</details>
+
+<details>
+<summary><strong>enforce-page-components.py</strong> - Registry Component Reuse (v3.10.0+)</summary>
+
+**Event:** PreToolUse (Write|Edit)
+**Purpose:** Check registry for reusable components before creating new ones
+
+**The Problem It Solves:**
+Duplicate components are created instead of reusing existing ones:
+- Multiple Button components across the project
+- Inconsistent styling and behavior
+- Wasted development time
+
+**How It Works:**
+1. Detects ui-create-page workflow
+2. Checks if creating a standalone component (src/components/)
+3. Loads registry.json to show available components
+4. Blocks if Page Analysis phase not complete
+
+**Example 1: Page Analysis Required**
+```
+PAGE ANALYSIS REQUIRED (Phase 5)
+
+You are creating a new standalone component, but Page Analysis phase is not complete.
+
+Before creating new components:
+1. Check the registry for existing components
+2. Decide which existing components to reuse
+3. Update state: phases.page_analysis.status = "complete"
+
+Available Components in Registry:
+  - Button
+  - Card
+  - Modal
+  - Input
+  - Select
+  ... and 5 more
+
+If you need a NEW component, consider:
+- Using /ui-create to properly create and document it
+- Or create a page-specific component in src/app/{page}/_components/
+```
+
+**Note:** Page-specific components in `_components/` folders are always allowed.
+
+</details>
+
+<details>
+<summary><strong>enforce-page-data-schema.py</strong> - Data Schema Validation (v3.10.0+)</summary>
+
+**Event:** PreToolUse (Write|Edit)
+**Purpose:** Ensure API response types are defined before page implementation
+
+**The Problem It Solves:**
+Pages are implemented without knowing the data structure:
+- TypeScript errors when data shape is wrong
+- Runtime errors from missing properties
+- Inconsistent data handling
+
+**How It Works:**
+1. Detects ui-create-page workflow
+2. Checks Phase 6 (DATA SCHEMA) status
+3. Blocks page.tsx/layout.tsx creation if schema not complete
+4. Allows type files and test files to be written
+
+**Example 1: Data Schema Required**
+```
+DATA SCHEMA REQUIRED (Phase 6)
+
+You are trying to implement page code, but the data schema phase is not complete.
+
+Before writing page implementation:
+1. Define TypeScript interfaces for API responses
+2. Create types in src/app/{page}/_types/index.ts
+3. Update state: phases.data_schema.status = "complete"
+
+Page implementation requires knowing the data structure first.
+```
+
+**What's Allowed Without Schema:**
+- Type definition files (`_types/`)
+- Test files (`__tests__/`, `.test.`, `.spec.`)
+
+</details>
+
 ---
 
 ## Links
