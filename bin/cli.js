@@ -365,16 +365,17 @@ function main() {
                     fs.existsSync(path.join(targetDir, 'next.config.mjs')) ||
                     fs.existsSync(path.join(targetDir, 'next.config.ts'));
 
+  // Detect App Router structure (used by Test UI and Showcase Pages)
+  const appDir = fs.existsSync(path.join(targetDir, 'src', 'app'))
+    ? path.join(targetDir, 'src', 'app')
+    : fs.existsSync(path.join(targetDir, 'app'))
+      ? path.join(targetDir, 'app')
+      : null;
+
   if (!hasNextJs) {
     log('   ⚠️  Next.js not detected - skipping Test UI installation', 'yellow');
     log('   💡 Test UI requires Next.js App Router', 'yellow');
   } else if (fs.existsSync(testUiSourceDir)) {
-    // Detect App Router structure
-    const appDir = fs.existsSync(path.join(targetDir, 'src', 'app'))
-      ? path.join(targetDir, 'src', 'app')
-      : fs.existsSync(path.join(targetDir, 'app'))
-        ? path.join(targetDir, 'app')
-        : null;
 
     if (!appDir) {
       log('   ⚠️  App Router not detected - skipping Test UI installation', 'yellow');
