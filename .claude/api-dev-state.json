@@ -7,7 +7,25 @@
   "turn_count": 0,
   "last_turn_timestamp": null,
   "research_queries": [],
-  "prompt_detections": [],
+  "prompt_detections": [
+    {
+      "timestamp": "2025-12-15T01:17:42.420990",
+      "prompt_preview": "https://github.com/hustle-together/api-dev-tools/blob/master/SKILLS_AND_TESTING_STRATEGY.md\n\nDo you ...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "api"
+        ],
+        "patterns_matched": [
+          "always_research",
+          "technical_term",
+          "question_pattern"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
+    }
+  ],
   "phases": {
     "disambiguation": {
       "status": "not_started",
