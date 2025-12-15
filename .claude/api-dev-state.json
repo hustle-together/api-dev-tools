@@ -4,110 +4,10 @@
   "endpoint": null,
   "library": null,
   "session_id": null,
-  "turn_count": 6,
-  "last_turn_timestamp": "2025-12-15T02:25:14.709732",
-  "research_queries": [
-    {
-      "timestamp": "2025-12-15T02:25:07.015538",
-      "tool": "WebSearch",
-      "query": "Claude Code Skills SKILL.md documentation 2025",
-      "terms": [
-        "claude",
-        "code",
-        "skills",
-        "skill",
-        "documentation",
-        "2025"
-      ]
-    },
-    {
-      "timestamp": "2025-12-15T02:25:10.518935",
-      "tool": "WebSearch",
-      "query": "Claude Code Skills how they work difference markdown instructions",
-      "terms": [
-        "claude",
-        "code",
-        "skills",
-        "they",
-        "work",
-        "difference",
-        "markdown",
-        "instructions"
-      ]
-    },
-    {
-      "timestamp": "2025-12-15T02:25:14.709750",
-      "tool": "WebFetch",
-      "url": "https://docs.claude.com/en/docs/claude-code/skills",
-      "terms": [
-        "claude",
-        "claude",
-        "code",
-        "skills"
-      ]
-    }
-  ],
-  "prompt_detections": [
-    {
-      "timestamp": "2025-12-15T01:17:42.420990",
-      "prompt_preview": "https://github.com/hustle-together/api-dev-tools/blob/master/SKILLS_AND_TESTING_STRATEGY.md\n\nDo you ...",
-      "detection": {
-        "detected": true,
-        "terms": [
-          "api"
-        ],
-        "patterns_matched": [
-          "always_research",
-          "technical_term",
-          "question_pattern"
-        ],
-        "confidence": "critical"
-      },
-      "injected": true
-    },
-    {
-      "timestamp": "2025-12-15T02:11:40.243094",
-      "prompt_preview": "Can you read and understand in full?",
-      "detection": {
-        "detected": true,
-        "terms": [],
-        "patterns_matched": [
-          "question_pattern"
-        ],
-        "confidence": "medium"
-      },
-      "injected": true
-    },
-    {
-      "timestamp": "2025-12-15T02:18:04.469844",
-      "prompt_preview": "No coding needed necessarily. I was more looking to understand all the things that this takes. It sa...",
-      "detection": {
-        "detected": true,
-        "terms": [
-          "reference"
-        ],
-        "patterns_matched": [
-          "always_research",
-          "question_pattern"
-        ],
-        "confidence": "critical"
-      },
-      "injected": true
-    },
-    {
-      "timestamp": "2025-12-15T02:24:28.245434",
-      "prompt_preview": "Well, what's necessarily the purpose of skills? How is it different than our approach? As currently ...",
-      "detection": {
-        "detected": true,
-        "terms": [],
-        "patterns_matched": [
-          "question_pattern"
-        ],
-        "confidence": "medium"
-      },
-      "injected": true
-    }
-  ],
+  "turn_count": 0,
+  "last_turn_timestamp": null,
+  "research_queries": [],
+  "prompt_detections": [],
   "phases": {
     "disambiguation": {
       "status": "not_started",
@@ -121,40 +21,10 @@
       "description": "Initial scope understanding and confirmation"
     },
     "research_initial": {
-      "status": "complete",
-      "sources": [
-        {
-          "type": "websearch",
-          "query": "Claude Code Skills SKILL.md documentation 2025",
-          "timestamp": "2025-12-15T02:25:07.015538",
-          "success": true
-        },
-        {
-          "type": "websearch",
-          "query": "Claude Code Skills how they work difference markdown instructions",
-          "timestamp": "2025-12-15T02:25:10.518935",
-          "success": true
-        },
-        {
-          "type": "webfetch",
-          "url": "https://docs.claude.com/en/docs/claude-code/skills",
-          "timestamp": "2025-12-15T02:25:14.709750",
-          "success": true
-        }
-      ],
+      "status": "not_started",
+      "sources": [],
       "summary_approved": false,
-      "description": "Context7/WebSearch research for live documentation",
-      "started_at": "2025-12-15T02:25:07.015537",
-      "last_activity": "2025-12-15T02:25:14.709750",
-      "source_count": 3,
-      "completed_at": "2025-12-15T02:25:14.709750",
-      "completion_reason": "sufficient_sources",
-      "completion_summary": {
-        "total_sources": 3,
-        "context7_calls": 0,
-        "web_searches": 2,
-        "doc_fetches": 1
-      }
+      "description": "Context7/WebSearch research for live documentation"
     },
     "interview": {
       "status": "not_started",
