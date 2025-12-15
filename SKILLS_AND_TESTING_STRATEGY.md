@@ -2,6 +2,58 @@
 
 **Date:** 2025-12-13
 **Context:** Research findings on Claude Code Skills and testing strategies for v3.11.0+
+**Purpose:** Address user-reported gaps + explore Skills impact on architecture
+
+---
+
+## User-Reported Concerns (Original Messages)
+
+### Message 1: Documentation Folder Structure
+> Just a couple of notes I noticed that the documentation, I'm not sure where it goes necessarily. If it makes a folder or something, but I think we should have our own directory for that. Currently in our research folder, we have index.json but not the folder within there, which I think would be more ideal.
+>
+> Additionally, I'm noticing once we make our plan in step three with that research, for instance, we might say, "Hey, do you want to do all these end points?" We might say there's 50 of them with 10 end points each or something. How does that get tracked?
+
+### Message 2: Comprehensive Research Hook (Critical Gap)
+> I noticed the actual research was really good, but I missed some things. I think we need to add a hook to give it all comprehension of everything. Like, if I asked for a Fire Crawl API and did a decent amount of research for all the APIs, but the research wasn't broad enough. We almost need a deeper research. And we need to ensure that it can identify if there's a documentation page of full documentation, and then try and gain a deep understanding of the high-level hierarchy so we can have a better frame of mind on what's available. For instance, in Fire Crawl, unless it went to a specific page, it wouldn't know that there's a web hook available. We would need to be able to solve this. My thought process is by looking at this table of contents, and/or maybe using Fire Crawl within here as an API call can be helpful potentially, or just scraping what we consider to be the docs page by trying to identify that and seeing all the different elements possible throughout. And then even potentially doing a high-level scrape these pages with the lower-end model just to identify these things. And maybe that's an element too for certain scrapings or elements. Maybe we can have them on this step be run with a low-end model like Haiku or even an Open Router sort of thing where I connect it to a lower-end model with our own account. And basically that's the one that will identify all those things, get all the pages real quick, and then say "Hey, here's what's on there."
+
+### Message 3: Autonomous Mode + Cost Tracking
+> Let's also have the ability to run a mode that lets it just go autonomously where the questions are answered by Claude. Also, we need cost tracking of the tokens and everything. So, we know what the session is and the session time at the end of how long it all took.
+
+### Message 4: Auto-Approve Edits
+> I also need the ability to allow all the edits to happen by default without needing user permission every time.
+
+### Message 5: Iterative Documentation
+> Okay, also I noticed the documentation happens at the end but not during the actual research phase, which is a little confusing to me. It feels like we need to iteratively add to the documentation so we don't lose track and we can see all the possibilities at a high level. Like I mentioned before, with understanding the full level of documentation and abilities. That way, then as we go through all those, we can iterate and add additional docs, docs, docs, and at the end, we can read the documentation as well and document of course everything with the API.
+
+### Message 6: Template Output
+> The template is an output at the end with the API.
+
+### Message 7: Registry Bugs
+> The registry didn't update at the end. And the registry doesn't actually get fetched into the template page, I notice. Also, in my example API test, and post and get. Want to make sure that all the examples have full examples so that when we test them, they give the example of how they should be run currently based on empty values. Also, some have get, some have post, some have both. I don't know that's a good example.
+
+---
+
+## How This Document Addresses Each Concern
+
+| Message | Concern | Addressed In | Status |
+|---------|---------|--------------|--------|
+| **1** | Documentation folder structure | Original Plan Document (Section 1) + Testing (Snapshot validation) | ✅ Planned |
+| **1** | Multi-endpoint tracking | Original Plan Document (Section 3) + Roadmap v3.11.1 | ✅ Designed |
+| **2** | Comprehensive research (ToC scraping, Firecrawl) | Original Plan Document (Section 2) + Roadmap v3.11.0 | 🎯 Critical - P0 |
+| **2** | Use low-cost models (Haiku) for breadth | Testing Strategy (QA System, Cost optimization) | ✅ Recommended |
+| **3** | Autonomous mode | Original Plan Document (Section 4) + Answer file approach | ⚠️ Hybrid solution |
+| **3** | Cost & time tracking | Original Plan Document (Section 5) + Roadmap v3.10.2 | ✅ Essential - P0 |
+| **4** | Auto-approve edits | Original Plan Document (Section 6) + Pattern-based safety | ✅ Designed |
+| **5** | Iterative documentation | Original Plan Document (Section 7) + Roadmap v3.11.0 | ✅ Better UX - P1 |
+| **6** | Template output | Original Plan Document (Section 8) | ❓ Needs clarification |
+| **7** | Registry bugs (updates, fetch, examples) | Original Plan Document (Section 9) + Roadmap v3.10.2 | 🐛 Broken - P0 |
+
+**Legend:**
+- ✅ = Fully addressed with implementation plan
+- 🎯 = Highest priority, most critical
+- 🐛 = Bug that needs immediate fix
+- ⚠️ = Philosophical conflict, hybrid solution proposed
+- ❓ = Needs more information from user
 
 ---
 
@@ -14,6 +66,7 @@ This document explores how **Claude Code Skills** (launched October 2025) affect
 - Current architecture should evolve to hybrid: Commands + Skills
 - Multiple low-cost testing strategies exist (hook unit tests, demo snapshots, QA systems)
 - Skills could eventually replace some enforcement hooks
+- **All 7 user concerns are addressed** with specific implementation plans
 
 ---
 
