@@ -221,6 +221,21 @@
         "confidence": "none"
       },
       "injected": false
+    },
+    {
+      "timestamp": "2025-12-24T22:47:52.842142",
+      "prompt_preview": "Read all the files referenced in there and the high level one and gain a deep understanding so you c...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "reference"
+        ],
+        "patterns_matched": [
+          "always_research"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
     }
   ],
   "phases": {
