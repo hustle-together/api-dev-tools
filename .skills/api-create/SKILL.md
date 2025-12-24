@@ -1,17 +1,17 @@
 ---
 name: api-create
-description: Complete API development workflow using interview-driven, research-first, test-first methodology with continuous verification loops. Use when creating new V2 API endpoints. Includes 13 phases from disambiguation through completion with loop-back architecture. Keywords: api, endpoint, tdd, research, interview, verification, workflow, testing, documentation
+description: Complete API development workflow using interview-driven, research-first, test-first methodology with continuous verification loops. Use when creating new V2 API endpoints. Includes 14 phases from disambiguation through AI code review with loop-back architecture. Features async parallel research, multi-strategy documentation discovery (Context7 + WebSearch + Skills), real-time TodoWrite progress tracking, and cost/time metrics. Keywords: api, endpoint, tdd, research, interview, verification, workflow, testing, documentation, async, parallel
 license: MIT
 compatibility: Requires Claude Code with MCP servers (Context7 for docs, GitHub for PRs), Python 3.9+ for enforcement hooks, pnpm 10.11.0+ for package management, Vitest for testing
 metadata:
-  version: "3.0.0"
+  version: "3.11.0"
   category: "development"
-  tags: ["api", "tdd", "workflow", "research", "interview", "verification", "testing"]
+  tags: ["api", "tdd", "workflow", "research", "interview", "verification", "testing", "async", "parallel", "todowrite"]
   author: "Hustle Together"
-allowed-tools: WebSearch WebFetch mcp__context7 mcp__github AskUserQuestion Read Write Edit Bash TodoWrite
+allowed-tools: WebSearch WebFetch mcp__context7 mcp__github AskUserQuestion Read Write Edit Bash TodoWrite Task
 ---
 
-# API Create - Comprehensive API Development Workflow v3.0
+# API Create - Comprehensive API Development Workflow v3.11.0
 
 **Usage:** `/api-create [endpoint-name]`
 
