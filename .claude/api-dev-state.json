@@ -157,7 +157,7 @@
       "description": "Initial scope understanding and confirmation"
     },
     "research_initial": {
-      "status": "in_progress",
+      "status": "not_started",
       "sources": [
         {
           "type": "websearch",
