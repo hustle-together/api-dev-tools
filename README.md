@@ -1,8 +1,23 @@
-# Hustle Development Tools for Claude Code v3.10.0
+# API Development Tools v3.11.0
 
-**Interview-driven, research-first API and UI development with 100% phase enforcement**
+**Interview-driven, research-first API development with 13-phase TDD workflow**
 
-## Quick Start
+[![Agent Skills](https://img.shields.io/badge/Agent_Skills-Compatible-blue)](https://agentskills.io)
+[![Cross-Platform](https://img.shields.io/badge/Cross--Platform-Claude%20%7C%20VS%20Code%20%7C%20Cursor-green)](https://github.com/hustle-together/api-dev-tools)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+> Now with **23 Agent Skills** for cross-platform compatibility across Claude Code, VS Code, Cursor, ChatGPT, and GitHub Copilot
+
+## ⚡ Quick Start
+
+### Via Claude Code Plugin (Recommended)
+
+```bash
+/plugin marketplace add hustle-together/api-dev-tools
+/plugin install api-dev-tools
+```
+
+### Via NPM
 
 ```bash
 npx @hustle-together/api-dev-tools --scope=project
@@ -20,24 +35,50 @@ npx @hustle-together/api-dev-tools --with-sandpack --with-storybook
 ```
 
 **What Gets Installed:**
-- 11 Hustle slash commands (API + UI + Page + Combine)
-- 38 enforcement hooks (Python scripts)
-- Multi-element state tracking (`api-dev-state.json`)
-- **Central registry** (`registry.json`) - tracks all APIs, components, pages
-- **Brand guide** (`BRAND_GUIDE.md`) - default branding template
-- **Showcase pages** - `/dev-tools`, `/api-showcase`, `/ui-showcase`
-- **Component/Page templates** - Storybook stories, Playwright E2E tests
-- Research cache with 7-day freshness (`research/`)
-- Session logging (`api-sessions/`)
-- MCP server integrations (Context7, GitHub)
+- **23 Agent Skills** (cross-platform compatible)
+- **18 Enforcement Hooks** (Python scripts for Claude Code)
+- **State Tracking** (`.claude/api-dev-state.json`)
+- **Research Cache** (`.claude/research/` with 7-day freshness)
+- **MCP Server Integration** (Context7 for docs, GitHub for PRs)
 
 **Start Your First Workflow:**
 ```bash
-/hustle-api-create my-endpoint     # For APIs
-/hustle-ui-create                  # For UI components
-/hustle-ui-create-page             # For Next.js pages (NEW in v3.10)
-/hustle-combine                    # For API orchestration
+/api-create my-endpoint      # Complete 13-phase API workflow
+/red                         # Write failing test
+/green                       # Minimal implementation
+/refactor                    # Clean up code
+/commit                      # Semantic commit
+/pr                          # Create pull request
 ```
+
+## 🎉 What's New in v3.11.0
+
+### Agent Skills Migration 🎯
+
+**We've migrated to the [Agent Skills open standard](https://agentskills.io)!**
+
+#### Cross-Platform Compatibility
+- ✅ **Claude Code**: Full support with hooks and enforcement
+- ✅ **VS Code**: Works with GitHub Copilot (manual hook setup)
+- ✅ **Cursor**: Skills available (manual hook setup)
+- ✅ **ChatGPT**: Skills available (no hooks)
+- ✅ **Any Agent Skills-compatible platform**
+
+#### What Changed
+- **23 Skills**: All commands converted to `SKILL.md` format with YAML frontmatter
+- **Plugin Marketplace**: One-command installation via `/plugin install`
+- **Backward Compatible**: Original `.claude/commands/` still works
+- **Enhanced Discovery**: Rich metadata and keywords for better skill selection
+- **Automated Setup**: Installation script handles hooks and settings
+
+#### Distribution
+- **GitHub**: [hustle-together/api-dev-tools](https://github.com/hustle-together/api-dev-tools)
+- **NPM**: [@hustle-together/api-dev-tools](https://npmjs.com/package/@hustle-together/api-dev-tools)
+- **SkillsMP**: Coming soon
+
+See [`.skills/README.md`](./.skills/README.md) for complete skills documentation.
+
+---
 
 ## What's New in v3.10.0
 

@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Workflow Simulation - All 4 Modes with TodoWrite</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #e0e0e0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #BA0C2F;
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 3px 3px 6px rgba(186, 12, 47, 0.5); }
+            to { text-shadow: 3px 3px 15px rgba(186, 12, 47, 1); }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 1.3em;
+        }
+
+        .workflow-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .workflow-btn {
+            padding: 20px;
+            background: #1e1e2e;
+            border: 3px solid #BA0C2F;
+            color: #BA0C2F;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .workflow-btn:hover {
+            background: #BA0C2F;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(186, 12, 47, 0.4);
+        }
+
+        .workflow-btn.active {
+            background: #BA0C2F;
+            color: white;
+            box-shadow: 0 6px 12px rgba(186, 12, 47, 0.6);
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .main-panel {
+            background: #1a1a2e;
+            border: 3px solid #BA0C2F;
+            border-radius: 12px;
+            padding: 25px;
+            min-height: 700px;
+        }
+
+        .panel-header {
+            color: #BA0C2F;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #BA0C2F;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .phase-content {
+            max-height: 630px;
+            overflow-y: auto;
+        }
+
+        .phase-card {
+            background: #252538;
+            border-left: 5px solid #555;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: all 0.4s;
+        }
+
+        .phase-card.active {
+            border-left-color: #FFA500;
+            background: rgba(255, 165, 0, 0.15);
+            box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3);
+        }
+
+        .phase-card.completed {
+            border-left-color: #4CAF50;
+            opacity: 0.7;
+        }
+
+        .phase-title {
+            color: #BA0C2F;
+            font-size: 1.3em;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .phase-number {
+            background: #BA0C2F;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .phase-description {
+            color: #888;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .phase-steps {
+            background: #1e1e2e;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .step-item {
+            color: #ccc;
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .step-item::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #BA0C2F;
+        }
+
+        .todo-panel {
+            background: #1a1a2e;
+            border: 3px solid #4CAF50;
+            border-radius: 12px;
+            padding: 25px;
+            min-height: 700px;
+        }
+
+        .todo-header {
+            color: #4CAF50;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #4CAF50;
+        }
+
+        .progress-container {
+            margin: 20px 0;
+        }
+
+        .progress-text {
+            color: #888;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-bar-bg {
+            background: #252538;
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .todo-list {
+            margin-top: 20px;
+            max-height: 530px;
+            overflow-y: auto;
+        }
+
+        .todo-item {
+            background: #252538;
+            border-left: 4px solid #555;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 10px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            transition: all 0.3s;
+        }
+
+        .todo-item.pending {
+            opacity: 0.5;
+        }
+
+        .todo-item.in_progress {
+            border-left-color: #FFA500;
+            background: rgba(255, 165, 0, 0.1);
+            animation: pulse-todo 2s infinite;
+        }
+
+        .todo-item.completed {
+            border-left-color: #4CAF50;
+            opacity: 0.6;
+        }
+
+        @keyframes pulse-todo {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .todo-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #555;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .todo-item.completed .todo-checkbox {
+            background: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .todo-checkbox::after {
+            content: '✓';
+            color: white;
+            font-weight: bold;
+            display: none;
+        }
+
+        .todo-item.completed .todo-checkbox::after {
+            display: block;
+        }
+
+        .todo-item.in_progress .todo-checkbox {
+            border-color: #FFA500;
+            animation: rotate-checkbox 2s linear infinite;
+        }
+
+        .todo-item.in_progress .todo-checkbox::after {
+            content: '⊙';
+            display: block;
+            color: #FFA500;
+        }
+
+        @keyframes rotate-checkbox {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .todo-text {
+            flex: 1;
+        }
+
+        .todo-title {
+            color: #e0e0e0;
+            font-size: 1em;
+            margin-bottom: 4px;
+            font-weight: bold;
+        }
+
+        .todo-desc {
+            color: #888;
+            font-size: 0.85em;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 15px 30px;
+            background: #252538;
+            border: 2px solid #4CAF50;
+            color: #4CAF50;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .control-btn:hover {
+            background: #4CAF50;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .control-btn.reset {
+            border-color: #f44336;
+            color: #f44336;
+        }
+
+        .control-btn.reset:hover {
+            background: #f44336;
+        }
+
+        .control-btn.pause {
+            border-color: #FF9800;
+            color: #FF9800;
+        }
+
+        .control-btn.pause:hover {
+            background: #FF9800;
+        }
+
+        .workflow-info-box {
+            background: #252538;
+            border: 2px solid #666;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-title {
+            color: #BA0C2F;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .info-desc {
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        .info-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .stat-box {
+            background: #1e1e2e;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 0.85em;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            color: #BA0C2F;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1e1e2e;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #BA0C2F;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d10f36;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Complete Workflow Simulation</h1>
+        <p class="subtitle">All 4 Modes with TodoWrite Integration - Step-by-Step</p>
+
+        <div class="workflow-selector">
+            <button class="workflow-btn active" data-workflow="api-create">
+                📡 API Create<br><small>(13 Phases)</small>
+            </button>
+            <button class="workflow-btn" data-workflow="ui-component">
+                🎨 UI Component<br><small>(13 Phases)</small>
+            </button>
+            <button class="workflow-btn" data-workflow="ui-page">
+                📄 UI Page<br><small>(13 Phases)</small>
+            </button>
+            <button class="workflow-btn" data-workflow="combine">
+                🔗 Combine APIs<br><small>(13 Phases)</small>
+            </button>
+        </div>
+
+        <div class="workflow-info-box" id="workflow-info"></div>
+
+        <div class="demo-grid">
+            <div class="main-panel">
+                <div class="panel-header">
+                    <span id="panel-title">Phase Details</span>
+                    <span id="current-phase-indicator">Phase 1 / 13</span>
+                </div>
+                <div class="phase-content" id="phase-content"></div>
+            </div>
+
+            <div class="todo-panel">
+                <div class="todo-header">TodoWrite Progress</div>
+                <div class="progress-container">
+                    <div class="progress-text">
+                        <span id="progress-label">Progress:</span>
+                        <span id="progress-numbers">0 / 13</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" id="progress-bar"></div>
+                    </div>
+                </div>
+                <div class="todo-list" id="todo-list"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="control-btn" onclick="startSimulation()">▶ Start Simulation</button>
+            <button class="control-btn pause" onclick="togglePause()">⏸ Pause</button>
+            <button class="control-btn reset" onclick="resetSimulation()">↻ Reset</button>
+            <button class="control-btn" onclick="nextPhase()">⏭ Next Phase</button>
+        </div>
+    </div>
+
+    <script>
+        // Workflow definitions based on actual command files
+        const workflows = {
+            'api-create': {
+                name: 'API Create',
+                command: '/hustle-api-create',
+                description: 'Interview-driven, research-first API development with 13-phase TDD workflow and continuous verification loops',
+                totalPhases: 13,
+                phases: [
+                    {
+                        id: 1,
+                        name: 'Disambiguation',
+                        description: 'Clarify ambiguous API terms before research to prevent misunderstandings',
+                        steps: [
+                            'Search 3-5 variations: "[term]", "[term] API", "[term] SDK", "[term] npm package"',
+                            'Present findings to user with AskUserQuestion',
+                            'Options: REST API, SDK/Package, Both, Something else',
+                            'WAIT for user response - do NOT proceed without it',
+                            'Loop back if user selects "Something else"',
+                            'Update state: phases.disambiguation.status = "complete"'
+                        ]
+                    },
+                    {
+                        id: 2,
+                        name: 'Scope Confirmation',
+                        description: 'Verify understanding of endpoint purpose and external API usage',
+                        steps: [
+                            'Present understanding: "/api/v2/[endpoint] to [purpose]"',
+                            'Show external API being used',
+                            'AskUserQuestion: Is this correct?',
+                            'Options: Yes proceed, I have modifications, No clarify',
+                            'WAIT for user response - do NOT assume "yes"',
+                            'Loop back if user has modifications',
+                            'Update state: phases.scope.status = "complete"'
+                        ]
+                    },
+                    {
+                        id: 3,
+                        name: 'Initial Research',
+                        description: 'Execute 2-3 targeted searches using Context7 + WebSearch',
+                        steps: [
+                            'Context7: "[library/api name]" for live documentation',
+                            'WebSearch: "[name] official documentation"',
+                            'WebSearch: "site:[domain] api reference"',
+                            'Create summary table with all sources',
+                            'AskUserQuestion: Proceed or search more?',
+                            'Options: Proceed to interview, Search more, Specific topic',
+                            'Loop back if user wants more research',
+                            'Cache research in .claude/research/[api-name]/'
+                        ]
+                    },
+                    {
+                        id: 4,
+                        name: 'Interview',
+                        description: 'Questions generated FROM research findings (not templates)',
+                        steps: [
+                            'For EACH parameter discovered, ask ONE question',
+                            'Q1: Response formats needed? (multiSelect)',
+                            'Q2: Error handling approach?',
+                            'Q3: Rate limiting strategy?',
+                            'Q4-N: Based on API-specific parameters',
+                            'After all questions: Show summary and confirm',
+                            'WAIT for confirmation before proceeding',
+                            'Save decisions to state.phases.interview.decisions'
+                        ]
+                    },
+                    {
+                        id: 5,
+                        name: 'Deep Research',
+                        description: 'Adaptive propose-approve flow (NOT shotgun approach)',
+                        steps: [
+                            'Based on interview answers, PROPOSE additional searches',
+                            'Example: "Research [topic] because you selected [answer]"',
+                            'AskUserQuestion: Approve these searches?',
+                            'Options: Yes run, Add more topics, Skip deep research',
+                            'Execute only APPROVED searches',
+                            'Document in state.phases.research_deep.approved_searches',
+                            'Cache updated research'
+                        ]
+                    },
+                    {
+                        id: 6,
+                        name: 'Schema Design',
+                        description: 'Create Zod request/response schemas from research + interview',
+                        steps: [
+                            'Create Zod request schema with all discovered parameters',
+                            'Create Zod response schema matching API docs',
+                            'Add validation rules from documentation',
+                            'Show schema to user via AskUserQuestion',
+                            'Options: Schema correct, Need changes, Redo interview',
+                            'WAIT for approval before proceeding',
+                            'Write schema file to src/lib/schemas/[endpoint].ts'
+                        ]
+                    },
+                    {
+                        id: 7,
+                        name: 'Environment Check',
+                        description: 'Verify all required API keys exist (env vars + custom headers)',
+                        steps: [
+                            'Check for server env vars (OPENAI_API_KEY, etc.)',
+                            'Check for NEXT_PUBLIC_ client vars',
+                            'Check if custom headers will be used',
+                            'Show status table: Found vs Missing keys',
+                            'AskUserQuestion: Ready to start TDD?',
+                            'Options: Yes ready, Need to set keys, Fix something',
+                            'Loop back if keys missing'
+                        ]
+                    },
+                    {
+                        id: 8,
+                        name: 'TDD Red',
+                        description: 'Write failing tests FIRST (defines success before implementation)',
+                        steps: [
+                            'Generate test matrix from schema + interview',
+                            'Tests for: Happy path, edge cases, error handling',
+                            'Show test plan to user via AskUserQuestion',
+                            'Options: Write tests, Add scenarios, Change scenario',
+                            'Write tests to [endpoint]/__tests__/route.test.ts',
+                            'Run tests - MUST fail (no implementation yet)',
+                            'HOOK: PreToolUse blocks Write if no research'
+                        ]
+                    },
+                    {
+                        id: 9,
+                        name: 'TDD Green',
+                        description: 'Minimal implementation to make tests pass (no over-engineering)',
+                        steps: [
+                            'Write route handler in /api/v2/[endpoint]/route.ts',
+                            'Implement ONLY what tests require',
+                            'Validate with schema',
+                            'Run tests - ALL must pass',
+                            'HOOK: PreToolUse blocks if test file missing',
+                            'Update state: all_tests_passing = true'
+                        ]
+                    },
+                    {
+                        id: 10,
+                        name: 'Verify',
+                        description: 'Re-research documentation after Green to catch memory errors',
+                        steps: [
+                            'MANDATORY: Re-read original documentation',
+                            'Compare implementation to docs line-by-line',
+                            'Find gaps: Missing params, incorrect types, wrong defaults',
+                            'AskUserQuestion: How to proceed with gaps?',
+                            'Options: Fix gaps (loop to Red), Skip (intentional), Fix some',
+                            'Document intentional omissions',
+                            'HOOK: PostToolUse triggers after test pass'
+                        ]
+                    },
+                    {
+                        id: 11,
+                        name: 'TDD Refactor',
+                        description: 'Clean up code while keeping all tests green',
+                        steps: [
+                            'Extract reusable patterns',
+                            'Improve error messages',
+                            'Add JSDoc comments',
+                            'Optimize performance',
+                            'Run tests after EVERY change',
+                            'Tests must stay green throughout'
+                        ]
+                    },
+                    {
+                        id: 12,
+                        name: 'Documentation',
+                        description: 'Update manifests, OpenAPI spec, and cache research',
+                        steps: [
+                            'Update api-tests-manifest.json with endpoint',
+                            'Update OpenAPI spec in src/lib/openapi/endpoints/',
+                            'Add code examples and curl commands',
+                            'Cache research to .claude/research/[api]/CURRENT.md',
+                            'AskUserQuestion: All docs complete?',
+                            'Options: Yes done, Add something, Skip',
+                            'HOOK: Stop hook blocks if docs incomplete'
+                        ]
+                    },
+                    {
+                        id: 13,
+                        name: 'Completion',
+                        description: 'Final verification and semantic commit',
+                        steps: [
+                            'Verify all tests passing',
+                            'Verify 100% coverage',
+                            'Verify TypeScript compiles',
+                            'Verify docs updated',
+                            'Verify state file shows all phases complete',
+                            'Run /commit for semantic commit with co-author'
+                        ]
+                    }
+                ]
+            },
+            'ui-component': {
+                name: 'UI Component',
+                command: '/hustle-ui-create (mode: component)',
+                description: 'Component development with Storybook, brand guide validation, and WCAG accessibility audit',
+                totalPhases: 13,
+                phases: [
+                    {
+                        id: 1,
+                        name: 'Component Scope',
+                        description: 'Define component type: Atom, Molecule, or Organism',
+                        steps: [
+                            'AskUserQuestion: What type of component?',
+                            'Options: Atom (Button, Input), Molecule (FormField, Card), Organism (Header, DataTable)',
+                            'WAIT for selection',
+                            'Update state: workflow = "ui-create-component"',
+                            'Update state: ui_config.component_type = [selected]'
+                        ]
+                    },
+                    {
+                        id: 2,
+                        name: 'Brand Guide Check',
+                        description: 'Load brand guide and extract allowed colors/spacing',
+                        steps: [
+                            'Check if .claude/BRAND_GUIDE.md exists',
+                            'If exists: Read and extract colors, spacing, border-radius',
+                            'AskUserQuestion: Use brand guide?',
+                            'Options: Yes use guide, No different reference',
+                            'Give user time to update brand guide before continuing',
+                            'Store brand colors for validation in later phases'
+                        ]
+                    },
+                    {
+                        id: 3,
+                        name: 'Design Research',
+                        description: 'Research patterns, check for ShadCN/Radix primitives',
+                        steps: [
+                            'Search "[component] best practices accessibility"',
+                            'Context7: shadcn [component] implementation',
+                            'Context7: radix [component] primitive',
+                            'Check src/components/ui/ for existing ShadCN components',
+                            'Document findings and reusable patterns'
+                        ]
+                    },
+                    {
+                        id: 4,
+                        name: 'Props Interview',
+                        description: 'Define component API, variants, and accessibility level',
+                        steps: [
+                            'Q1: Design system base? (ShadCN, Radix, Custom)',
+                            'Q2: Variants needed? (Size, Color, State)',
+                            'Q3: Accessibility level? (WCAG 2.1 AA or AAA)',
+                            'Q4: Props structure?',
+                            'Q5-N: Component-specific questions',
+                            'Save decisions for schema and implementation'
+                        ]
+                    },
+                    {
+                        id: 5,
+                        name: 'ShadCN Detection',
+                        description: 'Check if ShadCN components can be reused',
+                        steps: [
+                            'Read src/components/ui/ directory',
+                            'Check for: button.tsx, input.tsx, card.tsx, etc.',
+                            'If found: Ask user if they want to use existing',
+                            'Document which primitives to import',
+                            'Plan composition strategy'
+                        ]
+                    },
+                    {
+                        id: 6,
+                        name: 'Component Schema',
+                        description: 'Define TypeScript interfaces and prop types',
+                        steps: [
+                            'Create interface for component props',
+                            'Define variant types (union types)',
+                            'Add JSDoc comments',
+                            'Show schema to user for approval',
+                            'Write to src/components/[Name]/[Name].types.ts'
+                        ]
+                    },
+                    {
+                        id: 7,
+                        name: 'TDD Red',
+                        description: 'Write component tests with Vitest',
+                        steps: [
+                            'Test rendering with default props',
+                            'Test all variants',
+                            'Test accessibility (ARIA attributes)',
+                            'Test event handlers',
+                            'Run tests - MUST fail (no component yet)',
+                            'Write to src/components/[Name]/__tests__/[Name].test.tsx'
+                        ]
+                    },
+                    {
+                        id: 8,
+                        name: 'TDD Green',
+                        description: 'Implement component to pass all tests',
+                        steps: [
+                            'Create component in src/components/[Name]/[Name].tsx',
+                            'Implement props interface',
+                            'Add variants logic',
+                            'Apply brand guide colors/spacing',
+                            'Run tests - ALL must pass'
+                        ]
+                    },
+                    {
+                        id: 9,
+                        name: 'Storybook Stories',
+                        description: 'Create interactive examples for all variants',
+                        steps: [
+                            'Create [Name].stories.tsx',
+                            'Story for each variant',
+                            'Story for each state (default, hover, disabled)',
+                            'Add controls for interactive props',
+                            'Add documentation annotations'
+                        ]
+                    },
+                    {
+                        id: 10,
+                        name: 'Responsive Check',
+                        description: 'Validate desktop, tablet, and mobile layouts',
+                        steps: [
+                            'Test in Storybook at 1920px (desktop)',
+                            'Test at 768px (tablet)',
+                            'Test at 375px (mobile)',
+                            'Verify touch targets ≥44px',
+                            'Verify no horizontal scroll'
+                        ]
+                    },
+                    {
+                        id: 11,
+                        name: 'Accessibility Audit',
+                        description: 'WCAG 2.1 AA/AAA compliance check',
+                        steps: [
+                            'Check color contrast ratios (4.5:1 min)',
+                            'Verify keyboard navigation works',
+                            'Test with screen reader',
+                            'Add ARIA labels where needed',
+                            'Run axe-core in Storybook',
+                            'HOOK: enforce-a11y-audit.py triggers'
+                        ]
+                    },
+                    {
+                        id: 12,
+                        name: 'Brand Validation',
+                        description: 'Verify only brand guide colors are used',
+                        steps: [
+                            'Extract all color values from component',
+                            'Compare against brand guide allowed colors',
+                            'Flag non-brand colors',
+                            'HOOK: enforce-brand-guide.py validates',
+                            'Update if needed'
+                        ]
+                    },
+                    {
+                        id: 13,
+                        name: 'UI Showcase Update',
+                        description: 'Add component to registry and showcase page',
+                        steps: [
+                            'Update .claude/registry.json',
+                            'Add component metadata: type, props, variants',
+                            'Run update-ui-showcase.py to generate data.json',
+                            'Component appears at /ui-showcase',
+                            'Verify modal preview works'
+                        ]
+                    }
+                ]
+            },
+            'ui-page': {
+                name: 'UI Page',
+                command: '/hustle-ui-create-page',
+                description: 'Next.js page with Playwright E2E tests, data schema validation, and SEO optimization',
+                totalPhases: 13,
+                phases: [
+                    {
+                        id: 1,
+                        name: 'Page Type Selection',
+                        description: 'Choose: Landing, Dashboard, Form, List, Detail, or Auth',
+                        steps: [
+                            'AskUserQuestion: What type of page?',
+                            'Options: Landing, Dashboard, Form, List, Detail, Auth',
+                            'Each type has different testing requirements',
+                            'Update state: ui_config.page_type = [selected]'
+                        ]
+                    },
+                    {
+                        id: 2,
+                        name: 'Route Planning',
+                        description: 'Define URL structure and dynamic parameters',
+                        steps: [
+                            'Ask for route pattern: /page-name or /[param]/page',
+                            'Identify dynamic segments',
+                            'Plan query parameters if needed',
+                            'Document route structure for E2E tests'
+                        ]
+                    },
+                    {
+                        id: 3,
+                        name: 'API Route Check',
+                        description: 'Verify required API routes exist in registry',
+                        steps: [
+                            'Read .claude/registry.json',
+                            'Check for required APIs',
+                            'Show user which APIs found/missing',
+                            'If missing: Ask if user wants to create them first',
+                            'HOOK: check-api-routes.py enforces'
+                        ]
+                    },
+                    {
+                        id: 4,
+                        name: 'Data Schema',
+                        description: 'Define API response types BEFORE implementation',
+                        steps: [
+                            'Create TypeScript interfaces for API responses',
+                            'Define data fetching strategy (SSR, SSG, CSR)',
+                            'Plan loading and error states',
+                            'HOOK: enforce-page-data-schema.py validates',
+                            'Write to src/types/[page-name].ts'
+                        ]
+                    },
+                    {
+                        id: 5,
+                        name: 'Component Research',
+                        description: 'Find reusable components from registry',
+                        steps: [
+                            'Read registry for available components',
+                            'Present list to user',
+                            'Ask which components to use',
+                            'Plan which components need creation',
+                            'HOOK: enforce-page-components.py checks'
+                        ]
+                    },
+                    {
+                        id: 6,
+                        name: 'Layout Design',
+                        description: 'Plan component composition and data flow',
+                        steps: [
+                            'Sketch component hierarchy',
+                            'Plan props passing',
+                            'Define layout grid/flex structure',
+                            'Show user the planned structure'
+                        ]
+                    },
+                    {
+                        id: 7,
+                        name: 'TDD Red',
+                        description: 'Write Playwright E2E tests (15+ scenarios)',
+                        steps: [
+                            'Test page loads and renders',
+                            'Test API data displays correctly',
+                            'Test user interactions (clicks, forms)',
+                            'Test error states',
+                            'Test loading states',
+                            'Run tests - MUST fail (no page yet)',
+                            'Write to e2e/[page-name].spec.ts'
+                        ]
+                    },
+                    {
+                        id: 8,
+                        name: 'TDD Green',
+                        description: 'Implement page logic to pass E2E tests',
+                        steps: [
+                            'Create page.tsx in src/app/[route]/',
+                            'Implement data fetching',
+                            'Add loading.tsx and error.tsx',
+                            'Compose components',
+                            'Run Playwright tests - ALL must pass'
+                        ]
+                    },
+                    {
+                        id: 9,
+                        name: 'Data Integration',
+                        description: 'Connect to API routes with proper error handling',
+                        steps: [
+                            'Implement fetch calls',
+                            'Add error boundaries',
+                            'Add retry logic if needed',
+                            'Test with real API endpoints',
+                            'Verify data matches schema'
+                        ]
+                    },
+                    {
+                        id: 10,
+                        name: 'SEO Metadata',
+                        description: 'Add title, description, Open Graph tags',
+                        steps: [
+                            'Add metadata to page.tsx',
+                            'Set title and description',
+                            'Add Open Graph image',
+                            'Add Twitter Card tags',
+                            'Verify in browser dev tools'
+                        ]
+                    },
+                    {
+                        id: 11,
+                        name: 'Accessibility Audit',
+                        description: 'Keyboard nav, screen readers, focus management',
+                        steps: [
+                            'Test keyboard navigation (Tab, Enter, Esc)',
+                            'Test with screen reader',
+                            'Check heading hierarchy (h1, h2, h3)',
+                            'Verify focus indicators',
+                            'Run axe-core DevTools'
+                        ]
+                    },
+                    {
+                        id: 12,
+                        name: 'E2E Validation',
+                        description: 'Run full Playwright test suite',
+                        steps: [
+                            'Run all 15+ test scenarios',
+                            'Test on multiple browsers (Chromium, Firefox, WebKit)',
+                            'Verify all assertions pass',
+                            'Check test coverage'
+                        ]
+                    },
+                    {
+                        id: 13,
+                        name: 'Registry Update',
+                        description: 'Add page to showcase and registry',
+                        steps: [
+                            'Update .claude/registry.json with page metadata',
+                            'Add route, page_type, data_sources, requires_auth',
+                            'Run update-ui-showcase.py',
+                            'Page appears in UI Showcase pages tab'
+                        ]
+                    }
+                ]
+            },
+            'combine': {
+                name: 'Combine APIs',
+                command: '/hustle-combine',
+                description: 'API orchestration with sequential/parallel/conditional flow patterns',
+                totalPhases: 13,
+                phases: [
+                    {
+                        id: 1,
+                        name: 'API Selection',
+                        description: 'Choose 2+ existing APIs from registry to combine',
+                        steps: [
+                            'Read .claude/registry.json',
+                            'Filter for status: "complete" APIs only',
+                            'Present as multiSelect checkboxes',
+                            'AskUserQuestion: Select 2 or more',
+                            'VALIDATION: Must select at least 2 APIs',
+                            'Store in state.combine_config.source_elements'
+                        ]
+                    },
+                    {
+                        id: 2,
+                        name: 'Registry Verification',
+                        description: 'Confirm all selected APIs exist and work',
+                        steps: [
+                            'For each selected API, check registry details',
+                            'Verify endpoints exist in codebase',
+                            'Check that schemas are defined',
+                            'Show user summary of selected APIs',
+                            'Confirm all APIs are functional'
+                        ]
+                    },
+                    {
+                        id: 3,
+                        name: 'Flow Type',
+                        description: 'Define orchestration pattern: Sequential, Parallel, or Conditional',
+                        steps: [
+                            'AskUserQuestion: How should APIs be called?',
+                            'Option A: Sequential - Call APIs one after another',
+                            'Option B: Parallel - Call APIs simultaneously',
+                            'Option C: Conditional - Call based on previous results',
+                            'Store in state.combine_config.flow_type',
+                            'Different flow types affect test scenarios'
+                        ]
+                    },
+                    {
+                        id: 4,
+                        name: 'Data Mapping',
+                        description: 'Define how data flows between APIs (Input → Transform → Output)',
+                        steps: [
+                            'For each API, identify inputs needed',
+                            'Define where inputs come from (request, previous API)',
+                            'Plan transformations between APIs',
+                            'Define final response structure',
+                            'Show user the data flow diagram'
+                        ]
+                    },
+                    {
+                        id: 5,
+                        name: 'Error Strategy',
+                        description: 'Choose error handling: Fail-fast, Fallback, or Aggregate',
+                        steps: [
+                            'AskUserQuestion: How to handle errors?',
+                            'Option A: Fail-fast - Stop on first error',
+                            'Option B: Fallback - Use default/cached data',
+                            'Option C: Aggregate - Collect all errors, return partial',
+                            'Store in state.combine_config.error_strategy',
+                            'Affects test scenarios for error cases'
+                        ]
+                    },
+                    {
+                        id: 6,
+                        name: 'Combined Schema',
+                        description: 'Compose request/response schemas from existing APIs',
+                        steps: [
+                            'Import schemas from each source API',
+                            'Create combined request schema',
+                            'Create combined response schema',
+                            'Add orchestration-specific fields',
+                            'Show user the final schema',
+                            'Write to src/lib/schemas/[combined-endpoint].ts'
+                        ]
+                    },
+                    {
+                        id: 7,
+                        name: 'TDD Red',
+                        description: 'Write integration tests for orchestration flow',
+                        steps: [
+                            'Test happy path: All APIs succeed',
+                            'Test partial failure based on error strategy',
+                            'Test timeout scenarios',
+                            'Test data transformation logic',
+                            'Run tests - MUST fail (no route yet)',
+                            'Write to [endpoint]/__tests__/route.test.ts'
+                        ]
+                    },
+                    {
+                        id: 8,
+                        name: 'TDD Green',
+                        description: 'Implement orchestration route with flow logic',
+                        steps: [
+                            'Create route in /api/v2/[endpoint]/route.ts',
+                            'Implement flow logic (sequential/parallel/conditional)',
+                            'Add error handling per strategy',
+                            'Add data transformations',
+                            'Run tests - ALL must pass'
+                        ]
+                    },
+                    {
+                        id: 9,
+                        name: 'Curl Examples',
+                        description: 'Generate usage examples for combined endpoint',
+                        steps: [
+                            'Create curl command for basic usage',
+                            'Show example request body',
+                            'Show example response',
+                            'Document query parameters',
+                            'Add to api-tests-manifest.json'
+                        ]
+                    },
+                    {
+                        id: 10,
+                        name: 'Performance Test',
+                        description: 'Measure latency and throughput of orchestration',
+                        steps: [
+                            'Measure total latency (sum of API calls)',
+                            'For parallel: Measure concurrent performance',
+                            'Check memory usage',
+                            'Identify bottlenecks',
+                            'Document performance characteristics'
+                        ]
+                    },
+                    {
+                        id: 11,
+                        name: 'TDD Refactor',
+                        description: 'Optimize orchestration logic while tests stay green',
+                        steps: [
+                            'Extract common patterns',
+                            'Add caching if appropriate',
+                            'Improve error messages',
+                            'Add logging for debugging',
+                            'Run tests after each change'
+                        ]
+                    },
+                    {
+                        id: 12,
+                        name: 'Documentation',
+                        description: 'Update manifest with orchestration details',
+                        steps: [
+                            'Update api-tests-manifest.json',
+                            'Document source APIs used',
+                            'Document flow type and error strategy',
+                            'Add curl examples',
+                            'Update OpenAPI spec'
+                        ]
+                    },
+                    {
+                        id: 13,
+                        name: 'Showcase Update',
+                        description: 'Add combined endpoint to registry and API showcase',
+                        steps: [
+                            'Update .claude/registry.json',
+                            'Mark type as "combined"',
+                            'List source APIs',
+                            'Update API showcase page',
+                            'Verify endpoint appears with "Combined" badge'
+                        ]
+                    }
+                ]
+            }
+        };
+
+        let currentWorkflow = 'api-create';
+        let currentPhaseIndex = 0;
+        let isPaused = false;
+        let animationInterval = null;
+
+        function renderWorkflowInfo() {
+            const workflow = workflows[currentWorkflow];
+            const infoBox = document.getElementById('workflow-info');
+
+            const stats = `
+                <div class="info-stats">
+                    <div class="stat-box">
+                        <div class="stat-label">Command</div>
+                        <div class="stat-value">${workflow.command}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Total Phases</div>
+                        <div class="stat-value">${workflow.totalPhases}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Est. Duration</div>
+                        <div class="stat-value">${workflow.totalPhases * 3} min</div>
+                    </div>
+                </div>
+            `;
+
+            infoBox.innerHTML = `
+                <div class="info-title">${workflow.name} Workflow</div>
+                <div class="info-desc">${workflow.description}</div>
+                ${stats}
+            `;
+        }
+
+        function renderPhases() {
+            const workflow = workflows[currentWorkflow];
+            const content = document.getElementById('phase-content');
+
+            content.innerHTML = workflow.phases.map((phase, index) => {
+                let statusClass = '';
+                if (index < currentPhaseIndex) statusClass = 'completed';
+                if (index === currentPhaseIndex) statusClass = 'active';
+
+                const steps = phase.steps.map(step => `<div class="step-item">${step}</div>`).join('');
+
+                return `
+                    <div class="phase-card ${statusClass}">
+                        <div class="phase-title">
+                            <div class="phase-number">${phase.id}</div>
+                            <span>${phase.name}</span>
+                        </div>
+                        <div class="phase-description">${phase.description}</div>
+                        <div class="phase-steps">${steps}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderTodos() {
+            const workflow = workflows[currentWorkflow];
+            const todoList = document.getElementById('todo-list');
+
+            todoList.innerHTML = workflow.phases.map((phase, index) => {
+                let status = 'pending';
+                if (index < currentPhaseIndex) status = 'completed';
+                if (index === currentPhaseIndex) status = 'in_progress';
+
+                return `
+                    <div class="todo-item ${status}">
+                        <div class="todo-checkbox"></div>
+                        <div class="todo-text">
+                            <div class="todo-title">Phase ${phase.id}: ${phase.name}</div>
+                            <div class="todo-desc">${phase.description}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const workflow = workflows[currentWorkflow];
+            const total = workflow.totalPhases;
+            const completed = currentPhaseIndex;
+            const percentage = (completed / total) * 100;
+
+            document.getElementById('progress-bar').style.width = `${percentage}%`;
+            document.getElementById('progress-numbers').textContent = `${completed} / ${total}`;
+            document.getElementById('current-phase-indicator').textContent = 
+                currentPhaseIndex < total ? `Phase ${currentPhaseIndex + 1} / ${total}` : `Complete`;
+        }
+
+        function startSimulation() {
+            if (animationInterval) return;
+
+            animationInterval = setInterval(() => {
+                if (isPaused) return;
+
+                const workflow = workflows[currentWorkflow];
+
+                if (currentPhaseIndex >= workflow.totalPhases) {
+                    clearInterval(animationInterval);
+                    animationInterval = null;
+                    return;
+                }
+
+                currentPhaseIndex++;
+                renderPhases();
+                renderTodos();
+
+                // Scroll to active phase
+                const activeCard = document.querySelector('.phase-card.active');
+                if (activeCard) {
+                    activeCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 2000); // 2 seconds per phase
+        }
+
+        function togglePause() {
+            isPaused = !isPaused;
+            const btn = document.querySelector('.control-btn.pause');
+            btn.textContent = isPaused ? '▶ Resume' : '⏸ Pause';
+        }
+
+        function resetSimulation() {
+            if (animationInterval) {
+                clearInterval(animationInterval);
+                animationInterval = null;
+            }
+            currentPhaseIndex = 0;
+            isPaused = false;
+            document.querySelector('.control-btn.pause').textContent = '⏸ Pause';
+            renderPhases();
+            renderTodos();
+        }
+
+        function nextPhase() {
+            const workflow = workflows[currentWorkflow];
+            if (currentPhaseIndex < workflow.totalPhases) {
+                currentPhaseIndex++;
+                renderPhases();
+                renderTodos();
+                const activeCard = document.querySelector('.phase-card.active');
+                if (activeCard) {
+                    activeCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        }
+
+        // Workflow selection
+        document.querySelectorAll('.workflow-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.workflow-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentWorkflow = btn.dataset.workflow;
+                resetSimulation();
+                renderWorkflowInfo();
+                renderPhases();
+                renderTodos();
+            });
+        });
+
+        // Initialize
+        renderWorkflowInfo();
+        renderPhases();
+        renderTodos();
+    </script>
+</body>
+</html>
