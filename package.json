@@ -1,7 +1,7 @@
 {
   "name": "@hustle-together/api-dev-tools",
-  "version": "3.10.1",
-  "description": "Interview-driven, research-first API and UI development workflow with continuous verification loops for Claude Code",
+  "version": "3.11.0",
+  "description": "Interview-driven, research-first API development toolkit with 13-phase TDD workflow, enforcement hooks, and 23 Agent Skills for cross-platform AI agents",
   "main": "bin/cli.js",
   "bin": {
     "api-dev-tools": "./bin/cli.js"
@@ -12,8 +12,12 @@
     "hooks/",
     "scripts/",
     "templates/",
+    ".claude/",
+    ".claude-plugin/",
+    ".skills/",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "test": "node bin/cli.js --scope=project"
@@ -21,20 +25,20 @@
   "keywords": [
     "claude",
     "claude-code",
+    "agent-skills",
     "api-development",
-    "ui-development",
-    "components",
-    "storybook",
-    "playwright",
     "tdd",
     "test-driven-development",
     "interview-driven",
+    "research-first",
+    "verification",
+    "hooks",
+    "mcp",
     "api-testing",
-    "api-orchestration",
-    "combine",
     "documentation",
     "workflow",
-    "automation"
+    "automation",
+    "cross-platform"
   ],
   "author": "Hustle Together",
   "license": "MIT",
@@ -47,6 +51,13 @@
   },
   "homepage": "https://github.com/hustle-together/api-dev-tools#readme",
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18.0.0",
+    "pnpm": ">=10.11.0"
+  },
+  "claudeCode": {
+    "marketplace": ".claude-plugin/marketplace.json",
+    "skills": ".skills",
+    "hooks": ".skills/_shared/hooks",
+    "settings": ".skills/_shared/settings.json"
   }
 }

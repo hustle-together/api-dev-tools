@@ -1,0 +1,112 @@
+{
+  "name": "api-dev-tools",
+  "owner": {
+    "name": "Hustle Together",
+    "email": "contact@hustletogether.dev"
+  },
+  "description": "Interview-driven, research-first API development toolkit with 13-phase TDD workflow, enforcement hooks, and continuous verification loops. Includes 23 agent skills for API creation, testing, documentation, and deployment.",
+  "version": "3.11.0",
+  "repository": "https://github.com/hustle-together/api-dev-tools",
+  "license": "MIT",
+  "keywords": [
+    "api",
+    "tdd",
+    "workflow",
+    "research",
+    "interview",
+    "verification",
+    "hooks",
+    "mcp",
+    "agent-skills",
+    "testing",
+    "documentation"
+  ],
+  "plugins": [
+    {
+      "name": "api-dev-tools",
+      "source": ".",
+      "description": "Complete API development workflow with 13 phases, 23 skills, and 18 enforcement hooks",
+      "version": "3.11.0",
+      "author": {
+        "name": "Hustle Together",
+        "email": "contact@hustletogether.dev"
+      },
+      "category": "development",
+      "tags": ["api", "tdd", "workflow", "testing", "research"]
+    }
+  ],
+  "installation": {
+    "requirements": {
+      "claude_code": ">=1.0.0",
+      "python": ">=3.9",
+      "node": ">=18.0.0",
+      "pnpm": ">=10.11.0"
+    },
+    "mcp_servers": [
+      {
+        "name": "context7",
+        "description": "Documentation search and discovery",
+        "required": true,
+        "install": "Add to Claude Code MCP settings"
+      },
+      {
+        "name": "github",
+        "description": "GitHub integration for PRs and issues",
+        "required": true,
+        "install": "Add to Claude Code MCP settings"
+      }
+    ],
+    "post_install_instructions": [
+      "1. Copy .skills/_shared/hooks/ to .claude/hooks/ in your project",
+      "2. Copy .skills/_shared/settings.json to .claude/settings.json",
+      "3. Create .claude/api-dev-state.json from template",
+      "4. Create .claude/research/ directory",
+      "5. Install required MCP servers (Context7, GitHub)",
+      "6. Run '/api-status' to verify installation"
+    ]
+  },
+  "documentation": {
+    "readme": "https://github.com/hustle-together/api-dev-tools/blob/main/README.md",
+    "changelog": "https://github.com/hustle-together/api-dev-tools/blob/main/CHANGELOG.md",
+    "guides": {
+      "quickstart": "https://github.com/hustle-together/api-dev-tools/blob/main/.claude/commands/README.md",
+      "workflow": "https://github.com/hustle-together/api-dev-tools/blob/main/ENHANCEMENT_ROADMAP_v3.11.0.md",
+      "skills": "https://github.com/hustle-together/api-dev-tools/blob/main/.skills/README.md"
+    }
+  },
+  "skills": {
+    "api_development": [
+      "api-create",
+      "api-interview",
+      "api-research",
+      "api-verify",
+      "api-env",
+      "api-status"
+    ],
+    "tdd_workflow": [
+      "red",
+      "green",
+      "refactor",
+      "cycle"
+    ],
+    "planning": [
+      "plan",
+      "gap",
+      "issue"
+    ],
+    "git_operations": [
+      "commit",
+      "pr",
+      "busycommit",
+      "worktree-add",
+      "worktree-cleanup"
+    ],
+    "workflow_utilities": [
+      "spike",
+      "beepboop",
+      "tdd",
+      "summarize",
+      "add-command"
+    ]
+  }
+}
