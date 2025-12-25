@@ -349,6 +349,21 @@
         "confidence": "critical"
       },
       "injected": true
+    },
+    {
+      "timestamp": "2025-12-25T05:52:41.421082",
+      "prompt_preview": "can You test for me",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "test"
+        ],
+        "patterns_matched": [
+          "technical_term"
+        ],
+        "confidence": "high"
+      },
+      "injected": true
     }
   ],
   "phases": {
