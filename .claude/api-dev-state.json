@@ -4,20 +4,74 @@
   "session_id": null,
   "turn_count": 0,
   "research_queries": [],
-  "prompt_detections": [],
+  "prompt_detections": [
+    {
+      "timestamp": "2025-12-25T13:33:56.851153",
+      "prompt_preview": "Well think through it and tell me what are all the best things to be able to test because I want to ...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "how would",
+          "what are",
+          "can run a test and see everything that is and isn'",
+          "get all",
+          "create mode? all these different things, including",
+          "setup properly when it comes to the ui mode, when ",
+          "api",
+          "test",
+          "setup",
+          "state"
+        ],
+        "patterns_matched": [
+          "technical_term",
+          "question_pattern",
+          "always_research"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
+    }
+  ],
   "phases": {
-    "disambiguation": {"status": "not_started"},
-    "scope": {"status": "not_started"},
-    "research_initial": {"status": "not_started", "sources": []},
-    "interview": {"status": "not_started", "decisions": {}},
-    "research_deep": {"status": "not_started", "sources": []},
-    "schema_creation": {"status": "not_started"},
-    "environment_check": {"status": "not_started"},
-    "tdd_red": {"status": "not_started"},
-    "tdd_green": {"status": "not_started"},
-    "verify": {"status": "not_started"},
-    "tdd_refactor": {"status": "not_started"},
-    "documentation": {"status": "not_started"}
+    "disambiguation": {
+      "status": "not_started"
+    },
+    "scope": {
+      "status": "not_started"
+    },
+    "research_initial": {
+      "status": "not_started",
+      "sources": []
+    },
+    "interview": {
+      "status": "not_started",
+      "decisions": {}
+    },
+    "research_deep": {
+      "status": "not_started",
+      "sources": []
+    },
+    "schema_creation": {
+      "status": "not_started"
+    },
+    "environment_check": {
+      "status": "not_started"
+    },
+    "tdd_red": {
+      "status": "not_started"
+    },
+    "tdd_green": {
+      "status": "not_started"
+    },
+    "verify": {
+      "status": "not_started"
+    },
+    "tdd_refactor": {
+      "status": "not_started"
+    },
+    "documentation": {
+      "status": "not_started"
+    }
   },
   "verification": {},
   "research_index": {},
