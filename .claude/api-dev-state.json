@@ -196,6 +196,17 @@
         "confidence": "high"
       },
       "injected": true
+    },
+    {
+      "timestamp": "2025-12-25T19:54:42.287915",
+      "prompt_preview": "Continue",
+      "detection": {
+        "detected": false,
+        "terms": [],
+        "patterns_matched": [],
+        "confidence": "none"
+      },
+      "injected": false
     }
   ],
   "phases": {
