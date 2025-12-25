@@ -70,6 +70,19 @@
         "confidence": "critical"
       },
       "injected": true
+    },
+    {
+      "timestamp": "2025-12-25T17:39:44.560387",
+      "prompt_preview": "Is it all done ready for testing. Also is the readme really long I assume I think it\u2019s best to make ...",
+      "detection": {
+        "detected": true,
+        "terms": [],
+        "patterns_matched": [
+          "question_pattern"
+        ],
+        "confidence": "medium"
+      },
+      "injected": true
     }
   ],
   "phases": {
