@@ -180,6 +180,22 @@
         "confidence": "none"
       },
       "injected": false
+    },
+    {
+      "timestamp": "2025-12-25T19:49:17.773745",
+      "prompt_preview": "So is this fully ready to test? All the four main commands, updates everywhere to all the readmes, y...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "test"
+        ],
+        "patterns_matched": [
+          "technical_term",
+          "question_pattern"
+        ],
+        "confidence": "high"
+      },
+      "injected": true
     }
   ],
   "phases": {
