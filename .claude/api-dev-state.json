@@ -274,6 +274,19 @@
         "confidence": "none"
       },
       "injected": false
+    },
+    {
+      "timestamp": "2025-12-25T05:05:37.745923",
+      "prompt_preview": "Is that the most accurate or up-to-date info? In the reoo",
+      "detection": {
+        "detected": true,
+        "terms": [],
+        "patterns_matched": [
+          "question_pattern"
+        ],
+        "confidence": "medium"
+      },
+      "injected": true
     }
   ],
   "phases": {
