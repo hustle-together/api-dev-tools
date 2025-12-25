@@ -29,6 +29,27 @@
         "confidence": "critical"
       },
       "injected": true
+    },
+    {
+      "timestamp": "2025-12-25T16:50:19.662711",
+      "prompt_preview": "<ide_opened_file>The user opened the file /home/dev/repos/api-dev-tools/package.json in the IDE. Thi...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "add it. then tell me from a file at this point are",
+          "api",
+          "docs",
+          "package",
+          "package.json"
+        ],
+        "patterns_matched": [
+          "question_pattern",
+          "always_research",
+          "technical_term"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
     }
   ],
   "phases": {
