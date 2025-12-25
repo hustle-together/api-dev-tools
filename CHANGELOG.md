@@ -2,6 +2,80 @@
 
 All notable changes to `@hustle-together/api-dev-tools` will be documented in this file.
 
+## [3.11.0] - 2025-12-24
+
+### Added - Agent Skills Migration (Phase 1 Complete)
+
+- **Agent Skills Architecture** - Migrated all commands to open standard ([agentskills.io](https://agentskills.io))
+  - 23 Agent Skills in `.skills/` directory with SKILL.md format
+  - Cross-platform: Claude Code, VS Code, Cursor, ChatGPT, GitHub Copilot
+  - marketplace.json for plugin distribution
+  - install.sh for automated setup
+
+- **Skills Categories**
+  - API Development: api-create, api-interview, api-research, api-verify, api-env, api-status
+  - UI Development: hustle-ui-create, hustle-ui-create-page, hustle-combine
+  - TDD Workflow: red, green, refactor, cycle
+  - Planning: plan, gap, issue, spike
+  - Git Operations: commit, pr, busycommit, worktree-add, worktree-cleanup
+  - Utilities: tdd, beepboop, summarize, add-command
+
+- **TodoWrite Helper Skill** - `.skills/update-todos/SKILL.md`
+  - Progress tracking for all 4 workflow modes
+  - Phase definitions for 13-phase workflows
+  - Loop-back scenario handling
+
+- **Comprehensive Planning Documentation**
+  - VERSION_3.2_OVERVIEW.md - Navigation hub
+  - ENHANCEMENT_ROADMAP_v3.11.0.md - Strategic overview
+  - COMPREHENSIVE_ENHANCEMENT_PLAN.md - Implementation details
+  - SKILLS_MIGRATION_CHECKLIST.md - Migration tracking
+
+- **Interactive Demos** (local only)
+  - execution-trace-COMPREHENSIVE.html - Full roadmap visualization
+  - execution-trace-simulation.html - TodoWrite demo
+  - full-workflow-simulation.html - Phase cards view
+  - todowrite-workflow-demo.html - TodoWrite concept
+
+### Changed
+
+- **Directory Structure** - Dual distribution strategy
+  - `.skills/` - Agent Skills format (new, cross-platform)
+  - `.claude/commands/` - Original format (kept for backward compatibility)
+  - `.skills/_shared/hooks/` - Packaged enforcement hooks
+
+- **Documentation Updates**
+  - CLAUDE.md updated to v3.11.0 with full skills list
+  - .skills/README.md with installation instructions
+  - Enhanced hook documentation (18 total hooks)
+
+### Maintained (No Changes)
+
+- 13-Phase workflow architecture
+- 18 enforcement hooks
+- State tracking in `.claude/api-dev-state.json`
+- Research cache with 7-day freshness
+- Loop-back verification at every phase
+
+### Planned (v3.11.0 Enhancement Roadmap)
+
+- Phase 2: TodoWrite Integration (real-time progress)
+- Phase 3: Async Parallel Research (background agents)
+- Phase 4: Multi-Strategy Research (95% coverage)
+- Phase 5: Skill-Discovery Meta-Skill (`/skill-finder`)
+- Phase 6: Per-API Research Folders (additive, no breaking changes)
+- Phase 7: Cost/Time Tracking (JSON storage)
+- Phase 8: Phase 14 - AI Code Review (Greptile + CodeRabbit + Graphite)
+- Phase 9: Stats & Rename Commands
+
+### User Decisions (2025-12-25)
+
+- Priority: Implement ALL phases (no splitting v3.11/v3.12)
+- Code Review Tools: Greptile + CodeRabbit + Graphite (all three)
+- Stats Storage: JSON files
+- Demo Hosting: Local only
+- Breaking Changes: NO (backward compatible)
+
 ## [3.10.0] - 2025-12-12
 
 ### Added

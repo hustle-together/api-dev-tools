@@ -1,27 +1,91 @@
 # Project Instructions
 
-## API Development Workflow (v3.0)
+## API Development Workflow (v3.11.0)
 
 This project uses **@hustle-together/api-dev-tools** for interview-driven, research-first API development.
 
-### Available Commands
+**Current Status:** Skills Migration Complete | Implementing Enhancement Roadmap
+**Last Updated:** 2025-12-25
 
-| Command | Purpose |
-|---------|---------|
-| `/api-create [endpoint]` | Complete 13-phase workflow |
-| `/api-interview [endpoint]` | Questions FROM research findings |
-| `/api-research [library]` | Adaptive propose-approve research |
-| `/api-verify [endpoint]` | Re-research and verify implementation |
-| `/api-env [endpoint]` | Check API keys |
-| `/api-status [endpoint]` | Track progress |
+---
 
-### 13-Phase Flow
+## Architecture: Agent Skills (Cross-Platform)
+
+This toolkit uses the **Agent Skills open standard** ([agentskills.io](https://agentskills.io)):
+- **23 Agent Skills** in `.skills/` directory
+- **18 Enforcement Hooks** in `.claude/hooks/`
+- **Cross-platform**: Claude Code, VS Code, Cursor, ChatGPT, GitHub Copilot
+- **Backward compatible**: Original `.claude/commands/` still works
+
+---
+
+## Available Skills (23 Total)
+
+### API Development (6 skills)
+
+| Skill | Usage | Description |
+|-------|-------|-------------|
+| **api-create** | `/api-create [endpoint]` | Complete 13-phase workflow with interview, research, TDD |
+| **api-interview** | `/api-interview [endpoint]` | Questions FROM research findings |
+| **api-research** | `/api-research [library]` | Adaptive propose-approve research |
+| **api-verify** | `/api-verify [endpoint]` | Re-research and verify implementation |
+| **api-env** | `/api-env [endpoint]` | Check API keys and environment |
+| **api-status** | `/api-status [endpoint]` | Track progress through phases |
+
+### UI Development (3 skills)
+
+| Skill | Usage | Description |
+|-------|-------|-------------|
+| **hustle-ui-create** | `/hustle-ui-create [component]` | 13-phase component workflow with brand guide |
+| **hustle-ui-create-page** | `/hustle-ui-create-page [page]` | 13-phase page workflow with Playwright E2E |
+| **hustle-combine** | `/hustle-combine` | Orchestrate 2+ existing APIs from registry |
+
+### TDD Workflow (4 skills)
+
+| Skill | Usage | Description |
+|-------|-------|-------------|
+| **red** | `/red` | Write ONE failing test |
+| **green** | `/green` | Minimal implementation to pass |
+| **refactor** | `/refactor` | Clean up while tests pass |
+| **cycle** | `/cycle [description]` | Complete Red → Green → Refactor |
+
+### Planning & Analysis (4 skills)
+
+| Skill | Usage | Description |
+|-------|-------|-------------|
+| **plan** | `/plan [feature]` | PRD-style implementation planning |
+| **gap** | `/gap` | Analyze code vs requirements |
+| **issue** | `/issue [url]` | TDD plan from GitHub issue |
+| **spike** | `/spike` | Exploratory coding before TDD |
+
+### Git Operations (5 skills)
+
+| Skill | Usage | Description |
+|-------|-------|-------------|
+| **commit** | `/commit` | Semantic commit with co-author |
+| **pr** | `/pr` | Create PR with summary |
+| **busycommit** | `/busycommit` | Multiple atomic commits |
+| **worktree-add** | `/worktree-add [branch]` | Add git worktree |
+| **worktree-cleanup** | `/worktree-cleanup` | Clean merged worktrees |
+
+### Utilities (4 skills)
+
+| Skill | Usage | Description |
+|-------|-------|-------------|
+| **tdd** | `/tdd` | Remind about TDD approach |
+| **beepboop** | `/beepboop` | AI attribution markers |
+| **summarize** | `/summarize` | Conversation summary |
+| **add-command** | `/add-command` | Guide for new skills |
+
+---
+
+## 13-Phase Workflow (API Create)
 
 ```
 Phase 1:  DISAMBIGUATION     - Clarify ambiguous terms before research
 Phase 2:  SCOPE              - Confirm understanding of endpoint
 Phase 3:  INITIAL RESEARCH   - 2-3 targeted searches (Context7, WebSearch)
-Phase 4:  INTERVIEW          - Questions generated FROM discovered params
+Phase 4:  INTERVIEW          - Questions FROM discovered params
 Phase 5:  DEEP RESEARCH      - Propose additional searches based on answers
 Phase 6:  SCHEMA             - Create Zod schema from research + interview
 Phase 7:  ENVIRONMENT        - Verify API keys exist
@@ -33,7 +97,9 @@ Phase 12: DOCUMENTATION      - Update manifests, cache research
 Phase 13: COMPLETION         - Final verification, commit
 ```
 
-### Key Principles
+---
+
+## Key Principles
 
 1. **Loop Until Green** - Every verification phase loops back if not successful
 2. **Questions FROM Research** - Never use generic template questions
@@ -41,38 +107,88 @@ Phase 13: COMPLETION         - Final verification, commit
 4. **7-Turn Re-grounding** - Context injected every 7 turns to prevent dilution
 5. **Verify After Green** - Re-research to catch memory-based implementation errors
 
-### State Tracking
+---
 
-All progress is tracked in `.claude/api-dev-state.json`:
-- Current phase and status for each
+## Enforcement Hooks (18 Total)
+
+| Hook | Event | Purpose |
+|------|-------|---------|
+| `session-startup.py` | SessionStart | Inject state context |
+| `enforce-external-research.py` | UserPromptSubmit | Require research first |
+| `enforce-disambiguation.py` | PreToolUse | Enforce Phase 1 |
+| `enforce-scope.py` | PreToolUse | Enforce Phase 2 |
+| `enforce-research.py` | PreToolUse | Block writes without research |
+| `enforce-interview.py` | PreToolUse | Inject interview decisions |
+| `enforce-deep-research.py` | PreToolUse | Enforce Phase 5 |
+| `enforce-schema.py` | PreToolUse | Enforce Phase 6 |
+| `enforce-environment.py` | PreToolUse | Enforce Phase 7 |
+| `enforce-tdd-red.py` | PreToolUse | Enforce Phase 8 |
+| `verify-implementation.py` | PreToolUse | Require test before route |
+| `enforce-verify.py` | PreToolUse | Enforce Phase 10 |
+| `enforce-refactor.py` | PreToolUse | Enforce Phase 11 |
+| `enforce-documentation.py` | PreToolUse | Enforce Phase 12 |
+| `track-tool-use.py` | PostToolUse | Log research, count turns |
+| `periodic-reground.py` | PostToolUse | Re-ground every 7 turns |
+| `verify-after-green.py` | PostToolUse | Trigger Phase 10 after test pass |
+| `api-workflow-check.py` | Stop | Block if phases incomplete |
+
+---
+
+## State Tracking
+
+All progress tracked in `.claude/api-dev-state.json`:
+- Current phase and status
 - Interview decisions (injected during implementation)
 - Research sources with freshness tracking
 - Turn count for re-grounding
 
-### Research Cache
+## Research Cache
 
-Research is cached in `.claude/research/` with 7-day freshness:
+Research cached in `.claude/research/` with 7-day freshness:
 - `index.json` - Freshness tracking
 - `[api-name]/CURRENT.md` - Latest research
 - Stale research (>7 days) triggers re-research prompt
 
-### Hooks (Automatic Enforcement)
+---
 
-| Hook | When | Action |
-|------|------|--------|
-| `session-startup.py` | Session start | Inject state context |
-| `enforce-external-research.py` | API questions | Require research first |
-| `enforce-research.py` | Write/Edit | Block without research |
-| `enforce-interview.py` | Write/Edit | Inject interview decisions |
-| `verify-after-green.py` | Tests pass | Trigger Phase 9 |
-| `periodic-reground.py` | Every 7 turns | Re-inject context |
-| `api-workflow-check.py` | Stop | Block if incomplete |
+## Enhancement Roadmap (In Progress)
 
-### Usage
+### Completed
+- [x] Phase 1: Skills Migration (23 skills, cross-platform)
+
+### In Progress
+- [ ] Phase 2: TodoWrite Integration (real-time progress)
+- [ ] Phase 3: Async Parallel Research (background agents)
+- [ ] Phase 4: Multi-Strategy Research (95% coverage)
+- [ ] Phase 5: Skill-Discovery Meta-Skill (`/skill-finder`)
+- [ ] Phase 6: Per-API Research Folders (additive, no breaking changes)
+- [ ] Phase 7: Cost/Time Tracking (JSON storage)
+- [ ] Phase 8: Phase 14 - AI Code Review (Greptile + CodeRabbit + Graphite)
+- [ ] Phase 9: Stats & Rename Commands
+
+### User Decisions (2025-12-25)
+- **Priority**: Implement ALL phases (no splitting)
+- **Code Review Tools**: Greptile + CodeRabbit + Graphite (all three)
+- **Stats Storage**: JSON files
+- **Demo Hosting**: Local only
+- **Breaking Changes**: NO (backward compatible)
+
+---
+
+## Quick Start
 
 ```bash
 # Full automated workflow
 /api-create my-endpoint
+
+# UI component workflow
+/hustle-ui-create my-component
+
+# UI page workflow
+/hustle-ui-create-page my-page
+
+# Combine existing APIs
+/hustle-combine
 
 # Manual step-by-step
 /api-research [library]
@@ -84,3 +200,31 @@ Research is cached in `.claude/research/` with 7-day freshness:
 /refactor
 /commit
 ```
+
+---
+
+## Documentation Index
+
+| Document | Purpose |
+|----------|---------|
+| [VERSION_3.2_OVERVIEW.md](VERSION_3.2_OVERVIEW.md) | Navigation hub for all planning docs |
+| [ENHANCEMENT_ROADMAP_v3.11.0.md](ENHANCEMENT_ROADMAP_v3.11.0.md) | Strategic "why" document |
+| [COMPREHENSIVE_ENHANCEMENT_PLAN.md](COMPREHENSIVE_ENHANCEMENT_PLAN.md) | Implementation "how" document |
+| [.skills/README.md](.skills/README.md) | Skills documentation |
+| [CHANGELOG.md](CHANGELOG.md) | Version history |
+
+---
+
+## Requirements
+
+- **Claude Code**: 1.0.0+ (or compatible platform)
+- **Python**: 3.9+ (for hooks)
+- **Node.js**: 18+
+- **pnpm**: 10.11.0+
+- **MCP Servers**: Context7 (required), GitHub (recommended)
+
+---
+
+**Version:** 3.11.0
+**License:** MIT
+**Author:** Hustle Together
