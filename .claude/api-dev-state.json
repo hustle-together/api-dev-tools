@@ -314,6 +314,22 @@
         "confidence": "critical"
       },
       "injected": true
+    },
+    {
+      "timestamp": "2025-12-25T05:16:17.878625",
+      "prompt_preview": "di you have the ability to fully track everything as you go. Because I think the priority is to just...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "should be json. for demo hosting, local only. ever"
+        ],
+        "patterns_matched": [
+          "question_pattern",
+          "always_research"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
     }
   ],
   "phases": {
