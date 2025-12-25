@@ -1,11 +1,10 @@
-# Archived Planning Documents
+# Archived Documents
 
-These documents were working files used during the v3.11.0 development cycle. They've been archived now that implementation is complete.
+Documents superseded by v3.11.0 implementation.
 
 **Archived:** 2025-12-25
-**Reason:** Superseded by final implementation and VERSION_3.2_OVERVIEW.md
 
-## Files
+## Planning Documents
 
 | File | Original Purpose | Why Archived |
 |------|------------------|--------------|
@@ -14,9 +13,17 @@ These documents were working files used during the v3.11.0 development cycle. Th
 | RESEARCH_SUMMARY_v3.11.md | Tool research findings | Merged into final plans |
 | CLAUDE_CODE_ENHANCEMENTS_v3.11.md | Claude Code integration research | Merged into final plans |
 
+## Legacy Commands
+
+| Folder | Purpose | Why Archived |
+|--------|---------|--------------|
+| [legacy-commands/](./legacy-commands/) | Original slash command docs (29 files) | Migrated to `.skills/` |
+
+See [legacy-commands/README.md](./legacy-commands/README.md) for migration mapping.
+
 ## Current Documentation
 
 For up-to-date information, see:
-- [VERSION_3.2_OVERVIEW.md](../../VERSION_3.2_OVERVIEW.md) - Navigation hub
-- [ENHANCEMENT_ROADMAP_v3.11.0.md](../../ENHANCEMENT_ROADMAP_v3.11.0.md) - Strategic overview
-- [COMPREHENSIVE_ENHANCEMENT_PLAN.md](../../COMPREHENSIVE_ENHANCEMENT_PLAN.md) - Implementation details
+- [../planning/](../planning/) - Planning documents
+- [../../.skills/README.md](../../.skills/README.md) - Skills documentation
+- [../TLDR.md](../TLDR.md) - Quick reference

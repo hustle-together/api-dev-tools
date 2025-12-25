@@ -6,7 +6,7 @@
 [![Cross-Platform](https://img.shields.io/badge/Cross--Platform-Claude%20%7C%20VS%20Code%20%7C%20Cursor-green)](https://github.com/hustle-together/api-dev-tools)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **31 Agent Skills** for cross-platform compatibility across Claude Code, VS Code, Cursor, ChatGPT, and GitHub Copilot
+> **33 Agent Skills** for cross-platform compatibility across Claude Code, VS Code, Cursor, ChatGPT, and GitHub Copilot
 
 ---
 
@@ -74,13 +74,13 @@ This runs you through 13 enforced phases:
 
 | Category | Count | Examples |
 |----------|-------|----------|
-| **Skills** | 31 | api-create, hustle-ui-create, commit, pr |
+| **Skills** | 33 | api-create, hustle-ui-create, commit, pr |
 | **Hooks** | 19 | Enforcement for each phase |
 | **Templates** | 9 | Component, Page, API route, Showcases |
 
 ### Skills by Category
 
-- **API Development**: api-create, api-research, api-interview, api-verify, api-env, api-status
+- **API Development**: api-create, api-research, api-interview, api-verify, api-env, api-status, api-continue, api-sessions
 - **UI Development**: hustle-ui-create, hustle-ui-create-page, hustle-combine
 - **TDD**: red, green, refactor, cycle, tdd, spike
 - **Git**: commit, pr, busycommit, worktree-add, worktree-cleanup

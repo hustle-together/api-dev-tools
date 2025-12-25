@@ -150,6 +150,23 @@
         "confidence": "medium"
       },
       "injected": true
+    },
+    {
+      "timestamp": "2025-12-25T19:14:35.151955",
+      "prompt_preview": "Yea update any docs as needed",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "update any docs as needed",
+          "docs"
+        ],
+        "patterns_matched": [
+          "question_pattern",
+          "always_research"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
     }
   ],
   "phases": {

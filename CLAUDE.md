@@ -12,16 +12,15 @@ This project uses **@hustle-together/api-dev-tools** for interview-driven, resea
 ## Architecture: Agent Skills (Cross-Platform)
 
 This toolkit uses the **Agent Skills open standard** ([agentskills.io](https://agentskills.io)):
-- **23 Agent Skills** in `.skills/` directory
-- **18 Enforcement Hooks** in `.claude/hooks/`
+- **33 Agent Skills** in `.skills/` directory
+- **19 Enforcement Hooks** in `.claude/hooks/`
 - **Cross-platform**: Claude Code, VS Code, Cursor, ChatGPT, GitHub Copilot
-- **Backward compatible**: Original `.claude/commands/` still works
 
 ---
 
-## Available Skills (23 Total)
+## Available Skills (33 Total)
 
-### API Development (6 skills)
+### API Development (8 skills)
 
 | Skill | Usage | Description |
 |-------|-------|-------------|
@@ -31,6 +30,8 @@ This toolkit uses the **Agent Skills open standard** ([agentskills.io](https://a
 | **api-verify** | `/api-verify [endpoint]` | Re-research and verify implementation |
 | **api-env** | `/api-env [endpoint]` | Check API keys and environment |
 | **api-status** | `/api-status [endpoint]` | Track progress through phases |
+| **api-continue** | `/api-continue [endpoint]` | Resume interrupted workflow |
+| **api-sessions** | `/api-sessions [options]` | Browse/export session history |
 
 ### UI Development (3 skills)
 
@@ -68,7 +69,7 @@ This toolkit uses the **Agent Skills open standard** ([agentskills.io](https://a
 | **worktree-add** | `/worktree-add [branch]` | Add git worktree |
 | **worktree-cleanup** | `/worktree-cleanup` | Clean merged worktrees |
 
-### Utilities (4 skills)
+### Utilities (9 skills)
 
 | Skill | Usage | Description |
 |-------|-------|-------------|
@@ -76,6 +77,11 @@ This toolkit uses the **Agent Skills open standard** ([agentskills.io](https://a
 | **beepboop** | `/beepboop` | AI attribution markers |
 | **summarize** | `/summarize` | Conversation summary |
 | **add-command** | `/add-command` | Guide for new skills |
+| **stats** | `/stats` | Track workflow statistics |
+| **rename** | `/rename [old] [new]` | Rename across codebase |
+| **skill-finder** | `/skill-finder [query]` | Find relevant skills |
+| **test-toolkit** | `/test-toolkit` | Validate hooks/skills/templates |
+| **update-todos** | `/update-todos` | Update TodoWrite list |
 
 ---
 
@@ -151,27 +157,17 @@ Research cached in `.claude/research/` with 7-day freshness:
 
 ---
 
-## Enhancement Roadmap (In Progress)
+## Enhancement Roadmap
 
-### Completed
-- [x] Phase 1: Skills Migration (23 skills, cross-platform)
+### Completed (v3.11.0)
+- [x] Skills Migration (33 skills, cross-platform)
+- [x] Commands archived to `docs/archive/legacy-commands/`
+- [x] Documentation reorganized
 
-### In Progress
-- [ ] Phase 2: TodoWrite Integration (real-time progress)
-- [ ] Phase 3: Async Parallel Research (background agents)
-- [ ] Phase 4: Multi-Strategy Research (95% coverage)
-- [ ] Phase 5: Skill-Discovery Meta-Skill (`/skill-finder`)
-- [ ] Phase 6: Per-API Research Folders (additive, no breaking changes)
-- [ ] Phase 7: Cost/Time Tracking (JSON storage)
-- [ ] Phase 8: Phase 14 - AI Code Review (Greptile + CodeRabbit + Graphite)
-- [ ] Phase 9: Stats & Rename Commands
-
-### User Decisions (2025-12-25)
-- **Priority**: Implement ALL phases (no splitting)
-- **Code Review Tools**: Greptile + CodeRabbit + Graphite (all three)
-- **Stats Storage**: JSON files
-- **Demo Hosting**: Local only
-- **Breaking Changes**: NO (backward compatible)
+### Optional Integrations
+- **CodeRabbit** - AI PR reviews (free for OSS)
+- **Graphite** - Stacked PRs workflow
+- **Greptile** - Deep codebase analysis ($30/dev/month)
 
 ---
 
@@ -207,11 +203,10 @@ Research cached in `.claude/research/` with 7-day freshness:
 
 | Document | Purpose |
 |----------|---------|
-| [VERSION_3.2_OVERVIEW.md](VERSION_3.2_OVERVIEW.md) | Navigation hub for all planning docs |
-| [ENHANCEMENT_ROADMAP_v3.11.0.md](ENHANCEMENT_ROADMAP_v3.11.0.md) | Strategic "why" document |
-| [COMPREHENSIVE_ENHANCEMENT_PLAN.md](COMPREHENSIVE_ENHANCEMENT_PLAN.md) | Implementation "how" document |
-| [.skills/README.md](.skills/README.md) | Skills documentation |
-| [CHANGELOG.md](CHANGELOG.md) | Version history |
+| [docs/](docs/) | All documentation |
+| [docs/TLDR.md](docs/TLDR.md) | Quick command reference |
+| [.skills/README.md](.skills/README.md) | Skills documentation (33 skills) |
+| [docs/CHANGELOG.md](docs/CHANGELOG.md) | Version history |
 
 ---
 

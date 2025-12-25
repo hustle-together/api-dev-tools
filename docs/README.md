@@ -1,17 +1,22 @@
 # Documentation
 
-## Quick Links
+## Quick Reference
 
 | Document | Description |
 |----------|-------------|
-| [INSTALLATION_GUIDE.md](./INSTALLATION_GUIDE.md) | Setup instructions |
 | [TLDR.md](./TLDR.md) | Quick command reference |
+| [INSTALLATION_GUIDE.md](./INSTALLATION_GUIDE.md) | Setup instructions |
 | [CHANGELOG.md](./CHANGELOG.md) | Version history |
-| [FULL_DOCUMENTATION.md](./FULL_DOCUMENTATION.md) | Complete docs (7000+ lines) |
+| [FULL_DOCUMENTATION.md](./FULL_DOCUMENTATION.md) | Complete docs (backup) |
 
-## Planning Documents
+## Skills & Templates
 
-Internal documents used during v3.11.0 development:
+| Location | Description |
+|----------|-------------|
+| [../.skills/README.md](../.skills/README.md) | **33 Agent Skills** with usage examples |
+| [../templates/](../templates/) | Templates for components, pages, APIs |
+
+## Planning (v3.11.0)
 
 | Document | Description |
 |----------|-------------|
@@ -21,13 +26,7 @@ Internal documents used during v3.11.0 development:
 
 ## Archived
 
-Superseded planning documents from earlier development:
-
-| Document | Description |
+| Location | Description |
 |----------|-------------|
-| [archive/](./archive/) | v3.11.0 research and migration docs |
-
-## Other Documentation
-
-- [/.skills/README.md](../.skills/README.md) - Skills documentation
-- [/templates/](../templates/) - Template files for components, pages, APIs
+| [archive/](./archive/) | Superseded planning docs |
+| [archive/legacy-commands/](./archive/legacy-commands/) | Pre-skills command docs (29 files) |
