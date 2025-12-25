@@ -120,9 +120,19 @@ def main():
         print(json.dumps({"decision": "approve"}))
         sys.exit(0)
 
+    # FIX: Check if an API workflow is explicitly active
+    # This prevents blocking when user is just doing general research/questions
+    workflow_active = state.get("workflow_active", False)
+    endpoint = state.get("endpoint")
+
+    if not workflow_active and not endpoint:
+        # No active API workflow - allow stop without checking phases
+        print(json.dumps({"decision": "approve"}))
+        sys.exit(0)
+
     phases = state.get("phases", {})
 
-    # Check if workflow was even started
+    # Check if workflow was even started (legacy check for backward compatibility)
     research = phases.get("research_initial", {})
     if research.get("status") == "not_started":
         # Workflow not started, allow stop
