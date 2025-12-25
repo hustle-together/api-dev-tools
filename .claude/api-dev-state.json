@@ -94,6 +94,23 @@
         "confidence": "none"
       },
       "injected": false
+    },
+    {
+      "timestamp": "2025-12-25T18:10:00.840701",
+      "prompt_preview": "<ide_opened_file>The user opened the file /home/dev/repos/api-dev-tools/README.md in the IDE. This m...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "api"
+        ],
+        "patterns_matched": [
+          "always_research",
+          "question_pattern",
+          "technical_term"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
     }
   ],
   "phases": {

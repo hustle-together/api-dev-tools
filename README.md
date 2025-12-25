@@ -93,19 +93,11 @@ This runs you through 13 enforced phases:
 
 | Document | Description |
 |----------|-------------|
-| [INSTALLATION_GUIDE.md](./INSTALLATION_GUIDE.md) | Detailed setup instructions |
-| [TLDR.md](./TLDR.md) | Quick reference for all commands |
+| [docs/](./docs/) | All documentation |
+| [docs/INSTALLATION_GUIDE.md](./docs/INSTALLATION_GUIDE.md) | Setup instructions |
+| [docs/TLDR.md](./docs/TLDR.md) | Quick command reference |
+| [docs/CHANGELOG.md](./docs/CHANGELOG.md) | Version history |
 | [.skills/README.md](./.skills/README.md) | Skills documentation |
-| [CHANGELOG.md](./CHANGELOG.md) | Version history |
-| [docs/FULL_DOCUMENTATION.md](./docs/FULL_DOCUMENTATION.md) | Complete documentation (7000+ lines) |
-
-### Planning Documents
-
-| Document | Purpose |
-|----------|---------|
-| [VERSION_3.2_OVERVIEW.md](./VERSION_3.2_OVERVIEW.md) | Navigation hub |
-| [ENHANCEMENT_ROADMAP_v3.11.0.md](./ENHANCEMENT_ROADMAP_v3.11.0.md) | Strategic "why" |
-| [COMPREHENSIVE_ENHANCEMENT_PLAN.md](./COMPREHENSIVE_ENHANCEMENT_PLAN.md) | Implementation "how" |
 
 ---
 
