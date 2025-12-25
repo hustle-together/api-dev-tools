@@ -167,6 +167,19 @@
         "confidence": "critical"
       },
       "injected": true
+    },
+    {
+      "timestamp": "2025-12-25T19:47:22.102222",
+      "prompt_preview": "Where are we at?",
+      "detection": {
+        "detected": false,
+        "terms": [],
+        "patterns_matched": [
+          "question_pattern"
+        ],
+        "confidence": "none"
+      },
+      "injected": false
     }
   ],
   "phases": {
