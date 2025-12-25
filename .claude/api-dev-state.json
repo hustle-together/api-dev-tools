@@ -4,9 +4,24 @@
   "endpoint": null,
   "library": null,
   "session_id": null,
-  "turn_count": 0,
-  "last_turn_timestamp": null,
-  "research_queries": [],
+  "turn_count": 2,
+  "last_turn_timestamp": "2025-12-25T13:30:16.167292",
+  "research_queries": [
+    {
+      "timestamp": "2025-12-25T13:30:16.167318",
+      "tool": "WebSearch",
+      "query": "Greptile vs CodeRabbit vs Graphite comparison AI code review 2025",
+      "terms": [
+        "greptile",
+        "coderabbit",
+        "graphite",
+        "comparison",
+        "code",
+        "review",
+        "2025"
+      ]
+    }
+  ],
   "prompt_detections": [
     {
       "timestamp": "2025-12-25T13:29:21.913049",
@@ -43,8 +58,18 @@
       "status": "not_started"
     },
     "research_initial": {
-      "status": "not_started",
-      "sources": []
+      "status": "in_progress",
+      "sources": [
+        {
+          "type": "websearch",
+          "query": "Greptile vs CodeRabbit vs Graphite comparison AI code review 2025",
+          "timestamp": "2025-12-25T13:30:16.167318",
+          "success": true
+        }
+      ],
+      "started_at": "2025-12-25T13:30:16.167316",
+      "last_activity": "2025-12-25T13:30:16.167318",
+      "source_count": 1
     },
     "interview": {
       "status": "not_started",
