@@ -137,6 +137,19 @@
         "confidence": "critical"
       },
       "injected": true
+    },
+    {
+      "timestamp": "2025-12-25T18:21:10.653702",
+      "prompt_preview": "Do we need any commands still or move them to an archive. Make sure we have all need skills. Any oth...",
+      "detection": {
+        "detected": true,
+        "terms": [],
+        "patterns_matched": [
+          "question_pattern"
+        ],
+        "confidence": "medium"
+      },
+      "injected": true
     }
   ],
   "phases": {
