@@ -622,10 +622,17 @@ Use /skill-finder to discover API research skills:
 │ WAIT for user response. Do NOT auto-proceed.              │
 │ ──── Loop back to Phase 8/9 if fixes needed ────          │
 │                                                           │
+│ 4. **Graphite** (for stacked PRs):                        │
+│    gt create --stack [endpoint-name]                      │
+│    - Stacked PRs for dependent changes                    │
+│    - Parallel team collaboration                          │
+│    - Incremental reviews without blocking                 │
+│                                                           │
 │ After review approved:                                    │
-│   • Display cost/time summary                             │
+│   • Display cost/time summary (via /stats)                │
 │   • Run /commit to create semantic commit                 │
 │   • Optionally run /pr to create pull request             │
+│   • For stacked changes: gt stack submit                  │
 └───────────────────────────────────────────────────────────┘
 ```
 
