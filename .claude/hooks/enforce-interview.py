@@ -63,6 +63,108 @@ SELF_ANSWER_INDICATORS = [
 ]
 
 
+def load_test_fixture(endpoint: str) -> dict | None:
+    """Load test fixture for the given endpoint if it exists."""
+    fixture_file = TEST_FIXTURES_DIR / f"{endpoint}.json"
+    if fixture_file.exists():
+        try:
+            return json.loads(fixture_file.read_text())
+        except json.JSONDecodeError:
+            return None
+    return None
+
+
+def match_question_to_mock(question: str, fixture: dict) -> str | None:
+    """Find a mock answer for the given question based on pattern matching."""
+    mock_interview = fixture.get("mock_interview", {})
+    questions_and_answers = mock_interview.get("questions_and_answers", [])
+
+    question_lower = question.lower()
+    for qa in questions_and_answers:
+        pattern = qa.get("question_pattern", "")
+        if pattern:
+            # Split pattern by | for OR matching
+            patterns = [p.strip().lower() for p in pattern.split("|")]
+            for p in patterns:
+                if p in question_lower:
+                    return qa.get("answer", "")
+    return None
+
+
+def inject_mock_interview(state: dict, fixture: dict) -> dict:
+    """Inject mock interview answers into state from fixture file."""
+    mock_interview = fixture.get("mock_interview", {})
+    questions_and_answers = mock_interview.get("questions_and_answers", [])
+
+    # Build decisions from mock Q&A
+    decisions = {}
+    questions = []
+
+    for i, qa in enumerate(questions_and_answers):
+        question_pattern = qa.get("question_pattern", "")
+        answer = qa.get("answer", "")
+        context = qa.get("context", "")
+
+        # Create a decision key from the pattern
+        key = question_pattern.split("|")[0].strip().replace(" ", "_").lower()
+
+        decisions[key] = {
+            "question": question_pattern,
+            "response": answer,
+            "value": answer,
+            "context": context,
+            "source": "test-fixture"
+        }
+
+        questions.append({
+            "question": question_pattern,
+            "answer": answer,
+            "tool_used": True,
+            "has_options": True,
+            "source": "test-fixture"
+        })
+
+    # Update interview phase in state
+    if "phases" not in state:
+        state["phases"] = {}
+
+    state["phases"]["interview"] = {
+        "status": "complete",
+        "description": "Auto-completed via test-mode fixture",
+        "questions": questions,
+        "decisions": decisions,
+        "user_question_count": len(questions),
+        "structured_question_count": len(questions),
+        "user_question_asked": True,
+        "user_completed": True,
+        "phase_exit_confirmed": True,
+        "test_mode": True
+    }
+
+    # Save updated state
+    STATE_FILE.write_text(json.dumps(state, indent=2))
+
+    return state
+
+
+def is_test_mode(state: dict) -> bool:
+    """Check if test-mode is active from state or autonomous config."""
+    # Check state directly
+    if state.get("test_mode", False):
+        return True
+
+    # Check autonomous config
+    autonomous_config = Path(__file__).parent.parent / "autonomous-config.json"
+    if autonomous_config.exists():
+        try:
+            config = json.loads(autonomous_config.read_text())
+            return config.get("execution", {}).get("test_mode", False)
+        except json.JSONDecodeError:
+            pass
+
+    return False
+
+
 def main():
     # Read hook input from stdin
     try:
