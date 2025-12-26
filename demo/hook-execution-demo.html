@@ -402,7 +402,7 @@
                 <div class="feature-item">✅ Per-API Research Folders</div>
                 <div class="feature-item">✅ Greptile AI Code Review</div>
                 <div class="feature-item">✅ Phase 14: Code Review</div>
-                <div class="feature-item">✅ Graphite Stacked PRs</div>
+                <div class="feature-item">✅ Greptile AI Review</div>
                 <div class="feature-item">✅ user_input_required Events</div>
                 <div class="feature-item">✅ Resume Commands in ntfy</div>
                 <div class="feature-item">✅ Interactive Setup Wizard</div>
@@ -477,7 +477,7 @@
                     { id: 11, content: 'Phase 11: TDD Refactor', activeForm: 'Cleaning up code' },
                     { id: 12, content: 'Phase 12: Documentation', activeForm: 'Updating manifests' },
                     { id: 13, content: 'Phase 13: Completion', activeForm: 'Final verification' },
-                    { id: 14, content: 'Phase 14: Code Review', activeForm: 'AI code review (Greptile/CodeRabbit/Graphite)' }
+                    { id: 14, content: 'Phase 14: Code Review', activeForm: 'AI code review via Greptile MCP' }
                 ],
                 phases: [
                     {
@@ -764,29 +764,9 @@
                             ` },
                             { type: 'separator' },
 
-                            // Graphite Integration
-                            { type: 'system', text: '📊 TOOL 3: Graphite (PR Stacking + Workflow)' },
-                            { type: 'tool', text: '🔧 TOOL: Graphite stack analysis' },
-                            { type: 'phase-14-box', text: `
-╔═══════════════════════════════════════════════════════════╗
-║ 📊 GRAPHITE WORKFLOW ANALYSIS                             ║
-╠═══════════════════════════════════════════════════════════╣
-║ Current PR: feat/stripe-payment                            ║
-║ Dependencies: None (independent change)                    ║
-║                                                             ║
-║ 💡 SUGGESTION: Stack follow-up PRs:                        ║
-║    1. feat/stripe-webhooks (depends on stripe-payment)     ║
-║    2. feat/stripe-subscriptions (depends on webhooks)      ║
-║                                                             ║
-║ This enables parallel development across timezones         ║
-║ Team can review incrementally without blocking             ║
-╚═══════════════════════════════════════════════════════════╝
-                            ` },
-                            { type: 'separator' },
-
                             // User Review
                             { type: 'tool', text: '💬 TOOL: AskUserQuestion' },
-                            { type: 'interview', question: 'Review feedback from Greptile, CodeRabbit, Graphite. Action?', options: [
+                            { type: 'interview', question: 'Review feedback from Greptile and CodeRabbit. Action?', options: [
                                 'Apply auto-fixes and merge',
                                 'Apply fixes manually, then merge',
                                 'Request changes from reviewer',
@@ -812,10 +792,9 @@
                             { type: 'separator' },
 
                             { type: 'system', text: '🎉 PHASE 14 COMPLETE - AI CODE REVIEW PASSED' },
-                            { type: 'system', text: '   - Greptile: 9.2/10 score, 1 optimization applied' },
+                            { type: 'system', text: '   - Greptile MCP: 9.2/10 score, 1 optimization applied' },
                             { type: 'system', text: '   - CodeRabbit: 2 auto-fixes applied' },
-                            { type: 'system', text: '   - Graphite: PR stacking strategy suggested' },
-                            { type: 'cost', text: '💰 Cost: Greptile: $0.15, CodeRabbit: $0.00 (OSS), Graphite: $0.00 (Hobby)' },
+                            { type: 'cost', text: '💰 Cost: Greptile: $0.15, CodeRabbit: $0.00 (OSS)' },
                             { type: 'separator' },
 
                             { type: 'state', text: '   Update: phases.code_review.status = "complete"' },
@@ -848,9 +827,8 @@
 ║ - Context7 MCP:           5 calls                          ║
 ║ - WebSearch:              8 queries                        ║
 ║ - Skills:                 3 installed                      ║
-║ - Greptile:               1 review                         ║
+║ - Greptile MCP:           1 review                         ║
 ║ - CodeRabbit:             1 review (auto-fix)              ║
-║ - Graphite:               1 analysis                       ║
 ║                                                             ║
 ║ EFFICIENCY vs v3.10.0:                                     ║
 ║ - 25% lower cost ($1.42 vs $1.89)                          ║

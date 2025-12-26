@@ -215,11 +215,23 @@ Fast, read-only agent for codebase search. Used in research phases.
   "subagents": {
     "use_explore_for_research": true,
     "explore_model": "sonnet",
-    "parallel_research_agents": 3,
+    "parallel_research_agents": 5,
+    "parallel_test_agents": 3,
+    "parallel_docs_agents": 2,
+    "max_parallel_total": 10,
     "background_verification": true
   }
 }
 ```
+
+### Subagent Usage Points
+
+| Phase | Subagent Use | Count | Purpose |
+|-------|--------------|-------|---------|
+| **Research** | Explore agents | 5 | Context7, WebSearch, codebase analysis |
+| **Verification** | Test runners | 3 | Unit, integration, e2e tests in parallel |
+| **Documentation** | Doc generators | 2 | Multi-file doc updates |
+| **Schema** | Validators | 2 | Validate multiple endpoints |
 
 ### How Research Phases Use Subagents
 
@@ -227,10 +239,23 @@ Fast, read-only agent for codebase search. Used in research phases.
 Phase 3 (Initial Research):
   ├── Explore Agent 1: Search codebase for existing implementations
   ├── Explore Agent 2: Find related types/schemas
-  └── Explore Agent 3: Check test patterns
+  ├── Explore Agent 3: Check test patterns
+  ├── Explore Agent 4: Search Context7 for library docs
+  └── Explore Agent 5: WebSearch for official documentation
 
-Results return without filling main context window.
+Phase 10 (Verification):
+  ├── Test Agent 1: Run unit tests (Vitest)
+  ├── Test Agent 2: Run integration tests
+  └── Test Agent 3: Run e2e tests (Playwright)
+
+All results return without filling main context window.
 ```
+
+### Limits
+
+- **Maximum:** 10 parallel tasks (Claude Code hard limit)
+- **Beyond 10:** Tasks queue into batches
+- **Recommended:** 3-5 for typical workflows (balance speed vs resources)
 
 ---
 

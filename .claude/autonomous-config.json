@@ -40,9 +40,18 @@
   "subagents": {
     "use_explore_for_research": true,
     "explore_model": "sonnet",
-    "parallel_research_agents": 3,
+    "parallel_research_agents": 5,
+    "parallel_test_agents": 3,
+    "parallel_docs_agents": 2,
+    "max_parallel_total": 10,
     "background_verification": true,
-    "comment": "Using Sonnet for Explore agents (not Haiku) per user preference for quality"
+    "usage_points": [
+      "research: Explore agents for Context7/WebSearch",
+      "verification: Parallel test execution (unit, integration, e2e)",
+      "documentation: Multi-file doc updates",
+      "schema_validation: Validate multiple endpoints"
+    ],
+    "comment": "Using Sonnet for Explore agents (not Haiku) per user preference for quality. Max 10 parallel tasks per Claude Code limits."
   },
 
   "summaries": {
