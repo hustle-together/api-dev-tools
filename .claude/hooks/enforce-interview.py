@@ -74,63 +74,61 @@ def load_test_fixture(endpoint: str) -> dict | None:
     return None
 
 
-def match_question_to_mock(question: str, fixture: dict) -> str | None:
-    """Find a mock answer for the given question based on pattern matching."""
-    mock_interview = fixture.get("mock_interview", {})
-    questions_and_answers = mock_interview.get("questions_and_answers", [])
-
-    question_lower = question.lower()
-    for qa in questions_and_answers:
-        pattern = qa.get("question_pattern", "")
-        if pattern:
-            # Split pattern by | for OR matching
-            patterns = [p.strip().lower() for p in pattern.split("|")]
-            for p in patterns:
-                if p in question_lower:
-                    return qa.get("answer", "")
-    return None
+def should_skip_interview(fixture: dict) -> bool:
+    """Check if fixture specifies to skip the interview phase entirely."""
+    skip_phases = fixture.get("skip_phases", {})
+    return skip_phases.get("interview", False)
 
 
-def inject_mock_interview(state: dict, fixture: dict) -> dict:
-    """Inject mock interview answers into state from fixture file."""
-    mock_interview = fixture.get("mock_interview", {})
-    questions_and_answers = mock_interview.get("questions_and_answers", [])
+def inject_explicit_decisions(state: dict, fixture: dict) -> dict:
+    """Inject explicit decisions directly into state, skipping interview phase.
 
-    # Build decisions from mock Q&A
+    This is the v2.0 approach: Instead of trying to pattern-match questions
+    (which is impossible since questions come from dynamic research findings),
+    we provide EXPLICIT decisions that are injected as if the user had answered.
+
+    The fixture format is:
+    {
+        "explicit_decisions": {
+            "provider": {"value": "OpenWeatherMap", "rationale": "..."},
+            "authentication": {"value": "API key in header", "rationale": "..."},
+            ...
+        }
+    }
+    """
+    explicit_decisions = fixture.get("explicit_decisions", {})
+
+    # Build decisions and synthetic questions from explicit decisions
     decisions = {}
     questions = []
 
-    for i, qa in enumerate(questions_and_answers):
-        question_pattern = qa.get("question_pattern", "")
-        answer = qa.get("answer", "")
-        context = qa.get("context", "")
-
-        # Create a decision key from the pattern
-        key = question_pattern.split("|")[0].strip().replace(" ", "_").lower()
+    for key, data in explicit_decisions.items():
+        value = data.get("value", "")
+        rationale = data.get("rationale", "")
 
         decisions[key] = {
-            "question": question_pattern,
-            "response": answer,
-            "value": answer,
-            "context": context,
-            "source": "test-fixture"
+            "question": f"What {key.replace('_', ' ')} should be used?",
+            "response": value,
+            "value": value,
+            "rationale": rationale,
+            "source": "test-fixture-explicit"
         }
 
         questions.append({
-            "question": question_pattern,
-            "answer": answer,
+            "question": f"What {key.replace('_', ' ')} should be used?",
+            "answer": value,
             "tool_used": True,
             "has_options": True,
-            "source": "test-fixture"
+            "source": "test-fixture-explicit"
         })
 
-    # Update interview phase in state
+    # Update interview phase in state - mark as complete
     if "phases" not in state:
         state["phases"] = {}
 
     state["phases"]["interview"] = {
         "status": "complete",
-        "description": "Auto-completed via test-mode fixture",
+        "description": "SKIPPED - Test mode with explicit decisions from fixture",
         "questions": questions,
         "decisions": decisions,
         "user_question_count": len(questions),
@@ -138,8 +136,18 @@ def inject_mock_interview(state: dict, fixture: dict) -> dict:
         "user_question_asked": True,
         "user_completed": True,
         "phase_exit_confirmed": True,
-        "test_mode": True
+        "test_mode": True,
+        "skipped_via_fixture": True
     }
+
+    # Also inject mock research settings if present
+    mock_research = fixture.get("mock_research", {})
+    if mock_research.get("use_cached", False):
+        state["test_mode_research"] = {
+            "use_cached": True,
+            "cache_path": mock_research.get("cache_path", ""),
+            "fallback_to_live": mock_research.get("fallback_to_live", False)
+        }
 
     # Save updated state
     STATE_FILE.write_text(json.dumps(state, indent=2))
