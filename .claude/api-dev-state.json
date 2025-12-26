@@ -743,6 +743,54 @@
         "confidence": "none"
       },
       "injected": false
+    },
+    {
+      "timestamp": "2025-12-26T04:09:20.041527",
+      "prompt_preview": "<ide_opened_file>The user opened the file /home/dev/repos/api-dev-tools/.claude/autonomous-config.js...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "what are",
+          "will this just work? will it have",
+          "add or do need to add still? as you mentioned you ",
+          "api",
+          "documentation",
+          "config",
+          "autonomous-config.json"
+        ],
+        "patterns_matched": [
+          "always_research",
+          "question_pattern",
+          "technical_term"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-26T04:10:09.149158",
+      "prompt_preview": "<ide_selection>The user selected the lines 15 to 79 from /home/dev/repos/api-dev-tools/.claude/hooks...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "api",
+          "config",
+          "import",
+          "path",
+          "state",
+          "v3.12.0",
+          "enforce-environment.py",
+          "api-dev-state.json",
+          "autonomous-config.json"
+        ],
+        "patterns_matched": [
+          "always_research",
+          "technical_term",
+          "question_pattern"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
     }
   ],
   "phases": {
