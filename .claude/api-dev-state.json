@@ -855,6 +855,17 @@
         "confidence": "critical"
       },
       "injected": true
+    },
+    {
+      "timestamp": "2025-12-26T04:35:44.977428",
+      "prompt_preview": "> The demos now accurately showcase everything for all four of those main commands\u00a0 in full, with al...",
+      "detection": {
+        "detected": true,
+        "terms": [],
+        "patterns_matched": [],
+        "confidence": "low"
+      },
+      "injected": true
     }
   ],
   "phases": {
