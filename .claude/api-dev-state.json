@@ -70,7 +70,19 @@
       ]
     }
   ],
-  "prompt_detections": [],
+  "prompt_detections": [
+    {
+      "timestamp": "2025-12-26T05:54:03.616055",
+      "prompt_preview": "Continue",
+      "detection": {
+        "detected": false,
+        "terms": [],
+        "patterns_matched": [],
+        "confidence": "none"
+      },
+      "injected": false
+    }
+  ],
   "phases": {
     "disambiguation": {
       "status": "not_started",
