@@ -230,6 +230,25 @@ def main():
         data_file = generate_showcase_data(registry, cwd)
 
         if created_files:
+            # Build element list for notification
+            comp_names = list(components.keys())[:3]
+            page_names = list(pages.keys())[:2]
+            element_list = ", ".join(comp_names + page_names)
+            total = len(components) + len(pages)
+            if total > 5:
+                element_list += f" (+{total - 5} more)"
+
+            # Send ntfy notification about showcase creation
+            send_ntfy_notification(
+                title="UI Showcase Created",
+                message=f"Your UI Showcase is ready at /ui-showcase\n\n"
+                        f"Components: {len(components)}\n"
+                        f"Pages: {len(pages)}\n"
+                        f"Elements: {element_list}\n\n"
+                        f"Start your dev server and visit the showcase to preview your components.",
+                priority="default"
+            )
+
             print(json.dumps({
                 "continue": True,
                 "notify": f"Created UI Showcase at /ui-showcase ({len(created_files)} files) + data.json"

@@ -101,6 +101,35 @@ YOLO does NOT skip:
 }
 ```
 
+### How Budget Tracking Works
+
+> **Important:** Built-in budget tracking uses **estimates** based on tool usage patterns.
+> For accurate token counts, use Claude Code's `/cost` command or the `ccusage` tool.
+
+The hook-based tracking estimates tokens per tool call:
+- WebSearch: ~2,000 tokens
+- WebFetch: ~3,000 tokens
+- Read (file): ~1,500 tokens
+- Write/Edit: ~500 tokens
+
+This provides **macro-level cost prevention** but is not precise. A small file and large file get similar estimates.
+
+### Accurate Token Tracking
+
+```bash
+# Claude Code built-in (shows actual session cost)
+/cost
+
+# ccusage tool (reads JSONL logs for detailed breakdown)
+npx ccusage
+npx ccusage --live  # Real-time monitoring
+
+# Install ccusage globally
+npm install -g ccusage
+```
+
+Learn more: [ccusage on GitHub](https://github.com/ryoppippi/ccusage)
+
 ### Behavior
 
 1. **60% (warning):** Message injected, workflow continues
@@ -110,11 +139,14 @@ YOLO does NOT skip:
 ### Check Current Usage
 
 ```bash
-# From state file
+# Quick check from state file (estimated)
 cat .claude/api-dev-state.json | jq '.session_metrics.total_tokens'
 
-# Accurate tracking with ccusage
-npx ccusage --live
+# Accurate check with Claude Code
+/cost
+
+# Detailed breakdown with ccusage
+npx ccusage
 ```
 
 ---
@@ -427,12 +459,8 @@ cat .claude/api-dev-state.json | jq '.current_phase'
     "greptile": {
       "enabled": true,
       "api_key_env": "GREPTILE_API_KEY",
-      "github_token_env": "GITHUB_TOKEN"
-    },
-    "graphite": {
-      "enabled": true,
-      "use_stacked_prs": true,
-      "trunk_branch": "main"
+      "github_token_env": "GITHUB_TOKEN",
+      "mcp_setup": "claude mcp add --transport http greptile https://api.greptile.com/mcp --header \"Authorization: Bearer $GREPTILE_API_KEY\""
     }
   },
 
@@ -450,7 +478,6 @@ cat .claude/api-dev-state.json | jq '.current_phase'
 ## See Also
 
 - [GREPTILE_INTEGRATION.md](./GREPTILE_INTEGRATION.md) - AI code review setup
-- [GRAPHITE_WORKFLOW.md](./GRAPHITE_WORKFLOW.md) - Stacked PRs workflow
 - [CLAUDE_CODE_FEATURES.md](./CLAUDE_CODE_FEATURES.md) - Claude Code features reference
 
 ---
