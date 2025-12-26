@@ -836,6 +836,25 @@
         "confidence": "critical"
       },
       "injected": true
+    },
+    {
+      "timestamp": "2025-12-26T04:27:48.596027",
+      "prompt_preview": "For the component cascade, I assume automatically run component workflow. I don't go even by just pr...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "api",
+          "test",
+          "component"
+        ],
+        "patterns_matched": [
+          "always_research",
+          "question_pattern",
+          "technical_term"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
     }
   ],
   "phases": {
