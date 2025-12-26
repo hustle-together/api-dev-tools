@@ -218,6 +218,14 @@ def main():
         if not phase_exit_confirmed:
             missing_steps.append("Phase exit confirmation (user must explicitly approve to proceed)")
 
+        # Send ntfy notification for autonomous mode
+        notify_user_input_required(
+            7,
+            "Environment Check Required",
+            f"Environment verification needed for '{endpoint}'. Confirm readiness for TDD.",
+            endpoint
+        )
+
         print(json.dumps({
             "permissionDecision": "deny",
             "reason": f"""❌ BLOCKED: Environment check (Phase 7) not complete.

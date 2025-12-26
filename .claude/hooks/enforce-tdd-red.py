@@ -199,6 +199,15 @@ Example test structure:
         if not phase_exit_confirmed:
             missing.append("Phase exit confirmation (user must explicitly approve to proceed)")
 
+        # Send ntfy notification for autonomous mode
+        endpoint = state.get("endpoint", "unknown")
+        notify_user_input_required(
+            8,
+            "Test Matrix Approval Needed",
+            f"Test matrix ready for '{endpoint}'. User approval needed before writing tests.",
+            endpoint
+        )
+
         print(json.dumps({
             "permissionDecision": "deny",
             "reason": f"""❌ BLOCKED: TDD Red phase (Phase 8) not complete.
