@@ -81,6 +81,7 @@ def notify_user_input_required(phase_name, reason, endpoint):
 
 # Phases that MUST be complete before stopping
 REQUIRED_PHASES = [
+    ("toc_enumeration", "TOC enumeration (list ALL features first)"),
     ("research_initial", "Initial research (Context7/WebSearch)"),
     ("interview", "User interview"),
     ("tdd_red", "TDD Red phase (failing tests written)"),
@@ -95,6 +96,9 @@ RECOMMENDED_PHASES = [
     ("tdd_refactor", "TDD Refactor phase"),
     ("documentation", "Documentation updates"),
 ]
+
+# Minimum scope coverage required (v3.12.0)
+MIN_SCOPE_COVERAGE_PERCENT = 80  # Block if less than 80% of discovered features implemented
 
 
 def get_git_modified_files() -> list[str]:
@@ -160,6 +164,86 @@ def check_interview_implementation_match(state: dict) -> list[str]:
         issues.append("⚠️ No test files tracked in files_created")
 
     return issues
+
+
+def check_scope_coverage(state: dict) -> tuple[list[str], bool]:
+    """Check if all discovered features have been implemented.
+
+    v3.12.0: Enforces that user-confirmed scope is fully implemented.
+    Returns (issues_list, should_block).
+    """
+    issues = []
+    should_block = False
+
+    # Get scope data - check both old and new state formats
+    scope = state.get("scope", {})
+    if not scope and "endpoints" in state:
+        active = state.get("active_endpoint")
+        if active and active in state["endpoints"]:
+            scope = state["endpoints"][active].get("scope", {})
+
+    if not scope:
+        # No scope tracking - can't enforce
+        return [], False
+
+    discovered = scope.get("discovered_features", [])
+    implemented = scope.get("implemented_features", [])
+    deferred = scope.get("deferred_features", [])
+    coverage_percent = scope.get("coverage_percent", 0)
+
+    # If no features discovered, skip this check
+    if not discovered:
+        return [], False
+
+    # Get feature names (handle both dict and string formats)
+    def get_name(f):
+        return f.get("name") if isinstance(f, dict) else f
+
+    discovered_names = set(get_name(f) for f in discovered)
+    implemented_names = set(implemented)
+    deferred_names = set(get_name(f) for f in deferred)
+
+    # Calculate what's missing
+    accounted_for = implemented_names | deferred_names
+    missing = discovered_names - accounted_for
+
+    # Build report
+    total = len(discovered_names)
+    impl_count = len(implemented_names)
+    defer_count = len(deferred_names)
+    missing_count = len(missing)
+
+    if missing_count > 0:
+        issues.append(f"\n❌ SCOPE COVERAGE INCOMPLETE ({coverage_percent}%)")
+        issues.append(f"   Discovered: {total} features")
+        issues.append(f"   Implemented: {impl_count}")
+        issues.append(f"   Deferred: {defer_count}")
+        issues.append(f"   Missing: {missing_count}")
+        issues.append("")
+        issues.append("   Features NOT implemented or deferred:")
+        for feat in list(missing)[:10]:  # Show up to 10
+            issues.append(f"     • {feat}")
+        if missing_count > 10:
+            issues.append(f"     ... and {missing_count - 10} more")
+        issues.append("")
+        issues.append("   To proceed:")
+        issues.append("     1. Implement the missing features, OR")
+        issues.append("     2. Explicitly defer them in the interview")
+
+        # Block if coverage is below threshold
+        if coverage_percent < MIN_SCOPE_COVERAGE_PERCENT:
+            should_block = True
+            issues.append(f"\n   ⛔ Coverage {coverage_percent}% is below required {MIN_SCOPE_COVERAGE_PERCENT}%")
+
+    elif coverage_percent < 100 and defer_count > 0:
+        # All accounted for but some deferred - warning only
+        issues.append(f"\n⚠️ SCOPE COVERAGE: {coverage_percent}%")
+        issues.append(f"   {defer_count} feature(s) deferred for later:")
+        for feat in list(deferred_names)[:5]:
+            issues.append(f"     • {feat}")
+        # Don't block - user explicitly deferred these
+
+    return issues, should_block
 
 
 def main():
@@ -245,12 +329,25 @@ def main():
         all_issues.append("\n⚠️ Gap 4: Implementation verification:")
         all_issues.extend([f"  {i}" for i in match_issues])
 
-    # Block if required phases incomplete
-    if incomplete_required:
+    # v3.12.0: Check scope coverage - all discovered features must be implemented or deferred
+    scope_issues, scope_should_block = check_scope_coverage(state)
+    if scope_issues:
+        all_issues.extend(scope_issues)
+
+    # Block if required phases incomplete OR scope coverage insufficient
+    if incomplete_required or scope_should_block:
+        # Build notification message
+        notify_reason = f"Workflow for '{endpoint}' blocked."
+        if incomplete_required:
+            notify_reason += " Incomplete required phases."
+        if scope_should_block:
+            notify_reason += " Scope coverage below 80%."
+        notify_reason += " User action needed."
+
         # Send ntfy notification for autonomous mode
         notify_user_input_required(
-            "Incomplete Phases",
-            f"Workflow for '{endpoint}' has incomplete required phases. User action needed.",
+            "Workflow Blocked",
+            notify_reason,
             endpoint
         )
 
