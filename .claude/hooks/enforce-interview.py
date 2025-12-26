@@ -9,6 +9,9 @@ their answers, rather than self-answering the interview.
 v1.8.0 MAJOR UPDATE: Now requires STRUCTURED questions with multiple-choice
 options derived from research phase findings.
 
+v3.12.0 UPDATE: Added --test-mode support for autonomous testing with
+mock interview answers from fixture files.
+
 It checks:
   1. Research phase is complete (questions must be based on research)
   2. Interview status is "complete"
@@ -19,16 +22,23 @@ It checks:
 The goal: Questions like Claude Code shows - with numbered options and
 "Type something" at the end, all based on research findings.
 
+Test Mode:
+  When --test-mode is active, interview answers are loaded from fixture files
+  in .claude/test-fixtures/{endpoint}.json. This enables fully autonomous
+  workflow testing without user interaction.
+
 Returns:
   - {"permissionDecision": "allow"} - Let the tool run
   - {"permissionDecision": "deny", "reason": "..."} - Block with explanation
 """
 import json
 import sys
+import re
 from pathlib import Path
 
 # State file is in .claude/ directory (sibling to hooks/)
 STATE_FILE = Path(__file__).parent.parent / "api-dev-state.json"
+TEST_FIXTURES_DIR = Path(__file__).parent.parent / "test-fixtures"
 
 # Minimum questions required for a valid interview
 MIN_QUESTIONS = 5  # Increased - need comprehensive interview
