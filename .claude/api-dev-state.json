@@ -4,8 +4,8 @@
   "endpoint": null,
   "library": null,
   "session_id": null,
-  "turn_count": 7,
-  "last_turn_timestamp": "2025-12-26T05:14:17.841752",
+  "turn_count": 9,
+  "last_turn_timestamp": "2025-12-26T06:24:07.924179",
   "research_queries": [
     {
       "timestamp": "2025-12-26T05:13:43.918378",
@@ -162,7 +162,11 @@
       "status": "not_started",
       "clarified": null,
       "search_variations": [],
-      "description": "Pre-research disambiguation to clarify ambiguous requests"
+      "description": "Pre-research disambiguation to clarify ambiguous requests",
+      "user_question_asked": true,
+      "last_user_response": "{}",
+      "last_question_timestamp": "2025-12-26T06:24:07.924207",
+      "last_question_type": "unknown"
     },
     "scope": {
       "status": "not_started",
@@ -204,12 +208,26 @@
       "source_count": 4
     },
     "interview": {
-      "status": "not_started",
-      "questions": [],
-      "user_question_count": 0,
+      "status": "in_progress",
+      "questions": [
+        {
+          "question": "",
+          "timestamp": "2025-12-26T06:24:07.924198",
+          "tool_used": true,
+          "has_options": false,
+          "options_count": 0,
+          "options": [],
+          "user_response": "{}",
+          "selected_value": null
+        }
+      ],
+      "user_question_count": 1,
       "structured_question_count": 0,
       "decisions": {},
-      "description": "Structured interview about requirements (generated FROM research)"
+      "description": "Structured interview about requirements (generated FROM research)",
+      "started_at": "2025-12-26T06:24:07.924202",
+      "last_activity": "2025-12-26T06:24:07.924203",
+      "user_question_asked": true
     },
     "research_deep": {
       "status": "not_started",
