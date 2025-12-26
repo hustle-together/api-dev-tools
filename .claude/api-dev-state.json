@@ -155,6 +155,28 @@
         "confidence": "critical"
       },
       "injected": true
+    },
+    {
+      "timestamp": "2025-12-26T06:36:16.976212",
+      "prompt_preview": "<ide_opened_file>The user opened the file /home/dev/repos/api-dev-tools/.claude/hooks/enforce-toc-en...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "how do",
+          "what are",
+          "does it work now? can you run me through at a high",
+          "api",
+          "table",
+          "enforce-toc-enumeration.py"
+        ],
+        "patterns_matched": [
+          "always_research",
+          "question_pattern",
+          "technical_term"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
     }
   ],
   "phases": {
