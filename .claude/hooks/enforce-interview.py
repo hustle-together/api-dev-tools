@@ -9,6 +9,9 @@ their answers, rather than self-answering the interview.
 v1.8.0 MAJOR UPDATE: Now requires STRUCTURED questions with multiple-choice
 options derived from research phase findings.
 
+v3.12.0 UPDATE: Added --test-mode support for autonomous testing with
+mock interview answers from fixture files.
+
 It checks:
   1. Research phase is complete (questions must be based on research)
   2. Interview status is "complete"
@@ -19,16 +22,23 @@ It checks:
 The goal: Questions like Claude Code shows - with numbered options and
 "Type something" at the end, all based on research findings.
 
+Test Mode:
+  When --test-mode is active, interview answers are loaded from fixture files
+  in .claude/test-fixtures/{endpoint}.json. This enables fully autonomous
+  workflow testing without user interaction.
+
 Returns:
   - {"permissionDecision": "allow"} - Let the tool run
   - {"permissionDecision": "deny", "reason": "..."} - Block with explanation
 """
 import json
 import sys
+import re
 from pathlib import Path
 
 # State file is in .claude/ directory (sibling to hooks/)
 STATE_FILE = Path(__file__).parent.parent / "api-dev-state.json"
+TEST_FIXTURES_DIR = Path(__file__).parent.parent / "test-fixtures"
 
 # Minimum questions required for a valid interview
 MIN_QUESTIONS = 5  # Increased - need comprehensive interview
@@ -51,6 +61,116 @@ SELF_ANSWER_INDICATORS = [
     "default to",
     "usually",
 ]
+
+
+def load_test_fixture(endpoint: str) -> dict | None:
+    """Load test fixture for the given endpoint if it exists."""
+    fixture_file = TEST_FIXTURES_DIR / f"{endpoint}.json"
+    if fixture_file.exists():
+        try:
+            return json.loads(fixture_file.read_text())
+        except json.JSONDecodeError:
+            return None
+    return None
+
+
+def should_skip_interview(fixture: dict) -> bool:
+    """Check if fixture specifies to skip the interview phase entirely."""
+    skip_phases = fixture.get("skip_phases", {})
+    return skip_phases.get("interview", False)
+
+
+def inject_explicit_decisions(state: dict, fixture: dict) -> dict:
+    """Inject explicit decisions directly into state, skipping interview phase.
+
+    This is the v2.0 approach: Instead of trying to pattern-match questions
+    (which is impossible since questions come from dynamic research findings),
+    we provide EXPLICIT decisions that are injected as if the user had answered.
+
+    The fixture format is:
+    {
+        "explicit_decisions": {
+            "provider": {"value": "OpenWeatherMap", "rationale": "..."},
+            "authentication": {"value": "API key in header", "rationale": "..."},
+            ...
+        }
+    }
+    """
+    explicit_decisions = fixture.get("explicit_decisions", {})
+
+    # Build decisions and synthetic questions from explicit decisions
+    decisions = {}
+    questions = []
+
+    for key, data in explicit_decisions.items():
+        value = data.get("value", "")
+        rationale = data.get("rationale", "")
+
+        decisions[key] = {
+            "question": f"What {key.replace('_', ' ')} should be used?",
+            "response": value,
+            "value": value,
+            "rationale": rationale,
+            "source": "test-fixture-explicit"
+        }
+
+        questions.append({
+            "question": f"What {key.replace('_', ' ')} should be used?",
+            "answer": value,
+            "tool_used": True,
+            "has_options": True,
+            "source": "test-fixture-explicit"
+        })
+
+    # Update interview phase in state - mark as complete
+    if "phases" not in state:
+        state["phases"] = {}
+
+    state["phases"]["interview"] = {
+        "status": "complete",
+        "description": "SKIPPED - Test mode with explicit decisions from fixture",
+        "questions": questions,
+        "decisions": decisions,
+        "user_question_count": len(questions),
+        "structured_question_count": len(questions),
+        "user_question_asked": True,
+        "user_completed": True,
+        "phase_exit_confirmed": True,
+        "test_mode": True,
+        "skipped_via_fixture": True
+    }
+
+    # Also inject mock research settings if present
+    mock_research = fixture.get("mock_research", {})
+    if mock_research.get("use_cached", False):
+        state["test_mode_research"] = {
+            "use_cached": True,
+            "cache_path": mock_research.get("cache_path", ""),
+            "fallback_to_live": mock_research.get("fallback_to_live", False)
+        }
+
+    # Save updated state
+    STATE_FILE.write_text(json.dumps(state, indent=2))
+
+    return state
+
+
+def is_test_mode(state: dict) -> bool:
+    """Check if test-mode is active from state or autonomous config."""
+    # Check state directly
+    if state.get("test_mode", False):
+        return True
+
+    # Check autonomous config
+    autonomous_config = Path(__file__).parent.parent / "autonomous-config.json"
+    if autonomous_config.exists():
+        try:
+            config = json.loads(autonomous_config.read_text())
+            return config.get("execution", {}).get("test_mode", False)
+        except json.JSONDecodeError:
+            pass
+
+    return False
 
 
 def main():
@@ -96,6 +216,37 @@ Run /api-create [endpoint-name] to begin the interview-driven workflow."""
     except json.JSONDecodeError:
         print(json.dumps({"permissionDecision": "allow"}))
         sys.exit(0)
+
+    # TEST MODE: Check if test-mode is active and inject explicit decisions
+    if is_test_mode(state):
+        endpoint = state.get("endpoint", state.get("active_endpoint", ""))
+        if endpoint:
+            fixture = load_test_fixture(endpoint)
+            if fixture:
+                # Check if fixture uses explicit_decisions (v2.0 format)
+                if fixture.get("explicit_decisions") and should_skip_interview(fixture):
+                    # v2.0: Skip interview entirely, inject decisions directly
+                    state = inject_explicit_decisions(state, fixture)
+                    decision_count = len(fixture.get("explicit_decisions", {}))
+                    print(json.dumps({
+                        "permissionDecision": "allow",
+                        "message": f"✅ TEST MODE: Interview SKIPPED. {decision_count} explicit decisions injected from '{endpoint}.json'"
+                    }))
+                    sys.exit(0)
+                else:
+                    # Legacy format or no skip - allow with warning
+                    print(json.dumps({
+                        "permissionDecision": "allow",
+                        "message": f"⚠️ TEST MODE: Fixture '{endpoint}.json' exists but doesn't use explicit_decisions format. Proceeding normally."
+                    }))
+                    sys.exit(0)
+            else:
+                # No fixture, but test mode - allow with warning
+                print(json.dumps({
+                    "permissionDecision": "allow",
+                    "message": f"⚠️ TEST MODE: No fixture found for '{endpoint}', proceeding without mock interview"
+                }))
+                sys.exit(0)
 
     phases = state.get("phases", {})
     research = phases.get("research_initial", {})
@@ -259,7 +410,57 @@ Reset the interview and ask with options based on research."""
             }))
             sys.exit(0)
 
-    # Check 6: FINAL USER CONFIRMATION - must confirm interview is complete
+    # Check 6: FEATURE DECISIONS - every discovered feature needs a decision
+    scope = state.get("scope", {})
+    discovered_features = scope.get("discovered_features", [])
+    feature_decisions = interview.get("feature_decisions", {})
+
+    if discovered_features and not feature_decisions:
+        # Features were discovered but no decisions made
+        feature_list = "\n".join([
+            f"     • {f.get('name') if isinstance(f, dict) else f}"
+            for f in discovered_features[:10]
+        ])
+        more_count = len(discovered_features) - 10 if len(discovered_features) > 10 else 0
+
+        print(json.dumps({
+            "permissionDecision": "deny",
+            "reason": f"""❌ BLOCKED: Feature decisions not recorded.
+
+Phase 1 discovered {len(discovered_features)} features, but no decisions made.
+
+═══════════════════════════════════════════════════════════
+⚠️  DECIDE FOR EACH DISCOVERED FEATURE
+═══════════════════════════════════════════════════════════
+
+Features requiring decision:
+{feature_list}
+{f"     ... and {more_count} more" if more_count > 0 else ""}
+
+For EACH feature, ask the user:
+  [x] Implement - Build in this workflow
+  [ ] Defer - Postpone to future version
+  [ ] Skip - Intentionally exclude
+
+Use AskUserQuestion with multiSelect for batch decisions:
+  question: "Which features should we implement NOW?"
+  options: [list of discovered features]
+  multiSelect: true
+
+Then ask about remaining: "Which to defer vs skip?"
+
+Store decisions in state:
+  phases.interview.feature_decisions = {{
+    "POST /auth/login": {{"decision": "implement", "reason": "..."}},
+    "POST /auth/refresh": {{"decision": "defer", "reason": "..."}},
+    ...
+  }}
+
+Coverage = (implement + defer + skip) / discovered = 100%"""
+        }))
+        sys.exit(0)
+
+    # Check 7: FINAL USER CONFIRMATION - must confirm interview is complete
     user_question_asked_final = interview.get("user_question_asked", False)
     user_completed = interview.get("user_completed", False)
     phase_exit_confirmed = interview.get("phase_exit_confirmed", False)

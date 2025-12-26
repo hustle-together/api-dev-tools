@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TodoWrite Integration - v3.12.0 with ntfy Notifications</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            padding: 40px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #BA0C2F;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+        }
+
+        .workflow-selector {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .workflow-btn {
+            padding: 15px 30px;
+            background: #2a2a40;
+            border: 2px solid #BA0C2F;
+            color: #BA0C2F;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .workflow-btn:hover {
+            background: #BA0C2F;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(186, 12, 47, 0.3);
+        }
+
+        .workflow-btn.active {
+            background: #BA0C2F;
+            color: white;
+        }
+
+        .demo-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .terminal {
+            background: #1e1e2e;
+            border: 2px solid #BA0C2F;
+            border-radius: 12px;
+            padding: 20px;
+            height: 600px;
+            overflow-y: auto;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+
+        .terminal-header {
+            color: #BA0C2F;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #BA0C2F;
+        }
+
+        .command-line {
+            color: #4CAF50;
+            margin: 10px 0;
+            font-size: 1.1em;
+        }
+
+        .output-line {
+            color: #888;
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+
+        .todo-panel {
+            background: #252538;
+            border: 2px solid #BA0C2F;
+            border-radius: 12px;
+            padding: 20px;
+            height: 600px;
+            overflow-y: auto;
+        }
+
+        .todo-header {
+            color: #BA0C2F;
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #BA0C2F;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .progress-bar-container {
+            background: #1e1e2e;
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #BA0C2F 0%, #ff1744 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .todo-item {
+            padding: 12px;
+            margin: 8px 0;
+            background: #1e1e2e;
+            border-left: 4px solid #555;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s;
+        }
+
+        .todo-item.pending {
+            border-left-color: #666;
+            opacity: 0.6;
+        }
+
+        .todo-item.in_progress {
+            border-left-color: #FFA500;
+            background: rgba(255, 165, 0, 0.1);
+            animation: pulse 2s infinite;
+        }
+
+        .todo-item.completed {
+            border-left-color: #4CAF50;
+            opacity: 0.7;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .todo-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #888;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .todo-item.completed .todo-checkbox {
+            background: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .todo-checkbox::after {
+            content: '✓';
+            color: white;
+            font-weight: bold;
+            display: none;
+        }
+
+        .todo-item.completed .todo-checkbox::after {
+            display: block;
+        }
+
+        .todo-item.in_progress .todo-checkbox {
+            border-color: #FFA500;
+            animation: spin 2s linear infinite;
+        }
+
+        .todo-item.in_progress .todo-checkbox::after {
+            content: '⊙';
+            display: block;
+            color: #FFA500;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .todo-content {
+            flex: 1;
+        }
+
+        .todo-title {
+            color: #e0e0e0;
+            font-size: 1em;
+            margin-bottom: 4px;
+        }
+
+        .todo-description {
+            color: #888;
+            font-size: 0.85em;
+        }
+
+        .stats-panel {
+            background: #1e1e2e;
+            border: 2px solid #BA0C2F;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 10px;
+            background: #252538;
+            border-radius: 6px;
+        }
+
+        .stat-label {
+            color: #888;
+        }
+
+        .stat-value {
+            color: #BA0C2F;
+            font-weight: bold;
+        }
+
+        .workflow-info {
+            background: #252538;
+            border: 2px solid #555;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-title {
+            color: #BA0C2F;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .info-text {
+            color: #888;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .control-btn {
+            padding: 12px 24px;
+            background: #2a2a40;
+            border: 2px solid #4CAF50;
+            color: #4CAF50;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .control-btn:hover {
+            background: #4CAF50;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .control-btn.reset {
+            border-color: #f44336;
+            color: #f44336;
+        }
+
+        .control-btn.reset:hover {
+            background: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 TodoWrite Integration Demo</h1>
+        <p class="subtitle">v3.12.0: Budget Tracking + ntfy Push Notifications + Resume Commands</p>
+
+        <div class="workflow-selector">
+            <button class="workflow-btn active" data-workflow="api-create">
+                📡 API Create
+            </button>
+            <button class="workflow-btn" data-workflow="ui-create">
+                🎨 UI Component
+            </button>
+            <button class="workflow-btn" data-workflow="ui-create-page">
+                📄 UI Page
+            </button>
+            <button class="workflow-btn" data-workflow="combine">
+                🔗 Combine APIs
+            </button>
+        </div>
+
+        <div class="workflow-info" id="workflow-info"></div>
+
+        <div class="demo-area">
+            <div class="terminal">
+                <div class="terminal-header">Terminal Output</div>
+                <div id="terminal-content"></div>
+            </div>
+
+            <div class="todo-panel">
+                <div class="todo-header">
+                    <span>Task Progress</span>
+                    <span id="progress-text">0 / 0</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                <div id="todo-content"></div>
+                <div class="stats-panel">
+                    <div class="stat-row">
+                        <span class="stat-label">Workflow:</span>
+                        <span class="stat-value" id="stat-workflow">-</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Total Phases:</span>
+                        <span class="stat-value" id="stat-total">-</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Completed:</span>
+                        <span class="stat-value" id="stat-completed">-</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Current Phase:</span>
+                        <span class="stat-value" id="stat-current">-</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Est. Time Remaining:</span>
+                        <span class="stat-value" id="stat-time">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="control-btn" onclick="startWorkflow()">▶ Start Workflow</button>
+            <button class="control-btn" onclick="pauseWorkflow()">⏸ Pause</button>
+            <button class="control-btn reset" onclick="resetWorkflow()">↻ Reset</button>
+        </div>
+    </div>
+
+    <script>
+        const workflows = {
+            'api-create': {
+                name: 'API Create',
+                description: '13-phase TDD workflow for building REST APIs with research, interviews, and continuous verification',
+                phases: [
+                    { id: 1, title: 'Disambiguation', description: 'Clarify ambiguous API terms' },
+                    { id: 2, title: 'Scope Confirmation', description: 'Verify endpoint requirements' },
+                    { id: 3, title: 'Initial Research', description: 'Context7 + WebSearch for docs' },
+                    { id: 4, title: 'Interview', description: 'Questions FROM research findings' },
+                    { id: 5, title: 'Deep Research', description: 'Adaptive propose-approve flow' },
+                    { id: 6, title: 'Schema Design', description: 'Create Zod request/response schemas' },
+                    { id: 7, title: 'Environment Check', description: 'Verify API keys exist' },
+                    { id: 8, title: 'TDD Red', description: 'Write failing tests first' },
+                    { id: 9, title: 'TDD Green', description: 'Minimal implementation to pass' },
+                    { id: 10, title: 'Verify', description: 'Re-research docs, find gaps' },
+                    { id: 11, title: 'TDD Refactor', description: 'Clean up code while tests pass' },
+                    { id: 12, title: 'Documentation', description: 'Update manifests and cache' },
+                    { id: 13, title: 'Completion', description: 'Final verification and commit' }
+                ]
+            },
+            'ui-create': {
+                name: 'UI Component',
+                description: 'Component development with Storybook, brand guide validation, and accessibility audit',
+                phases: [
+                    { id: 1, title: 'Component Scope', description: 'Define component type and purpose' },
+                    { id: 2, title: 'Brand Guide Check', description: 'Load and validate brand colors' },
+                    { id: 3, title: 'Research', description: 'Find similar components and patterns' },
+                    { id: 4, title: 'Props Interview', description: 'Define component API and variants' },
+                    { id: 5, title: 'ShadCN Detection', description: 'Check for existing UI primitives' },
+                    { id: 6, title: 'Component Schema', description: 'TypeScript interfaces and props' },
+                    { id: 7, title: 'TDD Red', description: 'Write component tests' },
+                    { id: 8, title: 'TDD Green', description: 'Implement component' },
+                    { id: 9, title: 'Storybook Stories', description: 'Create interactive examples' },
+                    { id: 10, title: 'Responsive Check', description: 'Desktop/tablet/mobile validation' },
+                    { id: 11, title: 'Accessibility Audit', description: 'WCAG 2.1 AA/AAA compliance' },
+                    { id: 12, title: 'Brand Validation', description: 'Verify color usage' },
+                    { id: 13, title: 'UI Showcase Update', description: 'Add to component gallery' }
+                ]
+            },
+            'ui-create-page': {
+                name: 'UI Page',
+                description: 'Next.js page with Playwright E2E tests, data schema validation, and SEO optimization',
+                phases: [
+                    { id: 1, title: 'Page Type Selection', description: 'Landing/dashboard/form/list/detail/auth' },
+                    { id: 2, title: 'Route Planning', description: 'Define URL structure and params' },
+                    { id: 3, title: 'API Route Check', description: 'Verify required APIs exist' },
+                    { id: 4, title: 'Data Schema', description: 'Define API response types' },
+                    { id: 5, title: 'Component Research', description: 'Find reusable UI components' },
+                    { id: 6, title: 'Layout Design', description: 'Plan component composition' },
+                    { id: 7, title: 'TDD Red', description: 'Write Playwright E2E tests' },
+                    { id: 8, title: 'TDD Green', description: 'Implement page logic' },
+                    { id: 9, title: 'Data Integration', description: 'Connect to API routes' },
+                    { id: 10, title: 'SEO Metadata', description: 'Add title, description, OG tags' },
+                    { id: 11, title: 'Accessibility Audit', description: 'Keyboard nav, screen readers' },
+                    { id: 12, title: 'E2E Validation', description: 'Run 15+ test scenarios' },
+                    { id: 13, title: 'Registry Update', description: 'Add page to showcase' }
+                ]
+            },
+            'combine': {
+                name: 'Combine APIs',
+                description: 'API orchestration with sequential/parallel/conditional flow patterns',
+                phases: [
+                    { id: 1, title: 'API Selection', description: 'Choose 2+ source APIs' },
+                    { id: 2, title: 'Registry Verification', description: 'Confirm all APIs exist' },
+                    { id: 3, title: 'Flow Type', description: 'Sequential/parallel/conditional' },
+                    { id: 4, title: 'Data Mapping', description: 'Input → Transform → Output' },
+                    { id: 5, title: 'Error Strategy', description: 'Fail-fast/fallback/aggregate' },
+                    { id: 6, title: 'Schema Design', description: 'Combined request/response schemas' },
+                    { id: 7, title: 'TDD Red', description: 'Write orchestration tests' },
+                    { id: 8, title: 'TDD Green', description: 'Implement flow logic' },
+                    { id: 9, title: 'Curl Examples', description: 'Generate usage examples' },
+                    { id: 10, title: 'Performance Test', description: 'Measure latency and throughput' },
+                    { id: 11, title: 'Documentation', description: 'Update API manifest' },
+                    { id: 12, title: 'Showcase Update', description: 'Add to API gallery' }
+                ]
+            }
+        };
+
+        let currentWorkflow = 'api-create';
+        let currentPhaseIndex = -1;
+        let isPaused = false;
+        let animationInterval = null;
+
+        function updateWorkflowInfo() {
+            const workflow = workflows[currentWorkflow];
+            const infoDiv = document.getElementById('workflow-info');
+            infoDiv.innerHTML = `
+                <div class="info-title">${workflow.name} Workflow</div>
+                <div class="info-text">${workflow.description}</div>
+            `;
+
+            document.getElementById('stat-workflow').textContent = workflow.name;
+            document.getElementById('stat-total').textContent = workflow.phases.length;
+        }
+
+        function renderTodos() {
+            const workflow = workflows[currentWorkflow];
+            const todoContent = document.getElementById('todo-content');
+
+            todoContent.innerHTML = workflow.phases.map((phase, index) => {
+                let status = 'pending';
+                if (index < currentPhaseIndex) status = 'completed';
+                if (index === currentPhaseIndex) status = 'in_progress';
+
+                return `
+                    <div class="todo-item ${status}">
+                        <div class="todo-checkbox"></div>
+                        <div class="todo-content">
+                            <div class="todo-title">Phase ${phase.id}: ${phase.title}</div>
+                            <div class="todo-description">${phase.description}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const workflow = workflows[currentWorkflow];
+            const total = workflow.phases.length;
+            const completed = Math.max(0, currentPhaseIndex);
+            const percentage = (completed / total) * 100;
+
+            document.getElementById('progress-bar').style.width = `${percentage}%`;
+            document.getElementById('progress-text').textContent = `${completed} / ${total}`;
+            document.getElementById('stat-completed').textContent = completed;
+
+            if (currentPhaseIndex >= 0 && currentPhaseIndex < total) {
+                document.getElementById('stat-current').textContent = workflow.phases[currentPhaseIndex].title;
+                const remaining = total - currentPhaseIndex;
+                document.getElementById('stat-time').textContent = `~${remaining * 2} min`;
+            } else {
+                document.getElementById('stat-current').textContent = '-';
+                document.getElementById('stat-time').textContent = '-';
+            }
+        }
+
+        function addTerminalLine(text, isCommand = false) {
+            const terminal = document.getElementById('terminal-content');
+            const line = document.createElement('div');
+            line.className = isCommand ? 'command-line' : 'output-line';
+            line.textContent = text;
+            terminal.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function startWorkflow() {
+            if (animationInterval) return;
+
+            if (currentPhaseIndex === -1) {
+                const workflow = workflows[currentWorkflow];
+                addTerminalLine(`/hustle-${currentWorkflow} my-${currentWorkflow}`, true);
+                addTerminalLine(`Starting ${workflow.name} workflow...`);
+                addTerminalLine(`Total phases: ${workflow.phases.length}`);
+                addTerminalLine('');
+            }
+
+            animationInterval = setInterval(() => {
+                if (isPaused) return;
+
+                const workflow = workflows[currentWorkflow];
+                currentPhaseIndex++;
+
+                if (currentPhaseIndex >= workflow.phases.length) {
+                    clearInterval(animationInterval);
+                    animationInterval = null;
+                    addTerminalLine('');
+                    addTerminalLine('✅ Workflow complete!', true);
+                    addTerminalLine(`All ${workflow.phases.length} phases completed successfully.`);
+                    return;
+                }
+
+                const phase = workflow.phases[currentPhaseIndex];
+                addTerminalLine(`⊙ Phase ${phase.id}: ${phase.title}`, true);
+                addTerminalLine(`   ${phase.description}`);
+
+                renderTodos();
+            }, 1500);
+        }
+
+        function pauseWorkflow() {
+            isPaused = !isPaused;
+            if (isPaused) {
+                addTerminalLine('⏸ Workflow paused', true);
+            } else {
+                addTerminalLine('▶ Workflow resumed', true);
+            }
+        }
+
+        function resetWorkflow() {
+            if (animationInterval) {
+                clearInterval(animationInterval);
+                animationInterval = null;
+            }
+            currentPhaseIndex = -1;
+            isPaused = false;
+            document.getElementById('terminal-content').innerHTML = '';
+            renderTodos();
+            addTerminalLine('Workflow reset. Click Start to begin.', true);
+        }
+
+        // Workflow selector
+        document.querySelectorAll('.workflow-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.workflow-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentWorkflow = btn.dataset.workflow;
+                resetWorkflow();
+                updateWorkflowInfo();
+                renderTodos();
+            });
+        });
+
+        // Initialize
+        updateWorkflowInfo();
+        renderTodos();
+        addTerminalLine('Ready to start workflow. Click "Start Workflow" to begin.', true);
+        addTerminalLine('Select a workflow mode above to see different phase flows.');
+    </script>
+</body>
+</html>

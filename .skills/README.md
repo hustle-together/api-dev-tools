@@ -1,6 +1,6 @@
 # API Development Tools - Agent Skills
 
-**Version:** 3.11.0
+**Version:** 3.12.0
 **Standard:** [Agent Skills Open Format](https://agentskills.io)
 **Platform:** Cross-platform (Claude Code, VS Code, Cursor, ChatGPT, GitHub Copilot)
 
@@ -28,9 +28,9 @@ npx @hustle-together/api-dev-tools --scope=project
 5. Create `.claude/api-dev-state.json` (see template below)
 6. Create `.claude/research/` directory
 
-## 📚 Available Skills (23 Total)
+## 📚 Available Skills (33 Total)
 
-### API Development (6 skills)
+### API Development (8 skills)
 
 | Skill | Usage | Description |
 |-------|-------|-------------|
@@ -40,6 +40,8 @@ npx @hustle-together/api-dev-tools --scope=project
 | **api-verify** | `/api-verify [endpoint]` | Re-research after tests pass to catch implementation gaps |
 | **api-env** | `/api-env [endpoint]` | Check API keys and environment variables |
 | **api-status** | `/api-status [endpoint]` | Track progress through 13 phases |
+| **api-continue** | `/api-continue [endpoint]` | Resume an interrupted workflow from last completed phase |
+| **api-sessions** | `/api-sessions [options]` | Browse, search, and export saved session history |
 
 ### TDD Workflow (4 skills)
 
@@ -68,7 +70,15 @@ npx @hustle-together/api-dev-tools --scope=project
 | **worktree-add** | `/worktree-add [branch/issue]` | Add git worktree from branch or issue |
 | **worktree-cleanup** | `/worktree-cleanup` | Clean up merged worktrees |
 
-### Workflow Utilities (5 skills)
+### UI Development (3 skills)
+
+| Skill | Usage | Description |
+|-------|-------|-------------|
+| **hustle-ui-create** | `/hustle-ui-create [component]` | 13-phase component workflow with Storybook + Vitest |
+| **hustle-ui-create-page** | `/hustle-ui-create-page [page]` | 13-phase page workflow with Playwright E2E |
+| **hustle-combine** | `/hustle-combine` | Orchestrate 2+ existing APIs from registry |
+
+### Workflow Utilities (10 skills)
 
 | Skill | Usage | Description |
 |-------|-------|-------------|
@@ -77,6 +87,11 @@ npx @hustle-together/api-dev-tools --scope=project
 | **beepboop** | `/beepboop` | Transparent AI attribution markers |
 | **summarize** | `/summarize` | Conversation progress summary |
 | **add-command** | `/add-command` | Guide for creating new skills |
+| **stats** | `/stats` | Track workflow statistics and metrics |
+| **rename** | `/rename [old] [new]` | Rename files/variables across codebase |
+| **skill-finder** | `/skill-finder [query]` | Find relevant skills for a task |
+| **test-toolkit** | `/test-toolkit` | Validate hooks, skills, and templates |
+| **update-todos** | `/update-todos` | Update TodoWrite list from context |
 
 ## 🏗️ Architecture
 
@@ -152,7 +167,7 @@ Documentation cached in `.claude/research/` with 7-day freshness:
 
 ### Optional but Recommended
 
-- **Enforcement Hooks**: 18 Python scripts that enforce workflow rules
+- **Enforcement Hooks**: 42 Python scripts that enforce workflow rules
 - **Settings.json**: Hook registration for lifecycle events
 
 ## 🔒 Enforcement Hooks (Optional)
@@ -282,8 +297,8 @@ See [CONTRIBUTING.md](../../CONTRIBUTING.md) for guidelines
 
 - [Agent Skills Specification](https://agentskills.io/specification)
 - [Claude Code Documentation](https://code.claude.com/docs)
-- [Enhancement Roadmap](../../ENHANCEMENT_ROADMAP_v3.11.0.md)
-- [Skills Migration Checklist](../../SKILLS_MIGRATION_CHECKLIST.md)
+- [Enhancement Roadmap](../../docs/planning/ENHANCEMENT_ROADMAP_v3.11.0.md)
+- [Full Documentation](../../docs/FULL_DOCUMENTATION.md)
 
 ---
 

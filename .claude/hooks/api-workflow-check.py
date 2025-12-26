@@ -14,6 +14,9 @@ Gap Fixes Applied:
 Returns:
   - {"decision": "approve"} - Allow stopping
   - {"decision": "block", "reason": "..."} - Prevent stopping with explanation
+
+
+Part of api-dev-tools v3.12.0 - includes ntfy notifications for autonomous mode.
 """
 import json
 import sys
@@ -22,9 +25,63 @@ from pathlib import Path
 
 # State file is in .claude/ directory (sibling to hooks/)
 STATE_FILE = Path(__file__).parent.parent / "api-dev-state.json"
+CONFIG_FILE = Path(__file__).parent.parent / "autonomous-config.json"
+
+
+def load_config():
+    """Load autonomous config if it exists."""
+    if CONFIG_FILE.exists():
+        with open(CONFIG_FILE) as f:
+            return json.load(f)
+    return None
+
+
+def send_notification(topic, title, message, priority='default'):
+    """Send ntfy notification if curl is available."""
+    try:
+        subprocess.run([
+            'curl', '-s',
+            '-H', f'Title: {title}',
+            '-H', f'Priority: {priority}',
+            '-d', message,
+            f'ntfy.sh/{topic}'
+        ], capture_output=True, timeout=5)
+    except:
+        pass  # Notifications are best-effort
+
+
+def notify_user_input_required(phase_name, reason, endpoint):
+    """Send ntfy notification when user input is required."""
+    config = load_config()
+    if not config:
+        return
+
+    notifications = config.get('notifications', {})
+    if not notifications.get('enabled', False):
+        return
+
+    if 'user_input_required' not in notifications.get('notify_on', []):
+        return
+
+    topic = notifications.get('ntfy_topic', 'hustleserver')
+
+    # Get session ID for resume command
+    session_id = endpoint or 'unknown'
+    if STATE_FILE.exists():
+        try:
+            state = json.loads(STATE_FILE.read_text())
+            session_id = state.get('session_id', endpoint or 'unknown')
+        except:
+            pass
+
+    title = f"Workflow - {phase_name}"
+    message = f"{reason}\n\nResume: claude --resume {session_id}"
+
+    send_notification(topic, title, message, priority='high')
 
 # Phases that MUST be complete before stopping
 REQUIRED_PHASES = [
+    ("toc_enumeration", "Feature enumeration (list ALL features first)"),
     ("research_initial", "Initial research (Context7/WebSearch)"),
     ("interview", "User interview"),
     ("tdd_red", "TDD Red phase (failing tests written)"),
@@ -39,6 +96,11 @@ RECOMMENDED_PHASES = [
     ("tdd_refactor", "TDD Refactor phase"),
     ("documentation", "Documentation updates"),
 ]
+
+# Minimum scope coverage required (v3.12.0)
+# Coverage = (implemented + deferred) / discovered
+# Must be 100% - every discovered feature must be explicitly decided
+MIN_SCOPE_COVERAGE_PERCENT = 100  # All features must be accounted for
 
 
 def get_git_modified_files() -> list[str]:
@@ -106,6 +168,104 @@ def check_interview_implementation_match(state: dict) -> list[str]:
     return issues
 
 
+def check_scope_coverage(state: dict) -> tuple[list[str], bool]:
+    """Check if all discovered features have been decided.
+
+    v3.12.0: Enforces that user-confirmed scope is fully decided.
+    v3.12.1: Added support for 'skipped' features (intentionally excluded).
+
+    Coverage = (implemented + deferred + skipped) / discovered = 100%
+    Every feature must have an explicit decision.
+
+    Returns (issues_list, should_block).
+    """
+    issues = []
+    should_block = False
+
+    # Get scope data - check both old and new state formats
+    scope = state.get("scope", {})
+    if not scope and "endpoints" in state:
+        active = state.get("active_endpoint")
+        if active and active in state["endpoints"]:
+            scope = state["endpoints"][active].get("scope", {})
+
+    if not scope:
+        # No scope tracking - can't enforce
+        return [], False
+
+    discovered = scope.get("discovered_features", [])
+    implemented = scope.get("implemented_features", [])
+    deferred = scope.get("deferred_features", [])
+    skipped = scope.get("skipped_features", [])
+    coverage_percent = scope.get("coverage_percent", 0)
+
+    # If no features discovered, skip this check
+    if not discovered:
+        return [], False
+
+    # Get feature names (handle both dict and string formats)
+    def get_name(f):
+        return f.get("name") if isinstance(f, dict) else f
+
+    discovered_names = set(get_name(f) for f in discovered)
+    implemented_names = set(implemented)
+    deferred_names = set(get_name(f) for f in deferred)
+    skipped_names = set(get_name(f) for f in skipped)
+
+    # Calculate what's missing (not decided)
+    accounted_for = implemented_names | deferred_names | skipped_names
+    missing = discovered_names - accounted_for
+
+    # Build report
+    total = len(discovered_names)
+    impl_count = len(implemented_names)
+    defer_count = len(deferred_names)
+    skip_count = len(skipped_names)
+    missing_count = len(missing)
+
+    # Recalculate coverage
+    if total > 0:
+        actual_coverage = int(((impl_count + defer_count + skip_count) / total) * 100)
+    else:
+        actual_coverage = 100
+
+    if missing_count > 0:
+        issues.append(f"\n❌ SCOPE COVERAGE INCOMPLETE ({actual_coverage}%)")
+        issues.append(f"   Discovered: {total} features")
+        issues.append(f"   Implemented: {impl_count}")
+        issues.append(f"   Deferred: {defer_count}")
+        issues.append(f"   Skipped: {skip_count}")
+        issues.append(f"   Undecided: {missing_count}")
+        issues.append("")
+        issues.append("   Features WITHOUT explicit decision:")
+        for feat in list(missing)[:10]:  # Show up to 10
+            issues.append(f"     • {feat}")
+        if missing_count > 10:
+            issues.append(f"     ... and {missing_count - 10} more")
+        issues.append("")
+        issues.append("   To proceed, decide for EACH feature:")
+        issues.append("     • Implement: Build in this workflow")
+        issues.append("     • Defer: Postpone to future version")
+        issues.append("     • Skip: Intentionally exclude")
+
+        # Block if coverage is below threshold
+        if actual_coverage < MIN_SCOPE_COVERAGE_PERCENT:
+            should_block = True
+            issues.append(f"\n   ⛔ Coverage {actual_coverage}% is below required {MIN_SCOPE_COVERAGE_PERCENT}%")
+
+    elif actual_coverage == 100 and (defer_count > 0 or skip_count > 0):
+        # All accounted for - info only
+        issues.append(f"\n✅ SCOPE COVERAGE: 100%")
+        issues.append(f"   Implemented: {impl_count}")
+        if defer_count > 0:
+            issues.append(f"   Deferred: {defer_count} (future version)")
+        if skip_count > 0:
+            issues.append(f"   Skipped: {skip_count} (intentionally excluded)")
+        # Don't block - all features have explicit decisions
+
+    return issues, should_block
+
+
 def main():
     # If no state file, we're not in an API workflow - allow stop
     if not STATE_FILE.exists():
@@ -120,9 +280,19 @@ def main():
         print(json.dumps({"decision": "approve"}))
         sys.exit(0)
 
+    # FIX: Check if an API workflow is explicitly active
+    # This prevents blocking when user is just doing general research/questions
+    workflow_active = state.get("workflow_active", False)
+    endpoint = state.get("endpoint")
+
+    if not workflow_active and not endpoint:
+        # No active API workflow - allow stop without checking phases
+        print(json.dumps({"decision": "approve"}))
+        sys.exit(0)
+
     phases = state.get("phases", {})
 
-    # Check if workflow was even started
+    # Check if workflow was even started (legacy check for backward compatibility)
     research = phases.get("research_initial", {})
     if research.get("status") == "not_started":
         # Workflow not started, allow stop
@@ -179,8 +349,28 @@ def main():
         all_issues.append("\n⚠️ Gap 4: Implementation verification:")
         all_issues.extend([f"  {i}" for i in match_issues])
 
-    # Block if required phases incomplete
-    if incomplete_required:
+    # v3.12.0: Check scope coverage - all discovered features must be implemented or deferred
+    scope_issues, scope_should_block = check_scope_coverage(state)
+    if scope_issues:
+        all_issues.extend(scope_issues)
+
+    # Block if required phases incomplete OR scope coverage insufficient
+    if incomplete_required or scope_should_block:
+        # Build notification message
+        notify_reason = f"Workflow for '{endpoint}' blocked."
+        if incomplete_required:
+            notify_reason += " Incomplete required phases."
+        if scope_should_block:
+            notify_reason += " Scope coverage below 80%."
+        notify_reason += " User action needed."
+
+        # Send ntfy notification for autonomous mode
+        notify_user_input_required(
+            "Workflow Blocked",
+            notify_reason,
+            endpoint
+        )
+
         all_issues.append("\n\nTo continue:")
         all_issues.append("  1. Complete required phases above")
         all_issues.append("  2. Use /api-status to see detailed progress")

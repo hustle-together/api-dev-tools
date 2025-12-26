@@ -1,23 +1,22 @@
 {
   "name": "@hustle-together/api-dev-tools",
-  "version": "3.11.0",
-  "description": "Interview-driven, research-first API development toolkit with 13-phase TDD workflow, enforcement hooks, and 23 Agent Skills for cross-platform AI agents",
+  "version": "3.12.1",
+  "description": "Interview-driven, research-first API development toolkit with 13-phase TDD workflow, autonomous mode, and 33 Agent Skills for cross-platform AI agents",
   "main": "bin/cli.js",
   "bin": {
     "api-dev-tools": "./bin/cli.js"
   },
   "files": [
     "bin/",
-    "commands/",
     "hooks/",
     "scripts/",
     "templates/",
     ".claude/",
     ".claude-plugin/",
     ".skills/",
+    "docs/",
     "README.md",
-    "LICENSE",
-    "CHANGELOG.md"
+    "LICENSE"
   ],
   "scripts": {
     "test": "node bin/cli.js --scope=project"
@@ -38,7 +37,11 @@
     "documentation",
     "workflow",
     "automation",
-    "cross-platform"
+    "cross-platform",
+    "autonomous",
+    "yolo-mode",
+    "greptile",
+    "graphite"
   ],
   "author": "Hustle Together",
   "license": "MIT",

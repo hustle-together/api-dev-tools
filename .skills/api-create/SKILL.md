@@ -1,17 +1,17 @@
 ---
 name: api-create
-description: Complete API development workflow using interview-driven, research-first, test-first methodology with continuous verification loops. Use when creating new V2 API endpoints. Includes 13 phases from disambiguation through completion with loop-back architecture. Keywords: api, endpoint, tdd, research, interview, verification, workflow, testing, documentation
+description: Complete API development workflow using interview-driven, research-first, test-first methodology with continuous verification loops. Use when creating new V2 API endpoints. Includes 14 phases from disambiguation through AI code review with loop-back architecture. Features async parallel research, multi-strategy documentation discovery (Context7 + WebSearch + Skills), real-time TodoWrite progress tracking, and cost/time metrics. Keywords: api, endpoint, tdd, research, interview, verification, workflow, testing, documentation, async, parallel
 license: MIT
 compatibility: Requires Claude Code with MCP servers (Context7 for docs, GitHub for PRs), Python 3.9+ for enforcement hooks, pnpm 10.11.0+ for package management, Vitest for testing
 metadata:
-  version: "3.0.0"
+  version: "3.11.0"
   category: "development"
-  tags: ["api", "tdd", "workflow", "research", "interview", "verification", "testing"]
+  tags: ["api", "tdd", "workflow", "research", "interview", "verification", "testing", "async", "parallel", "todowrite"]
   author: "Hustle Together"
-allowed-tools: WebSearch WebFetch mcp__context7 mcp__github AskUserQuestion Read Write Edit Bash TodoWrite
+allowed-tools: WebSearch WebFetch mcp__context7 mcp__github AskUserQuestion Read Write Edit Bash TodoWrite Task
 ---
 
-# API Create - Comprehensive API Development Workflow v3.0
+# API Create - Comprehensive API Development Workflow v3.11.0
 
 **Usage:** `/api-create [endpoint-name]`
 
@@ -107,8 +107,150 @@ Both conditions must be true for the flag to be set.
 3. **Adaptive Research** - Propose searches based on context, not shotgun approach
 4. **Self-Documenting** - State file captures everything for re-grounding
 5. **Verify After Green** - Re-research docs to catch memory-based implementation errors
+6. **Real-Time Progress** - TodoWrite updates at every phase for visual tracking
+7. **Parallel Research** - Background agents for 3x faster documentation discovery
+8. **Multi-Strategy Coverage** - Context7 + WebSearch + Skills for 95% parameter discovery
 
-## Complete Phase Flow
+---
+
+## 🆕 v3.11.0 ENHANCEMENTS
+
+### TodoWrite Integration (Real-Time Progress)
+
+**At the START of this workflow**, initialize TodoWrite with all 14 phases:
+
+```
+TodoWrite([
+  {content: "Phase 1: Disambiguation", status: "in_progress", activeForm: "Clarifying API terms"},
+  {content: "Phase 2: Scope", status: "pending", activeForm: "Confirming endpoint scope"},
+  {content: "Phase 3: Initial Research", status: "pending", activeForm: "Researching documentation"},
+  {content: "Phase 4: Interview", status: "pending", activeForm: "Interviewing for requirements"},
+  {content: "Phase 5: Deep Research", status: "pending", activeForm: "Deep diving into specifics"},
+  {content: "Phase 6: Schema", status: "pending", activeForm: "Creating Zod schema"},
+  {content: "Phase 7: Environment", status: "pending", activeForm: "Checking API keys"},
+  {content: "Phase 8: TDD Red", status: "pending", activeForm: "Writing failing tests"},
+  {content: "Phase 9: TDD Green", status: "pending", activeForm: "Implementing to pass tests"},
+  {content: "Phase 10: Verify", status: "pending", activeForm: "Re-researching and verifying"},
+  {content: "Phase 11: Refactor", status: "pending", activeForm: "Cleaning up code"},
+  {content: "Phase 12: Documentation", status: "pending", activeForm: "Updating documentation"},
+  {content: "Phase 13: Completion", status: "pending", activeForm: "Final verification"},
+  {content: "Phase 14: Code Review", status: "pending", activeForm: "AI code review"}
+])
+```
+
+**After completing each phase**, update TodoWrite:
+- Mark completed phase as `"completed"`
+- Mark next phase as `"in_progress"`
+
+**On loop-back** (e.g., Phase 10 fails → back to Phase 8):
+- Mark Phase 8+ as `"in_progress"` or `"pending"`
+- This shows the user why we're going backwards
+
+### Async Parallel Research (3x Faster)
+
+**In Phase 3**, spawn background agents for parallel research:
+
+```
+# Instead of sequential:
+1. Context7 query → wait → results
+2. WebSearch query → wait → results
+3. WebSearch query → wait → results
+Total: 60-90 seconds
+
+# Use parallel with Task tool:
+Task({
+  description: "Context7 research",
+  prompt: "Use Context7 to find [library] documentation. Return endpoints, parameters, auth methods.",
+  subagent_type: "general-purpose",
+  run_in_background: true
+})
+
+Task({
+  description: "WebSearch official docs",
+  prompt: "Search for '[library] official API documentation'. Return key endpoints and parameters.",
+  subagent_type: "general-purpose",
+  run_in_background: true
+})
+
+Task({
+  description: "WebSearch advanced features",
+  prompt: "Search for '[library] webhooks rate limits batch API'. Return advanced features.",
+  subagent_type: "general-purpose",
+  run_in_background: true
+})
+
+# All 3 run in parallel → Total: 20-30 seconds (3x faster!)
+```
+
+**User can monitor with** `/tasks` command to see background agent progress.
+
+### Multi-Strategy Research (95% Coverage)
+
+**Phase 3 now uses THREE strategies** for comprehensive documentation discovery:
+
+**Strategy 1: Context7 MCP (Official Docs) - 70% coverage**
+```
+1. mcp__context7__resolve-library-id: "[library-name]"
+2. mcp__context7__get-library-docs with topics:
+   - "api-endpoints"
+   - "authentication"
+   - "webhooks"
+   - "rate-limits"
+   - "error-handling"
+```
+
+**Strategy 2: WebSearch (Community Knowledge) - +15% = 85% coverage**
+```
+Search queries (run in parallel):
+1. "[Library] official API documentation"
+2. "[Library] webhooks setup guide"
+3. "[Library] batch processing endpoints"
+4. "[Library] rate limits pricing"
+5. "[Library] error codes reference"
+6. "[Library] advanced parameters GitHub"
+```
+
+**Strategy 3: Skill Discovery (Specialized Tools) - +10% = 95% coverage**
+```
+Use /skill-finder to discover API research skills:
+- api-documentation-scraper
+- openapi-parameter-discoverer
+- sdk-method-extractor
+```
+
+### Cost/Time Tracking
+
+**Throughout the workflow**, track:
+- Start time of each phase
+- Token usage per phase
+- Total session cost
+
+**At Phase 13/14**, display summary:
+```
+═══════════════════════════════════════════════════
+🎉 API Development Complete: [endpoint-name]
+═══════════════════════════════════════════════════
+
+📊 Session Metrics:
+   Duration:      35 minutes 24 seconds
+   Phases:        14/14 ✓
+   Async agents:  3 (parallelized research)
+
+💰 Cost Breakdown:
+   Research:      $0.32 (Context7 + WebSearch)
+   Implementation: $0.95 (Claude Sonnet)
+   Code Review:   $0.00 (CodeRabbit - open source)
+   ─────────────────────────────
+   TOTAL:         $1.27
+
+⚡ Efficiency:
+   Coverage:      95% (vs 60% in v3.0)
+   Time saved:    ~15 min (async research)
+```
+
+---
+
+## Complete Phase Flow (14 Phases)
 
 ```
 /api-create [endpoint]
@@ -433,7 +575,64 @@ Both conditions must be true for the flag to be set.
 │   • Docs updated                                          │
 │   • State file shows all phases complete                  │
 │                                                           │
-│ Run /commit to create semantic commit.                    │
+│ Proceed to AI Code Review before committing.              │
+└───────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌─ PHASE 14: AI CODE REVIEW (NEW in v3.11.0) ──────────────┐
+│                                                           │
+│ Run AI-powered code review using multiple tools:          │
+│                                                           │
+│ 1. **CodeRabbit** (if installed):                         │
+│    npx coderabbitai-mcp@latest                           │
+│    - 95%+ bug detection                                   │
+│    - Security vulnerability scanning                      │
+│    - Code smell detection                                 │
+│    - Performance optimization suggestions                 │
+│                                                           │
+│ 2. **Greptile** (if API key available):                   │
+│    mcp__greptile__search with code review query           │
+│    - Semantic code understanding                          │
+│    - Cross-file dependency analysis                       │
+│    - $0.15 per query (cost-effective)                     │
+│                                                           │
+│ 3. **Manual Claude Review** (fallback):                   │
+│    If no external tools, Claude performs:                 │
+│    - Security audit (OWASP Top 10)                        │
+│    - Error handling verification                          │
+│    - Edge case detection                                  │
+│    - Type safety check                                    │
+│                                                           │
+│ ⚠️ REQUIRED: Use AskUserQuestion tool:                    │
+│                                                           │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "Code review found [N] issues:            │
+│                  [summary]. How should I proceed?",       │
+│       header: "Review",                                   │
+│       options: [                                          │
+│         "Fix all issues",                                 │
+│         "Fix critical only (defer minor)",                │
+│         "Skip review (not recommended)",                  │
+│         "Show detailed findings"                          │
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│                                                           │
+│ WAIT for user response. Do NOT auto-proceed.              │
+│ ──── Loop back to Phase 8/9 if fixes needed ────          │
+│                                                           │
+│ 4. **Graphite** (for stacked PRs):                        │
+│    gt create --stack [endpoint-name]                      │
+│    - Stacked PRs for dependent changes                    │
+│    - Parallel team collaboration                          │
+│    - Incremental reviews without blocking                 │
+│                                                           │
+│ After review approved:                                    │
+│   • Display cost/time summary (via /stats)                │
+│   • Run /commit to create semantic commit                 │
+│   • Optionally run /pr to create pull request             │
+│   • For stacked changes: gt stack submit                  │
 └───────────────────────────────────────────────────────────┘
 ```
 
@@ -443,12 +642,25 @@ All phases are tracked in `.claude/api-dev-state.json`:
 
 ```json
 {
+  "version": "3.11.0",
   "endpoint": "brandfetch",
   "turn_count": 23,
+  "session": {
+    "started_at": "2025-12-24T10:30:00Z",
+    "ended_at": "2025-12-24T11:05:24Z",
+    "duration_seconds": 2124,
+    "async_agents_used": 3,
+    "total_cost_usd": 1.27
+  },
   "phases": {
-    "disambiguation": { "status": "complete" },
+    "disambiguation": { "status": "complete", "started_at": "...", "ended_at": "..." },
     "scope": { "status": "complete" },
-    "research_initial": { "status": "complete", "sources": [...] },
+    "research_initial": {
+      "status": "complete",
+      "sources": [...],
+      "strategy": "multi",
+      "coverage_pct": 95
+    },
     "interview": { "status": "complete", "decisions": {...} },
     "research_deep": { "status": "complete" },
     "schema_creation": { "status": "complete" },
@@ -457,7 +669,27 @@ All phases are tracked in `.claude/api-dev-state.json`:
     "tdd_green": { "status": "complete" },
     "verify": { "status": "complete", "gaps_found": 2, "gaps_fixed": 2 },
     "tdd_refactor": { "status": "complete" },
-    "documentation": { "status": "complete" }
+    "documentation": { "status": "complete" },
+    "completion": { "status": "complete" },
+    "code_review": {
+      "status": "complete",
+      "tool": "coderabbit",
+      "issues_found": 2,
+      "issues_fixed": 2,
+      "issues_deferred": 0
+    }
+  },
+  "research_cache": {
+    "location": ".claude/research/brandfetch/",
+    "files": ["CURRENT.md", "2025-12-24_initial.md", "2025-12-24_deep.md"],
+    "freshness_days": 7,
+    "last_updated": "2025-12-24T10:45:00Z"
+  },
+  "cost_breakdown": {
+    "research": 0.32,
+    "implementation": 0.95,
+    "code_review": 0.00,
+    "total": 1.27
   }
 }
 ```

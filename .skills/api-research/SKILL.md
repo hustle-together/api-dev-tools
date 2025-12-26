@@ -31,7 +31,101 @@ allowed-tools: WebSearch WebFetch mcp__context7 mcp__github AskUserQuestion Read
 
 ## Research Phases
 
-### Initial Discovery (Automatic)
+### Phase 1: Feature Enumeration (MANDATORY - v3.12.0)
+
+**Before deep diving, enumerate ALL available features/endpoints.**
+
+This prevents partial implementation by ensuring user knows EVERYTHING the API offers.
+
+**Steps:**
+1. Fetch the main documentation page
+2. Extract TOC/navigation/sidebar structure
+3. List ALL available endpoints/features/methods
+4. Present enumeration to user for confirmation
+
+```
+┌────────────────────────────────────────────────────────────┐
+│ FEATURE ENUMERATION: [api-name]                            │
+│                                                            │
+│ Found documentation at: [main-docs-url]                    │
+│                                                            │
+│ ALL AVAILABLE ENDPOINTS/FEATURES:                          │
+│ ┌───────────────────────────────────────────────────────┐  │
+│ │ Category: Authentication                              │  │
+│ │   • POST /auth/login                                  │  │
+│ │   • POST /auth/logout                                 │  │
+│ │   • POST /auth/refresh                                │  │
+│ │                                                       │  │
+│ │ Category: Users                                       │  │
+│ │   • GET /users                                        │  │
+│ │   • GET /users/:id                                    │  │
+│ │   • POST /users                                       │  │
+│ │   • PUT /users/:id                                    │  │
+│ │   • DELETE /users/:id                                 │  │
+│ │                                                       │  │
+│ │ Category: Webhooks                                    │  │
+│ │   • POST /webhooks                                    │  │
+│ │   • GET /webhooks                                     │  │
+│ │   • DELETE /webhooks/:id                              │  │
+│ └───────────────────────────────────────────────────────┘  │
+│                                                            │
+│ Total: 11 endpoints across 3 categories                    │
+│                                                            │
+│ Research ALL of these? [Y]                                 │
+│ Select specific categories? [n] → Which? ____              │
+│ Add unlisted features? [n] → What? ____                    │
+└────────────────────────────────────────────────────────────┘
+```
+
+**Implementation:**
+```python
+# Pseudo-code for TOC enumeration
+1. WebFetch main docs page
+2. Look for navigation elements:
+   - <nav> elements
+   - Sidebar links
+   - Table of contents
+   - API reference sections
+3. Extract all endpoint/feature links
+4. Categorize by section headers
+5. Present complete list to user
+6. Store in state.scope.discovered_features
+```
+
+**State Tracking:**
+```json
+{
+  "phases": {
+    "toc_enumeration": {
+      "status": "complete",
+      "docs_url": "https://api.example.com/docs",
+      "total_features_found": 11,
+      "categories": ["Authentication", "Users", "Webhooks"],
+      "user_confirmed_scope": true
+    }
+  },
+  "scope": {
+    "discovered_features": [
+      {"name": "POST /auth/login", "category": "Authentication", "source": "toc"},
+      {"name": "POST /auth/logout", "category": "Authentication", "source": "toc"},
+      ...
+    ],
+    "implemented_features": [],
+    "deferred_features": [],
+    "coverage_percent": 0
+  }
+}
+```
+
+**Why This Matters:**
+- Without enumeration, Claude researches one feature, implements it, and stops
+- User doesn't know what they're missing
+- Forces explicit user confirmation of scope BEFORE implementation
+- Tracks coverage throughout workflow
+
+---
+
+### Phase 4: Initial Discovery (Automatic)
 
 Run 2-3 targeted searches:
 ```

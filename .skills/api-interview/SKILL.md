@@ -132,25 +132,57 @@ For each discovered parameter, generate an appropriate question:
 └────────────────────────────────────────────────────────────┘
 ```
 
-### Feature Questions
+### Feature Scope Decisions (v3.12.0 - REQUIRED)
 
-Based on discovered features, ask about priorities:
+**Every discovered feature MUST have an explicit decision: Implement, Defer, or Skip.**
+
+This is enforced by the completion check - 100% scope coverage required.
 
 ```
 ┌────────────────────────────────────────────────────────────┐
-│ DISCOVERED FEATURES                                        │
+│ FEATURE SCOPE DECISIONS                                    │
 │                                                            │
-│ Research found these features. Mark priorities:            │
+│ Phase 1 discovered 11 features. Decide for EACH:           │
 │                                                            │
-│ [x] Basic brand fetch - Get logo, colors, fonts            │
-│ [x] Multiple formats - Support json, svg, png              │
-│ [ ] Webhook callbacks - Async notification (skip for now)  │
-│ [ ] Batch processing - Multiple domains at once            │
-│ [x] Error handling - Graceful degradation                  │
+│ Category: Authentication                                   │
+│ ├─ POST /auth/login                                        │
+│ │  [x] Implement  [ ] Defer  [ ] Skip                      │
+│ │  Reason: Core auth needed for MVP                        │
+│ │                                                          │
+│ ├─ POST /auth/logout                                       │
+│ │  [x] Implement  [ ] Defer  [ ] Skip                      │
+│ │  Reason: Standard auth flow                              │
+│ │                                                          │
+│ └─ POST /auth/refresh                                      │
+│    [ ] Implement  [x] Defer  [ ] Skip                      │
+│    Reason: Nice-to-have, v2                                │
 │                                                            │
-│ Confirm feature scope?                                     │
+│ Category: Users                                            │
+│ ├─ GET /users                                              │
+│ │  [x] Implement  [ ] Defer  [ ] Skip                      │
+│ │  ...                                                     │
+│                                                            │
+│ ══════════════════════════════════════════════════════════ │
+│ Summary:                                                   │
+│   Implement: 5 features                                    │
+│   Defer: 4 features                                        │
+│   Skip: 2 features                                         │
+│   Coverage: 11/11 = 100% ✅                                │
+│                                                            │
+│ Confirm these decisions? [Y/n]                             │
 └────────────────────────────────────────────────────────────┘
 ```
+
+**Decision Types:**
+- **Implement**: Build this feature NOW in current workflow
+- **Defer**: Explicitly postpone to a future version/workflow
+- **Skip**: Intentionally exclude (not needed for this project)
+
+**Why This Matters:**
+- Phase 14 checks that ALL discovered features are accounted for
+- `implemented + deferred + skipped = discovered` (100% coverage)
+- Prevents "I forgot about that endpoint" situations
+- Forces explicit decisions, not assumptions
 
 ### Error Handling Questions
 
@@ -220,32 +252,46 @@ All decisions are saved to `.claude/api-dev-state.json`:
   "phases": {
     "interview": {
       "status": "complete",
-      "questions": [
-        {
-          "parameter": "format",
-          "type": "enum",
-          "options": ["json", "svg", "png", "raw"],
-          "selected": ["json", "svg", "png"],
-          "timestamp": "..."
-        },
-        {
-          "parameter": "quality",
-          "type": "continuous",
-          "range": [1, 100],
-          "test_strategy": "boundary",
-          "test_values": [1, 50, 100],
-          "timestamp": "..."
-        }
-      ],
+      "questions": [...],
       "decisions": {
         "format": ["json", "svg", "png"],
         "quality_testing": "boundary",
-        "quality_values": [1, 50, 100],
         "rate_limit_handling": "exponential_backoff"
+      },
+      "feature_decisions": {
+        "POST /auth/login": {"decision": "implement", "reason": "Core auth"},
+        "POST /auth/logout": {"decision": "implement", "reason": "Standard flow"},
+        "POST /auth/refresh": {"decision": "defer", "reason": "v2 feature"},
+        "GET /users": {"decision": "implement", "reason": "Required"},
+        "DELETE /users/:id": {"decision": "skip", "reason": "Not needed"}
       }
     }
+  },
+  "scope": {
+    "discovered_features": [
+      {"name": "POST /auth/login", "category": "Authentication"},
+      {"name": "POST /auth/logout", "category": "Authentication"},
+      {"name": "POST /auth/refresh", "category": "Authentication"},
+      {"name": "GET /users", "category": "Users"},
+      {"name": "DELETE /users/:id", "category": "Users"}
+    ],
+    "implemented_features": ["POST /auth/login", "POST /auth/logout", "GET /users"],
+    "deferred_features": [
+      {"name": "POST /auth/refresh", "reason": "v2 feature"}
+    ],
+    "skipped_features": [
+      {"name": "DELETE /users/:id", "reason": "Not needed"}
+    ],
+    "coverage_percent": 100
   }
 }
+```
+
+**Coverage Formula:**
+```
+coverage = (implemented + deferred + skipped) / discovered
+         = (3 + 1 + 1) / 5
+         = 100% ✅
 ```
 
 ## Output

@@ -1,0 +1,96 @@
+{
+  "$schema": "./autonomous-config.schema.json",
+  "version": "1.0.0",
+  "description": "Configuration for autonomous/YOLO mode execution of api-dev-tools workflows",
+
+  "execution": {
+    "mode": "yolo",
+    "comment": "Options: 'yolo' (--dangerously-skip-permissions), 'auto-accept' (Shift+Tab), 'interactive' (default prompts)",
+    "auto_continue_after_limit_reset": false,
+    "max_retries_on_hook_block": 3,
+    "test_mode": false,
+    "test_mode_comment": "When true, interview answers are loaded from .claude/test-fixtures/{endpoint}.json for autonomous testing"
+  },
+
+  "budget": {
+    "enabled": true,
+    "max_tokens_per_session": 75000,
+    "warn_at_percentage": 60,
+    "pause_at_percentage": 80,
+    "track_per_phase": true,
+    "comment": "Pro=44k, Max5=88k, Max20=220k. Set below your plan limit for safety margin."
+  },
+
+  "notifications": {
+    "enabled": true,
+    "ntfy_topic": "hustleserver",
+    "notify_on": [
+      "session_start",
+      "phase_complete",
+      "budget_warning",
+      "budget_pause",
+      "workflow_complete",
+      "error",
+      "user_input_required"
+    ],
+    "include_summary": true,
+    "user_input_required_comment": "Sends push notification with resume command when workflow blocks waiting for user decision"
+  },
+
+  "subagents": {
+    "use_explore_for_research": true,
+    "explore_model": "sonnet",
+    "parallel_research_agents": 5,
+    "parallel_test_agents": 3,
+    "parallel_docs_agents": 2,
+    "max_parallel_total": 10,
+    "background_verification": true,
+    "usage_points": [
+      "research: Explore agents for Context7/WebSearch",
+      "verification: Parallel test execution (unit, integration, e2e)",
+      "documentation: Multi-file doc updates",
+      "schema_validation: Validate multiple endpoints"
+    ],
+    "comment": "Using Sonnet for Explore agents (not Haiku) per user preference for quality. Max 10 parallel tasks per Claude Code limits."
+  },
+
+  "summaries": {
+    "generate_phase_summaries": true,
+    "summary_max_lines": 10,
+    "summary_location": ".claude/sessions/{session_id}/phase-summaries.md",
+    "include_token_usage": true,
+    "include_files_modified": true
+  },
+
+  "logging": {
+    "session_log_enabled": true,
+    "log_location": ".claude/sessions/{session_id}/session.log",
+    "log_level": "info",
+    "log_tool_calls": true,
+    "log_hook_results": true
+  },
+
+  "integrations": {
+    "greptile": {
+      "enabled": true,
+      "api_key_env": "GREPTILE_API_KEY",
+      "github_token_env": "GITHUB_TOKEN",
+      "auto_index_on_commit": false,
+      "review_on_pr": true,
+      "mcp_setup": "claude mcp add --transport http greptile https://api.greptile.com/mcp --header \"Authorization: Bearer $GREPTILE_API_KEY\""
+    }
+  },
+
+  "safety": {
+    "require_tests_before_commit": true,
+    "block_on_test_failure": true,
+    "max_files_per_phase": 20,
+    "forbidden_paths": [
+      ".env",
+      ".env.local",
+      "*.key",
+      "*.pem",
+      "credentials.json"
+    ]
+  }
+}

@@ -25,3 +25,10 @@ coverage/
 # Misc
 .env
 .env.local
+
+# Claude Code - Personal development notes (never commit)
+CLAUDE.local.md
+
+# Claude Code - Session data (optional, project-specific)
+.claude/session-data/
+.claude/todos/
