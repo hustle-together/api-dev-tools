@@ -142,6 +142,14 @@ def main():
         if not phase_exit_confirmed:
             missing.append("Phase exit confirmation (user must explicitly approve to proceed)")
 
+        # Send ntfy notification for autonomous mode
+        notify_user_input_required(
+            2,
+            "Scope Confirmation Required",
+            f"Scope confirmation needed for '{endpoint}'. Please confirm or modify.",
+            endpoint
+        )
+
         print(json.dumps({
             "permissionDecision": "deny",
             "reason": f"""❌ BLOCKED: Scope confirmation (Phase 2) not complete.
