@@ -1,6 +1,6 @@
 # API Development Tools - Agent Skills
 
-**Version:** 3.11.0
+**Version:** 3.12.0
 **Standard:** [Agent Skills Open Format](https://agentskills.io)
 **Platform:** Cross-platform (Claude Code, VS Code, Cursor, ChatGPT, GitHub Copilot)
 
@@ -167,7 +167,7 @@ Documentation cached in `.claude/research/` with 7-day freshness:
 
 ### Optional but Recommended
 
-- **Enforcement Hooks**: 39 Python scripts that enforce workflow rules
+- **Enforcement Hooks**: 42 Python scripts that enforce workflow rules
 - **Settings.json**: Hook registration for lifecycle events
 
 ## 🔒 Enforcement Hooks (Optional)

@@ -75,7 +75,7 @@ This runs you through 13 enforced phases:
 | Category | Count | Examples |
 |----------|-------|----------|
 | **Skills** | 33 | api-create, hustle-ui-create, commit, pr |
-| **Hooks** | 39 | Enforcement for each phase |
+| **Hooks** | 42 | Enforcement for each phase |
 | **Templates** | 9 | Component, Page, API route, Showcases |
 
 ### Skills by Category
@@ -96,8 +96,12 @@ This runs you through 13 enforced phases:
 | [docs/](./docs/) | All documentation |
 | [docs/INSTALLATION_GUIDE.md](./docs/INSTALLATION_GUIDE.md) | Setup instructions |
 | [docs/TLDR.md](./docs/TLDR.md) | Quick command reference |
+| [docs/AUTONOMOUS_MODE.md](./docs/AUTONOMOUS_MODE.md) | YOLO mode, budget tracking, notifications |
+| [docs/GREPTILE_INTEGRATION.md](./docs/GREPTILE_INTEGRATION.md) | AI code review setup |
+| [docs/GRAPHITE_WORKFLOW.md](./docs/GRAPHITE_WORKFLOW.md) | Stacked PRs workflow |
+| [docs/CLAUDE_CODE_FEATURES.md](./docs/CLAUDE_CODE_FEATURES.md) | Claude Code features reference |
 | [docs/CHANGELOG.md](./docs/CHANGELOG.md) | Version history |
-| [.skills/README.md](./.skills/README.md) | Skills documentation |
+| [.skills/README.md](./.skills/README.md) | Skills documentation (33 skills) |
 
 ---
 
