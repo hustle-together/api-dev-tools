@@ -1,0 +1,77 @@
+{
+  "$schema": "../test-fixtures.schema.json",
+  "version": "1.0.0",
+  "description": "Mock interview answers for weather-forecast API endpoint testing",
+  "endpoint": "weather-forecast",
+
+  "mock_interview": {
+    "questions_and_answers": [
+      {
+        "question_pattern": "weather provider|which API|which service",
+        "answer": "OpenWeatherMap",
+        "context": "User chose OpenWeatherMap as the weather data provider"
+      },
+      {
+        "question_pattern": "authentication|API key|credentials",
+        "answer": "API key in query parameter (appid=YOUR_KEY)",
+        "context": "OpenWeatherMap uses query parameter authentication"
+      },
+      {
+        "question_pattern": "rate limit|throttling|requests per",
+        "answer": "60 requests per minute for free tier",
+        "context": "Free tier has rate limits"
+      },
+      {
+        "question_pattern": "caching|cache duration|freshness",
+        "answer": "5 minute cache for weather data",
+        "context": "Weather data cached for 5 minutes to reduce API calls"
+      },
+      {
+        "question_pattern": "error handling|failure|fallback",
+        "answer": "Return error objects with status codes, no fallback",
+        "context": "Standard error handling without fallback providers"
+      },
+      {
+        "question_pattern": "units|temperature|format",
+        "answer": "Metric (Celsius, m/s)",
+        "context": "User prefers metric units"
+      },
+      {
+        "question_pattern": "location|coordinates|city",
+        "answer": "Support both city name and lat/lon coordinates",
+        "context": "Flexible location input"
+      },
+      {
+        "question_pattern": "forecast days|duration|range",
+        "answer": "5-day forecast with 3-hour intervals",
+        "context": "Standard 5-day forecast from OpenWeatherMap"
+      }
+    ]
+  },
+
+  "mock_research": {
+    "use_cache": true,
+    "cache_path": ".claude/research/openweathermap/",
+    "skip_web_search": true,
+    "skip_context7": false
+  },
+
+  "expected_schema": {
+    "input": {
+      "location": "string (city name or 'lat,lon')",
+      "units": "metric | imperial | standard"
+    },
+    "output": {
+      "temperature": "number",
+      "humidity": "number",
+      "description": "string",
+      "forecast": "array of { time, temp, humidity, description }"
+    }
+  },
+
+  "test_assertions": {
+    "required_phases": ["disambiguation", "scope", "initial_research", "interview", "schema"],
+    "required_files": ["src/app/api/weather-forecast/route.ts", "src/app/api/weather-forecast/route.test.ts"],
+    "required_decisions": ["weather provider", "authentication", "caching"]
+  }
+}
