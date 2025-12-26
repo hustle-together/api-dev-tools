@@ -357,7 +357,13 @@ If a hook blocks 3 times, workflow pauses and sends notification.
 
 ## Test Mode (v3.12.0)
 
-Run complete workflows without user interaction using mock interview fixtures.
+Run complete workflows without user interaction using explicit decision fixtures.
+
+### Why Explicit Decisions (Not Pattern Matching)
+
+Interview questions are **dynamically generated from research findings** - they can't be predicted in advance. If research discovers 7 different API providers, the question will list those 7 options. Pattern matching would never work reliably.
+
+**Solution:** Test mode uses **explicit decisions** that SKIP the interview phase entirely and inject decisions directly into state, as if the user had already answered.
 
 ### Enable Test Mode
 
@@ -370,35 +376,48 @@ Run complete workflows without user interaction using mock interview fixtures.
 }
 ```
 
-### Create Test Fixtures
+### Create Test Fixtures (v2.0 Format)
 
 Create fixture files in `.claude/test-fixtures/{endpoint}.json`:
 
 ```json
 {
+  "version": "2.0.0",
   "endpoint": "weather-forecast",
-  "mock_interview": {
-    "questions_and_answers": [
-      {
-        "question_pattern": "weather provider|which API",
-        "answer": "OpenWeatherMap",
-        "context": "User chose OpenWeatherMap"
-      },
-      {
-        "question_pattern": "authentication|API key",
-        "answer": "API key in query parameter",
-        "context": "Standard auth method"
-      },
-      {
-        "question_pattern": "caching|cache duration",
-        "answer": "5 minute cache",
-        "context": "Balance freshness vs API calls"
-      }
-    ]
+  "description": "Test fixture with EXPLICIT decisions (not pattern matching)",
+
+  "explicit_decisions": {
+    "provider": {
+      "value": "OpenWeatherMap",
+      "rationale": "Free tier available, well-documented API"
+    },
+    "authentication": {
+      "value": "API key in query parameter (appid=KEY)",
+      "rationale": "OpenWeatherMap standard auth method"
+    },
+    "rate_limiting": {
+      "value": "60 requests/minute",
+      "rationale": "Free tier limit"
+    },
+    "caching": {
+      "value": "5 minute TTL",
+      "rationale": "Weather doesn't change that fast"
+    },
+    "error_handling": {
+      "value": "Return structured error objects",
+      "rationale": "Client can handle gracefully"
+    }
   },
+
+  "skip_phases": {
+    "interview": true,
+    "reason": "Test mode injects explicit_decisions directly"
+  },
+
   "mock_research": {
-    "use_cache": true,
-    "cache_path": ".claude/research/openweathermap/"
+    "use_cached": true,
+    "cache_path": ".claude/research/openweathermap/",
+    "fallback_to_live": false
   }
 }
 ```
@@ -406,30 +425,42 @@ Create fixture files in `.claude/test-fixtures/{endpoint}.json`:
 ### How It Works
 
 1. When `test_mode: true`, hooks check for fixture files
-2. Question patterns are matched against actual questions
-3. Mock answers are injected into state
-4. Interview phase is auto-completed
-5. Workflow continues without user prompts
+2. If fixture has `skip_phases.interview: true`:
+   - Interview phase is **SKIPPED entirely**
+   - `explicit_decisions` are injected into state
+   - Decisions appear as if user had answered each question
+3. Workflow continues with research → schema → TDD phases
+4. All other phases run normally (just no user prompts)
 
-### Sample Fixtures
+### Key Fields
 
-Pre-built fixtures are available for testing:
+| Field | Purpose |
+|-------|---------|
+| `explicit_decisions` | Key-value pairs of decisions to inject |
+| `skip_phases.interview` | Set to `true` to skip interview entirely |
+| `mock_research.use_cached` | Use cached research instead of live calls |
+| `mock_research.cache_path` | Path to cached research directory |
 
-| Fixture | Endpoint | Tests |
-|---------|----------|-------|
-| `weather-forecast.json` | Weather API | OpenWeatherMap integration |
-| `stripe-checkout.json` | Payments | Stripe Checkout Sessions |
-| `auth-jwt.json` | Auth | JWT token handling |
+### Sample Fixture
+
+Pre-built fixture available:
+
+| Fixture | Endpoint | Decisions |
+|---------|----------|-----------|
+| `weather-forecast.json` | Weather API | Provider, auth, caching, errors |
 
 ### Run Test Mode
 
 ```bash
 # Enable test mode and run workflow
-export CLAUDE_TEST_MODE=true
 claude --dangerously-skip-permissions -p "/api-create weather-forecast"
 ```
 
-Or set in config and run normally.
+With `test_mode: true` in config, the workflow runs fully autonomously:
+- Research phase uses cached data (if configured)
+- Interview phase is skipped, decisions injected
+- TDD phases run with explicit decisions guiding implementation
+- All 13 phases complete without user prompts
 
 ---
 

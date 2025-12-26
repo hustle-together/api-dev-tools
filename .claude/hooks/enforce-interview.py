@@ -217,19 +217,29 @@ Run /api-create [endpoint-name] to begin the interview-driven workflow."""
         print(json.dumps({"permissionDecision": "allow"}))
         sys.exit(0)
 
-    # TEST MODE: Check if test-mode is active and inject mock interview
+    # TEST MODE: Check if test-mode is active and inject explicit decisions
     if is_test_mode(state):
         endpoint = state.get("endpoint", state.get("active_endpoint", ""))
         if endpoint:
             fixture = load_test_fixture(endpoint)
             if fixture:
-                # Inject mock interview answers
-                state = inject_mock_interview(state, fixture)
-                print(json.dumps({
-                    "permissionDecision": "allow",
-                    "message": f"✅ TEST MODE: Interview auto-completed from fixture '{endpoint}.json'"
-                }))
-                sys.exit(0)
+                # Check if fixture uses explicit_decisions (v2.0 format)
+                if fixture.get("explicit_decisions") and should_skip_interview(fixture):
+                    # v2.0: Skip interview entirely, inject decisions directly
+                    state = inject_explicit_decisions(state, fixture)
+                    decision_count = len(fixture.get("explicit_decisions", {}))
+                    print(json.dumps({
+                        "permissionDecision": "allow",
+                        "message": f"✅ TEST MODE: Interview SKIPPED. {decision_count} explicit decisions injected from '{endpoint}.json'"
+                    }))
+                    sys.exit(0)
+                else:
+                    # Legacy format or no skip - allow with warning
+                    print(json.dumps({
+                        "permissionDecision": "allow",
+                        "message": f"⚠️ TEST MODE: Fixture '{endpoint}.json' exists but doesn't use explicit_decisions format. Proceeding normally."
+                    }))
+                    sys.exit(0)
             else:
                 # No fixture, but test mode - allow with warning
                 print(json.dumps({
