@@ -816,6 +816,26 @@
         "confidence": "critical"
       },
       "injected": true
+    },
+    {
+      "timestamp": "2025-12-26T04:22:44.679202",
+      "prompt_preview": "Okay, then based on this:\u00a0\u2022 For the first readmes, we should do that.\u00a0\u2022 For the 4 demo files to your...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "should do that.\u00a0\u2022 for the 4 demo files to your poi",
+          "api",
+          "route",
+          "component"
+        ],
+        "patterns_matched": [
+          "always_research",
+          "question_pattern",
+          "technical_term"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
     }
   ],
   "phases": {
