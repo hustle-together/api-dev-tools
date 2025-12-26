@@ -791,6 +791,31 @@
         "confidence": "critical"
       },
       "injected": true
+    },
+    {
+      "timestamp": "2025-12-26T04:15:33.870091",
+      "prompt_preview": "Now, what are the four different demos files we have? I'm a little confused why we have four differe...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "how do",
+          "what are",
+          "should update the readme and hook count. i do have",
+          "create ui or pages and whatnot, when should we use",
+          "change anything; i'm just asking you to explain wh",
+          "api",
+          "test",
+          "component",
+          "hook"
+        ],
+        "patterns_matched": [
+          "question_pattern",
+          "always_research",
+          "technical_term"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
     }
   ],
   "phases": {
