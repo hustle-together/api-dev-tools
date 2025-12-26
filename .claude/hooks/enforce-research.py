@@ -140,6 +140,14 @@ Run /api-create [endpoint-name] to start the workflow."""
         if not user_approved:
             missing.append("User approval to proceed")
 
+        # Send ntfy notification for autonomous mode
+        notify_user_input_required(
+            3,
+            "Research Approval Needed",
+            f"Research summary ready for '{endpoint}'. User approval needed to proceed.",
+            endpoint
+        )
+
         print(json.dumps({
             "permissionDecision": "deny",
             "reason": f"""❌ BLOCKED: Initial research (Phase 3) not complete.
