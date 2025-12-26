@@ -330,6 +330,84 @@ If a hook blocks 3 times, workflow pauses and sends notification.
 
 ---
 
+## Test Mode (v3.12.0)
+
+Run complete workflows without user interaction using mock interview fixtures.
+
+### Enable Test Mode
+
+```json
+// .claude/autonomous-config.json
+{
+  "execution": {
+    "test_mode": true
+  }
+}
+```
+
+### Create Test Fixtures
+
+Create fixture files in `.claude/test-fixtures/{endpoint}.json`:
+
+```json
+{
+  "endpoint": "weather-forecast",
+  "mock_interview": {
+    "questions_and_answers": [
+      {
+        "question_pattern": "weather provider|which API",
+        "answer": "OpenWeatherMap",
+        "context": "User chose OpenWeatherMap"
+      },
+      {
+        "question_pattern": "authentication|API key",
+        "answer": "API key in query parameter",
+        "context": "Standard auth method"
+      },
+      {
+        "question_pattern": "caching|cache duration",
+        "answer": "5 minute cache",
+        "context": "Balance freshness vs API calls"
+      }
+    ]
+  },
+  "mock_research": {
+    "use_cache": true,
+    "cache_path": ".claude/research/openweathermap/"
+  }
+}
+```
+
+### How It Works
+
+1. When `test_mode: true`, hooks check for fixture files
+2. Question patterns are matched against actual questions
+3. Mock answers are injected into state
+4. Interview phase is auto-completed
+5. Workflow continues without user prompts
+
+### Sample Fixtures
+
+Pre-built fixtures are available for testing:
+
+| Fixture | Endpoint | Tests |
+|---------|----------|-------|
+| `weather-forecast.json` | Weather API | OpenWeatherMap integration |
+| `stripe-checkout.json` | Payments | Stripe Checkout Sessions |
+| `auth-jwt.json` | Auth | JWT token handling |
+
+### Run Test Mode
+
+```bash
+# Enable test mode and run workflow
+export CLAUDE_TEST_MODE=true
+claude --dangerously-skip-permissions -p "/api-create weather-forecast"
+```
+
+Or set in config and run normally.
+
+---
+
 ## Logging
 
 ### Session Logs

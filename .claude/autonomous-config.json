@@ -7,7 +7,9 @@
     "mode": "yolo",
     "comment": "Options: 'yolo' (--dangerously-skip-permissions), 'auto-accept' (Shift+Tab), 'interactive' (default prompts)",
     "auto_continue_after_limit_reset": false,
-    "max_retries_on_hook_block": 3
+    "max_retries_on_hook_block": 3,
+    "test_mode": false,
+    "test_mode_comment": "When true, interview answers are loaded from .claude/test-fixtures/{endpoint}.json for autonomous testing"
   },
 
   "budget": {

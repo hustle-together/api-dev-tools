@@ -209,6 +209,27 @@ Run /api-create [endpoint-name] to begin the interview-driven workflow."""
         print(json.dumps({"permissionDecision": "allow"}))
         sys.exit(0)
 
+    # TEST MODE: Check if test-mode is active and inject mock interview
+    if is_test_mode(state):
+        endpoint = state.get("endpoint", state.get("active_endpoint", ""))
+        if endpoint:
+            fixture = load_test_fixture(endpoint)
+            if fixture:
+                # Inject mock interview answers
+                state = inject_mock_interview(state, fixture)
+                print(json.dumps({
+                    "permissionDecision": "allow",
+                    "message": f"✅ TEST MODE: Interview auto-completed from fixture '{endpoint}.json'"
+                }))
+                sys.exit(0)
+            else:
+                # No fixture, but test mode - allow with warning
+                print(json.dumps({
+                    "permissionDecision": "allow",
+                    "message": f"⚠️ TEST MODE: No fixture found for '{endpoint}', proceeding without mock interview"
+                }))
+                sys.exit(0)
+
     phases = state.get("phases", {})
     research = phases.get("research_initial", {})
     interview = phases.get("interview", {})
