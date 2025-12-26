@@ -9,6 +9,12 @@
 | [CHANGELOG.md](./CHANGELOG.md) | Version history |
 | [FULL_DOCUMENTATION.md](./FULL_DOCUMENTATION.md) | Complete docs (backup) |
 
+## Claude Code Integration
+
+| Document | Description |
+|----------|-------------|
+| [CLAUDE_CODE_FEATURES.md](./CLAUDE_CODE_FEATURES.md) | Claude Code features reference (Oct-Dec 2025) |
+
 ## Skills & Templates
 
 | Location | Description |
