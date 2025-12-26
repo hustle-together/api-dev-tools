@@ -3,7 +3,7 @@
   "endpoint": null,
   "session_id": null,
   "workflow_active": false,
-  "turn_count": 50,
+  "turn_count": 52,
   "research_queries": [
     {
       "timestamp": "2025-12-26T02:09:48.515832",
@@ -750,7 +750,7 @@
       "status": "not_started",
       "user_question_asked": true,
       "last_user_response": "{}",
-      "last_question_timestamp": "2025-12-25T21:53:33.226163",
+      "last_question_timestamp": "2025-12-26T03:27:22.946537",
       "last_question_type": "unknown"
     },
     "scope": {
@@ -929,11 +929,21 @@
           "options": [],
           "user_response": "{}",
           "selected_value": null
+        },
+        {
+          "question": "",
+          "timestamp": "2025-12-26T03:27:22.946524",
+          "tool_used": true,
+          "has_options": false,
+          "options_count": 0,
+          "options": [],
+          "user_response": "{}",
+          "selected_value": null
         }
       ],
-      "user_question_count": 1,
+      "user_question_count": 2,
       "started_at": "2025-12-25T21:53:33.226156",
-      "last_activity": "2025-12-25T21:53:33.226158",
+      "last_activity": "2025-12-26T03:27:22.946532",
       "user_question_asked": true
     },
     "research_deep": {
@@ -979,5 +989,5 @@
       "checked_at": null
     }
   },
-  "last_turn_timestamp": "2025-12-26T02:36:02.823093"
+  "last_turn_timestamp": "2025-12-26T03:27:22.948009"
 }
