@@ -195,6 +195,26 @@
         "confidence": "critical"
       },
       "injected": true
+    },
+    {
+      "timestamp": "2025-12-26T06:49:03.664931",
+      "prompt_preview": "When you upload to GitHub, please make sure you upload to the NPM as well. To confirm, the README fi...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "fix any identified gaps like you mentioned.",
+          "documentation",
+          "fix",
+          "3.1.3"
+        ],
+        "patterns_matched": [
+          "question_pattern",
+          "always_research",
+          "technical_term"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
     }
   ],
   "phases": {
