@@ -12,15 +12,72 @@ Phase 3 requires:
 Returns:
   - {"permissionDecision": "allow"} - Let the tool run
   - {"permissionDecision": "deny", "reason": "..."} - Block with explanation
+
+
+Part of api-dev-tools v3.12.0 - includes ntfy notifications for autonomous mode.
 """
 import json
 import sys
 from pathlib import Path
 
 STATE_FILE = Path(__file__).parent.parent / "api-dev-state.json"
+CONFIG_FILE = Path(__file__).parent.parent / "autonomous-config.json"
 
 # Minimum sources required
 MIN_SOURCES = 2
+
+
+def load_config():
+    """Load autonomous config if it exists."""
+    if CONFIG_FILE.exists():
+        with open(CONFIG_FILE) as f:
+            return json.load(f)
+    return None
+
+
+def send_notification(topic, title, message, priority='default'):
+    """Send ntfy notification if curl is available."""
+    import subprocess
+    try:
+        subprocess.run([
+            'curl', '-s',
+            '-H', f'Title: {title}',
+            '-H', f'Priority: {priority}',
+            '-d', message,
+            f'ntfy.sh/{topic}'
+        ], capture_output=True, timeout=5)
+    except:
+        pass  # Notifications are best-effort
+
+
+def notify_user_input_required(phase_num, phase_name, reason, endpoint):
+    """Send ntfy notification when user input is required."""
+    config = load_config()
+    if not config:
+        return
+
+    notifications = config.get('notifications', {})
+    if not notifications.get('enabled', False):
+        return
+
+    if 'user_input_required' not in notifications.get('notify_on', []):
+        return
+
+    topic = notifications.get('ntfy_topic', 'hustleserver')
+
+    # Get session ID for resume command
+    session_id = endpoint or 'unknown'
+    if STATE_FILE.exists():
+        try:
+            state = json.loads(STATE_FILE.read_text())
+            session_id = state.get('session_id', endpoint or 'unknown')
+        except:
+            pass
+
+    title = f"Phase {phase_num} - {phase_name}"
+    message = f"{reason}\n\nResume: claude --resume {session_id}"
+
+    send_notification(topic, title, message, priority='high')
 
 
 def main():
