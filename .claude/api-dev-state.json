@@ -81,6 +81,38 @@
         "confidence": "none"
       },
       "injected": false
+    },
+    {
+      "timestamp": "2025-12-26T06:10:34.222152",
+      "prompt_preview": "So, how does it work now with that? I'm concerned that you just skip it, but if you skip it, doesn't...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "how do",
+          "does it work now with that? i'm concerned that you",
+          "option",
+          "route",
+          "test"
+        ],
+        "patterns_matched": [
+          "always_research",
+          "technical_term",
+          "question_pattern"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-26T06:10:51.425990",
+      "prompt_preview": "Continue",
+      "detection": {
+        "detected": false,
+        "terms": [],
+        "patterns_matched": [],
+        "confidence": "none"
+      },
+      "injected": false
     }
   ],
   "phases": {
