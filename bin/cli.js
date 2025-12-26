@@ -884,12 +884,35 @@ function main() {
   }
 
   // ========================================
-  // 8. Install Optional Development Tools
+  // 8. Install Required Development Tools (Storybook + Playwright)
   // ========================================
-  if (withStorybook || withPlaywright || withSandpack) {
-    log('\n🔧 Installing optional development tools:', 'cyan');
+  log('\n🔧 Installing required development tools:', 'cyan');
+  log('   Storybook and Playwright are REQUIRED for UI workflows.', 'bright');
 
-    if (withSandpack) {
+  // Always install Storybook (required for /hustle-ui-create)
+  try {
+    log('   📖 Initializing Storybook (required for component testing)...', 'blue');
+    execSync('npx storybook@latest init --yes 2>&1', { cwd: targetDir, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'], timeout: 300000 });
+    log('   ✅ Storybook initialized successfully', 'green');
+    log('   💡 Run with: pnpm storybook', 'yellow');
+  } catch (error) {
+    log('   ⚠️  Storybook init failed. Run manually:', 'yellow');
+    log('      npx storybook@latest init', 'yellow');
+  }
+
+  // Always install Playwright (required for /hustle-ui-create-page)
+  try {
+    log('   🎭 Initializing Playwright (required for E2E testing)...', 'blue');
+    execSync('npm init playwright@latest -- --yes 2>&1', { cwd: targetDir, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'], timeout: 300000 });
+    log('   ✅ Playwright initialized successfully', 'green');
+    log('   💡 Run tests with: npx playwright test', 'yellow');
+  } catch (error) {
+    log('   ⚠️  Playwright init failed. Run manually:', 'yellow');
+    log('      npm init playwright@latest', 'yellow');
+  }
+
+  // Optional: Sandpack
+  if (withSandpack) {
       try {
         log('   📦 Installing Sandpack for live component previews...', 'blue');
         execSync('pnpm add @codesandbox/sandpack-react 2>&1', { cwd: targetDir, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
