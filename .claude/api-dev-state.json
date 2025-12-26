@@ -580,6 +580,26 @@
         "confidence": "critical"
       },
       "injected": true
+    },
+    {
+      "timestamp": "2025-12-26T02:27:46.731082",
+      "prompt_preview": "Give me that full list of everything we have before. All the features we can do here, I can mention ...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "what is",
+          "can do here, i can mention my see we have uses tra",
+          "config",
+          "hook"
+        ],
+        "patterns_matched": [
+          "technical_term",
+          "question_pattern",
+          "always_research"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
     }
   ],
   "phases": {
