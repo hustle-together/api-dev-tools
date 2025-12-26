@@ -27,6 +27,42 @@ import subprocess
 # State and registry files in .claude/ directory
 STATE_FILE = Path(__file__).parent.parent / "api-dev-state.json"
 REGISTRY_FILE = Path(__file__).parent.parent / "registry.json"
+AUTONOMOUS_CONFIG = Path(__file__).parent.parent / "autonomous-config.json"
+
+
+def send_ntfy_notification(title: str, message: str, priority: str = "default"):
+    """Send push notification via ntfy if configured."""
+    try:
+        if not AUTONOMOUS_CONFIG.exists():
+            return
+
+        config = json.loads(AUTONOMOUS_CONFIG.read_text())
+        notifications = config.get("notifications", {})
+
+        if not notifications.get("enabled", False):
+            return
+
+        topic = notifications.get("ntfy_topic", "")
+        if not topic:
+            return
+
+        # Check if 'workflow_complete' is in notify_on list
+        notify_on = notifications.get("notify_on", [])
+        if "workflow_complete" not in notify_on and "phase_complete" not in notify_on:
+            return
+
+        # Send notification
+        subprocess.run([
+            "curl", "-s",
+            "-H", f"Title: {title}",
+            "-H", f"Priority: {priority}",
+            "-H", "Tags: art,sparkles",
+            "-d", message,
+            f"ntfy.sh/{topic}"
+        ], capture_output=True, timeout=5)
+
+    except Exception:
+        pass  # Silent failure for notifications
 
 
 def generate_showcase_data(registry, cwd):
