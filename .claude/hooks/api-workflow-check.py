@@ -169,9 +169,14 @@ def check_interview_implementation_match(state: dict) -> list[str]:
 
 
 def check_scope_coverage(state: dict) -> tuple[list[str], bool]:
-    """Check if all discovered features have been implemented.
+    """Check if all discovered features have been decided.
 
-    v3.12.0: Enforces that user-confirmed scope is fully implemented.
+    v3.12.0: Enforces that user-confirmed scope is fully decided.
+    v3.12.1: Added support for 'skipped' features (intentionally excluded).
+
+    Coverage = (implemented + deferred + skipped) / discovered = 100%
+    Every feature must have an explicit decision.
+
     Returns (issues_list, should_block).
     """
     issues = []
@@ -191,6 +196,7 @@ def check_scope_coverage(state: dict) -> tuple[list[str], bool]:
     discovered = scope.get("discovered_features", [])
     implemented = scope.get("implemented_features", [])
     deferred = scope.get("deferred_features", [])
+    skipped = scope.get("skipped_features", [])
     coverage_percent = scope.get("coverage_percent", 0)
 
     # If no features discovered, skip this check
@@ -204,46 +210,58 @@ def check_scope_coverage(state: dict) -> tuple[list[str], bool]:
     discovered_names = set(get_name(f) for f in discovered)
     implemented_names = set(implemented)
     deferred_names = set(get_name(f) for f in deferred)
+    skipped_names = set(get_name(f) for f in skipped)
 
-    # Calculate what's missing
-    accounted_for = implemented_names | deferred_names
+    # Calculate what's missing (not decided)
+    accounted_for = implemented_names | deferred_names | skipped_names
     missing = discovered_names - accounted_for
 
     # Build report
     total = len(discovered_names)
     impl_count = len(implemented_names)
     defer_count = len(deferred_names)
+    skip_count = len(skipped_names)
     missing_count = len(missing)
 
+    # Recalculate coverage
+    if total > 0:
+        actual_coverage = int(((impl_count + defer_count + skip_count) / total) * 100)
+    else:
+        actual_coverage = 100
+
     if missing_count > 0:
-        issues.append(f"\n❌ SCOPE COVERAGE INCOMPLETE ({coverage_percent}%)")
+        issues.append(f"\n❌ SCOPE COVERAGE INCOMPLETE ({actual_coverage}%)")
         issues.append(f"   Discovered: {total} features")
         issues.append(f"   Implemented: {impl_count}")
         issues.append(f"   Deferred: {defer_count}")
-        issues.append(f"   Missing: {missing_count}")
+        issues.append(f"   Skipped: {skip_count}")
+        issues.append(f"   Undecided: {missing_count}")
         issues.append("")
-        issues.append("   Features NOT implemented or deferred:")
+        issues.append("   Features WITHOUT explicit decision:")
         for feat in list(missing)[:10]:  # Show up to 10
             issues.append(f"     • {feat}")
         if missing_count > 10:
             issues.append(f"     ... and {missing_count - 10} more")
         issues.append("")
-        issues.append("   To proceed:")
-        issues.append("     1. Implement the missing features, OR")
-        issues.append("     2. Explicitly defer them in the interview")
+        issues.append("   To proceed, decide for EACH feature:")
+        issues.append("     • Implement: Build in this workflow")
+        issues.append("     • Defer: Postpone to future version")
+        issues.append("     • Skip: Intentionally exclude")
 
         # Block if coverage is below threshold
-        if coverage_percent < MIN_SCOPE_COVERAGE_PERCENT:
+        if actual_coverage < MIN_SCOPE_COVERAGE_PERCENT:
             should_block = True
-            issues.append(f"\n   ⛔ Coverage {coverage_percent}% is below required {MIN_SCOPE_COVERAGE_PERCENT}%")
+            issues.append(f"\n   ⛔ Coverage {actual_coverage}% is below required {MIN_SCOPE_COVERAGE_PERCENT}%")
 
-    elif coverage_percent < 100 and defer_count > 0:
-        # All accounted for but some deferred - warning only
-        issues.append(f"\n⚠️ SCOPE COVERAGE: {coverage_percent}%")
-        issues.append(f"   {defer_count} feature(s) deferred for later:")
-        for feat in list(deferred_names)[:5]:
-            issues.append(f"     • {feat}")
-        # Don't block - user explicitly deferred these
+    elif actual_coverage == 100 and (defer_count > 0 or skip_count > 0):
+        # All accounted for - info only
+        issues.append(f"\n✅ SCOPE COVERAGE: 100%")
+        issues.append(f"   Implemented: {impl_count}")
+        if defer_count > 0:
+            issues.append(f"   Deferred: {defer_count} (future version)")
+        if skip_count > 0:
+            issues.append(f"   Skipped: {skip_count} (intentionally excluded)")
+        # Don't block - all features have explicit decisions
 
     return issues, should_block
 
