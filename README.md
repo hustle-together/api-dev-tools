@@ -1,12 +1,12 @@
-# API Development Tools v3.11.0
+# API Development Tools v3.12.0
 
-**Interview-driven, research-first API development with 13-phase TDD workflow**
+**Interview-driven, research-first API development with 13-phase TDD workflow + Autonomous Mode**
 
 [![Agent Skills](https://img.shields.io/badge/Agent_Skills-Compatible-blue)](https://agentskills.io)
 [![Cross-Platform](https://img.shields.io/badge/Cross--Platform-Claude%20%7C%20VS%20Code%20%7C%20Cursor-green)](https://github.com/hustle-together/api-dev-tools)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **33 Agent Skills** for cross-platform compatibility across Claude Code, VS Code, Cursor, ChatGPT, and GitHub Copilot
+> **33 Agent Skills** + **Autonomous Mode** with YOLO execution, budget tracking, and ntfy push notifications
 
 ---
 
@@ -101,15 +101,106 @@ This runs you through 13 enforced phases:
 
 ---
 
+## Autonomous Mode (v3.12.0)
+
+Run complete workflows with minimal interaction:
+
+```bash
+# YOLO mode - skip permission dialogs (hooks still enforce quality)
+claude --dangerously-skip-permissions -p "/api-create stripe-checkout"
+```
+
+### Features
+
+| Feature | Description |
+|---------|-------------|
+| **YOLO Mode** | `--dangerously-skip-permissions` skips dialogs, hooks still run |
+| **Budget Tracking** | Warn at 60%, pause at 80% token usage |
+| **ntfy Notifications** | Push notifications when user input is needed |
+| **Resume Commands** | Notifications include `claude --resume {session_id}` |
+| **Phase Summaries** | Automatic summaries after each phase completion |
+
+### Configuration
+
+All settings in `.claude/autonomous-config.json`:
+
+```json
+{
+  "yolo_mode": { "enabled": true },
+  "budget": { "max_tokens": 75000, "warn_at_percent": 60, "pause_at_percent": 80 },
+  "notifications": { "enabled": true, "ntfy_topic": "your-topic" }
+}
+```
+
+---
+
+## Testing the Toolkit
+
+### Prerequisites
+
+1. Claude Code CLI installed (`npm install -g @anthropic/claude-code`)
+2. Context7 MCP server configured: `claude mcp add context7 -- npx -y @upstash/context7-mcp`
+3. (Optional) Greptile API key, Graphite CLI
+
+### Quick Test - Single API Endpoint
+
+```bash
+# Interactive mode (recommended for first run)
+claude -p "/api-create weather-forecast"
+
+# Autonomous mode (YOLO)
+claude --dangerously-skip-permissions -p "/api-create stripe-checkout"
+```
+
+### Test All Workflow Modes
+
+```bash
+# API Create (13 phases)
+claude -p "/api-create weather-forecast"
+
+# UI Component (13 phases with Storybook)
+claude -p "/hustle-ui-create UserAvatar"
+
+# UI Page (13 phases with Playwright E2E)
+claude -p "/hustle-ui-create-page dashboard"
+
+# Combine APIs (orchestration)
+claude -p "/hustle-combine weather-forecast stripe-checkout"
+```
+
+### Verify Installation
+
+```bash
+# Check hooks are registered
+cat .claude/settings.json | jq '.hooks'
+
+# Check state file
+cat .claude/api-dev-state.json | jq '.phases'
+
+# Check budget tracking
+cat .claude/api-dev-state.json | jq '.session_metrics'
+
+# Check autonomous config
+cat .claude/autonomous-config.json
+```
+
+---
+
 ## Optional Integrations
 
-Phase 14 (Code Review) supports these tools if configured:
+Install with flags or configure later:
 
-| Tool | Purpose | Setup |
-|------|---------|-------|
-| **CodeRabbit** | AI PR reviews (free for OSS) | [coderabbit.ai](https://coderabbit.ai) |
-| **Graphite** | Stacked PRs workflow | `brew install withgraphite/tap/graphite` |
-| **Greptile** | Deep codebase analysis | [greptile.com](https://greptile.com) |
+```bash
+npx @hustle-together/api-dev-tools --scope=project --with-greptile --with-graphite
+```
+
+| Tool | Purpose | Flag | Setup |
+|------|---------|------|-------|
+| **Greptile** | AI code review | `--with-greptile` | [greptile.com](https://greptile.com) |
+| **Graphite** | Stacked PRs workflow | `--with-graphite` | `brew install withgraphite/tap/graphite` |
+| **Storybook** | Component development | `--with-storybook` | Auto-init during install |
+| **Playwright** | E2E testing | `--with-playwright` | Auto-init during install |
+| **ntfy** | Push notifications | `--with-ntfy` | [ntfy.sh](https://ntfy.sh) |
 
 These are optional - workflows complete without them.
 

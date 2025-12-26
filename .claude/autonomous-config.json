@@ -28,9 +28,11 @@
       "budget_warning",
       "budget_pause",
       "workflow_complete",
-      "error"
+      "error",
+      "user_input_required"
     ],
-    "include_summary": true
+    "include_summary": true,
+    "user_input_required_comment": "Sends push notification with resume command when workflow blocks waiting for user decision"
   },
 
   "subagents": {

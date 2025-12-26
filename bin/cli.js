@@ -29,6 +29,11 @@ const scope = args.find(arg => arg.startsWith('--scope='))?.split('=')[1] || 'pr
 const withStorybook = args.includes('--with-storybook');
 const withPlaywright = args.includes('--with-playwright');
 const withSandpack = args.includes('--with-sandpack');
+const withGreptile = args.includes('--with-greptile');
+const withGraphite = args.includes('--with-graphite');
+const withNtfy = args.includes('--with-ntfy');
+const interactiveSetup = args.includes('--interactive') || args.includes('-i');
+const skipInteractive = args.includes('--no-interactive');
 
 // Colors for terminal output
 const colors = {
@@ -39,7 +44,70 @@ const colors = {
   yellow: '\x1b[33m',
   red: '\x1b[31m',
   cyan: '\x1b[36m',
+  magenta: '\x1b[35m',
 };
+
+const readline = require('readline');
+
+/**
+ * Prompt user for yes/no question
+ */
+async function askYesNo(question, defaultValue = true) {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  const defaultStr = defaultValue ? 'Y/n' : 'y/N';
+
+  return new Promise((resolve) => {
+    rl.question(`${question} [${defaultStr}]: `, (answer) => {
+      rl.close();
+      if (answer.trim() === '') {
+        resolve(defaultValue);
+      } else {
+        resolve(answer.toLowerCase().startsWith('y'));
+      }
+    });
+  });
+}
+
+/**
+ * Prompt user for text input
+ */
+async function askText(question, defaultValue = '') {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  const defaultStr = defaultValue ? ` (${defaultValue})` : '';
+
+  return new Promise((resolve) => {
+    rl.question(`${question}${defaultStr}: `, (answer) => {
+      rl.close();
+      resolve(answer.trim() || defaultValue);
+    });
+  });
+}
+
+/**
+ * Prompt user for number input
+ */
+async function askNumber(question, defaultValue, min = 0, max = Infinity) {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  return new Promise((resolve) => {
+    rl.question(`${question} (${defaultValue}): `, (answer) => {
+      rl.close();
+      const num = parseInt(answer.trim()) || defaultValue;
+      resolve(Math.max(min, Math.min(max, num)));
+    });
+  });
+}
 
 function log(message, color = 'reset') {
   console.log(`${colors[color]}${message}${colors.reset}`);
@@ -708,7 +776,115 @@ function main() {
   }
 
   // ========================================
-  // 7. Install Optional Development Tools
+  // 7. Create Autonomous Config (v3.12.0)
+  // ========================================
+  const autonomousConfigDest = path.join(claudeDir, 'autonomous-config.json');
+
+  log('\n🤖 Setting up autonomous mode configuration:', 'cyan');
+
+  // Default autonomous config
+  const defaultAutonomousConfig = {
+    "version": "3.12.0",
+    "yolo_mode": {
+      "enabled": true,
+      "max_retries": 3,
+      "retry_delay_ms": 1000
+    },
+    "budget": {
+      "enabled": true,
+      "max_tokens": 75000,
+      "warn_at_percent": 60,
+      "pause_at_percent": 80,
+      "track_per_phase": true
+    },
+    "notifications": {
+      "enabled": withNtfy || true,
+      "ntfy_topic": "hustleserver",
+      "notify_on": [
+        "session_start",
+        "phase_complete",
+        "budget_warning",
+        "budget_pause",
+        "workflow_complete",
+        "error",
+        "user_input_required"
+      ],
+      "include_summary": true,
+      "user_input_required_comment": "Sends push notification with resume command when workflow blocks waiting for user decision"
+    },
+    "subagents": {
+      "explore_model": "sonnet",
+      "parallel_agents": 3,
+      "background_verify": true
+    },
+    "integrations": {
+      "greptile": {
+        "enabled": withGreptile || false,
+        "api_key_env": "GREPTILE_API_KEY",
+        "github_token_env": "GREPTILE_GITHUB_TOKEN",
+        "review_on_pr": true,
+        "severity": "medium"
+      },
+      "graphite": {
+        "enabled": withGraphite || false,
+        "trunk_branch": "main",
+        "auto_restack": true
+      }
+    }
+  };
+
+  if (!fs.existsSync(autonomousConfigDest)) {
+    try {
+      fs.writeFileSync(autonomousConfigDest, JSON.stringify(defaultAutonomousConfig, null, 2));
+      log('   ✅ Created autonomous-config.json', 'green');
+      log('   💡 YOLO mode enabled by default (--dangerously-skip-permissions)', 'yellow');
+      log('   💡 Budget tracking: 60% warn, 80% pause', 'yellow');
+      log('   💡 ntfy notifications enabled for user_input_required events', 'yellow');
+    } catch (error) {
+      log(`   ❌ Failed to create autonomous config: ${error.message}`, 'red');
+    }
+  } else {
+    log('   ℹ️  Autonomous config already exists (preserved)', 'blue');
+  }
+
+  // ========================================
+  // 7b. Create Greptile Config (if enabled)
+  // ========================================
+  if (withGreptile) {
+    const greptileConfigDest = path.join(targetDir, '.greptile.json');
+
+    if (!fs.existsSync(greptileConfigDest)) {
+      const greptileConfig = {
+        "version": "1.0.0",
+        "review": {
+          "enabled": true,
+          "on_pr": true,
+          "severity": "medium",
+          "exclude_patterns": [
+            "*.test.ts",
+            "*.spec.ts",
+            "__tests__/**",
+            "*.stories.tsx"
+          ]
+        },
+        "query": {
+          "enabled": true,
+          "index_on_push": true
+        }
+      };
+
+      try {
+        fs.writeFileSync(greptileConfigDest, JSON.stringify(greptileConfig, null, 2));
+        log('   ✅ Created .greptile.json (AI code review config)', 'green');
+        log('   ⚠️  Set GREPTILE_API_KEY and GREPTILE_GITHUB_TOKEN in .env', 'yellow');
+      } catch (error) {
+        log(`   ❌ Failed to create Greptile config: ${error.message}`, 'red');
+      }
+    }
+  }
+
+  // ========================================
+  // 8. Install Optional Development Tools
   // ========================================
   if (withStorybook || withPlaywright || withSandpack) {
     log('\n🔧 Installing optional development tools:', 'cyan');
@@ -759,7 +935,7 @@ function main() {
   // Success Summary
   // ========================================
   log('\n' + '═'.repeat(60), 'green');
-  log('🎉 API Development Tools v3.10.0 installed successfully!', 'green');
+  log('🎉 API Development Tools v3.12.0 installed successfully!', 'green');
   log('═'.repeat(60) + '\n', 'green');
 
   log('📋 What was installed:', 'bright');
@@ -775,16 +951,16 @@ function main() {
   log('   MCP:       context7, github (via claude mcp add)', 'blue');
   log('   Test UI:   /api-test page + /api/test-structure API (if Next.js)', 'blue');
 
-  log('\n🆕 New in v3.10.0:', 'bright');
-  log('   • Enhanced installer with detailed optional tools info', 'cyan');
-  log('   • UI workflow auto-prompts for Storybook/Playwright installation', 'cyan');
-  log('   • Demo JSONs updated for 13-phase workflow accuracy', 'cyan');
-  log('   • Animated 3D grid hero header on showcase pages', 'cyan');
-  log('   • Dev Tools landing page at /dev-tools', 'cyan');
-  log('   • Multi-endpoint API selector (e.g., /tts, /voices, /models)', 'cyan');
-  log('   • Audio playback for TTS/voice API responses', 'cyan');
-  log('   • Enhanced Hustle branding (#BA0C2F)', 'cyan');
-  log('   • Dark mode support throughout', 'cyan');
+  log('\n🆕 New in v3.12.0 (Autonomous Mode):', 'bright');
+  log('   • YOLO mode: --dangerously-skip-permissions (hooks still run)', 'cyan');
+  log('   • Budget tracking: 60% warn, 80% pause (configurable)', 'cyan');
+  log('   • ntfy push notifications for user_input_required events', 'cyan');
+  log('   • Resume commands in notifications: claude --resume {session_id}', 'cyan');
+  log('   • Greptile AI code review integration (--with-greptile)', 'cyan');
+  log('   • Graphite stacked PRs workflow (--with-graphite)', 'cyan');
+  log('   • Sonnet for Explore agents (not Haiku) for better quality', 'cyan');
+  log('   • Interactive setup wizard: npx api-dev-tools -i', 'cyan');
+  log('   • Phase summaries with ntfy notifications', 'cyan');
 
   log('\n📦 v3.9.0 Features (included):', 'bright');
   log('   • /hustle-ui-create command for components and pages', 'cyan');

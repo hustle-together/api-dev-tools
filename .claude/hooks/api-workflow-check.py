@@ -247,6 +247,13 @@ def main():
 
     # Block if required phases incomplete
     if incomplete_required:
+        # Send ntfy notification for autonomous mode
+        notify_user_input_required(
+            "Incomplete Phases",
+            f"Workflow for '{endpoint}' has incomplete required phases. User action needed.",
+            endpoint
+        )
+
         all_issues.append("\n\nTo continue:")
         all_issues.append("  1. Complete required phases above")
         all_issues.append("  2. Use /api-status to see detailed progress")

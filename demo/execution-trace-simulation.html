@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workflow Execution Trace - Live Terminal Simulation</title>
+    <title>Workflow Execution Trace - v3.12.0 Autonomous Mode</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <style>
         * {
@@ -327,10 +327,10 @@
         <p class="subtitle">Live Terminal Simulation - Hooks • Skills • Interviews • State</p>
 
         <div class="planned-notice">
-            <div class="planned-notice-title">⚠️ PLANNED IMPLEMENTATION - NOT CURRENT STATE</div>
+            <div class="planned-notice-title">🚀 v3.12.0 - AUTONOMOUS MODE + NOTIFICATIONS</div>
             <div class="planned-notice-text">
-                This demo shows how workflows WILL work AFTER TodoWrite integration is complete.
-                Current state (v3.11.0) does NOT have TodoWrite - this is the FUTURE roadmap.
+                This demo shows the complete workflow with YOLO mode, budget tracking, and ntfy push notifications.
+                When user input is required, ntfy notifications are sent with <code>claude --resume {session_id}</code>.
             </div>
         </div>
 
@@ -398,6 +398,8 @@
                             { type: 'system', text: '📊 Loading state from .claude/api-dev-state.json...' },
                             { type: 'state', text: 'State: { endpoint: null, turn_count: 0, workflow: null }' },
                             { type: 'hook', text: '✅ HOOK: State context injected into conversation' },
+                            { type: 'system', text: '💰 Budget tracking enabled: 75000 tokens max' },
+                            { type: 'system', text: '📱 ntfy notifications: hustleserver topic' },
                             { type: 'separator' }
                         ]
                     },
@@ -421,6 +423,7 @@
                                 'Other (I\'ll specify)'
                             ]},
                             { type: 'wait', text: '⏸ WAITING FOR USER INPUT...' },
+                            { type: 'hook', text: '📱 NTFY: "Phase 1 - Clarification Needed" → Resume: claude --resume stripe-payment-abc123' },
                             { type: 'user-input', text: '>>> User clicks: [2] Node.js SDK (@stripe/stripe-js)' },
                             { type: 'user', text: '👤 User confirmed: "Node.js SDK"' },
                             { type: 'separator' },

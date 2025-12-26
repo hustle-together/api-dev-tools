@@ -149,6 +149,14 @@ def main():
         if not user_decided:
             missing.append("User hasn't decided on gaps")
 
+        # Send ntfy notification for autonomous mode
+        notify_user_input_required(
+            10,
+            "Verification Gaps Found",
+            f"Gap analysis complete for '{endpoint}'. User decision needed on found gaps.",
+            endpoint
+        )
+
         print(json.dumps({
             "permissionDecision": "deny",
             "reason": f"""❌ BLOCKED: Verification (Phase 10) not complete.
