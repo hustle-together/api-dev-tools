@@ -85,9 +85,10 @@ This toolkit uses the **Agent Skills open standard** ([agentskills.io](https://a
 
 ---
 
-## 13-Phase Workflow (API Create)
+## 14-Phase Workflow (API Create)
 
 ```
+Phase 0:  TOC ENUMERATION    - List ALL API features before deep dive (v3.12.0)
 Phase 1:  DISAMBIGUATION     - Clarify ambiguous terms before research
 Phase 2:  SCOPE              - Confirm understanding of endpoint
 Phase 3:  INITIAL RESEARCH   - 2-3 targeted searches (Context7, WebSearch)
@@ -100,8 +101,12 @@ Phase 9:  TDD GREEN          - Minimal implementation to pass tests
 Phase 10: VERIFY             - Re-research docs, compare to implementation
 Phase 11: TDD REFACTOR       - Clean up code while tests pass
 Phase 12: DOCUMENTATION      - Update manifests, cache research
-Phase 13: COMPLETION         - Final verification, commit
+Phase 13: COMPLETION         - Final verification, scope coverage check
 ```
+
+**v3.12.0 Changes:**
+- **Phase 0 (TOC Enumeration)**: Fetches docs TOC, enumerates ALL features, user confirms scope
+- **Scope Coverage Enforcement**: Blocks completion if <80% of discovered features implemented
 
 ---
 
@@ -115,14 +120,15 @@ Phase 13: COMPLETION         - Final verification, commit
 
 ---
 
-## Enforcement Hooks (42 Total)
+## Enforcement Hooks (43 Total)
 
-### API Workflow Hooks (22)
+### API Workflow Hooks (23)
 
 | Hook | Event | Purpose |
 |------|-------|---------|
 | `session-startup.py` | SessionStart | Inject state context |
 | `enforce-external-research.py` | UserPromptSubmit | Require research first |
+| `enforce-toc-enumeration.py` | PreToolUse | Enforce Phase 0 (v3.12.0) |
 | `enforce-disambiguation.py` | PreToolUse | Enforce Phase 1 |
 | `enforce-scope.py` | PreToolUse | Enforce Phase 2 |
 | `enforce-research.py` | PreToolUse | Block writes without research |
@@ -142,7 +148,7 @@ Phase 13: COMPLETION         - Final verification, commit
 | `enforce-budget-limit.py` | PreToolUse | Check token budget limits |
 | `track-usage-budget.py` | PostToolUse | Track token usage per session |
 | `generate-phase-summary.py` | PostToolUse | Generate phase digests |
-| `api-workflow-check.py` | Stop | Block if phases incomplete |
+| `api-workflow-check.py` | Stop | Block if phases/scope incomplete |
 
 ### UI Workflow Hooks (12)
 

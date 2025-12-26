@@ -67,10 +67,11 @@ YOLO skips:
   ✗ "Allow Claude to run this command?"
 
 YOLO does NOT skip:
+  ✓ enforce-toc-enumeration.py (lists ALL features before research)
   ✓ enforce-research.py (blocks writes until research done)
   ✓ enforce-interview.py (requires interview before schema)
   ✓ verify-implementation.py (requires test before route)
-  ✓ api-workflow-check.py (blocks if phases incomplete)
+  ✓ api-workflow-check.py (blocks if phases/scope incomplete)
   ✓ enforce-budget-limit.py (pauses at token threshold)
 ```
 
@@ -352,6 +353,46 @@ Prevent accidental modification of sensitive files:
 ```
 
 If a hook blocks 3 times, workflow pauses and sends notification.
+
+### Scope Coverage Enforcement (v3.12.0)
+
+**New in v3.12.0:** The workflow now enforces that ALL discovered features are either implemented or explicitly deferred.
+
+```json
+{
+  "safety": {
+    "min_scope_coverage_percent": 80
+  }
+}
+```
+
+**How it works:**
+
+1. **Phase 0: TOC Enumeration** - Before research, Claude fetches the docs and enumerates ALL available endpoints/features
+2. **User Confirmation** - User confirms which features to implement
+3. **Scope Tracking** - As features are implemented or deferred, coverage is tracked
+4. **Completion Check** - Workflow blocks if coverage < 80%
+
+**Example blocking message:**
+```
+❌ SCOPE COVERAGE INCOMPLETE (45%)
+   Discovered: 11 features
+   Implemented: 5
+   Deferred: 0
+   Missing: 6
+
+   Features NOT implemented or deferred:
+     • POST /auth/refresh
+     • DELETE /users/:id
+     • GET /webhooks
+     • ...
+
+   ⛔ Coverage 45% is below required 80%
+```
+
+**To proceed:**
+- Implement the missing features, OR
+- Explicitly defer them during interview (marks them as intentionally skipped)
 
 ---
 
