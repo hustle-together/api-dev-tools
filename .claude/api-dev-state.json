@@ -177,6 +177,24 @@
         "confidence": "critical"
       },
       "injected": true
+    },
+    {
+      "timestamp": "2025-12-26T06:40:46.466122",
+      "prompt_preview": "Are there any gaps here? Doing it at that point, not doing additional research, or what do you think...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "should go from phase i to phase xiv. remember or a",
+          "add the toc to that disambiguation phase. all of o",
+          "documentation"
+        ],
+        "patterns_matched": [
+          "question_pattern",
+          "always_research"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
     }
   ],
   "phases": {
