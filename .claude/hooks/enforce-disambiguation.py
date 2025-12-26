@@ -150,6 +150,14 @@ Phase 1 (Disambiguation) is required before any implementation."""
         if not phase_exit_confirmed:
             missing.append("Phase exit confirmation (user must explicitly confirm to proceed)")
 
+        # Send ntfy notification for autonomous mode
+        notify_user_input_required(
+            1,
+            "Clarification Needed",
+            f"Disambiguation required for '{endpoint}'. User must select interpretation.",
+            endpoint
+        )
+
         print(json.dumps({
             "permissionDecision": "deny",
             "reason": f"""❌ BLOCKED: Disambiguation phase (Phase 1) not complete.
