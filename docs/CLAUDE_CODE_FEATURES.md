@@ -88,11 +88,40 @@ You are a documentation specialist. Use Context7 to find accurate, up-to-date do
 
 ### Built-in Subagents
 
-| Agent | Purpose | Mode |
-|-------|---------|------|
-| **Explore** | Fast codebase search/analysis | Read-only |
-| **Plan** | Research and design before implementation | Plan mode |
-| **General-purpose** | Multi-step autonomous tasks | Full access |
+| Agent | Purpose | Mode | Default Model |
+|-------|---------|------|---------------|
+| **Explore** | Fast codebase search/analysis | Read-only | Configurable (Sonnet recommended) |
+| **Plan** | Research and design before implementation | Plan mode | Same as parent |
+| **General-purpose** | Multi-step autonomous tasks | Full access | Same as parent |
+
+### Explore Agent Details
+
+The Explore agent is optimized for fast, read-only codebase analysis:
+
+**Characteristics:**
+- Uses separate context window (doesn't fill main context)
+- Read-only access (Glob, Grep, Read tools only)
+- Fast responses for codebase search
+- Multiple can run in parallel
+
+**Configuring Explore Model:**
+```json
+// In .claude/autonomous-config.json
+{
+  "subagents": {
+    "use_explore_for_research": true,
+    "explore_model": "sonnet",  // NOT haiku - use Sonnet for quality
+    "parallel_research_agents": 3,
+    "background_verification": true
+  }
+}
+```
+
+**Why Sonnet over Haiku for Explore:**
+- Better understanding of codebase patterns
+- More accurate file discovery
+- Fewer false positives in search results
+- Worth the marginal cost increase for research quality
 
 ### Invoking Subagents
 
@@ -104,7 +133,18 @@ You are a documentation specialist. Use Context7 to find accurate, up-to-date do
 # Or explicitly via Task tool with subagent_type parameter
 ```
 
-**Impact on api-dev-tools:** Could parallelize research phases (Phase 3/5) using multiple Explore agents.
+**In Autonomous Mode:**
+Research phases automatically spawn Explore agents:
+```
+Phase 3 (Initial Research):
+  ├── Explore Agent 1: Search codebase for existing implementations
+  ├── Explore Agent 2: Find related types/schemas
+  └── Explore Agent 3: Check test patterns
+
+Results return without filling main context window.
+```
+
+**Impact on api-dev-tools:** Parallelizes research phases (Phase 3/5) using multiple Explore agents configured with Sonnet model.
 
 **Sources:**
 - [Subagents Documentation](https://code.claude.com/docs/en/sub-agents)
@@ -306,7 +346,7 @@ Alt+T (Linux/Windows) or Tab (legacy)
 }
 ```
 
-**Impact on api-dev-tools:** Core of our enforcement system. All 39 hooks leverage this.
+**Impact on api-dev-tools:** Core of our enforcement system. All 42 hooks leverage this (including 3 new autonomous mode hooks).
 
 **Sources:**
 - [Claude Code Hooks Guide](https://code.claude.com/docs/en/hooks-guide)
@@ -530,7 +570,7 @@ claude --resume <session> --fork-session --session-id my-fork
 - 2x faster, 3x cheaper ($1/$5 vs $3/$15)
 - Optimal for lightweight, frequent agents
 
-**Impact on api-dev-tools:** Could use Haiku for Explore subagents, Opus for complex reasoning.
+**Impact on api-dev-tools:** Use Sonnet for Explore subagents (better quality), Opus for complex reasoning. Avoid Haiku for research tasks.
 
 **Sources:**
 - [Model Configuration](https://code.claude.com/docs/en/model-config)
@@ -660,15 +700,27 @@ claude --resume <session> --fork-session --session-id my-fork
 
 Based on this research, consider enhancing:
 
-| Feature | Potential Use |
-|---------|---------------|
-| **Subagents** | Parallel research in Phase 3/5 |
-| **Background agents** | Run verification while user works |
-| **LSP integration** | Type-check schemas against docs |
-| **Named sessions** | Workflow continuity for `/api-continue` |
-| **Haiku 4.5** | Cheaper Explore agents |
-| **Effort parameter** | Control thinking depth per phase |
-| **Chrome integration** | Browser-based API testing |
+| Feature | Potential Use | Status |
+|---------|---------------|--------|
+| **Subagents** | Parallel research in Phase 3/5 | Implemented (v3.12.0) |
+| **Background agents** | Run verification while user works | Configured |
+| **YOLO mode** | Autonomous workflow execution | Default (v3.12.0) |
+| **Budget tracking** | Token limit management | Implemented (v3.12.0) |
+| **LSP integration** | Type-check schemas against docs | Future |
+| **Named sessions** | Workflow continuity for `/api-continue` | Future |
+| **Sonnet for Explore** | Quality research over cost savings | Implemented |
+| **Effort parameter** | Control thinking depth per phase | Future |
+| **Chrome integration** | Browser-based API testing | Future |
+
+### Implemented in v3.12.0
+
+- **Autonomous mode** with YOLO as default execution mode
+- **Sonnet for Explore agents** (not Haiku - quality over cost)
+- **Budget tracking** with warn at 60%, pause at 80%
+- **Phase summaries** for review of autonomous runs
+- **ntfy notifications** for progress and errors
+- **Greptile integration** for AI code review
+- **Graphite integration** for stacked PRs
 
 ---
 
@@ -684,6 +736,6 @@ Based on this research, consider enhancing:
 
 ---
 
-**Version:** 1.0.0
-**Author:** api-dev-tools
+**Version:** 3.12.0
+**Author:** Hustle Together
 **License:** MIT

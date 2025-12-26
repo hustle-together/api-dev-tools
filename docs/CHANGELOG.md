@@ -2,6 +2,57 @@
 
 All notable changes to `@hustle-together/api-dev-tools` will be documented in this file.
 
+## [3.12.0] - 2025-12-26
+
+### Added - Autonomous Mode & Integrations
+
+- **Autonomous Mode** - Run workflows unattended with YOLO mode
+  - `--dangerously-skip-permissions` skips prompts but hooks still enforce workflow
+  - Budget tracking: warn at 60%, pause at 80% token usage
+  - ntfy notifications for progress, errors, and completion
+  - Phase summaries for easy review of autonomous runs
+  - Configuration in `.claude/autonomous-config.json`
+
+- **New Hooks (3)**
+  - `enforce-budget-limit.py` (PreToolUse) - Token budget enforcement
+  - `track-usage-budget.py` (PostToolUse) - Token usage tracking
+  - `generate-phase-summary.py` (PostToolUse) - Phase digest generation
+  - Total hooks: 42 (was 39)
+
+- **Greptile Integration** - AI code review
+  - MCP server configuration
+  - GitHub PR review automation
+  - `.greptile.json` configuration file
+  - CLAUDE.md context awareness
+  - Documentation: [GREPTILE_INTEGRATION.md](./GREPTILE_INTEGRATION.md)
+
+- **Graphite Integration** - Stacked PRs workflow
+  - `gt` CLI commands documentation
+  - Integration with `/commit` and `/pr` skills
+  - Documentation: [GRAPHITE_WORKFLOW.md](./GRAPHITE_WORKFLOW.md)
+
+- **Documentation**
+  - [AUTONOMOUS_MODE.md](./AUTONOMOUS_MODE.md) - Complete autonomous guide
+  - [GREPTILE_INTEGRATION.md](./GREPTILE_INTEGRATION.md) - AI code review setup
+  - [GRAPHITE_WORKFLOW.md](./GRAPHITE_WORKFLOW.md) - Stacked PRs workflow
+  - Updated [CLAUDE_CODE_FEATURES.md](./CLAUDE_CODE_FEATURES.md) with Explore agent details
+
+### Changed
+
+- **YOLO mode is default** - Autonomous execution as primary mode
+- **Sonnet for Explore agents** - NOT Haiku (quality over cost savings)
+- **Removed CodeRabbit** - Using Greptile instead (3-month free plan)
+- **CLAUDE.md simplified** - References docs instead of inline details
+- **Hook count: 42** (was 39)
+
+### Configuration Files
+
+- `.claude/autonomous-config.json` - Autonomous mode settings
+- `.greptile.json` - Greptile code review configuration
+- `.claude/settings.json` - Updated with new hooks
+
+---
+
 ## [3.11.0] - 2025-12-24
 
 ### Added - Agent Skills Migration (Phase 1 Complete)

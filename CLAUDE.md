@@ -1,11 +1,11 @@
 # Project Instructions
 
-## API Development Workflow (v3.11.0)
+## API Development Workflow (v3.12.0)
 
 This project uses **@hustle-together/api-dev-tools** for interview-driven, research-first API development.
 
-**Current Status:** Skills Migration Complete | Implementing Enhancement Roadmap
-**Last Updated:** 2025-12-25
+**Current Status:** Autonomous Mode + Integrations | YOLO mode default
+**Last Updated:** 2025-12-26
 
 ---
 
@@ -13,7 +13,7 @@ This project uses **@hustle-together/api-dev-tools** for interview-driven, resea
 
 This toolkit uses the **Agent Skills open standard** ([agentskills.io](https://agentskills.io)):
 - **33 Agent Skills** in `.skills/` directory
-- **39 Enforcement Hooks** in `.claude/hooks/`
+- **42 Enforcement Hooks** in `.claude/hooks/`
 - **Cross-platform**: Claude Code, VS Code, Cursor, ChatGPT, GitHub Copilot
 
 ---
@@ -115,9 +115,9 @@ Phase 13: COMPLETION         - Final verification, commit
 
 ---
 
-## Enforcement Hooks (39 Total)
+## Enforcement Hooks (42 Total)
 
-### API Workflow Hooks (19)
+### API Workflow Hooks (22)
 
 | Hook | Event | Purpose |
 |------|-------|---------|
@@ -139,6 +139,9 @@ Phase 13: COMPLETION         - Final verification, commit
 | `periodic-reground.py` | PostToolUse | Re-ground every 7 turns |
 | `verify-after-green.py` | PostToolUse | Trigger Phase 10 after test pass |
 | `track-session-metrics.py` | PostToolUse | Track cost/time metrics |
+| `enforce-budget-limit.py` | PreToolUse | Check token budget limits |
+| `track-usage-budget.py` | PostToolUse | Track token usage per session |
+| `generate-phase-summary.py` | PostToolUse | Generate phase digests |
 | `api-workflow-check.py` | Stop | Block if phases incomplete |
 
 ### UI Workflow Hooks (12)
@@ -190,17 +193,31 @@ Research cached in `.claude/research/` with 7-day freshness:
 
 ---
 
-## Enhancement Roadmap
+## Autonomous Mode (v3.12.0)
 
-### Completed (v3.11.0)
-- [x] Skills Migration (33 skills, cross-platform)
-- [x] Commands archived to `docs/archive/legacy-commands/`
-- [x] Documentation reorganized
+Run workflows unattended with YOLO mode (default):
 
-### Optional Integrations
-- **CodeRabbit** - AI PR reviews (free for OSS)
-- **Graphite** - Stacked PRs workflow
-- **Greptile** - Deep codebase analysis ($30/dev/month)
+```bash
+claude --dangerously-skip-permissions -p "/api-create stripe-checkout"
+```
+
+**Features:**
+- Budget tracking with pause at 80% usage
+- ntfy notifications for progress/errors
+- Phase summaries for review
+- Hooks still enforce 13-phase workflow
+
+See [docs/AUTONOMOUS_MODE.md](docs/AUTONOMOUS_MODE.md) for full guide.
+
+---
+
+## Integrations
+
+| Integration | Purpose | Guide |
+|-------------|---------|-------|
+| **Greptile** | AI code review, MCP server | [GREPTILE_INTEGRATION.md](docs/GREPTILE_INTEGRATION.md) |
+| **Graphite** | Stacked PRs workflow | [GRAPHITE_WORKFLOW.md](docs/GRAPHITE_WORKFLOW.md) |
+| **Context7** | Documentation lookup | Required MCP server |
 
 ---
 
@@ -236,8 +253,11 @@ Research cached in `.claude/research/` with 7-day freshness:
 
 | Document | Purpose |
 |----------|---------|
-| [docs/](docs/) | All documentation |
 | [docs/TLDR.md](docs/TLDR.md) | Quick command reference |
+| [docs/AUTONOMOUS_MODE.md](docs/AUTONOMOUS_MODE.md) | YOLO mode, budget, notifications |
+| [docs/GREPTILE_INTEGRATION.md](docs/GREPTILE_INTEGRATION.md) | AI code review setup |
+| [docs/GRAPHITE_WORKFLOW.md](docs/GRAPHITE_WORKFLOW.md) | Stacked PRs guide |
+| [docs/CLAUDE_CODE_FEATURES.md](docs/CLAUDE_CODE_FEATURES.md) | Claude Code features reference |
 | [.skills/README.md](.skills/README.md) | Skills documentation (33 skills) |
 | [docs/CHANGELOG.md](docs/CHANGELOG.md) | Version history |
 
@@ -253,6 +273,6 @@ Research cached in `.claude/research/` with 7-day freshness:
 
 ---
 
-**Version:** 3.11.0
+**Version:** 3.12.0
 **License:** MIT
 **Author:** Hustle Together

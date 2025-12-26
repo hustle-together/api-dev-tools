@@ -1,0 +1,94 @@
+{
+  "$schema": "https://greptile.com/schemas/config.json",
+  "version": "1.0.0",
+  "description": "Greptile configuration for api-dev-tools",
+
+  "indexing": {
+    "branches": ["master", "main", "develop"],
+    "include_patterns": [
+      "src/**",
+      "lib/**",
+      ".skills/**",
+      ".claude/hooks/**"
+    ],
+    "exclude_patterns": [
+      "node_modules/**",
+      "dist/**",
+      "build/**",
+      ".next/**",
+      "coverage/**",
+      "*.test.ts",
+      "*.spec.ts",
+      "__tests__/**",
+      "__mocks__/**"
+    ]
+  },
+
+  "reviews": {
+    "enabled": true,
+    "severity": "medium",
+    "categories": [
+      "bugs",
+      "security",
+      "performance",
+      "style"
+    ],
+    "auto_approve": false,
+    "require_tests": true,
+    "ignore_paths": [
+      "*.md",
+      "*.json",
+      "package-lock.json",
+      "pnpm-lock.yaml",
+      ".claude/api-dev-state.json",
+      ".claude/sessions/**"
+    ],
+    "focus_areas": [
+      "API input validation",
+      "Error handling patterns",
+      "TypeScript strict mode compliance",
+      "Zod schema consistency",
+      "Test coverage for edge cases"
+    ]
+  },
+
+  "context": {
+    "claude_md_path": "CLAUDE.md",
+    "additional_context": [
+      "docs/FULL_DOCUMENTATION.md",
+      ".skills/README.md"
+    ],
+    "project_conventions": {
+      "api_pattern": "13-phase interview-driven workflow",
+      "testing": "TDD with failing tests before implementation",
+      "validation": "Zod schemas for all inputs",
+      "hooks": "Enforcement via PreToolUse/PostToolUse hooks"
+    }
+  },
+
+  "notifications": {
+    "slack_webhook": "",
+    "notify_on": ["critical", "security"]
+  },
+
+  "custom_rules": [
+    {
+      "id": "require-zod-validation",
+      "description": "All API endpoints must use Zod schema validation",
+      "pattern": "app.post|app.put|app.patch",
+      "check": "Must have corresponding Zod schema"
+    },
+    {
+      "id": "no-any-types",
+      "description": "Avoid 'any' type in TypeScript",
+      "pattern": ": any",
+      "severity": "warning"
+    },
+    {
+      "id": "test-before-impl",
+      "description": "Tests should exist for all route handlers",
+      "pattern": "router\\.(get|post|put|delete|patch)",
+      "check": "Corresponding .test.ts file should exist"
+    }
+  ]
+}
