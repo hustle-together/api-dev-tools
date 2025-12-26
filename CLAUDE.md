@@ -215,8 +215,7 @@ See [docs/AUTONOMOUS_MODE.md](docs/AUTONOMOUS_MODE.md) for full guide.
 
 | Integration | Purpose | Guide |
 |-------------|---------|-------|
-| **Greptile** | AI code review, MCP server | [GREPTILE_INTEGRATION.md](docs/GREPTILE_INTEGRATION.md) |
-| **Graphite** | Stacked PRs workflow | [GRAPHITE_WORKFLOW.md](docs/GRAPHITE_WORKFLOW.md) |
+| **Greptile** | AI code review via MCP | [GREPTILE_INTEGRATION.md](docs/GREPTILE_INTEGRATION.md) |
 | **Context7** | Documentation lookup | Required MCP server |
 
 ---

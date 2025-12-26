@@ -98,7 +98,6 @@ This runs you through 13 enforced phases:
 | [docs/TLDR.md](./docs/TLDR.md) | Quick command reference |
 | [docs/AUTONOMOUS_MODE.md](./docs/AUTONOMOUS_MODE.md) | YOLO mode, budget tracking, notifications |
 | [docs/GREPTILE_INTEGRATION.md](./docs/GREPTILE_INTEGRATION.md) | AI code review setup |
-| [docs/GRAPHITE_WORKFLOW.md](./docs/GRAPHITE_WORKFLOW.md) | Stacked PRs workflow |
 | [docs/CLAUDE_CODE_FEATURES.md](./docs/CLAUDE_CODE_FEATURES.md) | Claude Code features reference |
 | [docs/CHANGELOG.md](./docs/CHANGELOG.md) | Version history |
 | [.skills/README.md](./.skills/README.md) | Skills documentation (33 skills) |
@@ -190,20 +189,27 @@ cat .claude/autonomous-config.json
 
 ---
 
+## What's Installed Automatically
+
+**Storybook** and **Playwright** are now REQUIRED and installed automatically:
+
+| Tool | Purpose | Details |
+|------|---------|---------|
+| **Storybook** | Component development | Required for `/hustle-ui-create` |
+| **Playwright** | E2E testing | Required for `/hustle-ui-create-page` |
+
 ## Optional Integrations
 
 Install with flags or configure later:
 
 ```bash
-npx @hustle-together/api-dev-tools --scope=project --with-greptile --with-graphite
+npx @hustle-together/api-dev-tools --scope=project --with-greptile --with-ntfy
 ```
 
 | Tool | Purpose | Flag | Setup |
 |------|---------|------|-------|
-| **Greptile** | AI code review | `--with-greptile` | [greptile.com](https://greptile.com) |
-| **Graphite** | Stacked PRs workflow | `--with-graphite` | `brew install withgraphite/tap/graphite` |
-| **Storybook** | Component development | `--with-storybook` | Auto-init during install |
-| **Playwright** | E2E testing | `--with-playwright` | Auto-init during install |
+| **Greptile** | AI code review via MCP | `--with-greptile` | Requires `GREPTILE_API_KEY` env var |
+| **Sandpack** | Live UI previews | `--with-sandpack` | Auto-install during setup |
 | **ntfy** | Push notifications | `--with-ntfy` | [ntfy.sh](https://ntfy.sh) |
 
 These are optional - workflows complete without them.

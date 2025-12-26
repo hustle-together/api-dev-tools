@@ -17,10 +17,13 @@ const { execSync } = require('child_process');
  *
  * Usage: npx @hustle-together/api-dev-tools --scope=project
  *
+ * Storybook and Playwright are automatically installed (required for UI workflows).
+ *
  * Optional flags:
- *   --with-storybook   Auto-initialize Storybook for component development
- *   --with-playwright  Auto-initialize Playwright for E2E testing
+ *   --with-greptile    Add Greptile MCP for AI code review (requires GREPTILE_API_KEY env)
  *   --with-sandpack    Auto-install Sandpack for live UI previews
+ *   --with-ntfy        Configure ntfy push notifications
+ *   -i, --interactive  Interactive setup wizard
  */
 
 // Parse command-line arguments
@@ -30,7 +33,6 @@ const withStorybook = args.includes('--with-storybook');
 const withPlaywright = args.includes('--with-playwright');
 const withSandpack = args.includes('--with-sandpack');
 const withGreptile = args.includes('--with-greptile');
-const withGraphite = args.includes('--with-graphite');
 const withNtfy = args.includes('--with-ntfy');
 const interactiveSetup = args.includes('--interactive') || args.includes('-i');
 const skipInteractive = args.includes('--no-interactive');
@@ -824,11 +826,6 @@ function main() {
         "github_token_env": "GREPTILE_GITHUB_TOKEN",
         "review_on_pr": true,
         "severity": "medium"
-      },
-      "graphite": {
-        "enabled": withGraphite || false,
-        "trunk_branch": "main",
-        "auto_restack": true
       }
     }
   };
@@ -929,29 +926,39 @@ function main() {
       }
     }
 
-    if (withStorybook) {
-      try {
-        log('   📖 Initializing Storybook (this may take a moment)...', 'blue');
-        execSync('npx storybook@latest init --yes 2>&1', { cwd: targetDir, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'], timeout: 300000 });
-        log('   ✅ Storybook initialized successfully', 'green');
-        log('   💡 Run with: pnpm storybook', 'yellow');
-      } catch (error) {
-        log('   ⚠️  Storybook init failed. Run manually:', 'yellow');
-        log('      npx storybook@latest init', 'yellow');
-      }
-    }
+  // ========================================
+  // 9. Add Greptile MCP for AI Code Review (if enabled)
+  // ========================================
+  if (withGreptile) {
+    log('\n🔍 Setting up Greptile AI Code Review:', 'cyan');
+    log('   Greptile provides AI-powered code review via MCP.', 'bright');
 
-    if (withPlaywright) {
+    // Check if GREPTILE_API_KEY is set
+    const greptileKey = process.env.GREPTILE_API_KEY;
+    if (greptileKey) {
       try {
-        log('   🎭 Initializing Playwright (this may take a moment)...', 'blue');
-        execSync('npm init playwright@latest -- --yes 2>&1', { cwd: targetDir, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'], timeout: 300000 });
-        log('   ✅ Playwright initialized successfully', 'green');
-        log('   💡 Run tests with: npx playwright test', 'yellow');
+        log('   🔧 Adding Greptile MCP server...', 'blue');
+        execSync(`claude mcp add --transport http greptile https://api.greptile.com/mcp --header "Authorization: Bearer ${greptileKey}" 2>&1`, {
+          cwd: targetDir,
+          encoding: 'utf8',
+          stdio: ['pipe', 'pipe', 'pipe']
+        });
+        log('   ✅ Greptile MCP added successfully', 'green');
+        log('   💡 Greptile will review PRs automatically', 'yellow');
       } catch (error) {
-        log('   ⚠️  Playwright init failed. Run manually:', 'yellow');
-        log('      npm init playwright@latest', 'yellow');
+        log('   ⚠️  Greptile MCP setup failed. Add manually:', 'yellow');
+        log('      claude mcp add --transport http greptile https://api.greptile.com/mcp \\', 'yellow');
+        log('        --header "Authorization: Bearer YOUR_GREPTILE_API_KEY"', 'yellow');
       }
+    } else {
+      log('   ⚠️  GREPTILE_API_KEY not found in environment.', 'yellow');
+      log('   To enable Greptile:', 'yellow');
+      log('      1. Get API key from https://greptile.com', 'yellow');
+      log('      2. Set: export GREPTILE_API_KEY=your-key', 'yellow');
+      log('      3. Run: claude mcp add --transport http greptile https://api.greptile.com/mcp \\', 'yellow');
+      log('              --header "Authorization: Bearer $GREPTILE_API_KEY"', 'yellow');
     }
+  }
   }
 
   // ========================================
@@ -979,8 +986,8 @@ function main() {
   log('   • Budget tracking: 60% warn, 80% pause (configurable)', 'cyan');
   log('   • ntfy push notifications for user_input_required events', 'cyan');
   log('   • Resume commands in notifications: claude --resume {session_id}', 'cyan');
-  log('   • Greptile AI code review integration (--with-greptile)', 'cyan');
-  log('   • Graphite stacked PRs workflow (--with-graphite)', 'cyan');
+  log('   • Greptile AI code review via MCP (--with-greptile)', 'cyan');
+  log('   • Storybook + Playwright REQUIRED (not optional)', 'cyan');
   log('   • Sonnet for Explore agents (not Haiku) for better quality', 'cyan');
   log('   • Interactive setup wizard: npx api-dev-tools -i', 'cyan');
   log('   • Phase summaries with ntfy notifications', 'cyan');
