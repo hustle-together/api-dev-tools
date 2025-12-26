@@ -129,6 +129,32 @@
         "confidence": "critical"
       },
       "injected": true
+    },
+    {
+      "timestamp": "2025-12-26T06:20:36.732430",
+      "prompt_preview": "Normally for Greptile, would that be something that would be inputted during the installation phase ...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "can you run it without me? because that's a goal h",
+          "add an api, so we have the full brevity there. as ",
+          "fix everything that's not working properly. also, ",
+          "not working",
+          "api",
+          "documentation",
+          "option",
+          "parameter",
+          "table",
+          "fix"
+        ],
+        "patterns_matched": [
+          "always_research",
+          "question_pattern",
+          "technical_term"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
     }
   ],
   "phases": {
