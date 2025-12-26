@@ -98,7 +98,9 @@ RECOMMENDED_PHASES = [
 ]
 
 # Minimum scope coverage required (v3.12.0)
-MIN_SCOPE_COVERAGE_PERCENT = 80  # Block if less than 80% of discovered features implemented
+# Coverage = (implemented + deferred) / discovered
+# Must be 100% - every discovered feature must be explicitly decided
+MIN_SCOPE_COVERAGE_PERCENT = 100  # All features must be accounted for
 
 
 def get_git_modified_files() -> list[str]:
