@@ -75,7 +75,7 @@ This runs you through 13 enforced phases:
 | Category | Count | Examples |
 |----------|-------|----------|
 | **Skills** | 33 | api-create, hustle-ui-create, commit, pr |
-| **Hooks** | 19 | Enforcement for each phase |
+| **Hooks** | 39 | Enforcement for each phase |
 | **Templates** | 9 | Component, Page, API route, Showcases |
 
 ### Skills by Category

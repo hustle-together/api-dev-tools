@@ -13,7 +13,7 @@ This project uses **@hustle-together/api-dev-tools** for interview-driven, resea
 
 This toolkit uses the **Agent Skills open standard** ([agentskills.io](https://agentskills.io)):
 - **33 Agent Skills** in `.skills/` directory
-- **19 Enforcement Hooks** in `.claude/hooks/`
+- **39 Enforcement Hooks** in `.claude/hooks/`
 - **Cross-platform**: Claude Code, VS Code, Cursor, ChatGPT, GitHub Copilot
 
 ---
@@ -115,7 +115,9 @@ Phase 13: COMPLETION         - Final verification, commit
 
 ---
 
-## Enforcement Hooks (18 Total)
+## Enforcement Hooks (39 Total)
+
+### API Workflow Hooks (19)
 
 | Hook | Event | Purpose |
 |------|-------|---------|
@@ -136,7 +138,38 @@ Phase 13: COMPLETION         - Final verification, commit
 | `track-tool-use.py` | PostToolUse | Log research, count turns |
 | `periodic-reground.py` | PostToolUse | Re-ground every 7 turns |
 | `verify-after-green.py` | PostToolUse | Trigger Phase 10 after test pass |
+| `track-session-metrics.py` | PostToolUse | Track cost/time metrics |
 | `api-workflow-check.py` | Stop | Block if phases incomplete |
+
+### UI Workflow Hooks (12)
+
+| Hook | Event | Purpose |
+|------|-------|---------|
+| `enforce-ui-disambiguation.py` | PreToolUse | UI component disambiguation |
+| `enforce-ui-interview.py` | PreToolUse | UI interview enforcement |
+| `enforce-brand-guide.py` | PreToolUse | Brand guide compliance |
+| `enforce-a11y-audit.py` | PreToolUse | Accessibility checks |
+| `enforce-page-components.py` | PreToolUse | Page component validation |
+| `enforce-page-data-schema.py` | PreToolUse | Page data schema |
+| `enforce-freshness.py` | PreToolUse | Research freshness check |
+| `enforce-questions-sourced.py` | PreToolUse | Sourced interview questions |
+| `enforce-schema-from-interview.py` | PreToolUse | Schema from interview |
+| `check-api-routes.py` | PreToolUse | API route validation |
+| `check-storybook-setup.py` | PreToolUse | Storybook configuration |
+| `check-playwright-setup.py` | PreToolUse | Playwright E2E setup |
+
+### Utility Hooks (8)
+
+| Hook | Event | Purpose |
+|------|-------|---------|
+| `cache-research.py` | PostToolUse | Cache research results |
+| `session-logger.py` | PostToolUse | Log session activity |
+| `track-scope-coverage.py` | PostToolUse | Track scope coverage |
+| `update-registry.py` | PostToolUse | Update API registry |
+| `update-api-showcase.py` | PostToolUse | Update API showcase |
+| `update-ui-showcase.py` | PostToolUse | Update UI showcase |
+| `generate-manifest-entry.py` | PostToolUse | Generate manifest entries |
+| `detect-interruption.py` | Stop | Detect workflow interruption |
 
 ---
 

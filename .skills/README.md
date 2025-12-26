@@ -167,7 +167,7 @@ Documentation cached in `.claude/research/` with 7-day freshness:
 
 ### Optional but Recommended
 
-- **Enforcement Hooks**: 18 Python scripts that enforce workflow rules
+- **Enforcement Hooks**: 39 Python scripts that enforce workflow rules
 - **Settings.json**: Hook registration for lifecycle events
 
 ## 🔒 Enforcement Hooks (Optional)
