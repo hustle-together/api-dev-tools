@@ -81,7 +81,7 @@ def notify_user_input_required(phase_name, reason, endpoint):
 
 # Phases that MUST be complete before stopping
 REQUIRED_PHASES = [
-    ("toc_enumeration", "TOC enumeration (list ALL features first)"),
+    ("toc_enumeration", "Feature enumeration (list ALL features first)"),
     ("research_initial", "Initial research (Context7/WebSearch)"),
     ("interview", "User interview"),
     ("tdd_red", "TDD Red phase (failing tests written)"),

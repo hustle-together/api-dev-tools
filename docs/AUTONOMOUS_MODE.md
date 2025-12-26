@@ -356,30 +356,34 @@ If a hook blocks 3 times, workflow pauses and sends notification.
 
 ### Scope Coverage Enforcement (v3.12.0)
 
-**New in v3.12.0:** The workflow now enforces that ALL discovered features are either implemented or explicitly deferred.
-
-```json
-{
-  "safety": {
-    "min_scope_coverage_percent": 80
-  }
-}
-```
+**New in v3.12.0:** Every discovered feature must be explicitly decided - implement or defer. No unknowns allowed.
 
 **How it works:**
 
-1. **Phase 0: TOC Enumeration** - Before research, Claude fetches the docs and enumerates ALL available endpoints/features
-2. **User Confirmation** - User confirms which features to implement
-3. **Scope Tracking** - As features are implemented or deferred, coverage is tracked
-4. **Completion Check** - Workflow blocks if coverage < 80%
+1. **Phase 1: Feature Enumeration** - Claude fetches docs and enumerates ALL available endpoints/features
+2. **Phase 5: Interview** - For each feature, you decide: implement now, defer for later, or skip
+3. **Scope Tracking** - Tracks: discovered, implemented, deferred
+4. **Phase 14: Completion Check** - Blocks if ANY features are undecided
 
-**Example blocking message:**
+**Coverage Formula:**
 ```
-❌ SCOPE COVERAGE INCOMPLETE (45%)
+Coverage = (implemented + deferred) / discovered
+
+discovered = 11
+implemented = 3    ← You're building these
+deferred = 8       ← You explicitly said "not now"
+missing = 0        ← None left undecided
+
+Coverage = 11/11 = 100% ✅ PASS
+```
+
+**Example blocking message (undecided features):**
+```
+❌ SCOPE COVERAGE INCOMPLETE
    Discovered: 11 features
    Implemented: 5
    Deferred: 0
-   Missing: 6
+   Missing: 6      ← These were never decided!
 
    Features NOT implemented or deferred:
      • POST /auth/refresh
@@ -387,12 +391,10 @@ If a hook blocks 3 times, workflow pauses and sends notification.
      • GET /webhooks
      • ...
 
-   ⛔ Coverage 45% is below required 80%
+   ⛔ Every feature must be explicitly decided
 ```
 
-**To proceed:**
-- Implement the missing features, OR
-- Explicitly defer them during interview (marks them as intentionally skipped)
+**Key point:** You don't have to implement everything. You just have to DECIDE on everything. Deferring 80% of features is fine - the workflow passes because you accounted for all of them.
 
 ---
 

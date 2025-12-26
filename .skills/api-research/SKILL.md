@@ -31,7 +31,7 @@ allowed-tools: WebSearch WebFetch mcp__context7 mcp__github AskUserQuestion Read
 
 ## Research Phases
 
-### Phase 0: TOC Enumeration (MANDATORY - v3.12.0)
+### Phase 1: Feature Enumeration (MANDATORY - v3.12.0)
 
 **Before deep diving, enumerate ALL available features/endpoints.**
 
@@ -45,7 +45,7 @@ This prevents partial implementation by ensuring user knows EVERYTHING the API o
 
 ```
 ┌────────────────────────────────────────────────────────────┐
-│ TOC ENUMERATION: [api-name]                                │
+│ FEATURE ENUMERATION: [api-name]                            │
 │                                                            │
 │ Found documentation at: [main-docs-url]                    │
 │                                                            │
@@ -125,7 +125,7 @@ This prevents partial implementation by ensuring user knows EVERYTHING the API o
 
 ---
 
-### Phase 1: Initial Discovery (Automatic)
+### Phase 4: Initial Discovery (Automatic)
 
 Run 2-3 targeted searches:
 ```

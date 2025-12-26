@@ -88,25 +88,26 @@ This toolkit uses the **Agent Skills open standard** ([agentskills.io](https://a
 ## 14-Phase Workflow (API Create)
 
 ```
-Phase 0:  TOC ENUMERATION    - List ALL API features before deep dive (v3.12.0)
-Phase 1:  DISAMBIGUATION     - Clarify ambiguous terms before research
-Phase 2:  SCOPE              - Confirm understanding of endpoint
-Phase 3:  INITIAL RESEARCH   - 2-3 targeted searches (Context7, WebSearch)
-Phase 4:  INTERVIEW          - Questions FROM discovered params
-Phase 5:  DEEP RESEARCH      - Propose additional searches based on answers
-Phase 6:  SCHEMA             - Create Zod schema from research + interview
-Phase 7:  ENVIRONMENT        - Verify API keys exist
-Phase 8:  TDD RED            - Write failing tests from schema
-Phase 9:  TDD GREEN          - Minimal implementation to pass tests
-Phase 10: VERIFY             - Re-research docs, compare to implementation
-Phase 11: TDD REFACTOR       - Clean up code while tests pass
-Phase 12: DOCUMENTATION      - Update manifests, cache research
-Phase 13: COMPLETION         - Final verification, scope coverage check
+Phase 1:  FEATURE ENUMERATION - List ALL API features from docs (v3.12.0)
+Phase 2:  DISAMBIGUATION      - Clarify ambiguous terms before research
+Phase 3:  SCOPE               - Confirm understanding of endpoint
+Phase 4:  INITIAL RESEARCH    - 2-3 targeted searches (Context7, WebSearch)
+Phase 5:  INTERVIEW           - Questions FROM research + feature selection
+Phase 6:  DEEP RESEARCH       - Propose additional searches based on answers
+Phase 7:  SCHEMA              - Create Zod schema from research + interview
+Phase 8:  ENVIRONMENT         - Verify API keys exist
+Phase 9:  TDD RED             - Write failing tests from schema
+Phase 10: TDD GREEN           - Minimal implementation to pass tests
+Phase 11: VERIFY              - Re-research docs, compare to implementation
+Phase 12: TDD REFACTOR        - Clean up code while tests pass
+Phase 13: DOCUMENTATION       - Update manifests, cache research
+Phase 14: COMPLETION          - Final verification, scope coverage check
 ```
 
 **v3.12.0 Changes:**
-- **Phase 0 (TOC Enumeration)**: Fetches docs TOC, enumerates ALL features, user confirms scope
-- **Scope Coverage Enforcement**: Blocks completion if <80% of discovered features implemented
+- **Phase 1 (Feature Enumeration)**: Fetches docs, enumerates ALL features, user confirms scope
+- **Phase 5 (Interview)**: Includes per-feature decision (implement/defer/skip)
+- **Scope Coverage**: 100% required - every feature must be explicitly decided
 
 ---
 
@@ -128,9 +129,9 @@ Phase 13: COMPLETION         - Final verification, scope coverage check
 |------|-------|---------|
 | `session-startup.py` | SessionStart | Inject state context |
 | `enforce-external-research.py` | UserPromptSubmit | Require research first |
-| `enforce-toc-enumeration.py` | PreToolUse | Enforce Phase 0 (v3.12.0) |
-| `enforce-disambiguation.py` | PreToolUse | Enforce Phase 1 |
-| `enforce-scope.py` | PreToolUse | Enforce Phase 2 |
+| `enforce-toc-enumeration.py` | PreToolUse | Enforce Phase 1 (v3.12.0) |
+| `enforce-disambiguation.py` | PreToolUse | Enforce Phase 2 |
+| `enforce-scope.py` | PreToolUse | Enforce Phase 3 |
 | `enforce-research.py` | PreToolUse | Block writes without research |
 | `enforce-interview.py` | PreToolUse | Inject interview decisions |
 | `enforce-deep-research.py` | PreToolUse | Enforce Phase 5 |
