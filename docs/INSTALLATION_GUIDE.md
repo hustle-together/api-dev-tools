@@ -1,167 +1,255 @@
-# Installation Guide for @mirror-factory/api-dev-tools
+# Installation Guide
 
-## ✅ Package Created Successfully!
+> **Version:** 3.12.0 | **Last Updated:** December 26, 2025
 
-The NPM package is ready at: `/Users/alfonso/Documents/GitHub/api-dev-tools`
+## Quick Install
 
-## 🎯 Next Steps
+```bash
+# Via NPM (recommended)
+npx @hustle-together/api-dev-tools --scope=project
 
-### Step 1: Create GitHub Repository
+# With optional integrations
+npx @hustle-together/api-dev-tools --scope=project --with-greptile --with-graphite --with-storybook
+```
 
-1. **Go to GitHub** and create a new repository:
-   - Name: `api-dev-tools`
-   - Description: "Interview-driven API development workflow for Claude Code"
-   - Public or Private: Your choice
-   - Do NOT initialize with README (we already have one)
+---
 
-2. **Add remote and push:**
+## Installation Options
+
+### Basic Installation
+
+```bash
+npx @hustle-together/api-dev-tools --scope=project
+```
+
+This installs:
+- 33 Agent Skills in `.claude/commands/`
+- 39 Enforcement Hooks in `.claude/hooks/`
+- State tracking in `.claude/api-dev-state.json`
+- Autonomous config in `.claude/autonomous-config.json`
+- Research cache in `.claude/research/`
+- Templates in `.claude/templates/`
+
+### With Optional Integrations
+
+```bash
+# Full installation with all optional tools
+npx @hustle-together/api-dev-tools --scope=project \
+  --with-storybook \
+  --with-playwright \
+  --with-greptile \
+  --with-graphite \
+  --with-ntfy
+```
+
+### Installation Flags
+
+| Flag | Description |
+|------|-------------|
+| `--scope=project` | Install for current project (required) |
+| `--with-storybook` | Initialize Storybook for component development |
+| `--with-playwright` | Initialize Playwright for E2E testing |
+| `--with-sandpack` | Install Sandpack for live code editing |
+| `--with-greptile` | Create .greptile.json for AI code review |
+| `--with-graphite` | Enable Graphite stacked PRs workflow |
+| `--with-ntfy` | Enable ntfy push notifications |
+| `-i`, `--interactive` | Run interactive setup wizard |
+| `--no-interactive` | Skip interactive prompts |
+
+---
+
+## Post-Installation Setup
+
+### 1. Configure MCP Servers
+
+The installer adds these automatically, but verify they're working:
+
+```bash
+# Check MCP servers
+claude mcp list
+
+# Should show:
+# - context7 (Live documentation)
+# - github (GitHub integration)
+```
+
+If missing, add manually:
+
+```bash
+claude mcp add context7 -- npx -y @upstash/context7-mcp
+claude mcp add github -- npx -y @modelcontextprotocol/server-github
+```
+
+### 2. Configure Environment Variables
+
+For GitHub MCP:
+```bash
+export GITHUB_PERSONAL_ACCESS_TOKEN="ghp_your_token_here"
+```
+
+For Greptile (if using):
+```bash
+export GREPTILE_API_KEY="your_greptile_key"
+export GREPTILE_GITHUB_TOKEN="ghp_your_token_here"
+```
+
+### 3. Configure Autonomous Mode
+
+Edit `.claude/autonomous-config.json`:
+
+```json
+{
+  "version": "3.12.0",
+  "yolo_mode": {
+    "enabled": true,
+    "max_retries": 3
+  },
+  "budget": {
+    "enabled": true,
+    "max_tokens": 75000,
+    "warn_at_percent": 60,
+    "pause_at_percent": 80
+  },
+  "notifications": {
+    "enabled": true,
+    "ntfy_topic": "your-custom-topic",
+    "notify_on": [
+      "session_start",
+      "phase_complete",
+      "budget_warning",
+      "budget_pause",
+      "workflow_complete",
+      "error",
+      "user_input_required"
+    ]
+  },
+  "subagents": {
+    "explore_model": "sonnet",
+    "parallel_agents": 3
+  }
+}
+```
+
+### 4. Test Installation
+
+```bash
+# Verify hooks are registered
+cat .claude/settings.json | jq '.hooks'
+
+# Verify state file exists
+cat .claude/api-dev-state.json | jq '.'
+
+# Verify autonomous config
+cat .claude/autonomous-config.json | jq '.'
+
+# Run a test workflow
+claude -p "/api-status"
+```
+
+---
+
+## Configuration Reference
+
+### autonomous-config.json
+
+| Section | Key | Default | Description |
+|---------|-----|---------|-------------|
+| `yolo_mode` | `enabled` | `true` | Enable YOLO execution mode |
+| `yolo_mode` | `max_retries` | `3` | Max retries on failure |
+| `budget` | `enabled` | `true` | Enable token budget tracking |
+| `budget` | `max_tokens` | `75000` | Maximum tokens per session |
+| `budget` | `warn_at_percent` | `60` | Warning threshold |
+| `budget` | `pause_at_percent` | `80` | Pause threshold |
+| `notifications` | `enabled` | `true` | Enable ntfy notifications |
+| `notifications` | `ntfy_topic` | `hustleserver` | ntfy topic name |
+| `notifications` | `notify_on` | `[...]` | Events to notify on |
+| `subagents` | `explore_model` | `sonnet` | Model for Explore agents |
+| `subagents` | `parallel_agents` | `3` | Max parallel research agents |
+| `integrations.greptile` | `enabled` | `false` | Enable Greptile AI review |
+| `integrations.graphite` | `enabled` | `false` | Enable Graphite stacked PRs |
+
+### Notification Events
+
+- `session_start` - When workflow begins
+- `phase_complete` - After each phase completes
+- `budget_warning` - At 60% token usage
+- `budget_pause` - At 80% token usage
+- `workflow_complete` - When all phases done
+- `error` - On workflow errors
+- `user_input_required` - When waiting for user decision
+
+---
+
+## Updating
+
+To update to the latest version:
+
+```bash
+npx @hustle-together/api-dev-tools@latest --scope=project
+```
+
+This preserves:
+- `.claude/api-dev-state.json` (your progress)
+- `.claude/autonomous-config.json` (your settings)
+- `.claude/research/` (cached research)
+
+---
+
+## Troubleshooting
+
+### Hooks Not Running
+
+1. Verify Python 3 is installed:
    ```bash
-   cd /Users/alfonso/Documents/GitHub/api-dev-tools
-   git remote add origin https://github.com/YOUR-USERNAME/api-dev-tools.git
-   git branch -M main
-   git push -u origin main
+   python3 --version
    ```
 
-### Step 2: Test Installation from GitHub
+2. Make hooks executable:
+   ```bash
+   chmod +x .claude/hooks/*.py
+   ```
 
-Once pushed to GitHub, test the Git-based installation:
+3. Check settings.json has hooks registered:
+   ```bash
+   cat .claude/settings.json | jq '.hooks'
+   ```
 
-```bash
-# Test in a temporary directory
-cd /tmp
-mkdir test-install
-cd test-install
-npx github:YOUR-USERNAME/api-dev-tools --scope=project
+### MCP Servers Not Working
 
-# Check if commands were installed
-ls -la .claude/commands/
-```
+1. Restart Claude Code after adding MCP servers
+2. Verify environment variables are set
+3. Check server status: `claude mcp get context7`
 
-### Step 3: Publish to NPM (Optional)
+### ntfy Notifications Not Sending
 
-If you want to publish to NPM registry:
+1. Verify curl is installed: `which curl`
+2. Test ntfy manually: `curl -d "test" ntfy.sh/your-topic`
+3. Check notifications.enabled is true in config
 
-```bash
-cd /Users/alfonso/Documents/GitHub/api-dev-tools
+---
 
-# Login to NPM (one-time)
-npm login
+## Files Created
 
-# Publish the package
-npm publish --access public
-```
-
-After publishing, anyone can install with:
-```bash
-npx @mirror-factory/api-dev-tools --scope=project
-```
-
-### Step 4: Add to MF-Workstation
-
-**Option A: Use Local Path (for testing)**
-```bash
-cd /Users/alfonso/Documents/GitHub/MF-Workstation
-node /Users/alfonso/Documents/GitHub/api-dev-tools/bin/cli.js --scope=project
-```
-
-**Option B: Use Git-based Installation**
-
-Add to `MF-Workstation/package.json`:
-```json
-{
-  "scripts": {
-    "postinstall": "npx github:YOUR-USERNAME/api-dev-tools --scope=project"
-  }
-}
-```
-
-**Option C: Use NPM (after publishing)**
-
-Add to `MF-Workstation/package.json`:
-```json
-{
-  "scripts": {
-    "postinstall": "npx @mirror-factory/api-dev-tools --scope=project"
-  }
-}
-```
-
-## 📦 Package Contents
+After installation, your project will have:
 
 ```
-api-dev-tools/
-├── package.json              ✅ NPM configuration
-├── README.md                 ✅ Complete documentation
-├── LICENSE                   ✅ MIT license
-├── .gitignore                ✅ Git ignore rules
-├── .npmignore                ✅ NPM publish exclusions
-├── bin/
-│   └── cli.js               ✅ Installation script (executable)
-└── commands/
-    ├── README.md             ✅ Command reference
-    ├── api-create.md         ✅ Main workflow orchestrator
-    ├── api-interview.md      ✅ Structured interview
-    ├── api-research.md       ✅ Deep research
-    ├── api-env.md            ✅ Environment check
-    ├── api-status.md         ✅ Progress tracking
-    └── [other commands]      ✅ TDD commands (red, green, etc.)
+.claude/
+├── commands/           # Skill markdown files
+├── hooks/              # Python enforcement hooks
+├── templates/          # Component/page templates
+├── research/           # Cached API research
+├── api-dev-state.json  # Workflow state
+├── autonomous-config.json # Autonomous mode config
+├── settings.json       # Hook registration
+├── registry.json       # API/component registry
+├── BRAND_GUIDE.md      # Brand colors/fonts
+└── performance-budgets.json # TDD thresholds
 ```
 
-## 🧪 Testing Checklist
+---
 
-- [x] Package structure created
-- [x] package.json configured with bin field
-- [x] CLI script is executable
-- [x] Installation script works locally
-- [x] All command files copied
-- [x] README documentation complete
-- [x] LICENSE file added
-- [x] Git repository initialized
-- [ ] Pushed to GitHub
-- [ ] Tested Git-based installation
-- [ ] Published to NPM (optional)
-- [ ] Installed in MF-Workstation
+## Support
 
-## 💡 Usage Examples
-
-### Install in any project
-```bash
-npx @mirror-factory/api-dev-tools --scope=project
-```
-
-### Use the commands
-```bash
-/api-create user-authentication
-/api-interview send-email
-/api-research stripe-sdk
-/api-env payment-processing
-/api-status --all
-```
-
-### Team-wide installation
-Every team member gets commands automatically when they run:
-```bash
-pnpm install
-```
-
-## 🎉 What You've Built
-
-A **production-ready NPM package** that:
-- ✅ Installs via npx command
-- ✅ Works like @wbern/claude-instructions
-- ✅ Can be published to NPM
-- ✅ Supports team-wide auto-installation
-- ✅ Provides 5 powerful API development commands
-- ✅ Includes comprehensive documentation
-- ✅ Is fully version-controllable
-- ✅ Can be shared across projects
-
-## 📚 Documentation
-
-- **Package README**: `/Users/alfonso/Documents/GitHub/api-dev-tools/README.md`
-- **Commands README**: `/Users/alfonso/Documents/GitHub/api-dev-tools/commands/README.md`
-- **Each command**: `/Users/alfonso/Documents/GitHub/api-dev-tools/commands/*.md`
-
-## 🚀 Ready to Use!
-
-The package is complete and tested. Just push to GitHub and start using it!
+- **Issues**: [github.com/hustle-together/api-dev-tools/issues](https://github.com/hustle-together/api-dev-tools/issues)
+- **Documentation**: [docs/FULL_DOCUMENTATION.md](./FULL_DOCUMENTATION.md)
+- **Changelog**: [docs/CHANGELOG.md](./CHANGELOG.md)
