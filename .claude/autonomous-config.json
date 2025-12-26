@@ -65,13 +65,8 @@
       "api_key_env": "GREPTILE_API_KEY",
       "github_token_env": "GITHUB_TOKEN",
       "auto_index_on_commit": false,
-      "review_on_pr": true
-    },
-    "graphite": {
-      "enabled": true,
-      "use_stacked_prs": true,
-      "auto_restack": true,
-      "trunk_branch": "main"
+      "review_on_pr": true,
+      "mcp_setup": "claude mcp add --transport http greptile https://api.greptile.com/mcp --header \"Authorization: Bearer $GREPTILE_API_KEY\""
     }
   },
 

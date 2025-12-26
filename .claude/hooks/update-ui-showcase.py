@@ -10,17 +10,19 @@ at src/app/ui-showcase/ if it doesn't exist.
 
 Also generates src/app/ui-showcase/data.json from registry for auto-population.
 
-Version: 3.10.0
+Version: 3.12.0
 
 Returns:
   - {"continue": true} - Always continues
   - May include "notify" about showcase creation
+  - Sends ntfy notification with showcase URL
 """
 import json
 import sys
 from pathlib import Path
 import shutil
 from datetime import datetime
+import subprocess
 
 # State and registry files in .claude/ directory
 STATE_FILE = Path(__file__).parent.parent / "api-dev-state.json"

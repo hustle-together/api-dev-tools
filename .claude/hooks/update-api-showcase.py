@@ -7,20 +7,59 @@ This hook monitors for new API registrations. When the first API is added
 to registry.json, it creates the API Showcase page at src/app/api-showcase/
 if it doesn't exist.
 
-Version: 3.9.0
+Version: 3.12.0
 
 Returns:
   - {"continue": true} - Always continues
   - May include "notify" about showcase creation
+  - Sends ntfy notification with showcase URL
 """
 import json
 import sys
 from pathlib import Path
 import shutil
+import subprocess
+import os
 
 # State and registry files in .claude/ directory
 STATE_FILE = Path(__file__).parent.parent / "api-dev-state.json"
 REGISTRY_FILE = Path(__file__).parent.parent / "registry.json"
+AUTONOMOUS_CONFIG = Path(__file__).parent.parent / "autonomous-config.json"
+
+
+def send_ntfy_notification(title: str, message: str, priority: str = "default"):
+    """Send push notification via ntfy if configured."""
+    try:
+        if not AUTONOMOUS_CONFIG.exists():
+            return
+
+        config = json.loads(AUTONOMOUS_CONFIG.read_text())
+        notifications = config.get("notifications", {})
+
+        if not notifications.get("enabled", False):
+            return
+
+        topic = notifications.get("ntfy_topic", "")
+        if not topic:
+            return
+
+        # Check if 'workflow_complete' is in notify_on list
+        notify_on = notifications.get("notify_on", [])
+        if "workflow_complete" not in notify_on and "phase_complete" not in notify_on:
+            return
+
+        # Send notification
+        subprocess.run([
+            "curl", "-s",
+            "-H", f"Title: {title}",
+            "-H", f"Priority: {priority}",
+            "-H", "Tags: art,rocket",
+            "-d", message,
+            f"ntfy.sh/{topic}"
+        ], capture_output=True, timeout=5)
+
+    except Exception:
+        pass  # Silent failure for notifications
 
 
 def copy_showcase_templates(cwd):
@@ -133,6 +172,21 @@ def main():
         created_files = copy_showcase_templates(cwd)
 
         if created_files:
+            # Count APIs for notification
+            api_count = len(apis) + len(combined)
+            api_list = ", ".join(list(apis.keys())[:3] + list(combined.keys())[:2])
+            if api_count > 5:
+                api_list += f" (+{api_count - 5} more)"
+
+            # Send ntfy notification about showcase creation
+            send_ntfy_notification(
+                title="API Showcase Created",
+                message=f"Your API Showcase is ready at /api-showcase\n\n"
+                        f"APIs available: {api_list}\n\n"
+                        f"Start your dev server and visit the showcase to test your APIs interactively.",
+                priority="default"
+            )
+
             print(json.dumps({
                 "continue": True,
                 "notify": f"Created API Showcase at /api-showcase ({len(created_files)} files)"
