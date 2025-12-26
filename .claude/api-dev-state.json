@@ -113,6 +113,22 @@
         "confidence": "none"
       },
       "injected": false
+    },
+    {
+      "timestamp": "2025-12-26T06:14:46.239835",
+      "prompt_preview": "Okay, but again I was just simply asking can you run it for me and see all that stuff or do I have t...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "can you run it for me and see all that stuff or do"
+        ],
+        "patterns_matched": [
+          "always_research",
+          "question_pattern"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
     }
   ],
   "phases": {
