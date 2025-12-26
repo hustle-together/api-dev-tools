@@ -600,6 +600,31 @@
         "confidence": "critical"
       },
       "injected": true
+    },
+    {
+      "timestamp": "2025-12-26T02:34:47.919801",
+      "prompt_preview": "That's solid. I just don't want to use Haiku ever as I don't think it's good enough for all these th...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "can add all these additional things and everything",
+          "add all these additional things and everything as ",
+          "update the docs in the cloudmd here. remember, we'",
+          "setup and everything that feeds into the cloudmd f",
+          "issue",
+          "docs",
+          "config",
+          "setup",
+          "context"
+        ],
+        "patterns_matched": [
+          "technical_term",
+          "always_research",
+          "question_pattern"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
     }
   ],
   "phases": {
