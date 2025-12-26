@@ -1,10 +1,10 @@
 # Project Instructions
 
-## API Development Workflow (v3.12.0)
+## API Development Workflow (v3.12.1)
 
 This project uses **@hustle-together/api-dev-tools** for interview-driven, research-first API development.
 
-**Current Status:** Autonomous Mode + Integrations | YOLO mode default
+**Current Status:** v3.12.1 | Autonomous Mode + Integrations | YOLO mode default
 **Last Updated:** 2025-12-26
 
 ---

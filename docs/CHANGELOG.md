@@ -2,6 +2,35 @@
 
 All notable changes to `@hustle-together/api-dev-tools` will be documented in this file.
 
+## [3.12.1] - 2025-12-26
+
+### Fixed - Scope Coverage Enforcement
+
+- **100% Scope Coverage Required** - Changed from confusing 80% threshold to 100%
+  - Every discovered feature MUST have an explicit decision
+  - Coverage = (implemented + deferred + skipped) / discovered = 100%
+
+- **Added "Skip" Decision Type** - Three-way feature decisions:
+  - **Implement**: Build in this workflow
+  - **Defer**: Postpone to future version
+  - **Skip**: Intentionally exclude (not needed for project)
+
+- **Interview Phase Validates Feature Decisions**
+  - `enforce-interview.py` now checks that all discovered features have decisions
+  - Blocks proceeding to schema until feature scope is 100% decided
+  - Includes guidance on using AskUserQuestion with multiSelect for batch decisions
+
+- **Phase Numbering Consistency** - All documentation uses Phase 1-14 (not Phase 0-13)
+
+### Changed
+
+- `api-workflow-check.py` - Updated `check_scope_coverage()` to include skipped features
+- `api-interview/SKILL.md` - Added "Feature Scope Decisions" section with examples
+- `enforce-interview.py` - Added Check 6: FEATURE DECISIONS validation
+- `AUTONOMOUS_MODE.md` - Updated coverage formula and examples
+
+---
+
 ## [3.12.0] - 2025-12-26
 
 ### Added - Autonomous Mode & Integrations

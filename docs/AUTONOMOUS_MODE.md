@@ -1,6 +1,6 @@
 # Autonomous Mode Guide
 
-> **Version:** 3.12.0
+> **Version:** 3.12.1
 > **Last Updated:** December 26, 2025
 
 Run api-dev-tools workflows unattended with YOLO mode, budget tracking, and automatic notifications.
@@ -356,45 +356,55 @@ If a hook blocks 3 times, workflow pauses and sends notification.
 
 ### Scope Coverage Enforcement (v3.12.0)
 
-**New in v3.12.0:** Every discovered feature must be explicitly decided - implement or defer. No unknowns allowed.
+**New in v3.12.0:** Every discovered feature must be explicitly decided. No unknowns allowed.
 
 **How it works:**
 
 1. **Phase 1: Feature Enumeration** - Claude fetches docs and enumerates ALL available endpoints/features
-2. **Phase 5: Interview** - For each feature, you decide: implement now, defer for later, or skip
-3. **Scope Tracking** - Tracks: discovered, implemented, deferred
+2. **Phase 5: Interview** - For each feature, you decide:
+   - **Implement**: Build in this workflow
+   - **Defer**: Postpone to future version
+   - **Skip**: Intentionally exclude (not needed)
+3. **Scope Tracking** - Tracks: discovered, implemented, deferred, skipped
 4. **Phase 14: Completion Check** - Blocks if ANY features are undecided
 
 **Coverage Formula:**
 ```
-Coverage = (implemented + deferred) / discovered
+Coverage = (implemented + deferred + skipped) / discovered
 
 discovered = 11
-implemented = 3    ← You're building these
-deferred = 8       ← You explicitly said "not now"
-missing = 0        ← None left undecided
+implemented = 3    ← Building these now
+deferred = 5       ← Explicitly postponed to v2
+skipped = 3        ← Intentionally excluded
+undecided = 0      ← None left without decision
 
 Coverage = 11/11 = 100% ✅ PASS
 ```
 
 **Example blocking message (undecided features):**
 ```
-❌ SCOPE COVERAGE INCOMPLETE
+❌ SCOPE COVERAGE INCOMPLETE (45%)
    Discovered: 11 features
    Implemented: 5
    Deferred: 0
-   Missing: 6      ← These were never decided!
+   Skipped: 0
+   Undecided: 6    ← These were never decided!
 
-   Features NOT implemented or deferred:
+   Features WITHOUT explicit decision:
      • POST /auth/refresh
      • DELETE /users/:id
      • GET /webhooks
      • ...
 
-   ⛔ Every feature must be explicitly decided
+   To proceed, decide for EACH feature:
+     • Implement: Build in this workflow
+     • Defer: Postpone to future version
+     • Skip: Intentionally exclude
+
+   ⛔ Coverage 45% is below required 100%
 ```
 
-**Key point:** You don't have to implement everything. You just have to DECIDE on everything. Deferring 80% of features is fine - the workflow passes because you accounted for all of them.
+**Key point:** You don't have to implement everything. You just have to DECIDE on everything. Deferring or skipping 80% of features is fine - the workflow passes because you accounted for all of them.
 
 ---
 
@@ -659,5 +669,5 @@ cat .claude/api-dev-state.json | jq '.current_phase'
 
 ---
 
-**Version:** 3.12.0
+**Version:** 3.12.1
 **Author:** Hustle Together

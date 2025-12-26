@@ -410,7 +410,57 @@ Reset the interview and ask with options based on research."""
             }))
             sys.exit(0)
 
-    # Check 6: FINAL USER CONFIRMATION - must confirm interview is complete
+    # Check 6: FEATURE DECISIONS - every discovered feature needs a decision
+    scope = state.get("scope", {})
+    discovered_features = scope.get("discovered_features", [])
+    feature_decisions = interview.get("feature_decisions", {})
+
+    if discovered_features and not feature_decisions:
+        # Features were discovered but no decisions made
+        feature_list = "\n".join([
+            f"     • {f.get('name') if isinstance(f, dict) else f}"
+            for f in discovered_features[:10]
+        ])
+        more_count = len(discovered_features) - 10 if len(discovered_features) > 10 else 0
+
+        print(json.dumps({
+            "permissionDecision": "deny",
+            "reason": f"""❌ BLOCKED: Feature decisions not recorded.
+
+Phase 1 discovered {len(discovered_features)} features, but no decisions made.
+
+═══════════════════════════════════════════════════════════
+⚠️  DECIDE FOR EACH DISCOVERED FEATURE
+═══════════════════════════════════════════════════════════
+
+Features requiring decision:
+{feature_list}
+{f"     ... and {more_count} more" if more_count > 0 else ""}
+
+For EACH feature, ask the user:
+  [x] Implement - Build in this workflow
+  [ ] Defer - Postpone to future version
+  [ ] Skip - Intentionally exclude
+
+Use AskUserQuestion with multiSelect for batch decisions:
+  question: "Which features should we implement NOW?"
+  options: [list of discovered features]
+  multiSelect: true
+
+Then ask about remaining: "Which to defer vs skip?"
+
+Store decisions in state:
+  phases.interview.feature_decisions = {{
+    "POST /auth/login": {{"decision": "implement", "reason": "..."}},
+    "POST /auth/refresh": {{"decision": "defer", "reason": "..."}},
+    ...
+  }}
+
+Coverage = (implement + defer + skip) / discovered = 100%"""
+        }))
+        sys.exit(0)
+
+    # Check 7: FINAL USER CONFIRMATION - must confirm interview is complete
     user_question_asked_final = interview.get("user_question_asked", False)
     user_completed = interview.get("user_completed", False)
     phase_exit_confirmed = interview.get("phase_exit_confirmed", False)
