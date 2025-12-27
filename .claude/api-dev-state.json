@@ -7,7 +7,34 @@
   "turn_count": 0,
   "last_turn_timestamp": null,
   "research_queries": [],
-  "prompt_detections": [],
+  "prompt_detections": [
+    {
+      "timestamp": "2025-12-27T21:45:19.749208",
+      "prompt_preview": "# Claude Code CLI: The definitive best practices guide for December 2025\n\n**Claude Code has fundamen...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "how can",
+          "can only write to work",
+          "show all",
+          "write \\\"$claude_file_paths\\\" && eslint --fix \\\"$cl",
+          "fix \\\"$claude_file_paths\\\"\"",
+          "install via plugins: pdf processing, docx with tra",
+          "error",
+          "api",
+          "guide",
+          "type"
+        ],
+        "patterns_matched": [
+          "technical_term",
+          "always_research",
+          "question_pattern"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
+    }
+  ],
   "phases": {
     "disambiguation": {
       "status": "not_started",
