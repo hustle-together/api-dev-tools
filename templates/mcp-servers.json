@@ -2,13 +2,56 @@
   "mcpServers": {
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"]
+      "args": ["-y", "@upstash/context7-mcp"],
+      "description": "Real-time documentation lookup for libraries and APIs"
     },
     "github": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-github"],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": ""
+      },
+      "description": "GitHub integration for PRs, issues, and repository management"
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@anthropics/mcp-playwright"],
+      "description": "Browser automation for visual testing and screenshot capture"
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@anthropics/mcp-sequential-thinking"],
+      "description": "Methodical problem breakdown for complex reasoning tasks"
+    }
+  },
+  "_readme": {
+    "installation": [
+      "1. Copy this file to your project as .mcp.json",
+      "2. Or run: claude mcp add context7 --from-template",
+      "3. Add your GitHub token to the env section",
+      "4. Restart Claude Code to load new servers"
+    ],
+    "verification": [
+      "Run /mcp in Claude Code to verify servers are connected",
+      "Use 'claude mcp list' to see all configured servers"
+    ],
+    "optional_servers": {
+      "sentry": {
+        "command": "npx",
+        "args": ["-y", "@sentry/mcp-server"],
+        "env": { "SENTRY_AUTH_TOKEN": "" },
+        "description": "Error monitoring and debugging"
+      },
+      "puppeteer": {
+        "command": "npx",
+        "args": ["-y", "@anthropics/mcp-puppeteer"],
+        "description": "Alternative browser automation (Chromium-based)"
+      },
+      "brave-search": {
+        "command": "npx",
+        "args": ["-y", "@anthropics/mcp-brave-search"],
+        "env": { "BRAVE_API_KEY": "" },
+        "description": "Alternative web search provider"
       }
     }
   }

@@ -100,6 +100,35 @@ Both conditions must be true for the flag to be set.
 
 ---
 
+## Progress Tracking (TodoWrite Integration)
+
+**FIRST ACTION:** Initialize the todo list to show user real-time progress:
+
+```
+TodoWrite([
+  {"content": "Phase 1: Disambiguation", "status": "in_progress", "activeForm": "Clarifying API terms"},
+  {"content": "Phase 2: Scope", "status": "pending", "activeForm": "Confirming endpoint scope"},
+  {"content": "Phase 3: Initial Research", "status": "pending", "activeForm": "Researching documentation"},
+  {"content": "Phase 4: Interview", "status": "pending", "activeForm": "Gathering requirements"},
+  {"content": "Phase 5: Deep Research", "status": "pending", "activeForm": "Deep diving documentation"},
+  {"content": "Phase 6: Schema", "status": "pending", "activeForm": "Creating Zod schema"},
+  {"content": "Phase 7: Environment", "status": "pending", "activeForm": "Verifying API keys"},
+  {"content": "Phase 8: TDD Red", "status": "pending", "activeForm": "Writing failing tests"},
+  {"content": "Phase 9: TDD Green", "status": "pending", "activeForm": "Implementing to pass tests"},
+  {"content": "Phase 10: Verify", "status": "pending", "activeForm": "Verifying against docs"},
+  {"content": "Phase 11: Refactor", "status": "pending", "activeForm": "Cleaning up code"},
+  {"content": "Phase 12: Documentation", "status": "pending", "activeForm": "Updating documentation"},
+  {"content": "Phase 13: Completion", "status": "pending", "activeForm": "Final verification"}
+])
+```
+
+**At each phase transition:**
+1. Mark current phase as `completed`
+2. Mark next phase as `in_progress`
+3. This gives the user visual progress during long workflows
+
+---
+
 ## Key Principles
 
 1. **Loop Until Green** - Every verification phase loops back if not successful
@@ -107,6 +136,7 @@ Both conditions must be true for the flag to be set.
 3. **Adaptive Research** - Propose searches based on context, not shotgun approach
 4. **Self-Documenting** - State file captures everything for re-grounding
 5. **Verify After Green** - Re-research docs to catch memory-based implementation errors
+6. **Visual Progress** - Update TodoWrite at every phase for user visibility
 
 ## Complete Phase Flow
 
