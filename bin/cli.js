@@ -254,7 +254,7 @@ async function main() {
   logStep(++currentStep, totalSteps, "Installing slash commands");
 
   const commandsDir = path.join(claudeDir, "commands");
-  const sourceCommandsDir = path.join(packageDir, ".claude", "commands");
+  const sourceCommandsDir = path.join(packageDir, "commands");
 
   if (!fs.existsSync(commandsDir)) {
     fs.mkdirSync(commandsDir, { recursive: true });
