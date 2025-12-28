@@ -1,6 +1,6 @@
 {
   "name": "@hustle-together/api-dev-tools",
-  "version": "3.12.5",
+  "version": "3.12.6",
   "description": "Interview-driven, research-first API development toolkit with 14-phase TDD workflow, enforcement hooks, and 23 Agent Skills for cross-platform AI agents",
   "main": "bin/cli.js",
   "bin": {

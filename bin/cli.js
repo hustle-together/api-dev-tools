@@ -54,7 +54,7 @@ ${c.red}    ╔═════════════════════�
 ${c.red}${c.bold}                        HUSTLE${c.reset}
 ${c.bold}                    API Dev Tools${c.reset}
 ${c.dim}        Interview-driven, research-first API development${c.reset}
-                        ${c.gray}v3.12.5${c.reset}
+                        ${c.gray}v3.12.6${c.reset}
 `;
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -427,16 +427,30 @@ async function main() {
     withSandpack: true,
     githubToken: "",
     greptileApiKey: "",
+    brandfetchApiKey: "",
     ntfyEnabled: false,
     ntfyTopic: "",
     ntfyServer: "ntfy.sh",
     createBrandGuide: true,
+    brandSource: "manual", // "brandfetch" or "manual"
+    brandDomain: "",
     brandName: path.basename(targetDir),
     primaryColor: "#E11D48",
     secondaryColor: "#1E40AF",
+    accentColor: "#8B5CF6",
+    successColor: "#10B981",
+    warningColor: "#F59E0B",
+    errorColor: "#EF4444",
     fontFamily: "Inter",
+    headingFont: "Inter",
+    monoFont: "JetBrains Mono",
     borderRadius: "8px",
     darkMode: true,
+    imageStyle: "photography", // photography, illustration, abstract, minimal
+    iconStyle: "outline", // outline, solid, duotone
+    buttonStyle: "rounded", // sharp, subtle, rounded, pill
+    cardStyle: "elevated", // flat, bordered, elevated
+    animationLevel: "subtle", // none, subtle, moderate, expressive
   };
 
   if (!silent && !quickMode) {
@@ -451,12 +465,20 @@ async function main() {
       // ─────────────────────────────────────────────────────────────────────
 
       log(`\n${c.red}━━━ API Keys ━━━${c.reset}`);
-      log(`${c.dim}Required for Phase 11 Code Review (Greptile integration)${c.reset}\n`);
-      log(`${c.bold}Get your keys:${c.reset}`);
-      log(`  ${c.white}GITHUB_TOKEN${c.reset}     → https://github.com/settings/tokens`);
-      log(`                    ${c.dim}(needs 'repo' scope for private repos)${c.reset}`);
-      log(`  ${c.white}GREPTILE_API_KEY${c.reset} → https://app.greptile.com/settings/api`);
-      log(`                    ${c.dim}(free tier available)${c.reset}\n`);
+      log(`${c.dim}These keys enable advanced features like code review and brand fetching${c.reset}\n`);
+      log(`${c.bold}Get your keys (all have free tiers):${c.reset}\n`);
+      log(`  ${c.white}GITHUB_TOKEN${c.reset}`);
+      log(`    ${c.dim}→${c.reset} https://github.com/settings/tokens`);
+      log(`    ${c.dim}Purpose: Create issues, PRs, search code${c.reset}`);
+      log(`    ${c.dim}Scope needed: 'repo' for private repos${c.reset}\n`);
+      log(`  ${c.white}GREPTILE_API_KEY${c.reset}`);
+      log(`    ${c.dim}→${c.reset} https://app.greptile.com/settings/api`);
+      log(`    ${c.dim}Purpose: AI code review in Phase 11${c.reset}`);
+      log(`    ${c.dim}Free tier: 100 reviews/month${c.reset}\n`);
+      log(`  ${c.white}BRANDFETCH_API_KEY${c.reset}`);
+      log(`    ${c.dim}→${c.reset} https://brandfetch.com/developers`);
+      log(`    ${c.dim}Purpose: Auto-fetch logos, colors, fonts from domains${c.reset}`);
+      log(`    ${c.dim}Free tier: 50 requests/month (basic assets)${c.reset}\n`);
 
       const configureKeys = await selectOne("Configure API keys now?", [
         { label: "Yes, enter them now", value: true },
@@ -469,6 +491,9 @@ async function main() {
         });
         config.greptileApiKey = await textInput("GREPTILE_API_KEY", {
           default: process.env.GREPTILE_API_KEY || "",
+        });
+        config.brandfetchApiKey = await textInput("BRANDFETCH_API_KEY (optional, for auto brand guide)", {
+          default: process.env.BRANDFETCH_API_KEY || "",
         });
       }
 
@@ -524,42 +549,147 @@ async function main() {
 
       log(`\n${c.red}━━━ Brand Guide ━━━${c.reset}`);
       log(`${c.dim}Design system that enforces consistent UI across all components${c.reset}\n`);
-      log(`${c.bold}The brand guide defines:${c.reset}`);
-      log(`  • Color palette (primary, secondary, semantic colors)`);
-      log(`  • Typography (fonts, sizes, weights)`);
-      log(`  • Spacing and layout rules`);
-      log(`  • Component patterns (buttons, cards, forms)`);
-      log(`  • Accessibility standards\n`);
+      log(`${c.bold}Why you need a brand guide:${c.reset}`);
+      log(`  • Consistent look across all pages and components`);
+      log(`  • Faster development (no color/font decisions each time)`);
+      log(`  • Enforced by hooks during /hustle-ui-create`);
+      log(`  • Professional, cohesive user experience\n`);
 
-      config.createBrandGuide = await confirm("Create brand guide template?", true);
+      config.createBrandGuide = await confirm("Create brand guide?", true);
 
       if (config.createBrandGuide) {
-        log(`\n${c.bold}Let's set up your brand basics:${c.reset}\n`);
+        // Brand source selection
+        log(`\n${c.bold}How would you like to create your brand guide?${c.reset}\n`);
 
-        config.brandName = await textInput("Brand/Project name", {
-          default: path.basename(targetDir),
-        });
-
-        config.primaryColor = await textInput("Primary brand color (hex)", {
-          default: "#E11D48",
-        });
-
-        config.secondaryColor = await textInput("Secondary color (hex)", {
-          default: "#1E40AF",
-        });
-
-        config.fontFamily = await textInput("Primary font family", {
-          default: "Inter",
-        });
-
-        config.borderRadius = await selectOne("Border radius style", [
-          { label: "Sharp (0px) - Modern, minimal", value: "0" },
-          { label: "Subtle (4px) - Slightly rounded", value: "4px" },
-          { label: "Rounded (8px) - Friendly, approachable", value: "8px" },
-          { label: "Pill (9999px) - Fully rounded buttons", value: "9999px" },
+        config.brandSource = await selectOne("Brand guide source", [
+          { label: "Manual Interview - Answer questions about your brand preferences", value: "manual" },
+          { label: "Brandfetch - Auto-fetch from company domain (requires API key)", value: "brandfetch" },
         ]);
 
-        config.darkMode = await confirm("Include dark mode support?", true);
+        if (config.brandSource === "brandfetch") {
+          log(`\n${c.bold}Brandfetch Integration${c.reset}`);
+          log(`${c.dim}Automatically pulls logos, colors, and fonts from any company domain${c.reset}\n`);
+
+          if (!config.brandfetchApiKey) {
+            log(`${c.white}Get your free API key:${c.reset} https://brandfetch.com/developers`);
+            log(`${c.dim}Free tier includes: 50 requests/month, basic brand assets${c.reset}\n`);
+            config.brandfetchApiKey = await textInput("BRANDFETCH_API_KEY", {
+              default: process.env.BRANDFETCH_API_KEY || "",
+            });
+          }
+
+          config.brandDomain = await textInput("Company domain to fetch brand from (e.g., stripe.com)", {
+            default: "",
+          });
+
+          if (!config.brandDomain) {
+            log(`\n${c.dim}No domain provided - falling back to manual interview${c.reset}`);
+            config.brandSource = "manual";
+          }
+        }
+
+        if (config.brandSource === "manual") {
+          log(`\n${c.bold}━━━ Brand Interview ━━━${c.reset}`);
+          log(`${c.dim}Let's define your brand's visual identity${c.reset}\n`);
+
+          // Basic identity
+          config.brandName = await textInput("Brand/Project name", {
+            default: path.basename(targetDir),
+          });
+
+          // Color palette
+          log(`\n${c.bold}Color Palette${c.reset}`);
+          log(`${c.dim}Define colors that represent your brand${c.reset}\n`);
+
+          config.primaryColor = await textInput("Primary color (main CTAs, links) - hex", {
+            default: "#E11D48",
+          });
+
+          config.secondaryColor = await textInput("Secondary color (accents, secondary buttons) - hex", {
+            default: "#1E40AF",
+          });
+
+          config.accentColor = await textInput("Accent color (highlights, badges) - hex", {
+            default: "#8B5CF6",
+          });
+
+          // Typography
+          log(`\n${c.bold}Typography${c.reset}`);
+          log(`${c.dim}Fonts define your brand's personality${c.reset}\n`);
+
+          config.fontFamily = await selectOne("Primary body font", [
+            { label: "Inter - Clean, modern, highly readable", value: "Inter" },
+            { label: "Geist - GitHub/Vercel aesthetic", value: "Geist" },
+            { label: "Plus Jakarta Sans - Friendly, approachable", value: "Plus Jakarta Sans" },
+            { label: "DM Sans - Geometric, professional", value: "DM Sans" },
+            { label: "IBM Plex Sans - Technical, serious", value: "IBM Plex Sans" },
+            { label: "Other - Enter custom font", value: "custom" },
+          ]);
+
+          if (config.fontFamily === "custom") {
+            config.fontFamily = await textInput("Custom font family name", { default: "Inter" });
+          }
+
+          config.headingFont = await selectOne("Heading font", [
+            { label: "Same as body font", value: config.fontFamily },
+            { label: "Cal Sans - Bold, impactful", value: "Cal Sans" },
+            { label: "Clash Display - Modern, striking", value: "Clash Display" },
+            { label: "Other - Enter custom font", value: "custom" },
+          ]);
+
+          if (config.headingFont === "custom") {
+            config.headingFont = await textInput("Custom heading font", { default: config.fontFamily });
+          }
+
+          // UI Style preferences
+          log(`\n${c.bold}UI Style Preferences${c.reset}`);
+          log(`${c.dim}Define the overall look and feel${c.reset}\n`);
+
+          config.buttonStyle = await selectOne("Button style", [
+            { label: "Sharp (0px) - Modern, minimal tech aesthetic", value: "sharp" },
+            { label: "Subtle (4px) - Professional, slightly softened", value: "subtle" },
+            { label: "Rounded (8px) - Friendly, approachable", value: "rounded" },
+            { label: "Pill (9999px) - Playful, fully rounded", value: "pill" },
+          ]);
+
+          // Map button style to border radius
+          const radiusMap = { sharp: "0", subtle: "4px", rounded: "8px", pill: "9999px" };
+          config.borderRadius = radiusMap[config.buttonStyle];
+
+          config.cardStyle = await selectOne("Card style", [
+            { label: "Flat - Minimal, no depth", value: "flat" },
+            { label: "Bordered - Subtle outline separation", value: "bordered" },
+            { label: "Elevated - Shadow for depth", value: "elevated" },
+          ]);
+
+          // Visual content style
+          log(`\n${c.bold}Visual Content${c.reset}`);
+          log(`${c.dim}Preferences for images and icons${c.reset}\n`);
+
+          config.imageStyle = await selectOne("Preferred image style", [
+            { label: "Photography - Real photos, authentic feel", value: "photography" },
+            { label: "Illustrations - Custom drawn, unique personality", value: "illustration" },
+            { label: "Abstract - Shapes, gradients, patterns", value: "abstract" },
+            { label: "Minimal - Clean, simple graphics", value: "minimal" },
+          ]);
+
+          config.iconStyle = await selectOne("Icon style", [
+            { label: "Outline - Light, modern (Lucide, Heroicons)", value: "outline" },
+            { label: "Solid - Bold, impactful (Phosphor filled)", value: "solid" },
+            { label: "Duotone - Two-tone, distinctive", value: "duotone" },
+          ]);
+
+          // Animation preferences
+          config.animationLevel = await selectOne("Animation level", [
+            { label: "None - Static UI, pure function", value: "none" },
+            { label: "Subtle - Micro-interactions, fade-ins", value: "subtle" },
+            { label: "Moderate - Page transitions, hovers", value: "moderate" },
+            { label: "Expressive - Bold animations, personality", value: "expressive" },
+          ]);
+
+          // Dark mode
+          config.darkMode = await confirm("Include dark mode support?", true);
+        }
       }
     }
 
@@ -770,15 +900,34 @@ async function main() {
   // ─────────────────────────────────────────────────────────────────────────
 
   logStep(++currentStep, totalSteps, "Configuring MCP servers");
-  log(`  ${c.dim}Setting up Context7, GitHub, and Greptile integrations${c.reset}`);
+  log(`  ${c.dim}Setting up AI-powered integrations for research and code review${c.reset}`);
 
   const mcpServers = [
-    { name: "context7", cmd: "npx -y @upstash/context7-mcp" },
-    { name: "github", cmd: "npx -y @modelcontextprotocol/server-github" },
+    {
+      name: "context7",
+      cmd: "npx -y @upstash/context7-mcp",
+      description: "Live documentation lookup (npm, APIs, frameworks)",
+      required: true,
+    },
+    {
+      name: "github",
+      cmd: "npx -y @modelcontextprotocol/server-github",
+      description: "GitHub integration (issues, PRs, code search)",
+      required: true,
+    },
     {
       name: "greptile",
       cmd: "npx -y @anthropics/mcp-greptile",
+      description: "AI code review for Phase 11 verification",
       optional: true,
+      requiresKey: "GREPTILE_API_KEY",
+    },
+    {
+      name: "brandfetch",
+      cmd: "npx -y @anthropics/mcp-brandfetch",
+      description: "Auto-fetch brand assets (logos, colors, fonts)",
+      optional: true,
+      requiresKey: "BRANDFETCH_API_KEY",
     },
   ];
 
@@ -789,6 +938,7 @@ async function main() {
         stdio: ["pipe", "pipe", "pipe"],
       });
       logInfo(`${server.name} already configured`);
+      log(`    ${c.dim}${server.description}${c.reset}`);
     } catch (e) {
       try {
         execSync(`claude mcp add ${server.name} -- ${server.cmd}`, {
@@ -796,11 +946,11 @@ async function main() {
           stdio: ["pipe", "pipe", "pipe"],
         });
         logSuccess(`Added ${server.name}`);
+        log(`    ${c.dim}${server.description}${c.reset}`);
       } catch (addErr) {
         if (server.optional) {
-          logInfo(
-            `${server.name} (optional) - configure with GREPTILE_API_KEY`,
-          );
+          logInfo(`${server.name} (optional) - requires ${server.requiresKey}`);
+          log(`    ${c.dim}${server.description}${c.reset}`);
         } else {
           logWarn(`Could not add ${server.name} - add manually`);
         }
@@ -808,7 +958,11 @@ async function main() {
     }
   }
 
-  logInfo("Greptile requires GREPTILE_API_KEY + GITHUB_TOKEN for Phase 14");
+  log(`\n  ${c.bold}MCP Server Benefits:${c.reset}`);
+  log(`  ${c.dim}• Context7: Always get latest docs, no hallucinated APIs${c.reset}`);
+  log(`  ${c.dim}• GitHub: Create issues/PRs directly from Claude${c.reset}`);
+  log(`  ${c.dim}• Greptile: AI-powered code review catches bugs before merge${c.reset}`);
+  log(`  ${c.dim}• Brandfetch: Auto-generate brand guide from company domain${c.reset}`);
 
   // ─────────────────────────────────────────────────────────────────────────
   // Step 8: Create .env file with API keys (if provided)
@@ -833,6 +987,11 @@ async function main() {
 
   if (config.greptileApiKey && !envContent.includes("GREPTILE_API_KEY=")) {
     envContent += `\nGREPTILE_API_KEY=${config.greptileApiKey}`;
+    envUpdated = true;
+  }
+
+  if (config.brandfetchApiKey && !envContent.includes("BRANDFETCH_API_KEY=")) {
+    envContent += `\nBRANDFETCH_API_KEY=${config.brandfetchApiKey}`;
     envUpdated = true;
   }
 
@@ -891,10 +1050,15 @@ async function main() {
 `
       : "";
 
+    // Build brandfetch note if using domain
+    const brandfetchNote = config.brandSource === "brandfetch" && config.brandDomain
+      ? `\n> **Source**: Auto-fetched from ${config.brandDomain} via Brandfetch API\n> Run \`/hustle-brand-refresh\` to update from latest brand assets`
+      : "";
+
     const brandGuideContent = `# ${config.brandName} Brand Guide
 
-> Auto-generated by HUSTLE API Dev Tools v3.12.5
-> This guide ensures consistent UI across all components and pages.
+> Auto-generated by HUSTLE API Dev Tools v3.12.6
+> This guide ensures consistent UI across all components and pages.${brandfetchNote}
 
 ---
 
@@ -908,10 +1072,10 @@ async function main() {
 |------|-------|-----|-------|
 | Primary | 🔴 | \`${config.primaryColor}\` | CTAs, links, focus states |
 | Secondary | 🔵 | \`${config.secondaryColor}\` | Secondary actions, accents |
-| Success | 🟢 | \`#10B981\` | Success states, confirmations |
-| Warning | 🟡 | \`#F59E0B\` | Warnings, pending states |
-| Error | 🔴 | \`#EF4444\` | Errors, destructive actions |
-| Info | 🔵 | \`#3B82F6\` | Information, tips |
+| Accent | 🟣 | \`${config.accentColor}\` | Highlights, badges, special elements |
+| Success | 🟢 | \`${config.successColor}\` | Success states, confirmations |
+| Warning | 🟡 | \`${config.warningColor}\` | Warnings, pending states |
+| Error | 🔴 | \`${config.errorColor}\` | Errors, destructive actions |
 
 ---
 
@@ -931,6 +1095,13 @@ async function main() {
 --secondary-dark: ${config.secondaryColor};
 \`\`\`
 
+### Accent Colors
+\`\`\`css
+--accent: ${config.accentColor};
+--accent-light: ${config.accentColor}20;
+--accent-dark: ${config.accentColor};
+\`\`\`
+
 ### Neutral Colors (Light Theme)
 \`\`\`css
 --background: #FFFFFF;
@@ -943,12 +1114,12 @@ async function main() {
 
 ### Semantic Colors
 \`\`\`css
---success: #10B981;
---success-light: #D1FAE5;
---warning: #F59E0B;
---warning-light: #FEF3C7;
---error: #EF4444;
---error-light: #FEE2E2;
+--success: ${config.successColor};
+--success-light: ${config.successColor}20;
+--warning: ${config.warningColor};
+--warning-light: ${config.warningColor}20;
+--error: ${config.errorColor};
+--error-light: ${config.errorColor}20;
 --info: #3B82F6;
 --info-light: #DBEAFE;
 \`\`\`
@@ -960,7 +1131,8 @@ ${darkModeSection}
 ### Font Families
 \`\`\`css
 --font-primary: "${config.fontFamily}", system-ui, -apple-system, sans-serif;
---font-mono: "JetBrains Mono", "Fira Code", monospace;
+--font-heading: "${config.headingFont}", system-ui, -apple-system, sans-serif;
+--font-mono: "${config.monoFont}", "Fira Code", monospace;
 \`\`\`
 
 ### Font Scale
@@ -1134,10 +1306,11 @@ All interactive elements must have visible focus states:
 
 ## Icons
 
+### Icon Style: ${config.iconStyle.charAt(0).toUpperCase() + config.iconStyle.slice(1)}
+${config.iconStyle === "outline" ? "Light, modern icons with stroke-only design. Best for clean, minimal interfaces." : ""}${config.iconStyle === "solid" ? "Bold, filled icons for high impact and strong visual hierarchy." : ""}${config.iconStyle === "duotone" ? "Two-tone icons with primary and secondary colors for distinctive branding." : ""}
+
 ### Recommended Icon Libraries
-- **Lucide React** - Consistent, customizable
-- **Heroicons** - Tailwind-compatible
-- **Phosphor Icons** - Flexible weights
+${config.iconStyle === "outline" ? "- **Lucide React** (recommended) - Consistent, stroke-based\n- **Heroicons Outline** - Tailwind-compatible" : ""}${config.iconStyle === "solid" ? "- **Heroicons Solid** (recommended) - Bold, filled\n- **Phosphor Bold** - Flexible weights" : ""}${config.iconStyle === "duotone" ? "- **Phosphor Duotone** (recommended) - Two-tone design\n- **Font Awesome Duotone** - Wide selection" : ""}
 
 ### Icon Sizes
 | Size | Pixels | Usage |
@@ -1150,7 +1323,26 @@ All interactive elements must have visible focus states:
 
 ---
 
+## Visual Style
+
+### Image Style: ${config.imageStyle.charAt(0).toUpperCase() + config.imageStyle.slice(1)}
+${config.imageStyle === "photography" ? "Real photographs for authentic, relatable content. Use high-quality, diverse imagery." : ""}${config.imageStyle === "illustration" ? "Custom illustrations for unique brand personality. Maintain consistent style across all graphics." : ""}${config.imageStyle === "abstract" ? "Geometric shapes, gradients, and patterns. Modern, tech-forward aesthetic." : ""}${config.imageStyle === "minimal" ? "Simple, clean graphics with minimal detail. Focus on whitespace and clarity." : ""}
+
+### Card Style: ${config.cardStyle.charAt(0).toUpperCase() + config.cardStyle.slice(1)}
+\`\`\`jsx
+// ${config.cardStyle} card pattern
+<div className="${config.cardStyle === "flat" ? "bg-surface" : ""}${config.cardStyle === "bordered" ? "bg-white border border-border" : ""}${config.cardStyle === "elevated" ? "bg-white shadow-md" : ""} rounded-xl p-6">
+  <h3 className="text-lg font-semibold">Card Title</h3>
+  <p className="text-muted text-sm mt-2">Card content</p>
+</div>
+\`\`\`
+
+---
+
 ## Animation
+
+### Animation Level: ${config.animationLevel.charAt(0).toUpperCase() + config.animationLevel.slice(1)}
+${config.animationLevel === "none" ? "No animations. Static UI focused purely on function." : ""}${config.animationLevel === "subtle" ? "Micro-interactions only. Fade-ins, button states, minimal movement." : ""}${config.animationLevel === "moderate" ? "Page transitions, hover effects, loading states. Balanced motion." : ""}${config.animationLevel === "expressive" ? "Bold animations, personality-driven motion, delightful interactions." : ""}
 
 ### Timing
 \`\`\`css
@@ -1160,12 +1352,12 @@ All interactive elements must have visible focus states:
 --easing: cubic-bezier(0.4, 0, 0.2, 1);
 \`\`\`
 
-### Common Animations
+${config.animationLevel !== "none" ? `### Common Animations
 \`\`\`css
 .fade-in { animation: fadeIn var(--duration-normal) var(--easing); }
 .slide-up { animation: slideUp var(--duration-normal) var(--easing); }
 .scale-in { animation: scaleIn var(--duration-fast) var(--easing); }
-\`\`\`
+\`\`\`` : "### No Animations\nAll animations are disabled. Use CSS \\`transition: none\\` globally."}
 
 ---
 
@@ -1179,9 +1371,15 @@ module.exports = {
       colors: {
         primary: '${config.primaryColor}',
         secondary: '${config.secondaryColor}',
+        accent: '${config.accentColor}',
+        success: '${config.successColor}',
+        warning: '${config.warningColor}',
+        error: '${config.errorColor}',
       },
       fontFamily: {
         sans: ['${config.fontFamily}', 'system-ui', 'sans-serif'],
+        heading: ['${config.headingFont}', 'system-ui', 'sans-serif'],
+        mono: ['${config.monoFont}', 'Fira Code', 'monospace'],
       },
       borderRadius: {
         DEFAULT: '${config.borderRadius}',
@@ -1287,8 +1485,9 @@ ${c.bold}Core Components:${c.reset}
 ${c.bold}Configuration:${c.reset}
   ${config.githubToken ? check : cross} GITHUB_TOKEN          ${config.githubToken ? "configured" : "not set"}
   ${config.greptileApiKey ? check : cross} GREPTILE_API_KEY      ${config.greptileApiKey ? "configured" : "not set"}
+  ${config.brandfetchApiKey ? check : cross} BRANDFETCH_API_KEY    ${config.brandfetchApiKey ? "configured" : "not set"}
   ${config.ntfyEnabled ? check : cross} NTFY Notifications    ${config.ntfyEnabled ? config.ntfyTopic : "disabled"}
-  ${config.createBrandGuide ? check : cross} Brand Guide           ${config.createBrandGuide ? "created" : "skipped"}
+  ${config.createBrandGuide ? check : cross} Brand Guide           ${config.createBrandGuide ? (config.brandSource === "brandfetch" ? `from ${config.brandDomain}` : "manual") : "skipped"}
 
 ${c.bold}Testing Tools:${c.reset}
   ${config.withPlaywright ? check : cross} Playwright            ${config.withPlaywright ? "installed" : "not installed"}
@@ -1302,7 +1501,7 @@ ${c.bold}Ready to Use:${c.reset}
   ${c.gray}$${c.reset} /hustle-combine [apis]          ${c.dim}# Orchestrate APIs${c.reset}
 
 ${c.bold}Next Steps:${c.reset}
-  ${!config.githubToken ? `1. ${c.white}Add GITHUB_TOKEN to .env${c.reset}\n  ` : ""}${!config.greptileApiKey ? `2. ${c.white}Add GREPTILE_API_KEY to .env${c.reset}\n  ` : ""}${c.white}Restart Claude Code${c.reset} to load MCP servers
+  ${!config.githubToken ? `${c.white}→ Add GITHUB_TOKEN to .env${c.reset} (https://github.com/settings/tokens)\n  ` : ""}${!config.greptileApiKey ? `${c.white}→ Add GREPTILE_API_KEY to .env${c.reset} (https://app.greptile.com/settings/api)\n  ` : ""}${!config.brandfetchApiKey && config.brandSource === "brandfetch" ? `${c.white}→ Add BRANDFETCH_API_KEY to .env${c.reset} (https://brandfetch.com/developers)\n  ` : ""}${c.white}→ Restart Claude Code${c.reset} to load MCP servers
 
 ${c.dim}Documentation: https://github.com/hustle-together/api-dev-tools${c.reset}
 `);
