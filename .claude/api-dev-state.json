@@ -7,7 +7,41 @@
   "turn_count": 0,
   "last_turn_timestamp": null,
   "research_queries": [],
-  "prompt_detections": [],
+  "prompt_detections": [
+    {
+      "timestamp": "2025-12-28T00:34:29.707990",
+      "prompt_preview": "Is the brand guide used in other areas, like when creating UI, and whatnot?",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "guide"
+        ],
+        "patterns_matched": [
+          "always_research",
+          "question_pattern"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-28T00:41:15.404338",
+      "prompt_preview": "/Users/alfonso/Documents/GitHub/api-dev-tools/Example-Outputs/install-wizard-12-28-25.md that was it...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "api",
+          "install"
+        ],
+        "patterns_matched": [
+          "technical_term",
+          "always_research"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
+    }
+  ],
   "phases": {
     "disambiguation": {
       "status": "not_started",

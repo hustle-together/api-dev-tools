@@ -54,7 +54,7 @@ ${c.red}    ╔═════════════════════�
 ${c.red}${c.bold}                        HUSTLE${c.reset}
 ${c.bold}                    API Dev Tools${c.reset}
 ${c.dim}        Interview-driven, research-first API development${c.reset}
-                        ${c.gray}v3.12.6${c.reset}
+                        ${c.gray}v3.12.7${c.reset}
 `;
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -261,7 +261,8 @@ async function selectMany(question, options) {
  * @param {string} question - The question to ask
  * @param {Object} options - Options
  * @param {string} options.default - Default value
- * @param {boolean} options.secret - Hide input (for passwords/keys)
+ * @param {boolean} options.mask - Mask the echoed value (for API keys)
+ * @param {string} options.hint - Additional hint text
  * @returns {Promise<string>} - The entered text
  */
 async function textInput(question, options = {}) {
@@ -271,10 +272,21 @@ async function textInput(question, options = {}) {
   });
 
   return new Promise((resolve) => {
-    const defaultHint = options.default ? ` ${c.dim}(${options.default})${c.reset}` : "";
-    rl.question(`${c.bold}${question}${c.reset}${defaultHint}: `, (answer) => {
+    const defaultHint = options.default
+      ? ` ${c.dim}(${options.mask ? maskSecret(options.default) : options.default})${c.reset}`
+      : "";
+    const extraHint = options.hint ? ` ${c.dim}${options.hint}${c.reset}` : "";
+    rl.question(`${c.bold}${question}${c.reset}${defaultHint}${extraHint}: `, (answer) => {
       rl.close();
       const result = answer.trim() || options.default || "";
+
+      // If masked, show confirmation with masked value
+      if (options.mask && result) {
+        // Move cursor up and rewrite line with masked value
+        process.stdout.write(`\x1B[1A\x1B[2K`);
+        console.log(`${c.bold}${question}${c.reset}: ${c.dim}${maskSecret(result)}${c.reset}`);
+      }
+
       resolve(result);
     });
   });
@@ -310,14 +322,159 @@ function progressBar(current, total, label = "") {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
+// Validation Utilities
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Mask sensitive values (show only last 4 chars)
+ */
+function maskSecret(value) {
+  if (!value || value.length < 8) return "****";
+  return "****" + value.slice(-4);
+}
+
+/**
+ * Validate hex color format
+ */
+function isValidHex(color) {
+  return /^#[0-9A-Fa-f]{3,8}$/.test(color);
+}
+
+/**
+ * Color presets for quick selection
+ */
+const COLOR_PRESETS = {
+  // Reds
+  red: "#EF4444",
+  rose: "#F43F5E",
+  pink: "#EC4899",
+  // Blues
+  blue: "#3B82F6",
+  sky: "#0EA5E9",
+  cyan: "#06B6D4",
+  indigo: "#6366F1",
+  // Greens
+  green: "#22C55E",
+  emerald: "#10B981",
+  teal: "#14B8A6",
+  // Yellows/Oranges
+  yellow: "#EAB308",
+  amber: "#F59E0B",
+  orange: "#F97316",
+  // Purples
+  purple: "#A855F7",
+  violet: "#8B5CF6",
+  fuchsia: "#D946EF",
+  // Neutrals
+  slate: "#64748B",
+  gray: "#6B7280",
+  zinc: "#71717A",
+  stone: "#78716C",
+  // Special
+  black: "#000000",
+  white: "#FFFFFF",
+  beige: "#F5F5DC",
+  cream: "#FFFDD0",
+  navy: "#1E3A5A",
+  maroon: "#800000",
+  coral: "#FF7F50",
+  gold: "#FFD700",
+};
+
+/**
+ * Parse color input - accepts hex or color name
+ */
+function parseColor(input, defaultColor) {
+  if (!input) return defaultColor;
+  const trimmed = input.trim().toLowerCase();
+
+  // Check if it's a valid hex
+  if (isValidHex(input.trim())) {
+    return input.trim().toUpperCase();
+  }
+
+  // Check presets
+  if (COLOR_PRESETS[trimmed]) {
+    return COLOR_PRESETS[trimmed];
+  }
+
+  // Return default if invalid
+  return defaultColor;
+}
+
+/**
+ * Font presets with descriptions
+ */
+const FONT_PRESETS = {
+  // Sans-serif
+  inter: { name: "Inter", type: "sans-serif", desc: "Clean, modern" },
+  geist: { name: "Geist", type: "sans-serif", desc: "GitHub/Vercel style" },
+  "plus jakarta sans": { name: "Plus Jakarta Sans", type: "sans-serif", desc: "Friendly" },
+  "dm sans": { name: "DM Sans", type: "sans-serif", desc: "Geometric" },
+  "ibm plex sans": { name: "IBM Plex Sans", type: "sans-serif", desc: "Technical" },
+  poppins: { name: "Poppins", type: "sans-serif", desc: "Geometric, modern" },
+  montserrat: { name: "Montserrat", type: "sans-serif", desc: "Clean, elegant" },
+  // Serif
+  playfair: { name: "Playfair Display", type: "serif", desc: "Elegant, sophisticated" },
+  lora: { name: "Lora", type: "serif", desc: "Well-balanced" },
+  merriweather: { name: "Merriweather", type: "serif", desc: "Readable, warm" },
+  georgia: { name: "Georgia", type: "serif", desc: "Classic web serif" },
+  "source serif": { name: "Source Serif Pro", type: "serif", desc: "Modern serif" },
+  crimson: { name: "Crimson Text", type: "serif", desc: "Book-style elegance" },
+  // Monospace
+  "jetbrains mono": { name: "JetBrains Mono", type: "mono", desc: "Developer favorite" },
+  "fira code": { name: "Fira Code", type: "mono", desc: "Ligatures, readable" },
+  "source code": { name: "Source Code Pro", type: "mono", desc: "Adobe, clean" },
+};
+
+/**
+ * Parse font input - accepts font name or description
+ */
+function parseFont(input, defaultFont) {
+  if (!input) return defaultFont;
+  const trimmed = input.trim().toLowerCase();
+
+  // Check exact match in presets
+  if (FONT_PRESETS[trimmed]) {
+    return FONT_PRESETS[trimmed].name;
+  }
+
+  // Check if input contains keywords
+  if (trimmed.includes("serif") && !trimmed.includes("sans")) {
+    // User wants a serif font
+    if (trimmed.includes("sophist") || trimmed.includes("elegant")) {
+      return "Playfair Display";
+    }
+    return "Crimson Text";
+  }
+
+  if (trimmed.includes("sans") || trimmed.includes("clean") || trimmed.includes("modern")) {
+    return "Inter";
+  }
+
+  if (trimmed.includes("mono") || trimmed.includes("code")) {
+    return "JetBrains Mono";
+  }
+
+  // If it looks like a font name (capitalized words), use it directly
+  if (/^[A-Z][a-z]+(\s[A-Z][a-z]+)*$/.test(input.trim())) {
+    return input.trim();
+  }
+
+  return defaultFont;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
 // File Copy Utilities
 // ═══════════════════════════════════════════════════════════════════════════
 
 function copyDir(src, dest, options = {}) {
   const { filter = () => true, overwrite = false } = options;
   let copied = 0;
+  let skipped = 0;
+  let total = 0;
 
-  if (!fs.existsSync(src)) return copied;
+  if (!fs.existsSync(src)) return { copied: 0, skipped: 0, total: 0 };
 
   if (!fs.existsSync(dest)) {
     fs.mkdirSync(dest, { recursive: true });
@@ -332,16 +489,22 @@ function copyDir(src, dest, options = {}) {
     if (!filter(entry.name, srcPath)) continue;
 
     if (entry.isDirectory()) {
-      copied += copyDir(srcPath, destPath, options);
+      const result = copyDir(srcPath, destPath, options);
+      copied += result.copied;
+      skipped += result.skipped;
+      total += result.total;
     } else {
+      total++;
       if (!fs.existsSync(destPath) || overwrite) {
         fs.copyFileSync(srcPath, destPath);
         copied++;
+      } else {
+        skipped++;
       }
     }
   }
 
-  return copied;
+  return { copied, skipped, total };
 }
 
 function copyFile(src, dest, options = {}) {
@@ -488,12 +651,15 @@ async function main() {
       if (configureKeys) {
         config.githubToken = await textInput("GITHUB_TOKEN", {
           default: process.env.GITHUB_TOKEN || "",
+          mask: true,
         });
         config.greptileApiKey = await textInput("GREPTILE_API_KEY", {
           default: process.env.GREPTILE_API_KEY || "",
+          mask: true,
         });
-        config.brandfetchApiKey = await textInput("BRANDFETCH_API_KEY (optional, for auto brand guide)", {
+        config.brandfetchApiKey = await textInput("BRANDFETCH_API_KEY (optional)", {
           default: process.env.BRANDFETCH_API_KEY || "",
+          mask: true,
         });
       }
 
@@ -575,6 +741,7 @@ async function main() {
             log(`${c.dim}Free tier includes: 50 requests/month, basic brand assets${c.reset}\n`);
             config.brandfetchApiKey = await textInput("BRANDFETCH_API_KEY", {
               default: process.env.BRANDFETCH_API_KEY || "",
+              mask: true,
             });
           }
 
@@ -599,23 +766,40 @@ async function main() {
 
           // Color palette
           log(`\n${c.bold}Color Palette${c.reset}`);
-          log(`${c.dim}Define colors that represent your brand${c.reset}\n`);
+          log(`${c.dim}Define colors that represent your brand${c.reset}`);
+          log(`${c.dim}Enter hex (#E11D48) or color name (red, blue, coral, navy, etc.)${c.reset}\n`);
 
-          config.primaryColor = await textInput("Primary color (main CTAs, links) - hex", {
+          let primaryInput = await textInput("Primary color (main CTAs, links)", {
             default: "#E11D48",
+            hint: "hex or name",
           });
+          config.primaryColor = parseColor(primaryInput, "#E11D48");
+          if (primaryInput && primaryInput !== config.primaryColor) {
+            log(`  ${c.dim}→ Resolved to ${config.primaryColor}${c.reset}`);
+          }
 
-          config.secondaryColor = await textInput("Secondary color (accents, secondary buttons) - hex", {
+          let secondaryInput = await textInput("Secondary color (accents)", {
             default: "#1E40AF",
+            hint: "hex or name",
           });
+          config.secondaryColor = parseColor(secondaryInput, "#1E40AF");
+          if (secondaryInput && secondaryInput !== config.secondaryColor) {
+            log(`  ${c.dim}→ Resolved to ${config.secondaryColor}${c.reset}`);
+          }
 
-          config.accentColor = await textInput("Accent color (highlights, badges) - hex", {
+          let accentInput = await textInput("Accent color (highlights, badges)", {
             default: "#8B5CF6",
+            hint: "hex or name",
           });
+          config.accentColor = parseColor(accentInput, "#8B5CF6");
+          if (accentInput && accentInput !== config.accentColor) {
+            log(`  ${c.dim}→ Resolved to ${config.accentColor}${c.reset}`);
+          }
 
           // Typography
           log(`\n${c.bold}Typography${c.reset}`);
-          log(`${c.dim}Fonts define your brand's personality${c.reset}\n`);
+          log(`${c.dim}Fonts define your brand's personality${c.reset}`);
+          log(`${c.dim}Select from presets or describe what you want (e.g., "elegant serif", "modern sans")${c.reset}\n`);
 
           config.fontFamily = await selectOne("Primary body font", [
             { label: "Inter - Clean, modern, highly readable", value: "Inter" },
@@ -623,22 +807,33 @@ async function main() {
             { label: "Plus Jakarta Sans - Friendly, approachable", value: "Plus Jakarta Sans" },
             { label: "DM Sans - Geometric, professional", value: "DM Sans" },
             { label: "IBM Plex Sans - Technical, serious", value: "IBM Plex Sans" },
-            { label: "Other - Enter custom font", value: "custom" },
+            { label: "Other - Describe or enter font name", value: "custom" },
           ]);
 
           if (config.fontFamily === "custom") {
-            config.fontFamily = await textInput("Custom font family name", { default: "Inter" });
+            let fontInput = await textInput("Font name or description", {
+              default: "Inter",
+              hint: 'e.g., "Playfair" or "elegant serif"',
+            });
+            config.fontFamily = parseFont(fontInput, "Inter");
+            log(`  ${c.dim}→ Using: ${config.fontFamily}${c.reset}`);
           }
 
           config.headingFont = await selectOne("Heading font", [
             { label: "Same as body font", value: config.fontFamily },
+            { label: "Playfair Display - Elegant, sophisticated", value: "Playfair Display" },
             { label: "Cal Sans - Bold, impactful", value: "Cal Sans" },
             { label: "Clash Display - Modern, striking", value: "Clash Display" },
-            { label: "Other - Enter custom font", value: "custom" },
+            { label: "Other - Describe or enter font name", value: "custom" },
           ]);
 
           if (config.headingFont === "custom") {
-            config.headingFont = await textInput("Custom heading font", { default: config.fontFamily });
+            let headingInput = await textInput("Heading font name or description", {
+              default: config.fontFamily,
+              hint: 'e.g., "sans-serif that pairs nicely"',
+            });
+            config.headingFont = parseFont(headingInput, config.fontFamily);
+            log(`  ${c.dim}→ Using: ${config.headingFont}${c.reset}`);
           }
 
           // UI Style preferences
@@ -736,11 +931,19 @@ async function main() {
     fs.mkdirSync(commandsDir, { recursive: true });
   }
 
-  const commandsCopied = copyDir(sourceCommandsDir, commandsDir, {
+  const commandsResult = copyDir(sourceCommandsDir, commandsDir, {
     filter: (name) => name.endsWith(".md"),
   });
 
-  logSuccess(`${commandsCopied} commands installed to .claude/commands/`);
+  if (commandsResult.copied > 0) {
+    logSuccess(`${commandsResult.copied} new commands installed to .claude/commands/`);
+  }
+  if (commandsResult.skipped > 0) {
+    logInfo(`${commandsResult.skipped} commands already exist (preserved)`);
+  }
+  if (commandsResult.total === 0) {
+    logWarn("No commands found in package");
+  }
 
   // ─────────────────────────────────────────────────────────────────────────
   // Step 3: Install Hooks
@@ -768,10 +971,14 @@ async function main() {
 
   // Copy Python hook files
   let hooksCopied = 0;
+  let hooksSkipped = 0;
+  let hooksTotal = 0;
   if (fs.existsSync(sourceHooksDir)) {
     const hookFiles = fs
       .readdirSync(sourceHooksDir)
       .filter((f) => f.endsWith(".py"));
+
+    hooksTotal = hookFiles.length;
 
     for (const file of hookFiles) {
       const src = path.join(sourceHooksDir, file);
@@ -781,11 +988,18 @@ async function main() {
         fs.copyFileSync(src, dest);
         fs.chmodSync(dest, "755");
         hooksCopied++;
+      } else {
+        hooksSkipped++;
       }
     }
   }
 
-  logSuccess(`${hooksCopied} hooks installed to .claude/hooks/`);
+  if (hooksCopied > 0) {
+    logSuccess(`${hooksCopied} new hooks installed to .claude/hooks/`);
+  }
+  if (hooksSkipped > 0) {
+    logInfo(`${hooksSkipped} hooks already exist (preserved)`);
+  }
   logInfo("Includes: enforce-*, notify-*, track-token-usage.py");
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -802,11 +1016,16 @@ async function main() {
     fs.mkdirSync(agentsDir, { recursive: true });
   }
 
-  const agentsCopied = copyDir(sourceAgentsDir, agentsDir, {
+  const agentsResult = copyDir(sourceAgentsDir, agentsDir, {
     filter: (name) => name.endsWith(".md"),
   });
 
-  logSuccess(`${agentsCopied} subagents installed to .claude/agents/`);
+  if (agentsResult.copied > 0) {
+    logSuccess(`${agentsResult.copied} new subagents installed to .claude/agents/`);
+  }
+  if (agentsResult.skipped > 0) {
+    logInfo(`${agentsResult.skipped} subagents already exist (preserved)`);
+  }
   logInfo("Haiku: parallel-researcher, research-validator, docs-generator");
   logInfo(
     "Sonnet: schema-generator, test-writer, implementation-reviewer, code-reviewer",
@@ -1057,7 +1276,7 @@ async function main() {
 
     const brandGuideContent = `# ${config.brandName} Brand Guide
 
-> Auto-generated by HUSTLE API Dev Tools v3.12.6
+> Auto-generated by HUSTLE API Dev Tools v3.12.7
 > This guide ensures consistent UI across all components and pages.${brandfetchNote}
 
 ---
@@ -1406,61 +1625,89 @@ module.exports = {
   // ─────────────────────────────────────────────────────────────────────────
 
   logStep(++currentStep, totalSteps, "Testing tools");
-  log(`  ${c.dim}Installing Playwright, Storybook, and Sandpack (this may take a few minutes)${c.reset}`);
 
-  if (config.withStorybook || config.withPlaywright || config.withSandpack) {
-    if (config.withSandpack) {
-      startSpinner("Installing Sandpack...");
-      try {
-        execSync("pnpm add @codesandbox/sandpack-react 2>&1", {
-          cwd: targetDir,
-          stdio: ["pipe", "pipe", "pipe"],
-        });
-        stopSpinner(true, "Sandpack installed");
-      } catch (e) {
-        stopSpinner(
-          false,
-          "Sandpack install failed - run: pnpm add @codesandbox/sandpack-react",
-        );
-      }
+  // Check prerequisites
+  const hasPackageJson = fs.existsSync(path.join(targetDir, "package.json"));
+  const hasPnpm = (() => {
+    try {
+      execSync("pnpm --version", { stdio: ["pipe", "pipe", "pipe"] });
+      return true;
+    } catch {
+      return false;
     }
+  })();
 
-    if (config.withStorybook) {
-      startSpinner("Initializing Storybook (this takes a moment)...");
-      try {
-        execSync("pnpm dlx storybook@latest init --yes 2>&1", {
-          cwd: targetDir,
-          stdio: ["pipe", "pipe", "pipe"],
-          timeout: 300000,
-        });
-        stopSpinner(true, "Storybook initialized");
-      } catch (e) {
-        stopSpinner(
-          false,
-          "Storybook init failed - run: pnpm dlx storybook@latest init",
-        );
-      }
-    }
-
-    if (config.withPlaywright) {
-      startSpinner("Initializing Playwright (this takes a moment)...");
-      try {
-        execSync("pnpm create playwright --yes 2>&1", {
-          cwd: targetDir,
-          stdio: ["pipe", "pipe", "pipe"],
-          timeout: 300000,
-        });
-        stopSpinner(true, "Playwright initialized");
-      } catch (e) {
-        stopSpinner(
-          false,
-          "Playwright init failed - run: pnpm create playwright",
-        );
-      }
-    }
+  if (!hasPackageJson) {
+    log(`  ${c.dim}No package.json found - skipping npm package installations${c.reset}`);
+    logInfo("Run 'pnpm init' first, then re-run installer to add testing tools");
+  } else if (!hasPnpm) {
+    log(`  ${c.dim}pnpm not found - skipping installations${c.reset}`);
+    logInfo("Install pnpm: npm install -g pnpm");
   } else {
-    logInfo("None selected");
-    logInfo("Run wizard again with Custom Setup to add testing tools");
+    log(`  ${c.dim}Installing Playwright, Storybook, and Sandpack${c.reset}`);
+
+    if (config.withStorybook || config.withPlaywright || config.withSandpack) {
+      if (config.withSandpack) {
+        startSpinner("Installing Sandpack (live code preview)...");
+        try {
+          execSync("pnpm add @codesandbox/sandpack-react 2>&1", {
+            cwd: targetDir,
+            stdio: ["pipe", "pipe", "pipe"],
+          });
+          stopSpinner(true, "Sandpack installed - enables live UI previews");
+        } catch (e) {
+          stopSpinner(false, "Sandpack failed");
+          logInfo("  Run manually: pnpm add @codesandbox/sandpack-react");
+        }
+      }
+
+      if (config.withStorybook) {
+        // Check if Storybook is already initialized
+        const hasStorybook = fs.existsSync(path.join(targetDir, ".storybook"));
+        if (hasStorybook) {
+          logInfo("Storybook already configured");
+        } else {
+          startSpinner("Initializing Storybook (component development)...");
+          try {
+            execSync("pnpm dlx storybook@latest init --yes 2>&1", {
+              cwd: targetDir,
+              stdio: ["pipe", "pipe", "pipe"],
+              timeout: 300000,
+            });
+            stopSpinner(true, "Storybook initialized - run 'pnpm storybook' to start");
+          } catch (e) {
+            stopSpinner(false, "Storybook failed");
+            logInfo("  Run manually: pnpm dlx storybook@latest init");
+            logInfo("  Requires: React/Vue/Angular/Svelte project");
+          }
+        }
+      }
+
+      if (config.withPlaywright) {
+        // Check if Playwright is already initialized
+        const hasPlaywright = fs.existsSync(path.join(targetDir, "playwright.config.ts")) ||
+                              fs.existsSync(path.join(targetDir, "playwright.config.js"));
+        if (hasPlaywright) {
+          logInfo("Playwright already configured");
+        } else {
+          startSpinner("Initializing Playwright (E2E testing)...");
+          try {
+            execSync("pnpm create playwright --yes 2>&1", {
+              cwd: targetDir,
+              stdio: ["pipe", "pipe", "pipe"],
+              timeout: 300000,
+            });
+            stopSpinner(true, "Playwright initialized - run 'pnpm exec playwright test' to start");
+          } catch (e) {
+            stopSpinner(false, "Playwright failed");
+            logInfo("  Run manually: pnpm create playwright");
+          }
+        }
+      }
+    } else {
+      logInfo("None selected");
+      logInfo("Run wizard again with Custom Setup to add testing tools");
+    }
   }
 
   // ─────────────────────────────────────────────────────────────────────────
