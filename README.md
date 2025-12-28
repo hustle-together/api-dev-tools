@@ -1,99 +1,188 @@
 # API Development Tools v3.12.0
 
+```
+    ╔═══════════════════════════════════════════════════════════════╗
+    ║                                                               ║
+    ║     ██╗  ██╗██╗   ██╗███████╗████████╗██╗     ███████╗       ║
+    ║     ██║  ██║██║   ██║██╔════╝╚══██╔══╝██║     ██╔════╝       ║
+    ║     ███████║██║   ██║███████╗   ██║   ██║     █████╗         ║
+    ║     ██╔══██║██║   ██║╚════██║   ██║   ██║     ██╔══╝         ║
+    ║     ██║  ██║╚██████╔╝███████║   ██║   ███████╗███████╗       ║
+    ║     ╚═╝  ╚═╝ ╚═════╝ ╚══════╝   ╚═╝   ╚══════╝╚══════╝       ║
+    ║                                                               ║
+    ║              API Development Tools for Claude Code            ║
+    ║                                                               ║
+    ╚═══════════════════════════════════════════════════════════════╝
+```
+
 **Interview-driven, research-first API development with 13-phase TDD workflow**
 
-[![Agent Skills](https://img.shields.io/badge/Agent_Skills-Compatible-blue)](https://agentskills.io)
-[![Cross-Platform](https://img.shields.io/badge/Cross--Platform-Claude%20%7C%20VS%20Code%20%7C%20Cursor-green)](https://github.com/hustle-together/api-dev-tools)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Agent Skills](https://img.shields.io/badge/Agent_Skills-Compatible-BA0C2F)](https://agentskills.io)
+[![Cross-Platform](https://img.shields.io/badge/Cross--Platform-Claude%20%7C%20VS%20Code%20%7C%20Cursor-000000)](https://github.com/hustle-together/api-dev-tools)
+[![License: MIT](https://img.shields.io/badge/License-MIT-white)](https://opensource.org/licenses/MIT)
 
 ---
 
-## Quick Start (2 Minutes)
+## Why API Dev Tools?
 
-### 1. Install
+| Problem                                 | Solution                                      |
+| --------------------------------------- | --------------------------------------------- |
+| AI writes code from memory, not docs    | ► Research-first workflow forces doc lookup   |
+| Generic questions miss project context  | ► Interview questions generated FROM research |
+| No verification after implementation    | ► Phase 10 re-researches and compares to docs |
+| Easy to skip TDD steps                  | ► 22 hooks enforce phase completion           |
+| Context dilutes over long conversations | ► Re-grounding every 7 turns                  |
+| No visibility into AI workflow          | ► State tracking + NTFY push notifications    |
+
+---
+
+## Quick Start
 
 ```bash
-# Via NPM (recommended)
 npx @hustle-together/api-dev-tools --scope=project
-
-# Or via Claude Code Plugin
-/plugin marketplace add hustle-together/api-dev-tools
-/plugin install api-dev-tools
 ```
 
-### 2. Configure MCP Servers
+The installer walks you through:
 
-Add to your Claude Code MCP configuration:
+- ■ MCP server configuration (Context7, GitHub)
+- ■ Environment variables (.env setup)
+- ■ NTFY push notifications (optional)
+- ■ Optional tools (Storybook, Playwright, Sandpack)
 
-```json
-{
-  "mcpServers": {
-    "context7": {
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"]
-    },
-    "github": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
-      "env": { "GITHUB_PERSONAL_ACCESS_TOKEN": "your-token" }
-    }
-  }
-}
-```
+---
 
-### 3. Start Your First Workflow
+## Four Main Workflows
+
+All four workflows share the same **13-phase structure** ensuring consistency across API, component, page, and orchestration development.
+
+### 1. `/api-create [endpoint]` — Build API Endpoints
+
+Creates a complete API endpoint with research-backed implementation:
 
 ```bash
-/api-create my-endpoint      # Complete 13-phase API workflow
+/api-create stripe-checkout
+```
+
+**Flow:** Disambiguate → Research Stripe docs → Interview about error handling, formats → Generate Zod schemas → Write failing tests → Implement → Verify against docs → Refactor → Document
+
+---
+
+### 2. `/hustle-ui-create [name]` — Build Components
+
+Creates UI components with Storybook integration and visual testing:
+
+```bash
+/hustle-ui-create ChatWindow
+```
+
+**Flow:** AI suggests Basic/Complex type → User confirms → Research component patterns → Interview about variants, states → Generate types → Write Storybook stories → Implement → Visual regression tests → Document
+
+---
+
+### 3. `/hustle-ui-create-page [name]` — Build Pages
+
+Creates Next.js pages with Playwright E2E testing:
+
+```bash
+/hustle-ui-create-page Dashboard
+```
+
+**Flow:** Same 13 phases but focused on page routing, data fetching, and E2E user flows instead of component isolation.
+
+---
+
+### 4. `/hustle-combine [type]` — Orchestrate Existing APIs
+
+Combines multiple existing APIs into orchestrated endpoints:
+
+```bash
+/hustle-combine api
+```
+
+**Flow:** Select from registry → Define orchestration pattern → Generate combined schemas → Test integration → Document the combined endpoint
+
+---
+
+## How The Phases Work Together
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  PHASE 1-2: CLARIFY                                                 │
+│  ├─ Disambiguation: "Did you mean X or Y?"                          │
+│  └─ Scope: "We're building Z with these features"                   │
+├─────────────────────────────────────────────────────────────────────┤
+│  PHASE 3-5: RESEARCH                                                │
+│  ├─ Initial: Context7 + WebSearch for official docs                 │
+│  ├─ Interview: Questions FROM discovered parameters                 │
+│  └─ Deep: Propose additional searches based on answers              │
+├─────────────────────────────────────────────────────────────────────┤
+│  PHASE 6-7: PREPARE                                                 │
+│  ├─ Schema: Zod types from research + interview decisions           │
+│  └─ Environment: Verify API keys exist before coding                │
+├─────────────────────────────────────────────────────────────────────┤
+│  PHASE 8-9: BUILD (TDD)                                             │
+│  ├─ Red: Write failing tests that define expected behavior          │
+│  └─ Green: Minimal implementation to pass tests                     │
+├─────────────────────────────────────────────────────────────────────┤
+│  PHASE 10-11: VERIFY                                                │
+│  ├─ Verify: Re-research docs, compare to implementation             │
+│  └─ Refactor: Clean up code while tests stay green                  │
+├─────────────────────────────────────────────────────────────────────┤
+│  PHASE 12-13: COMPLETE                                              │
+│  ├─ Documentation: Update registry, cache research                  │
+│  └─ Completion: Final verification, commit                          │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
 ## What Gets Installed
 
-| Component                | Location                     | Purpose                              |
-| ------------------------ | ---------------------------- | ------------------------------------ |
-| **23 Agent Skills**      | `.skills/`                   | Cross-platform workflow commands     |
-| **22 Enforcement Hooks** | `hooks/`                     | Block progress until phases complete |
-| **7 Subagents**          | `.claude/agents/`            | Parallel research, schemas, tests    |
-| **State Tracking**       | `.claude/api-dev-state.json` | Track progress across sessions       |
-| **Research Cache**       | `.claude/research/`          | 7-day freshness documentation cache  |
-| **NTFY Notifications**   | `hooks/lib/ntfy.py`          | Push notifications to your phone     |
-| **Token Tracking**       | `hooks/track-token-usage.py` | Per-phase token usage reporting      |
-| **ENV Template**         | `templates/.env.example`     | All configuration variables          |
+| Component         | Count | Purpose                                 |
+| ----------------- | ----- | --------------------------------------- |
+| Agent Skills      | 23    | Cross-platform workflow commands        |
+| Enforcement Hooks | 22    | Block progress until phases complete    |
+| Subagents         | 7     | Parallel research, schemas, tests, docs |
+| State Tracking    | 1     | Track progress across sessions          |
+| Research Cache    | 1     | 7-day freshness documentation cache     |
+| Templates         | 4     | Component, page, env, MCP configs       |
 
 ---
 
-## Four Main Workflows
+## Subagents
 
-| Command                         | Phases | Purpose                                  |
-| ------------------------------- | ------ | ---------------------------------------- |
-| `/api-create [endpoint]`        | 13     | Create API endpoint with full TDD        |
-| `/hustle-ui-create [name]`      | 13     | Create UI component with Storybook       |
-| `/hustle-ui-create-page [name]` | 13     | Create Next.js page with Playwright E2E  |
-| `/hustle-combine api`           | 13     | Combine existing APIs into orchestration |
+Seven specialized agents run in parallel to speed up workflows:
 
-### 13-Phase Flow (All Workflows)
-
-```
-1. Disambiguation  →  Clarify what we're building
-2. Scope           →  Confirm understanding
-3. Initial Research →  Context7 + WebSearch
-4. Interview       →  Questions FROM research
-5. Deep Research   →  Adaptive propose-approve
-6. Schema          →  Zod types from interview
-7. Environment     →  Verify API keys
-8. TDD Red         →  Write failing tests
-9. TDD Green       →  Minimal implementation
-10. Verify         →  Re-research, compare to docs
-11. Refactor       →  Clean up, tests stay green
-12. Documentation  →  Update manifests
-13. Completion     →  Final check, commit
-```
+| Agent                   | Model  | When Used                            |
+| ----------------------- | ------ | ------------------------------------ |
+| parallel-researcher     | Haiku  | Phase 3/5 - Scrape docs in parallel  |
+| research-validator      | Haiku  | Phase 3/5 - Find endpoints, webhooks |
+| schema-generator        | Sonnet | Phase 6 - Generate Zod schemas       |
+| test-writer             | Sonnet | Phase 8 - Write comprehensive tests  |
+| docs-generator          | Haiku  | Phase 12 - TypeDoc generation        |
+| implementation-reviewer | Sonnet | Phase 10 - Compare code to docs      |
+| code-reviewer           | Sonnet | Phase 11 - Security + performance    |
 
 ---
 
-## Essential Commands
+## Push Notifications
+
+Get notified on your phone when input is needed:
+
+```bash
+/ntfy-setup    # Configure NTFY
+/ntfy-test     # Send test notification
+```
+
+Notifications include:
+
+- ○ Input needed (interview questions)
+- ● Phase completions with token usage
+- ◆ Workflow blocked (missing requirements)
+
+---
+
+## Additional Commands
 
 ### TDD Workflow
 
@@ -101,7 +190,7 @@ Add to your Claude Code MCP configuration:
 /red              # Write ONE failing test
 /green            # Minimal implementation to pass
 /refactor         # Clean up while tests pass
-/cycle [desc]     # Complete Red→Green→Refactor
+/cycle [desc]     # Complete Red → Green → Refactor
 ```
 
 ### Git Operations
@@ -112,7 +201,7 @@ Add to your Claude Code MCP configuration:
 /busycommit       # Multiple atomic commits
 ```
 
-### Planning & Analysis
+### Planning
 
 ```bash
 /plan [feature]   # Create implementation plan
@@ -122,96 +211,26 @@ Add to your Claude Code MCP configuration:
 
 ---
 
-## Subagents (Parallel Processing)
-
-Seven specialized agents for faster workflows:
-
-| Agent                     | Model  | Purpose                            |
-| ------------------------- | ------ | ---------------------------------- |
-| `parallel-researcher`     | Haiku  | Scrape docs in parallel            |
-| `research-validator`      | Haiku  | Find all endpoints, webhooks       |
-| `schema-generator`        | Sonnet | Generate Zod schemas from research |
-| `test-writer`             | Sonnet | Write comprehensive tests          |
-| `docs-generator`          | Haiku  | TypeDoc documentation generation   |
-| `implementation-reviewer` | Sonnet | Compare code to docs               |
-| `code-reviewer`           | Sonnet | Security & performance review      |
-
----
-
-## Push Notifications (NTFY)
-
-Get phone notifications when input is needed:
-
-```bash
-/ntfy-setup           # Configure NTFY
-/ntfy-test            # Send test notification
-```
-
-Notifications include:
-
-- ⏳ Input needed (interview questions)
-- ✅ Phase completions
-- 📊 Token usage per phase
-
----
-
-## Hooks (Automatic Enforcement)
-
-| Event            | Hooks                                           | What They Do                                  |
-| ---------------- | ----------------------------------------------- | --------------------------------------------- |
-| **SessionStart** | `session-startup.py`                            | Inject state context                          |
-| **PreToolUse**   | 12 enforcement hooks                            | Block writes until phases complete            |
-| **PostToolUse**  | `verify-after-green.py`, `periodic-reground.py` | Trigger verification, re-ground every 7 turns |
-| **Stop**         | `api-workflow-check.py`                         | Block if phases incomplete                    |
-
----
-
-## Usage Tracking
-
-Monitor token usage and costs:
-
-```bash
-# Install ccusage
-npm install -g ccusage
-
-# View usage
-ccusage
-```
-
----
-
-## Configuration Files
-
-| File                         | Purpose                         |
-| ---------------------------- | ------------------------------- |
-| `.claude/settings.json`      | Hook registration, permissions  |
-| `.claude/api-dev-state.json` | Workflow state tracking         |
-| `.claude/research/`          | Cached documentation            |
-| `.claude/registry.json`      | Created APIs, components, pages |
-| `.mcp.json`                  | MCP server configuration        |
-
----
-
-## Optional Tools
-
-```bash
-# Install with optional features
-npx @hustle-together/api-dev-tools --with-storybook   # Component dev
-npx @hustle-together/api-dev-tools --with-playwright  # E2E testing
-npx @hustle-together/api-dev-tools --with-sandpack    # Live editing
-```
-
----
-
 ## Documentation
 
-| Document                                                   | Description                            |
-| ---------------------------------------------------------- | -------------------------------------- |
-| [BEST_PRACTICES_ANALYSIS.md](./BEST_PRACTICES_ANALYSIS.md) | Full phase documentation, hook details |
-| [INSTALLATION_GUIDE.md](./INSTALLATION_GUIDE.md)           | Detailed setup instructions            |
-| [.skills/README.md](./.skills/README.md)                   | All 23 skills with usage               |
-| [VERSION_3.2_OVERVIEW.md](./VERSION_3.2_OVERVIEW.md)       | Roadmap and planning                   |
-| [CHANGELOG.md](./CHANGELOG.md)                             | Version history                        |
+| Document                                                       | Purpose                                                                                                                                                       |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **[BEST_PRACTICES_ANALYSIS.md](./BEST_PRACTICES_ANALYSIS.md)** | Complete phase documentation with hook details, enforcement logic, and workflow diagrams. The authoritative reference for understanding how each phase works. |
+| **[INSTALLATION_GUIDE.md](./INSTALLATION_GUIDE.md)**           | Step-by-step setup instructions including manual installation, MCP configuration, environment variables, and troubleshooting.                                 |
+| **[.skills/README.md](./.skills/README.md)**                   | All 23 agent skills with usage examples, parameters, and cross-platform compatibility notes.                                                                  |
+| **[CHANGELOG.md](./CHANGELOG.md)**                             | Version history with breaking changes, new features, and migration guides.                                                                                    |
+
+---
+
+## Configuration
+
+| File                         | Purpose                                      |
+| ---------------------------- | -------------------------------------------- |
+| `.claude/settings.json`      | Hook registration, tool permissions          |
+| `.claude/api-dev-state.json` | Current workflow state, phase progress       |
+| `.claude/research/`          | Cached documentation with freshness tracking |
+| `.claude/registry.json`      | All created APIs, components, pages          |
+| `templates/.env.example`     | Environment variable template                |
 
 ---
 
@@ -224,6 +243,16 @@ npx @hustle-together/api-dev-tools --with-sandpack    # Live editing
 
 ---
 
+## Optional Tools
+
+```bash
+npx @hustle-together/api-dev-tools --with-storybook   # Component development
+npx @hustle-together/api-dev-tools --with-playwright  # E2E testing
+npx @hustle-together/api-dev-tools --with-sandpack    # Live code editing
+```
+
+---
+
 ## Support
 
 - **Issues**: [GitHub Issues](https://github.com/hustle-together/api-dev-tools/issues)
@@ -231,4 +260,4 @@ npx @hustle-together/api-dev-tools --with-sandpack    # Live editing
 
 ---
 
-**License:** MIT | **Author:** Hustle Together
+**License:** MIT | **Author:** [Hustle Together](https://github.com/hustle-together)
