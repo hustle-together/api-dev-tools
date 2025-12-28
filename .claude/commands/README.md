@@ -13,23 +13,24 @@
 
 ## Hook Architecture (9 Hooks)
 
-| Hook | Event | Purpose |
-|------|-------|---------|
-| `session-startup.py` | SessionStart | Inject state at session start |
+| Hook                           | Event            | Purpose                            |
+| ------------------------------ | ---------------- | ---------------------------------- |
+| `session-startup.py`           | SessionStart     | Inject state at session start      |
 | `enforce-external-research.py` | UserPromptSubmit | Detect API terms, require research |
-| `enforce-research.py` | PreToolUse | Block writes until research done |
-| `enforce-interview.py` | PreToolUse | Inject interview decisions |
-| `verify-implementation.py` | PreToolUse | Require test file before route |
-| `track-tool-use.py` | PostToolUse | Log research, count turns |
-| `periodic-reground.py` | PostToolUse | Re-ground every 7 turns |
-| `verify-after-green.py` | PostToolUse | Trigger Phase 10 after test pass |
-| `api-workflow-check.py` | Stop | Block if phases incomplete |
+| `enforce-research.py`          | PreToolUse       | Block writes until research done   |
+| `enforce-interview.py`         | PreToolUse       | Inject interview decisions         |
+| `verify-implementation.py`     | PreToolUse       | Require test file before route     |
+| `track-tool-use.py`            | PostToolUse      | Log research, count turns          |
+| `periodic-reground.py`         | PostToolUse      | Re-ground every 7 turns            |
+| `verify-after-green.py`        | PostToolUse      | Trigger Phase 10 after test pass   |
+| `api-workflow-check.py`        | Stop             | Block if phases incomplete         |
 
 ## Available Commands
 
 ### Complete Workflow
 
 **`/api-create [endpoint-name]`**
+
 - Runs all 13 phases automatically
 - Loop-back architecture at every checkpoint
 - See [api-create.md](api-create.md) for full flow
@@ -37,32 +38,38 @@
 ### Individual Phases
 
 **`/api-interview [endpoint-name]`**
+
 - Questions GENERATED from research findings
 - Different question types: enum, continuous, boolean
 - See [api-interview.md](api-interview.md)
 
 **`/api-research [library-or-service]`**
+
 - Adaptive propose-approve flow (not shotgun)
 - Research cached with 7-day freshness
 - See [api-research.md](api-research.md)
 
 **`/api-verify [endpoint-name]`** (NEW)
+
 - Manual Phase 10 verification
 - Re-read docs, compare to implementation
 - Report gaps, loop back or document omissions
 - See [api-verify.md](api-verify.md)
 
 **`/api-env [endpoint-name]`**
+
 - Check API keys and environment
 - See [api-env.md](api-env.md)
 
 **`/api-status [endpoint-name]`**
+
 - Track progress through 13 phases
 - See [api-status.md](api-status.md)
 
 ### TDD Commands
 
 From [@wbern/claude-instructions](https://github.com/wbern/claude-instructions):
+
 - `/red` - Write ONE failing test
 - `/green` - Minimal implementation to pass
 - `/refactor` - Clean up while tests pass
@@ -131,11 +138,13 @@ Research cached in `.claude/research/`:
 ## Quick Start
 
 ### Automated
+
 ```bash
 /api-create my-endpoint
 ```
 
 ### Manual Step-by-Step
+
 ```bash
 /api-research [library]      # Initial research
 /api-interview [endpoint]    # Questions from research
@@ -154,6 +163,7 @@ npx @hustle-together/api-dev-tools --scope=project
 ```
 
 Installs:
+
 - Commands in `.claude/commands/`
 - Hooks in `.claude/hooks/`
 - Settings in `.claude/settings.json`
@@ -163,6 +173,7 @@ Installs:
 ### Team-Wide
 
 Add to `package.json`:
+
 ```json
 {
   "scripts": {

@@ -1,18 +1,19 @@
 ---
-description: Create UI components or pages with 13-phase interview-driven workflow
+description: Create UI components or pages with 14-phase interview-driven workflow
 argument-hint: [component-name]
 ---
 
 # Hustle UI Create
 
-**Version:** 3.9.0
-**13-phase workflow for creating UI components and pages**
+**Version:** 3.11.0
+**14-phase workflow for creating UI components and pages**
 
 You are creating a UI element using the Hustle Together interview-driven workflow.
 
 ## Pre-Flight Check
 
 Before starting, verify state file exists:
+
 ```bash
 cat .claude/api-dev-state.json 2>/dev/null || echo "Creating new state file"
 ```
@@ -43,35 +44,57 @@ Set `mode` based on response: "component" or "page"
 
 ---
 
-# Component Mode (13 Phases)
+# Component Mode (14 Phases)
 
 ## Phase 1: DISAMBIGUATION
 
-**Goal:** Clarify component type and scope
+**Goal:** AI analyzes component, suggests type, user confirms
 
-Ask the user:
+### Step 1: AI Analysis
+
+Analyze the component name and description to determine complexity:
+
+**Basic components** (single-purpose, few props):
+
+- Button, Input, Icon, Badge, Label, Avatar, Spinner
+
+**Complex components** (multi-part, many states, user flows):
+
+- ChatWindow, DataTable, Modal, Sidebar, Header, Form, Dashboard
+
+### Step 2: Present Suggestion
+
 ```
 Phase 1: DISAMBIGUATION
 
-What type of component is this?
+Based on "[component-name]", I believe this is a:
 
-  A) Atom - Basic building block (Button, Input, Icon, Badge)
-  B) Molecule - Simple group of atoms (FormField, Card, SearchBar)
-  C) Organism - Complex section (Header, Sidebar, DataTable, Modal)
+  ➤ [BASIC/COMPLEX] component
 
-Please select A, B, or C:
+Reasoning: [Why you classified it this way]
+
+Is this correct?
+  A) Yes, proceed with [Basic/Complex]
+  B) No, it's actually [the other type]
+
+Please confirm:
 ```
 
 **Wait for user response.**
 
+**HOOK: `enforce-component-type-confirm.py` blocks if user doesn't confirm.**
+
 Update state:
+
 ```json
 {
   "workflow": "ui-create-component",
   "element_name": "[component-name]",
   "element_type": "component",
   "ui_config": {
-    "component_type": "[atom|molecule|organism]"
+    "component_type": "[basic|complex]",
+    "ai_suggested": "[basic|complex]",
+    "user_confirmed": true
   },
   "phases": {
     "disambiguation": {
@@ -81,6 +104,8 @@ Update state:
   }
 }
 ```
+
+**Note:** Complex components will include Playwright E2E tests in addition to Storybook.
 
 ---
 
@@ -96,7 +121,7 @@ Phase 2: SCOPE CONFIRMATION
 Based on your input, here's my understanding:
 
 Component: [Name]
-Type: [Atom/Molecule/Organism]
+Type: [Basic/Complex]
 Purpose: [Your understanding of what this component does]
 
 Expected Features:
@@ -149,6 +174,7 @@ If B: Ask for URL or description
 ### Step 3b: Design Pattern Research
 
 Perform 2-3 targeted searches:
+
 1. `[component-name] component best practices accessibility`
 2. `shadcn [component-name] implementation`
 3. `radix [component-name] primitive`
@@ -156,6 +182,7 @@ Perform 2-3 targeted searches:
 Use Context7 for ShadCN/Radix documentation.
 
 Document findings in state:
+
 ```json
 {
   "phases": {
@@ -209,6 +236,7 @@ Q5: [Research-derived question about specific feature]
 **Wait for all answers before proceeding.**
 
 Store all decisions in state:
+
 ```json
 {
   "phases": {
@@ -237,6 +265,7 @@ ls -la src/components/ui/ 2>/dev/null || echo "No existing ShadCN components"
 ```
 
 If components found:
+
 ```
 Phase 5: COMPONENT ANALYSIS
 
@@ -261,6 +290,7 @@ Please select:
 **Wait for user response.**
 
 Also check registry for custom components:
+
 ```bash
 cat .claude/registry.json | jq '.components'
 ```
@@ -300,6 +330,7 @@ export interface [Name]Props {
 ```
 
 Present to user:
+
 ```
 Phase 6: PROPS SCHEMA
 
@@ -323,16 +354,19 @@ Please select:
 **Goal:** Verify required packages and Storybook setup
 
 Check for required packages:
+
 ```bash
 cat package.json | jq '.dependencies, .devDependencies' | grep -E "radix|shadcn|class-variance|clsx|tailwind"
 ```
 
 Check Storybook:
+
 ```bash
 ls -la .storybook/ 2>/dev/null || echo "Storybook not configured"
 ```
 
 If Storybook not found:
+
 ```
 Phase 7: ENVIRONMENT CHECK
 
@@ -346,6 +380,7 @@ Please select:
 ```
 
 Report status:
+
 ```
 Environment Check:
   Packages: [radix, class-variance-authority, clsx]
@@ -432,6 +467,49 @@ export const Loading: Story = {
 export const Disabled: Story = {
   args: { disabled: true, children: 'Disabled' },
 };
+```
+
+### Create Visual Regression Test (Playwright)
+
+```typescript
+// src/components/[Name]/__tests__/[Name].visual.spec.ts
+
+import { test, expect } from "@playwright/test";
+
+const STORYBOOK_URL = process.env.STORYBOOK_URL || "http://localhost:6006";
+
+test.describe("[Name] Visual Regression", () => {
+  test("Primary variant matches baseline", async ({ page }) => {
+    await page.goto(
+      `${STORYBOOK_URL}/iframe.html?id=components-[name]--primary`,
+    );
+    await page.waitForLoadState("networkidle");
+    await expect(page.locator("#storybook-root")).toHaveScreenshot(
+      "[Name]-primary.png",
+    );
+  });
+
+  test("renders correctly on mobile", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 667 });
+    await page.goto(
+      `${STORYBOOK_URL}/iframe.html?id=components-[name]--primary`,
+    );
+    await expect(page.locator("#storybook-root")).toHaveScreenshot(
+      "[Name]-mobile.png",
+    );
+  });
+
+  test("hover state matches baseline", async ({ page }) => {
+    await page.goto(
+      `${STORYBOOK_URL}/iframe.html?id=components-[name]--primary`,
+    );
+    await page.locator("#storybook-root > *").first().hover();
+    await page.waitForTimeout(300);
+    await expect(page.locator("#storybook-root")).toHaveScreenshot(
+      "[Name]-hover.png",
+    );
+  });
+});
 ```
 
 ### Run Tests (Expect Failure)
@@ -569,6 +647,7 @@ Step 3: Test Results
 ```
 
 Run accessibility audit:
+
 ```bash
 pnpm dlx @axe-core/cli http://localhost:6006/iframe.html?id=components-[name]--primary
 ```
@@ -586,9 +665,35 @@ Step 4: Performance Metrics
   Bundle size impact:     [+X KB]
 ```
 
-**Present 4-step results:**
+### Step 5: Visual Regression (Playwright)
+
+Run visual regression tests to capture baseline screenshots:
+
+```bash
+pnpm playwright test src/components/[Name]/[Name].visual.spec.ts --update-snapshots
 ```
-Phase 10: VERIFICATION (4-Step)
+
+This creates baseline screenshots in Storybook for:
+
+- All variants (primary, secondary, disabled, loading)
+- All sizes (sm, md, lg)
+- All viewports (mobile, tablet, desktop)
+- Interaction states (hover, focus)
+- Dark mode (if supported)
+
+```
+Step 5: Visual Regression
+
+  Variant screenshots:    [X/X captured]
+  Responsive viewports:   [3/3 captured]
+  Interaction states:     [Hover, Focus captured]
+  Dark mode:              [Captured if supported]
+```
+
+**Present 5-step results:**
+
+```
+Phase 10: VERIFICATION (5-Step)
 
 Step 1: Responsive Check
   Desktop (1920px)  - Renders correctly
@@ -611,7 +716,11 @@ Step 4: Performance Metrics
   Re-renders on mount: 1 (optimal)
   Re-renders on prop change: 1 (optimal)
 
-All 4 checks passed!
+Step 5: Visual Regression
+  Playwright screenshots: 12/12 captured
+  Baseline images saved to: __snapshots__/
+
+All 5 checks passed!
 
 Any issues to fix?
   A) No, all good - proceed
@@ -622,11 +731,46 @@ Any issues to fix?
 
 ---
 
-## Phase 11: TDD REFACTOR
+## Phase 11: CODE REVIEW (Greptile)
 
-**Goal:** Clean up code while tests pass
+**Goal:** AI-powered code review before refactoring
+
+Run Greptile code review to catch issues early:
+
+- Bug detection with full codebase context
+- Security vulnerability scanning (OWASP top 10)
+- Performance issue identification
+- Accessibility concerns
+
+**Requires:** GREPTILE_API_KEY + GITHUB_TOKEN
+
+Present results:
+
+```
+Phase 11: CODE REVIEW
+
+Greptile found [N] issue(s):
+
+  1. [file:line] - [severity] [issue description]
+  2. [file:line] - [severity] [issue description]
+
+How should I proceed?
+  A) Fix all issues in refactor phase
+  B) Fix critical only, defer others
+  C) Skip - no issues to fix
+```
+
+**Wait for user response.**
+
+---
+
+## Phase 12: TDD REFACTOR
+
+**Goal:** Fix code review issues + clean up code while tests pass
 
 Refactoring checklist:
+
+- [ ] Address Greptile issues (bugs, security, performance)
 - [ ] Extract repeated logic to custom hooks
 - [ ] Optimize re-renders with useMemo/useCallback if needed
 - [ ] Clean up unused imports
@@ -634,13 +778,14 @@ Refactoring checklist:
 - [ ] Add JSDoc comments to exported functions
 
 Run tests after each refactor:
+
 ```bash
 pnpm test src/components/[Name]
 ```
 
 ---
 
-## Phase 12: DOCUMENTATION
+## Phase 13: DOCUMENTATION
 
 **Goal:** Complete all documentation
 
@@ -651,7 +796,8 @@ Ensure `tags: ['autodocs']` is set in story meta.
 ### JSDoc Comments
 
 Add to component file:
-```typescript
+
+````typescript
 /**
  * [Name] component - [Brief description]
  *
@@ -662,11 +808,12 @@ Add to component file:
  * </[Name]>
  * ```
  */
-```
+````
 
 ### Registry Entry
 
 Update `.claude/registry.json`:
+
 ```json
 {
   "components": {
@@ -688,6 +835,7 @@ Update `.claude/registry.json`:
 ```
 
 Present checklist:
+
 ```
 Phase 12: DOCUMENTATION
 
@@ -703,7 +851,7 @@ Documentation complete?
 
 ---
 
-## Phase 13: COMPLETION
+## Phase 14: COMPLETION
 
 **Goal:** Final output and continuation prompt
 
@@ -721,9 +869,11 @@ Created Files:
   - src/components/[Name]/[Name].types.ts
   - src/components/[Name]/[Name].stories.tsx
   - src/components/[Name]/__tests__/[Name].test.tsx
+  - src/components/[Name]/__tests__/[Name].visual.spec.ts
   - src/components/[Name]/index.ts
 
 Tests: All passed (ran during Phase 8-9)
+Visual: Playwright screenshots captured (Phase 10)
 A11y: WCAG 2.1 AA compliant
 Brand: Matches .claude/BRAND_GUIDE.md
 
@@ -753,7 +903,7 @@ Update state: `phases.completion.status = "complete"`
 
 ---
 
-# Page Mode (13 Phases)
+# Page Mode (14 Phases)
 
 Similar flow with these differences:
 
@@ -791,7 +941,10 @@ See full page mode documentation in `/hustle-ui-create-page.md` (if implementing
       "phases": {
         "disambiguation": { "status": "complete" },
         "scope": { "status": "complete" },
-        "design_research": { "status": "complete", "brand_guide_applied": true },
+        "design_research": {
+          "status": "complete",
+          "brand_guide_applied": true
+        },
         "interview": { "status": "complete", "decisions": {} },
         "component_analysis": { "status": "complete", "dependencies": [] },
         "props_schema": { "status": "complete", "schema_file": "..." },
@@ -821,5 +974,5 @@ See full page mode documentation in `/hustle-ui-create-page.md` (if implementing
 
 ---
 
-**Version:** 3.9.0
-**Last Updated:** 2025-12-12
+**Version:** 3.11.0
+**Last Updated:** 2025-12-28

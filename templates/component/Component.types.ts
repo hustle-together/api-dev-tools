@@ -1,16 +1,21 @@
-import type { VariantProps } from 'class-variance-authority';
-import type { ComponentPropsWithoutRef } from 'react';
+import type { VariantProps } from "class-variance-authority";
+import type { ComponentPropsWithoutRef } from "react";
 
 /**
  * __COMPONENT_NAME__ variant configuration
  * Generated from interview decisions
  */
-export type __COMPONENT_NAME__Variant = 'primary' | 'secondary' | 'destructive' | 'outline' | 'ghost';
+export type __COMPONENT_NAME__Variant =
+  | "primary"
+  | "secondary"
+  | "destructive"
+  | "outline"
+  | "ghost";
 
 /**
  * __COMPONENT_NAME__ size configuration
  */
-export type __COMPONENT_NAME__Size = 'sm' | 'md' | 'lg';
+export type __COMPONENT_NAME__Size = "sm" | "md" | "lg";
 
 /**
  * Props for the __COMPONENT_NAME__ component
@@ -22,8 +27,7 @@ export type __COMPONENT_NAME__Size = 'sm' | 'md' | 'lg';
  * @property className - Additional CSS classes
  * @property children - Content to render inside the component
  */
-export interface __COMPONENT_NAME__Props
-  extends ComponentPropsWithoutRef<'button'> {
+export interface __COMPONENT_NAME__Props extends ComponentPropsWithoutRef<"button"> {
   /**
    * Visual style variant
    * @default 'primary'

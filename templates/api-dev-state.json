@@ -2,7 +2,12 @@
   "version": "3.10.0",
   "created_at": null,
   "workflow": null,
-  "_workflow_options": ["api-create", "combine-api", "ui-create-component", "ui-create-page"],
+  "_workflow_options": [
+    "api-create",
+    "combine-api",
+    "ui-create-component",
+    "ui-create-page"
+  ],
   "active_endpoint": null,
   "active_element": null,
   "endpoints": {},
@@ -32,9 +37,20 @@
     "_mode_options": ["component", "page"],
     "use_brand_guide": false,
     "component_type": null,
-    "_component_type_options": ["atom", "molecule", "organism", "template"],
+    "_component_type_options": ["basic", "complex"],
+    "_component_type_descriptions": {
+      "basic": "Single-purpose, few props (Button, Input, Icon, Badge)",
+      "complex": "Multi-part, many states, user flows (ChatWindow, DataTable, Modal)"
+    },
     "page_type": null,
-    "_page_type_options": ["landing", "dashboard", "form", "list", "detail", "auth"],
+    "_page_type_options": [
+      "landing",
+      "dashboard",
+      "form",
+      "list",
+      "detail",
+      "auth"
+    ],
     "accessibility_level": null,
     "_accessibility_level_options": ["AA", "AAA"],
     "data_sources": [],
@@ -190,11 +206,24 @@
         "last_question_type": null,
         "description": "Re-research after Green to verify implementation matches docs"
       },
-      "tdd_refactor": {
+      "code_review": {
         "status": "not_started",
+        "review_requested": false,
+        "issues_found": 0,
+        "issues_fixed": 0,
+        "issues_deferred": [],
+        "greptile_response": null,
         "phase_exit_confirmed": false,
         "last_question_type": null,
-        "description": "Code cleanup while keeping tests green"
+        "description": "Greptile AI code review for bugs, security, and performance"
+      },
+      "tdd_refactor": {
+        "status": "not_started",
+        "review_issues_addressed": false,
+        "tests_passing_after_refactor": false,
+        "phase_exit_confirmed": false,
+        "last_question_type": null,
+        "description": "Fix review issues + code cleanup while keeping tests green"
       },
       "documentation": {
         "status": "not_started",

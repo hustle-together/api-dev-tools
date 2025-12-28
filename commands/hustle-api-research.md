@@ -9,6 +9,7 @@
 **NOT shotgun research** - We don't blindly run 20 searches.
 
 **Adaptive flow:**
+
 1. Run 2-3 initial searches
 2. Summarize findings
 3. PROPOSE additional searches based on context
@@ -21,6 +22,7 @@
 ### Initial Discovery (Automatic)
 
 Run 2-3 targeted searches:
+
 ```
 - Context7: "[library-name]" (if SDK/library)
 - WebSearch: "[name] official documentation"
@@ -28,6 +30,7 @@ Run 2-3 targeted searches:
 ```
 
 Present initial summary:
+
 ```
 ┌────────────────────────────────────────────────────────────┐
 │ INITIAL RESEARCH: [library-name]                           │
@@ -81,6 +84,7 @@ After interview, PROPOSE targeted searches based on user's selections:
 ### Execute Approved Searches
 
 Only run searches that were explicitly approved:
+
 - Track which searches were proposed vs approved vs skipped
 - Log everything to state file for transparency
 
@@ -100,9 +104,7 @@ Only run searches that were explicitly approved:
       "SVG optimization options",
       "batch processing"
     ],
-    "skipped_searches": [
-      "webhook support"
-    ]
+    "skipped_searches": ["webhook support"]
   }
 }
 ```
@@ -141,6 +143,7 @@ Research is cached in `.claude/research/[api-name]/`:
 ```
 
 **Freshness Rule:** If research is >7 days old when referenced:
+
 ```
 ⚠️ Research for "brandfetch" is 15 days old.
 Re-research before using? [Y/n]
@@ -150,7 +153,7 @@ Re-research before using? [Y/n]
 
 Creates: `.claude/research/[library-name]/CURRENT.md`
 
-```markdown
+````markdown
 # Research: [Library/Service Name]
 
 **Date:** [current-date]
@@ -159,6 +162,7 @@ Creates: `.claude/research/[library-name]/CURRENT.md`
 **Freshness:** 0 days (valid for 7 days)
 
 ## 1. Official Documentation Links
+
 - Main docs: [URL]
 - API reference: [URL]
 - GitHub repo: [URL]
@@ -166,72 +170,93 @@ Creates: `.claude/research/[library-name]/CURRENT.md`
 - TypeScript types: [URL]
 
 ## 2. Installation & Setup
+
 ### Installation
+
 ```bash
 [installation command]
 ```
+````
 
 ### Environment Variables
+
 ```env
 [required env vars]
 ```
 
 ### API Key Setup
+
 [How to obtain and configure]
 
 ## 3. Complete Request Schema
+
 ### Required Parameters
-| Parameter | Type | Description | Validation |
-|-----------|------|-------------|------------|
-| [name] | [type] | [desc] | [rules] |
+
+| Parameter | Type   | Description | Validation |
+| --------- | ------ | ----------- | ---------- |
+| [name]    | [type] | [desc]      | [rules]    |
 
 ### Optional Parameters
-| Parameter | Type | Default | Description | Notes |
-|-----------|------|---------|-------------|-------|
-| [name] | [type] | [default] | [desc] | [notes] |
+
+| Parameter | Type   | Default   | Description | Notes   |
+| --------- | ------ | --------- | ----------- | ------- |
+| [name]    | [type] | [default] | [desc]      | [notes] |
 
 ### Continuous Parameters (for test strategy)
-| Parameter | Type | Range | Suggested Test Values |
-|-----------|------|-------|----------------------|
-| quality | number | 1-100 | 1, 50, 100 (boundary) |
-| timeout | number | 1000-30000 | 1000, 15000, 30000 |
+
+| Parameter | Type   | Range      | Suggested Test Values |
+| --------- | ------ | ---------- | --------------------- |
+| quality   | number | 1-100      | 1, 50, 100 (boundary) |
+| timeout   | number | 1000-30000 | 1000, 15000, 30000    |
 
 ## 4. Complete Response Schema
+
 ### Success Response
+
 [TypeScript interface]
 
 ### Error Response
+
 [TypeScript interface with error codes]
 
 ## 5. Features & Capabilities
+
 ### Core Features (Discovered)
+
 - [x] [Feature 1]: [description]
 - [x] [Feature 2]: [description]
 
 ### Features NOT Implemented (Intentional)
+
 - [ ] [Feature]: [reason for exclusion]
 
 ## 6. Limitations & Constraints
+
 - Rate limits: [details]
 - Size limits: [details]
 - Timeout: [details]
 
 ## 7. Testing Considerations
+
 - [ ] Test boundary values for continuous params
 - [ ] Test all enum values
 - [ ] Test error responses
 - [ ] Test rate limiting behavior
 
 ## 8. Research Trail
+
 ### Searches Performed
-| Search | Tool | Found |
-|--------|------|-------|
-| "[name] documentation" | WebSearch | ✓ |
-| "[name]" | Context7 | ✓ |
+
+| Search                 | Tool      | Found |
+| ---------------------- | --------- | ----- |
+| "[name] documentation" | WebSearch | ✓     |
+| "[name]"               | Context7  | ✓     |
 
 ### Proposed but Skipped
+
 - "webhook support" - User declined, not needed
-```
+
+````
 
 ## Research-First Schema Design (MANDATORY)
 
@@ -296,11 +321,12 @@ All research is tracked in `.claude/api-dev-state.json`:
     }
   }
 }
-```
+````
 
 ## Usage Examples
 
 ### Research with full flow
+
 ```bash
 /hustle-api-research brandfetch
 # → Initial search (2-3 queries)
@@ -328,4 +354,4 @@ All research is tracked in `.claude/api-dev-state.json`:
 - Phase 5 uses adaptive proposal flow
 - Phase 10 (Verify) triggers re-research
 - Freshness check prevents stale data
-</claude-commands-template>
+  </claude-commands-template>

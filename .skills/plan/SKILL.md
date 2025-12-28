@@ -12,8 +12,10 @@ allowed-tools: WebSearch WebFetch mcp__context7 mcp__github AskUserQuestion Read
 ---
 
 ---
+
 description: Create implementation plan from feature/requirement with PRD-style discovery and TDD acceptance criteria
 argument-hint: <feature/requirement description or GitHub issue URL/number>
+
 ---
 
 # Plan: PRD-Informed Task Planning for TDD
@@ -128,7 +130,6 @@ Understand the requirement by asking (use AskUserQuestion if needed):
 - **Before /plan**: Use `/spike` if you need technical exploration first
 - **After /plan**: Use `/red` to start TDD on first task
 
-
 ## 🛡 Project Rules (Injected into every command)
 
 1. **NO BROKEN BUILDS:**
@@ -153,7 +154,7 @@ Understand the requirement by asking (use AskUserQuestion if needed):
 4. **API KEY MANAGEMENT:**
    - Support three loading methods:
      - Server environment variables
-     - NEXT_PUBLIC_ variables (client-side)
+     - NEXT*PUBLIC* variables (client-side)
      - Custom headers (X-OpenAI-Key, X-Anthropic-Key, etc.)
    - Never hardcode API keys
    - Always validate key availability before use

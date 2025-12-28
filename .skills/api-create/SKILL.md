@@ -22,6 +22,7 @@ allowed-tools: WebSearch WebFetch mcp__context7 mcp__github AskUserQuestion Read
 **YOU MUST USE THE `AskUserQuestion` TOOL AT EVERY CHECKPOINT.**
 
 This workflow requires REAL user input at each phase. You are **FORBIDDEN** from:
+
 - Self-answering questions
 - Assuming user responses
 - Proceeding without explicit user confirmation
@@ -39,9 +40,9 @@ At every `[Y/n]` or multiple-choice prompt in this workflow, you MUST call the `
       "header": "Phase",
       "multiSelect": false,
       "options": [
-        {"label": "Option A", "description": "What this option means"},
-        {"label": "Option B", "description": "What this option means"},
-        {"label": "Other", "description": "I'll type my own answer"}
+        { "label": "Option A", "description": "What this option means" },
+        { "label": "Option B", "description": "What this option means" },
+        { "label": "Other", "description": "I'll type my own answer" }
       ]
     }
   ]
@@ -49,6 +50,7 @@ At every `[Y/n]` or multiple-choice prompt in this workflow, you MUST call the `
 ```
 
 **CRITICAL REQUIREMENTS:**
+
 - `header`: Max 12 characters (e.g., "Scope", "Research", "Format")
 - `options`: 2-4 options, each with `label` (1-5 words) and `description`
 - `multiSelect`: Required boolean (true for checkboxes, false for radio)
@@ -60,6 +62,7 @@ At every `[Y/n]` or multiple-choice prompt in this workflow, you MUST call the `
 ### Violation Detection
 
 The enforcement hooks will BLOCK your progress if:
+
 - `user_question_asked` is false for any phase
 - `user_confirmed`/`user_approved`/`user_completed` is false
 - `phase_exit_confirmed` is false (user must explicitly approve proceeding to next phase)
@@ -72,31 +75,70 @@ If you see "BLOCKED" messages, it means you skipped user interaction.
 **Every phase requires an EXIT CONFIRMATION question** before proceeding to the next phase. This prevents Claude from self-answering and moving on without explicit user approval.
 
 The exit confirmation question MUST:
+
 1. Summarize what was accomplished in the current phase
 2. Ask if user is ready to proceed to the next phase
 3. Include options like "Yes, proceed", "No, I have changes", "Add more"
 
 Example exit confirmation:
+
 ```json
 {
-  "questions": [{
-    "question": "Phase complete. Research found 5 sources. Ready to proceed to Interview phase?",
-    "header": "Proceed",
-    "multiSelect": false,
-    "options": [
-      {"label": "Yes, proceed", "description": "Move to next phase"},
-      {"label": "No, more research", "description": "I need additional research on [topic]"},
-      {"label": "Review sources", "description": "Show me what was found"}
-    ]
-  }]
+  "questions": [
+    {
+      "question": "Phase complete. Research found 5 sources. Ready to proceed to Interview phase?",
+      "header": "Proceed",
+      "multiSelect": false,
+      "options": [
+        { "label": "Yes, proceed", "description": "Move to next phase" },
+        {
+          "label": "No, more research",
+          "description": "I need additional research on [topic]"
+        },
+        { "label": "Review sources", "description": "Show me what was found" }
+      ]
+    }
+  ]
 }
 ```
 
 The `phase_exit_confirmed` flag is automatically set when:
+
 1. An `AskUserQuestion` is called with a question containing words like "proceed", "continue", "ready", "confirm", "approve"
 2. The user responds with an affirmative answer (yes, proceed, confirm, approve, etc.)
 
 Both conditions must be true for the flag to be set.
+
+---
+
+## Progress Tracking (TodoWrite Integration)
+
+**FIRST ACTION:** Initialize the todo list to show user real-time progress:
+
+```
+TodoWrite([
+  {"content": "Phase 1: Disambiguation", "status": "in_progress", "activeForm": "Clarifying API terms"},
+  {"content": "Phase 2: Scope", "status": "pending", "activeForm": "Confirming endpoint scope"},
+  {"content": "Phase 3: Initial Research", "status": "pending", "activeForm": "Researching documentation"},
+  {"content": "Phase 4: Interview", "status": "pending", "activeForm": "Gathering requirements"},
+  {"content": "Phase 5: Deep Research", "status": "pending", "activeForm": "Deep diving documentation"},
+  {"content": "Phase 6: Schema", "status": "pending", "activeForm": "Creating Zod schema"},
+  {"content": "Phase 7: Environment", "status": "pending", "activeForm": "Verifying API keys"},
+  {"content": "Phase 8: TDD Red", "status": "pending", "activeForm": "Writing failing tests"},
+  {"content": "Phase 9: TDD Green", "status": "pending", "activeForm": "Implementing to pass tests"},
+  {"content": "Phase 10: Verify", "status": "pending", "activeForm": "Verifying against docs"},
+  {"content": "Phase 11: Code Review (Greptile)", "status": "pending", "activeForm": "Running AI code review"},
+  {"content": "Phase 12: Refactor", "status": "pending", "activeForm": "Fixing issues, cleaning up"},
+  {"content": "Phase 13: Documentation", "status": "pending", "activeForm": "Updating documentation"},
+  {"content": "Phase 14: Completion", "status": "pending", "activeForm": "Final commit and PR"}
+])
+```
+
+**At each phase transition:**
+
+1. Mark current phase as `completed`
+2. Mark next phase as `in_progress`
+3. This gives the user visual progress during long workflows
 
 ---
 
@@ -107,6 +149,7 @@ Both conditions must be true for the flag to be set.
 3. **Adaptive Research** - Propose searches based on context, not shotgun approach
 4. **Self-Documenting** - State file captures everything for re-grounding
 5. **Verify After Green** - Re-research docs to catch memory-based implementation errors
+6. **Visual Progress** - Update TodoWrite at every phase for user visibility
 
 ## Complete Phase Flow
 
@@ -166,9 +209,34 @@ Both conditions must be true for the flag to be set.
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 3: INITIAL RESEARCH ───────────────────────────────┐
+┌─ PHASE 3: INITIAL RESEARCH (Parallel Subagents) ──────────┐
 │                                                           │
-│ Execute 2-3 initial searches:                             │
+│ Execute 2-3 initial searches using PARALLEL SUBAGENTS:    │
+│                                                           │
+│ ** ASYNC PARALLEL RESEARCH **                             │
+│ For faster research, spawn multiple subagents in parallel │
+│ using the Task tool with different research strategies:   │
+│                                                           │
+│   // Spawn 3 parallel research agents                     │
+│   Task({                                                  │
+│     subagent_type: "parallel-researcher",                 │
+│     prompt: "Research [API] via Context7 - find all       │
+│              endpoints, parameters, webhooks",            │
+│     model: "haiku"                                        │
+│   })                                                      │
+│   // Press Ctrl+B to background this agent                │
+│                                                           │
+│   Task({                                                  │
+│     subagent_type: "parallel-researcher",                 │
+│     prompt: "WebSearch [API] official docs and guides",   │
+│     model: "haiku"                                        │
+│   })                                                      │
+│   // Press Ctrl+B to background this agent                │
+│                                                           │
+│   // Use /tasks to monitor progress of background agents  │
+│                                                           │
+│ ** ALTERNATIVE: Sequential Research **                    │
+│ If not using parallel agents, execute sequentially:       │
 │   • Context7: "[library/api name]"                        │
 │   • WebSearch: "[name] official documentation"            │
 │   • WebSearch: "site:[domain] api reference"              │
@@ -387,9 +455,46 @@ Both conditions must be true for the flag to be set.
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 11: TDD REFACTOR ──────────────────────────────────┐
+┌─ PHASE 11: AI CODE REVIEW (Greptile) ────────────────────┐
 │                                                           │
-│ Clean up code while tests stay green:                     │
+│ Run Greptile BEFORE refactoring to catch issues early:    │
+│   • Bug detection with full codebase context              │
+│   • Security vulnerability scanning (OWASP top 10)        │
+│   • Performance issue identification                      │
+│   • Code quality and maintainability checks               │
+│                                                           │
+│ Greptile uses query endpoint to review your diff:         │
+│   POST https://api.greptile.com/v2/query                  │
+│   - Analyzes changes against entire codebase              │
+│   - Returns issues with file:line references              │
+│   - Provides actionable fix suggestions                   │
+│                                                           │
+│ ⚠️ REQUIRED: Use AskUserQuestion tool:                    │
+│                                                           │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "Greptile review complete. Score: [N]/10  │
+│                  Issues found: [list]. How to proceed?",  │
+│       header: "Review",                                   │
+│       multiSelect: false,                                 │
+│       options: [                                          │
+│         {"label": "Fix all issues", "description": "Address each issue in Phase 12"},│
+│         {"label": "Fix critical only", "description": "Skip medium/low priority"},│
+│         {"label": "Skip review", "description": "Proceed without fixes (not recommended)"}│
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│                                                           │
+│ WAIT for user response. Do NOT auto-skip issues.          │
+│ REQUIRES: GREPTILE_API_KEY + GITHUB_TOKEN in .env         │
+│ ──── Loop back to Phase 9 if major issues found ────      │
+└───────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌─ PHASE 12: TDD REFACTOR ──────────────────────────────────┐
+│                                                           │
+│ Fix Greptile issues AND clean up code:                    │
+│   • Fix all issues from Phase 11 code review              │
 │   • Extract reusable patterns                             │
 │   • Improve error messages                                │
 │   • Add JSDoc comments                                    │
@@ -399,7 +504,7 @@ Both conditions must be true for the flag to be set.
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 12: DOCUMENTATION ─────────────────────────────────┐
+┌─ PHASE 13: DOCUMENTATION ─────────────────────────────────┐
 │                                                           │
 │ Update documentation files, then:                         │
 │                                                           │
@@ -410,10 +515,11 @@ Both conditions must be true for the flag to be set.
 │       question: "Documentation checklist: [list files].   │
 │                  All documentation complete?",            │
 │       header: "Docs",                                     │
+│       multiSelect: false,                                 │
 │       options: [                                          │
-│         "Yes, all documentation is done",                 │
-│         "No, I need to add something (I'll describe)",    │
-│         "Skip docs for now (not recommended)"             │
+│         {"label": "Yes, complete", "description": "All docs updated"},│
+│         {"label": "Need to add more", "description": "I'll describe what's missing"},│
+│         {"label": "Skip for now", "description": "Not recommended"}│
 │       ]                                                   │
 │     }]                                                    │
 │   })                                                      │
@@ -424,16 +530,18 @@ Both conditions must be true for the flag to be set.
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 13: COMPLETION ────────────────────────────────────┐
+┌─ PHASE 14: COMPLETION ────────────────────────────────────┐
 │                                                           │
 │ Final verification:                                       │
 │   • All tests passing                                     │
 │   • 100% coverage                                         │
 │   • TypeScript compiles                                   │
+│   • Code review issues addressed                          │
 │   • Docs updated                                          │
 │   • State file shows all phases complete                  │
 │                                                           │
 │ Run /commit to create semantic commit.                    │
+│ Run /pr to create pull request.                           │
 └───────────────────────────────────────────────────────────┘
 ```
 
@@ -456,8 +564,10 @@ All phases are tracked in `.claude/api-dev-state.json`:
     "tdd_red": { "status": "complete", "test_count": 23 },
     "tdd_green": { "status": "complete" },
     "verify": { "status": "complete", "gaps_found": 2, "gaps_fixed": 2 },
+    "code_review": { "status": "complete", "score": 9, "issues_found": 1, "issues_fixed": 1 },
     "tdd_refactor": { "status": "complete" },
-    "documentation": { "status": "complete" }
+    "documentation": { "status": "complete" },
+    "completion": { "status": "complete" }
   }
 }
 ```
@@ -477,16 +587,17 @@ This command creates:
 
 ## Hooks That Enforce This Workflow
 
-| Phase | Hook | Purpose |
-|-------|------|---------|
-| 0 | `enforce-external-research.py` | Detects API terms, requires disambiguation |
-| 2-4 | `track-tool-use.py` | Logs all research, tracks turns |
-| 7-8 | `enforce-research.py` | Blocks Write if no research done |
-| 7-8 | `enforce-interview.py` | Injects interview decisions |
-| 8 | `verify-implementation.py` | Blocks route if no test file |
-| 9 | `verify-after-green.py` | Triggers verification after tests pass |
-| All | `periodic-reground.py` | Re-grounds every 7 turns |
-| 11 | `api-workflow-check.py` | Blocks completion if docs incomplete |
+| Phase | Hook                           | Purpose                                    |
+| ----- | ------------------------------ | ------------------------------------------ |
+| 0     | `enforce-external-research.py` | Detects API terms, requires disambiguation |
+| 2-4   | `track-tool-use.py`            | Logs all research, tracks turns            |
+| 7-8   | `enforce-research.py`          | Blocks Write if no research done           |
+| 7-8   | `enforce-interview.py`         | Injects interview decisions                |
+| 8     | `verify-implementation.py`     | Blocks route if no test file               |
+| 9     | `verify-after-green.py`        | Triggers verification after tests pass     |
+| 10    | `run-code-review.py`           | Triggers Greptile AI code review           |
+| All   | `periodic-reground.py`         | Re-grounds every 7 turns                   |
+| 14    | `api-workflow-check.py`        | Blocks completion if docs incomplete       |
 
 <claude-commands-template>
 ## Project-Specific Rules
@@ -497,7 +608,7 @@ This command creates:
 4. **AI SDK**: Use Vercel AI SDK 5.0.11 patterns from `/src/v2/docs/ai-sdk-catalog.json`
 5. **Package Manager**: Use `pnpm` for all operations
 6. **Documentation**: Follow patterns in `/src/v2/docs/Main Doc – V2 Development Patterns.md`
-7. **API Keys**: Support three methods (env, NEXT_PUBLIC_, custom headers)
+7. **API Keys**: Support three methods (env, NEXT*PUBLIC*, custom headers)
 8. **Test Command**: `pnpm test:run` before commits
 
 ## Never Skip
@@ -509,4 +620,4 @@ This command creates:
 - Phase 10 (Verify) - Re-research after Green
 - Phase 12 (Documentation) - Keep docs in sync
 - Coverage verification - 100% required
-</claude-commands-template>
+  </claude-commands-template>

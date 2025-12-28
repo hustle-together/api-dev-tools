@@ -83,17 +83,8 @@
       "api-env",
       "api-status"
     ],
-    "tdd_workflow": [
-      "red",
-      "green",
-      "refactor",
-      "cycle"
-    ],
-    "planning": [
-      "plan",
-      "gap",
-      "issue"
-    ],
+    "tdd_workflow": ["red", "green", "refactor", "cycle"],
+    "planning": ["plan", "gap", "issue"],
     "git_operations": [
       "commit",
       "pr",

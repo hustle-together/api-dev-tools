@@ -1,97 +1,115 @@
 # Changelog
 
-All notable changes to `@hustle-together/api-dev-tools` will be documented in this file.
+All notable changes to this project will be documented in this file.
 
-## [3.10.0] - 2025-12-12
-
-### Added
-- **UI Page Mode** - Full `/hustle-ui-create-page` workflow with dedicated documentation
-  - Page types: landing, dashboard, form, list, detail, auth
-  - Playwright E2E test generation (15+ test cases)
-  - Data schema validation before implementation
-- **Page-Specific Hooks**
-  - `check-api-routes.py` - Verifies required API routes exist before page implementation
-  - `enforce-page-components.py` - Checks registry for reusable components
-  - `enforce-page-data-schema.py` - Validates API response types defined
-  - `enforce-a11y-audit.py` - Triggers WCAG audit after TDD Green phase
-- **Combine Workflow Validation**
-  - 2+ API selection enforcement
-  - Registry verification for source APIs
-  - Flow type validation (sequential, parallel, conditional)
-  - Orchestration examples in manifest generation
-- **Brand Color Validation** in `enforce-brand-guide.py`
-  - Extracts allowed colors from BRAND_GUIDE.md
-  - Validates hex colors, Tailwind classes, CSS variables
-  - Notifies on non-brand color usage
-- **UI Showcase Auto-Population** in `update-ui-showcase.py`
-  - Generates `data.json` from registry automatically
-  - Component and page metadata extraction
-
-### Changed
-- **State Template** (`api-dev-state.json`)
-  - Added `workflow` field: api-create, combine-api, ui-create-component, ui-create-page
-  - Added `combine_config` section for orchestration settings
-  - Added `ui_config` section for component/page settings
-- **Session Startup** (`session-startup.py`)
-  - Workflow-specific context injection
-  - Combine: source APIs, flow type, error strategy
-  - UI: brand guide status, component/page type, a11y level
-- **Manifest Generation** (`generate-manifest-entry.py`)
-  - Orchestration examples for combined endpoints
-  - Flow diagrams and error handling examples
-  - Version updated to 3.10.0
+## [1.0.1] - 2025-12-28
 
 ### Fixed
-- Phase numbering now correctly uses 1-13 (was 0-12 in some files)
-- Workflow type detection in api-workflow-check.py for all workflow types
 
-## [3.9.2] - 2025-12-10
-
-### Added
-- Animated Hero Header with 3D perspective grid
-- Dev Tools landing page at `/dev-tools`
-- Multi-endpoint selector for APIs with sub-endpoints
-- Audio playback for TTS/voice API responses
-- CLI flags: `--with-sandpack`, `--with-storybook`, `--with-playwright`
-
-### Changed
-- Updated BRAND_GUIDE.md with complete Hustle brand
-- Enhanced showcase components with dark mode support
-- Boxy 90s styling with 2px borders
-
-## [3.9.0] - 2025-12-08
-
-### Added
-- `/hustle-ui-create` command for UI components/pages
-- Brand guide integration with time to update
-- ShadCN component detection in Phase 5
-- 4-step verification (desktop/tablet/mobile + brand + tests + memory)
-- UI Showcase auto-generation at `/ui-showcase`
-
-## [3.8.0] - 2025-12-05
-
-### Added
-- `/hustle-combine` command for API orchestration
-- Registry.json central tracking
-- Combined entry support in update-registry.py
-- Orchestration flow types: sequential, parallel, conditional
-
-## [3.7.0] - 2025-12-01
-
-### Added
-- Multi-API state support (endpoints object)
-- Research cache freshness tracking (7-day threshold)
-- Comprehensive manifest generation with 50+ test cases
-- Session logging in api-sessions/
-
-## [3.6.7] - 2025-11-28
-
-### Added
-- Phase 13 completion output with curl examples
-- Scope coverage report
-- Research cache location in output
-- Gap fixes for file tracking and verification
+- **Stop hook false positive blocking**: Fixed bug where `api-workflow-check.py` incorrectly blocked Q&A sessions when no workflow was active. The hook now correctly checks for both `None` and `"not_started"` phase statuses.
 
 ---
 
-Note: v3.x is the final major version. All future updates will be v3.x.y releases.
+## [1.0.0] - 2025-12-28
+
+### Initial Release
+
+Interview-driven, research-first API development toolkit with 14-phase TDD workflow.
+
+### Core Features
+
+**Four Main Workflows:**
+
+- `/api-create [endpoint]` - Complete 14-phase API endpoint development
+- `/hustle-ui-create [name]` - Component development with Storybook
+- `/hustle-ui-create-page [name]` - Page development with Playwright E2E
+- `/hustle-combine [type]` - Orchestrate multiple existing APIs
+
+**14-Phase Workflow:**
+
+1. Disambiguation - Clarify ambiguous terms
+2. Scope - Confirm understanding
+3. Initial Research - Context7 + WebSearch (with async parallel subagents)
+4. Interview - Questions FROM research findings
+5. Deep Research - Adaptive searches based on answers
+6. Schema - Zod schema from research + interview
+7. Environment - Verify API keys exist
+8. TDD Red - Write failing tests
+9. TDD Green - Minimal implementation to pass
+10. Verify - Re-research and compare to implementation
+11. Code Review - Greptile AI-powered review (catches issues early)
+12. TDD Refactor - Fix review issues + clean up code
+13. Documentation - Update manifests, cache research
+14. Completion - Final commit and PR
+
+**23 Enforcement Hooks:**
+
+- SessionStart: State context injection
+- UserPromptSubmit: Research requirement detection
+- PreToolUse: Block writes until phases complete
+- PostToolUse: Auto-format, token tracking, notifications, code review
+- Stop: Block if workflow incomplete
+
+**Greptile AI Code Review (Phase 11):**
+
+- Runs BEFORE refactoring so issues can be fixed
+- Bug detection with full codebase context
+- Security vulnerability scanning (OWASP top 10)
+- Performance issue identification
+- Returns actionable issues with file:line references
+- Requires: GREPTILE_API_KEY + GITHUB_TOKEN
+
+**Async Parallel Research:**
+
+- Spawn multiple research subagents in parallel
+- Use Ctrl+B to background agents
+- Use /tasks to monitor progress
+- 3x faster research with parallel Context7 + WebSearch
+
+**7 Subagents:**
+
+- `parallel-researcher` (Haiku) - Parallel documentation scraping
+- `research-validator` (Haiku) - Find all endpoints and webhooks
+- `docs-generator` (Haiku) - TypeDoc generation
+- `schema-generator` (Sonnet) - Zod schema creation
+- `test-writer` (Sonnet) - Comprehensive test generation
+- `implementation-reviewer` (Sonnet) - Compare code to docs
+- `code-reviewer` (Sonnet) - Security and performance review
+
+**NTFY Push Notifications:**
+
+- Phase completion updates
+- Input needed alerts (interview questions)
+- Token usage per phase
+- `/ntfy-setup` and `/ntfy-test` commands
+
+**Component Type System:**
+
+- Basic components (single-purpose, few props)
+- Complex components (multi-part, user flows)
+- AI suggests type, user confirms via hook
+
+**CLI Installer:**
+
+- ASCII art banner with Hustle branding
+- 8-step progress indicators
+- Animated spinners for long operations
+- Optional tools: Storybook, Playwright, Sandpack
+
+**Additional Commands:**
+
+- TDD: `/red`, `/green`, `/refactor`, `/cycle`
+- Git: `/commit`, `/pr`, `/busycommit`
+- Planning: `/plan`, `/gap`, `/issue`
+- Worktrees: `/worktree-add`, `/worktree-cleanup`
+
+**Infrastructure:**
+
+- State tracking in `.claude/api-dev-state.json`
+- Research cache with 7-day freshness
+- Registry for all created APIs/components
+- Environment template in `templates/.env.example`
+
+---
+
+See [ROADMAP.md](./ROADMAP.md) for planned features.

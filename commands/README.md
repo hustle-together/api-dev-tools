@@ -34,14 +34,16 @@
 ## Hook Architecture (33 Hooks)
 
 ### SessionStart (2 hooks)
-| Hook | Purpose |
-|------|---------|
-| `session-startup.py` | Inject state at session start |
+
+| Hook                     | Purpose                                     |
+| ------------------------ | ------------------------------------------- |
+| `session-startup.py`     | Inject state at session start               |
 | `detect-interruption.py` | Detect interrupted workflows, prompt resume |
 
 ### UserPromptSubmit (1 hook)
-| Hook | Purpose |
-|------|---------|
+
+| Hook                           | Purpose                            |
+| ------------------------------ | ---------------------------------- |
 | `enforce-external-research.py` | Detect API terms, require research |
 
 ### PreToolUse - Write/Edit (21 hooks)
@@ -63,9 +65,9 @@
 | `enforce-documentation.py` | 12 | Block until docs updated |
 | `enforce-questions-sourced.py` | 4 | Validate questions come from research |
 | `enforce-schema-from-interview.py` | 6 | Validate schema matches interview |
-| `enforce-freshness.py` | * | Block if research >7 days old for active endpoint |
+| `enforce-freshness.py` | \* | Block if research >7 days old for active endpoint |
 
-**UI Workflow Hooks (6)** *(NEW in v3.9.0)*
+**UI Workflow Hooks (6)** _(NEW in v3.9.0)_
 | Hook | Phase | Purpose |
 |------|-------|---------|
 | `enforce-ui-disambiguation.py` | 1 | Block until component/page type clarified |
@@ -76,32 +78,36 @@
 | `update-ui-showcase.py` | 13 | Auto-create UI Showcase page |
 
 ### PostToolUse (7 hooks)
-| Hook | Matcher | Purpose |
-|------|---------|---------|
-| `track-tool-use.py` | WebSearch/mcp__context7 | Log research, count turns |
-| `periodic-reground.py` | WebSearch/mcp__context7 | Re-ground every 7 turns |
-| `track-scope-coverage.py` | WebSearch/mcp__context7 | Track implemented vs deferred |
-| `verify-after-green.py` | Bash | Trigger Phase 10 after test pass |
-| `cache-research.py` | Write/Edit | Create research cache files |
-| `generate-manifest-entry.py` | Write/Edit | Auto-generate API documentation |
-| `update-registry.py` | Write/Edit | Update registry.json on workflow completion |
+
+| Hook                         | Matcher                   | Purpose                                     |
+| ---------------------------- | ------------------------- | ------------------------------------------- |
+| `track-tool-use.py`          | WebSearch/mcp\_\_context7 | Log research, count turns                   |
+| `periodic-reground.py`       | WebSearch/mcp\_\_context7 | Re-ground every 7 turns                     |
+| `track-scope-coverage.py`    | WebSearch/mcp\_\_context7 | Track implemented vs deferred               |
+| `verify-after-green.py`      | Bash                      | Trigger Phase 10 after test pass            |
+| `cache-research.py`          | Write/Edit                | Create research cache files                 |
+| `generate-manifest-entry.py` | Write/Edit                | Auto-generate API documentation             |
+| `update-registry.py`         | Write/Edit                | Update registry.json on workflow completion |
 
 ### Stop (2 hooks)
-| Hook | Purpose |
-|------|---------|
+
+| Hook                    | Purpose                                     |
+| ----------------------- | ------------------------------------------- |
 | `api-workflow-check.py` | Block if phases incomplete, generate output |
-| `session-logger.py` | Save session to `.claude/api-sessions/` |
+| `session-logger.py`     | Save session to `.claude/api-sessions/`     |
 
 ## Available Commands
 
 ### Complete Workflows
 
 **`/hustle-api-create [endpoint-name]`**
+
 - Runs all 13 phases for NEW API development
 - Loop-back architecture at every checkpoint
 - See [hustle-api-create.md](hustle-api-create.md) for full flow
 
-**`/hustle-ui-create`** *(NEW in v3.9.0)*
+**`/hustle-ui-create`** _(NEW in v3.9.0)_
+
 - Creates UI components OR pages with 13-phase workflow
 - Mode selection: Component (Storybook) or Page (Playwright E2E)
 - ShadCN detection and brand guide integration
@@ -110,6 +116,7 @@
 - See [hustle-ui-create.md](hustle-ui-create.md) for full flow
 
 **`/hustle-combine [api|ui]`** (v3.8.0)
+
 - Combines EXISTING APIs or UI elements from registry
 - Reads from `.claude/registry.json` to present available elements
 - Creates orchestration endpoints
@@ -118,37 +125,44 @@
 ### Individual Phases
 
 **`/hustle-api-interview [endpoint-name]`**
+
 - Questions GENERATED from research findings
 - Different question types: enum, continuous, boolean
 - See [hustle-api-interview.md](hustle-api-interview.md)
 
 **`/hustle-api-research [library-or-service]`**
+
 - Adaptive propose-approve flow (not shotgun)
 - Research cached with 7-day freshness
 - See [hustle-api-research.md](hustle-api-research.md)
 
 **`/hustle-api-verify [endpoint-name]`**
+
 - Manual Phase 10 verification
 - Re-read docs, compare to implementation
 - Report gaps, loop back or document omissions
 - See [hustle-api-verify.md](hustle-api-verify.md)
 
 **`/hustle-api-env [endpoint-name]`**
+
 - Check API keys and environment
 - See [hustle-api-env.md](hustle-api-env.md)
 
 **`/hustle-api-status [endpoint-name]`**
+
 - Track progress through 13 phases
 - See [hustle-api-status.md](hustle-api-status.md)
 
 ### Session Management
 
 **`/hustle-api-continue [endpoint-name]`**
+
 - Resume interrupted workflow from last completed phase
 - Auto-detects in-progress endpoints
 - See [hustle-api-continue.md](hustle-api-continue.md)
 
 **`/hustle-api-sessions [--list|--view|--export]`**
+
 - Browse saved session logs
 - Export to PDF/HTML
 - See [hustle-api-sessions.md](hustle-api-sessions.md)
@@ -156,6 +170,7 @@
 ### TDD Commands
 
 From [@wbern/claude-instructions](https://github.com/wbern/claude-instructions):
+
 - `/red` - Write ONE failing test
 - `/green` - Minimal implementation to pass
 - `/refactor` - Clean up while tests pass
@@ -179,7 +194,7 @@ Phase 12: DOCUMENTATION      - Update manifests
 Phase 13: COMPLETION         - Final verification
 ```
 
-## 13-Phase Flow (UI) *(NEW in v3.9.0)*
+## 13-Phase Flow (UI) _(NEW in v3.9.0)_
 
 ```
 Phase 1:  DISAMBIGUATION     - Component type (atom/molecule/organism) or Page type
@@ -231,15 +246,18 @@ Default template installed at `.claude/BRAND_GUIDE.md`:
 # Project Brand Guide
 
 ## Colors
+
 - Primary: #000000
 - Accent: #0066FF
 - Background: #FFFFFF
 
 ## Typography
+
 - Headings: Inter, sans-serif
 - Body: Inter, sans-serif
 
 ## Component Styling
+
 - Border radius: 8px
 - Focus ring: 2px solid accent
 ```
@@ -257,7 +275,7 @@ Auto-generated at `src/app/ui-showcase/` when first component/page is created:
 - Filter tabs: [All] [Components] [Pages]
 - Auto-updates via `update-registry.py` hook
 
-## API Showcase *(NEW in v3.9.0)*
+## API Showcase _(NEW in v3.9.0)_
 
 Auto-generated at `src/app/api-showcase/` when first API is created:
 
@@ -270,13 +288,14 @@ Auto-generated at `src/app/api-showcase/` when first API is created:
 - Auto-updates via `update-registry.py` hook
 
 **Features:**
+
 - Reads from `registry.json` APIs and combined sections
 - Interactive API testing from browser
 - Shows request/response in real-time
 - Method badges (GET=green, POST=blue, DELETE=red)
 - Status indicators for each endpoint
 
-## Performance Budgets *(NEW in v3.9.0)*
+## Performance Budgets _(NEW in v3.9.0)_
 
 TDD gates that **FAIL tests** if thresholds exceeded, triggering loop-back.
 
@@ -310,19 +329,22 @@ Configured in `.claude/performance-budgets.json`:
 ```
 
 **How it works:**
+
 - E2E tests use Chromium DevTools Protocol (CDP) for memory metrics
 - Component tests track re-render counts via wrapper components
 - Tests FAIL if thresholds exceeded → TDD loop-back to fix
 - Core Web Vitals (FCP, LCP) measured via PerformanceObserver
 
 **Example E2E test with thresholds:**
-```typescript
-test('should have acceptable memory usage', async ({ page }) => {
-  const client = await page.context().newCDPSession(page);
-  const metrics = await client.send('Performance.getMetrics');
 
-  const jsHeapSize = metrics.metrics.find(m => m.name === 'JSHeapUsedSize')?.value || 0;
-  const domNodes = metrics.metrics.find(m => m.name === 'Nodes')?.value || 0;
+```typescript
+test("should have acceptable memory usage", async ({ page }) => {
+  const client = await page.context().newCDPSession(page);
+  const metrics = await client.send("Performance.getMetrics");
+
+  const jsHeapSize =
+    metrics.metrics.find((m) => m.name === "JSHeapUsedSize")?.value || 0;
+  const domNodes = metrics.metrics.find((m) => m.name === "Nodes")?.value || 0;
 
   // THRESHOLD: Memory max 50MB - FAIL if exceeded
   expect(jsHeapSize).toBeLessThan(50 * 1024 * 1024);
@@ -333,6 +355,7 @@ test('should have acceptable memory usage', async ({ page }) => {
 ```
 
 **Example component test with re-render tracking:**
+
 ```typescript
 it('should not re-render excessively on mount', () => {
   let renderCount = 0;
@@ -363,7 +386,10 @@ All progress tracked in `.claude/api-dev-state.json`:
       "status": "complete",
       "turn_count": 23,
       "phases": {
-        "disambiguation": { "status": "complete", "phase_exit_confirmed": true },
+        "disambiguation": {
+          "status": "complete",
+          "phase_exit_confirmed": true
+        },
         "scope": { "status": "complete", "phase_exit_confirmed": true },
         "research_initial": { "status": "complete" },
         "interview": { "status": "complete", "decisions": {} },
@@ -427,6 +453,7 @@ Sessions saved in `.claude/api-sessions/`:
 When Phase 12 completes, `generate-manifest-entry.py` automatically generates:
 
 ### Comprehensive Curl Examples
+
 - **Minimal** - Required parameters only
 - **Full** - All parameters
 - **With Authentication** - API key headers
@@ -436,6 +463,7 @@ When Phase 12 completes, `generate-manifest-entry.py` automatically generates:
 - **Boundary Values** - Min/max values
 
 ### Complete Test Cases
+
 - **Success Cases** - Required only, all fields, alternatives
 - **Enum Validation** - Each valid value + invalid
 - **Required Fields** - Missing each required field
@@ -445,6 +473,7 @@ When Phase 12 completes, `generate-manifest-entry.py` automatically generates:
 - **Edge Cases** - Empty body, null values, extra fields
 
 ### Parameter Documentation
+
 - All required and optional parameters
 - Types with validation rules
 - Enum values with descriptions
@@ -454,11 +483,13 @@ When Phase 12 completes, `generate-manifest-entry.py` automatically generates:
 ## Quick Start
 
 ### Automated
+
 ```bash
 /hustle-api-create my-endpoint
 ```
 
 ### Manual Step-by-Step
+
 ```bash
 /hustle-api-research [library]      # Initial research
 /hustle-api-interview [endpoint]    # Questions from research
@@ -477,18 +508,20 @@ npx @hustle-together/api-dev-tools --scope=project
 ```
 
 Installs:
-- Commands in `.claude/commands/` (10 hustle-* commands)
+
+- Commands in `.claude/commands/` (10 hustle-\* commands)
 - Hooks in `.claude/hooks/` (33 hooks)
 - Settings in `.claude/settings.json`
 - State template in `.claude/api-dev-state.json`
 - Registry in `.claude/registry.json`
-- Brand guide in `.claude/BRAND_GUIDE.md` *(NEW in v3.9.0)*
-- Performance budgets in `.claude/performance-budgets.json` *(NEW in v3.9.0)*
+- Brand guide in `.claude/BRAND_GUIDE.md` _(NEW in v3.9.0)_
+- Performance budgets in `.claude/performance-budgets.json` _(NEW in v3.9.0)_
 - Research index in `.claude/research/index.json`
 
 ### File Structures (UI)
 
 **Component Structure:**
+
 ```
 src/components/Button/
 ├── Button.tsx              # Component implementation
@@ -499,6 +532,7 @@ src/components/Button/
 ```
 
 **Page Structure:**
+
 ```
 src/app/dashboard/
 ├── page.tsx                # Page component
@@ -512,6 +546,7 @@ tests/e2e/
 ### Team-Wide
 
 Add to `package.json`:
+
 ```json
 {
   "scripts": {

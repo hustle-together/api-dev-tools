@@ -42,6 +42,7 @@ Status: BLOCKED - Cannot proceed without FIRECRAWL_API_KEY
 ## API Key Support
 
 The project supports three methods:
+
 1. Server env: `OPENAI_API_KEY=sk-...`
 2. Client env: `NEXT_PUBLIC_OPENAI_API_KEY=sk-...`
 3. Custom headers: `X-OpenAI-Key: sk-...`

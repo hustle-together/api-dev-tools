@@ -1,1 +1,1 @@
-export { HeroHeader } from './HeroHeader';
+export { HeroHeader } from "./HeroHeader";

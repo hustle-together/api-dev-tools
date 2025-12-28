@@ -12,8 +12,10 @@ allowed-tools: WebSearch WebFetch mcp__context7 mcp__github AskUserQuestion Read
 ---
 
 ---
+
 description: Remind agent about TDD approach and continue conversation
 argument-hint: [optional-response-to-last-message]
+
 ---
 
 # TDD Reminder
@@ -33,7 +35,6 @@ argument-hint: [optional-response-to-last-message]
 The foundation of TDD is the Red-Green-Refactor cycle:
 
 1. **Red Phase**: Write ONE failing test that describes desired behavior
-
    - The test must fail for the RIGHT reason (not syntax/import errors)
    - Only one test at a time - this is critical for TDD discipline
      - Exception: For browser-level tests or expensive setup (e.g., Storybook `*.stories.tsx`), group multiple assertions within a single test block to avoid redundant setup - but only when adding assertions to an existing interaction flow. If new user interactions are required, still create a new test. Split files by category if they exceed ~1000 lines.
@@ -43,7 +44,6 @@ The foundation of TDD is the Red-Green-Refactor cycle:
    - Avoid hard-coded timeouts both in form of sleep() or timeout: 5000 etc; use proper async patterns (`waitFor`, `findBy*`, event-based sync) instead and rely on global test configs for timeout settings
 
 2. **Green Phase**: Write MINIMAL code to make the test pass
-
    - Implement only what's needed for the current failing test
    - No anticipatory coding or extra features
    - Address the specific failure message
@@ -57,12 +57,10 @@ The foundation of TDD is the Red-Green-Refactor cycle:
 ### Core Violations
 
 1. **Multiple Test Addition**
-
    - Adding more than one new test at once
    - Exception: Initial test file setup or extracting shared test utilities
 
 2. **Over-Implementation**
-
    - Code that exceeds what's needed to pass the current failing test
    - Adding untested features, methods, or error handling
    - Implementing multiple methods when test only requires one
@@ -104,7 +102,6 @@ User response to the last message: $ARGUMENTS
 
 Please continue with TDD approach based on the above response.
 
-
 ## 🛡 Project Rules (Injected into every command)
 
 1. **NO BROKEN BUILDS:**
@@ -129,7 +126,7 @@ Please continue with TDD approach based on the above response.
 4. **API KEY MANAGEMENT:**
    - Support three loading methods:
      - Server environment variables
-     - NEXT_PUBLIC_ variables (client-side)
+     - NEXT*PUBLIC* variables (client-side)
      - Custom headers (X-OpenAI-Key, X-Anthropic-Key, etc.)
    - Never hardcode API keys
    - Always validate key availability before use

@@ -1,8 +1,9 @@
-import { DevToolsLanding } from './_components/DevToolsLanding';
+import { DevToolsLanding } from "./_components/DevToolsLanding";
 
 export const metadata = {
-  title: 'Hustle Dev Tools',
-  description: 'Developer tools for API and UI development with Hustle Together',
+  title: "Hustle Dev Tools",
+  description:
+    "Developer tools for API and UI development with Hustle Together",
 };
 
 export default function DevToolsPage() {

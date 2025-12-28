@@ -3,11 +3,13 @@
 Resume an interrupted API development workflow from where it left off.
 
 ## Usage
+
 ```
 /hustle-api-continue [endpoint-name]
 ```
 
 ## Arguments
+
 - `endpoint-name` (optional): The endpoint to resume. If not provided, will show available interrupted workflows.
 
 ## What This Command Does
@@ -40,6 +42,7 @@ Resume an interrupted API development workflow from where it left off.
 ## Output
 
 When resuming, you'll see:
+
 - Summary of completed phases
 - Current phase to resume
 - Key interview decisions
@@ -142,12 +145,12 @@ SAVE state
 
 ## Error Handling
 
-| Error | Resolution |
-|-------|------------|
+| Error                    | Resolution                                                                                 |
+| ------------------------ | ------------------------------------------------------------------------------------------ |
 | No interrupted workflows | Show message: "No interrupted workflows found. Use /hustle-api-create to start a new one." |
-| Endpoint not found | Show available endpoints and ask user to choose |
-| Research cache stale | Warn user and offer to re-run research phases |
-| State file missing | Error: "No state file found. Use /hustle-api-create to start a new workflow." |
+| Endpoint not found       | Show available endpoints and ask user to choose                                            |
+| Research cache stale     | Warn user and offer to re-run research phases                                              |
+| State file missing       | Error: "No state file found. Use /hustle-api-create to start a new workflow."              |
 
 ---
 

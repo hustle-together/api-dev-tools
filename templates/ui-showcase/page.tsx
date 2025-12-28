@@ -1,9 +1,9 @@
-import type { Metadata } from 'next';
-import { UIShowcase } from './UIShowcase';
+import type { Metadata } from "next";
+import { UIShowcase } from "./UIShowcase";
 
 export const metadata: Metadata = {
-  title: 'UI Showcase',
-  description: 'Preview all components and pages created with Hustle UI Create',
+  title: "UI Showcase",
+  description: "Preview all components and pages created with Hustle UI Create",
 };
 
 /**

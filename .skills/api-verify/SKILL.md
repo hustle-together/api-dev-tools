@@ -151,24 +151,24 @@ Creates: `.claude/research/[api-name]/verification.md`
 
 **Date:** [current-date]
 **Implementation File:** src/app/api/v2/[endpoint]/route.ts
-**Test File:** src/app/api/v2/[endpoint]/__tests__/[endpoint].api.test.ts
+**Test File:** src/app/api/v2/[endpoint]/**tests**/[endpoint].api.test.ts
 
 ## Documentation Sources Re-Checked
 
-| Source | URL | Checked |
-|--------|-----|---------|
-| Official docs | [URL] | ✓ |
-| Context7 | [library] | ✓ |
-| Cached research | .claude/research/[api]/CURRENT.md | ✓ |
+| Source          | URL                               | Checked |
+| --------------- | --------------------------------- | ------- |
+| Official docs   | [URL]                             | ✓       |
+| Context7        | [library]                         | ✓       |
+| Cached research | .claude/research/[api]/CURRENT.md | ✓       |
 
 ## Feature Comparison
 
-| Feature | In Docs | Implemented | Status |
-|---------|---------|-------------|--------|
-| domain param | ✓ | ✓ | ✅ Match |
-| format param | 4 options | 3 options | ⚠️ Fixed |
-| size param | ✓ | ✓ | ⚠️ Fixed |
-| webhook | ✓ | ✗ | ℹ️ Intentional |
+| Feature      | In Docs   | Implemented | Status         |
+| ------------ | --------- | ----------- | -------------- |
+| domain param | ✓         | ✓           | ✅ Match       |
+| format param | 4 options | 3 options   | ⚠️ Fixed       |
+| size param   | ✓         | ✓           | ⚠️ Fixed       |
+| webhook      | ✓         | ✗           | ℹ️ Intentional |
 
 ## Gaps Fixed
 
@@ -203,6 +203,7 @@ Creates: `.claude/research/[api-name]/verification.md`
 This command is normally triggered automatically by `verify-after-green.py` hook after tests pass.
 
 Manual invocation is useful when:
+
 - Hook was skipped or didn't trigger
 - Want to re-verify after changes
 - Research is stale and needs refresh
@@ -241,4 +242,4 @@ Phase 10: VERIFY ← /api-verify triggers this
 - Error codes handled?
 - Optional features accounted for?
 - Default values match docs?
-</claude-commands-template>
+  </claude-commands-template>

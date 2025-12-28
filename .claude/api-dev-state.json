@@ -1,5 +1,5 @@
 {
-  "version": "3.0.0",
+  "version": "3.12.0",
   "created_at": null,
   "endpoint": null,
   "library": null,
@@ -9,85 +9,18 @@
   "research_queries": [],
   "prompt_detections": [],
   "phases": {
-    "disambiguation": {
-      "status": "not_started",
-      "clarified": null,
-      "search_variations": [],
-      "description": "Pre-research disambiguation to clarify ambiguous requests"
-    },
-    "scope": {
-      "status": "not_started",
-      "confirmed": false,
-      "description": "Initial scope understanding and confirmation"
-    },
-    "research_initial": {
-      "status": "not_started",
-      "sources": [],
-      "summary_approved": false,
-      "description": "Context7/WebSearch research for live documentation"
-    },
-    "interview": {
-      "status": "not_started",
-      "questions": [],
-      "user_question_count": 0,
-      "structured_question_count": 0,
-      "decisions": {},
-      "description": "Structured interview about requirements (generated FROM research)"
-    },
-    "research_deep": {
-      "status": "not_started",
-      "sources": [],
-      "proposed_searches": [],
-      "approved_searches": [],
-      "skipped_searches": [],
-      "description": "Deep dive based on interview answers (adaptive, not shotgun)"
-    },
-    "schema_creation": {
-      "status": "not_started",
-      "schema_file": null,
-      "schema_approved": false,
-      "description": "Zod schema creation from research"
-    },
-    "environment_check": {
-      "status": "not_started",
-      "keys_verified": [],
-      "keys_missing": [],
-      "confirmed": false,
-      "description": "API key and environment verification"
-    },
-    "tdd_red": {
-      "status": "not_started",
-      "test_file": null,
-      "test_count": 0,
-      "test_matrix_approved": false,
-      "description": "Write failing tests first"
-    },
-    "tdd_green": {
-      "status": "not_started",
-      "implementation_file": null,
-      "all_tests_passing": false,
-      "description": "Minimal implementation to pass tests"
-    },
-    "verify": {
-      "status": "not_started",
-      "gaps_found": 0,
-      "gaps_fixed": 0,
-      "intentional_omissions": [],
-      "re_research_done": false,
-      "description": "Re-research after Green to verify implementation matches docs"
-    },
-    "tdd_refactor": {
-      "status": "not_started",
-      "description": "Code cleanup while keeping tests green"
-    },
-    "documentation": {
-      "status": "not_started",
-      "files_updated": [],
-      "manifest_updated": false,
-      "openapi_updated": false,
-      "research_cached": false,
-      "description": "Update manifests, OpenAPI, cache research"
-    }
+    "disambiguation": { "status": "not_started" },
+    "scope": { "status": "not_started" },
+    "research_initial": { "status": "not_started" },
+    "interview": { "status": "not_started" },
+    "research_deep": { "status": "not_started" },
+    "schema_creation": { "status": "not_started" },
+    "environment_check": { "status": "not_started" },
+    "tdd_red": { "status": "not_started" },
+    "tdd_green": { "status": "not_started" },
+    "verify": { "status": "not_started" },
+    "tdd_refactor": { "status": "not_started" },
+    "documentation": { "status": "not_started" }
   },
   "verification": {
     "all_sources_fetched": false,

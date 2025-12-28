@@ -1,23 +1,25 @@
 ---
-description: Create Next.js pages with 13-phase interview-driven workflow
+description: Create Next.js pages with 14-phase interview-driven workflow
 argument-hint: [page-name]
 ---
 
 # Hustle UI Create - Page Mode
 
-**Version:** 3.10.0
-**13-phase workflow for creating Next.js App Router pages**
+**Version:** 3.11.0
+**14-phase workflow for creating Next.js App Router pages**
 
 You are creating a page using the Hustle Together interview-driven workflow.
 
 ## Pre-Flight Check
 
 Before starting, verify state file exists:
+
 ```bash
 cat .claude/api-dev-state.json 2>/dev/null || echo "Creating new state file"
 ```
 
 Initialize state for page creation:
+
 ```json
 {
   "workflow": "ui-create-page",
@@ -33,6 +35,7 @@ Initialize state for page creation:
 **Goal:** Clarify page type and purpose
 
 Ask the user:
+
 ```
 Phase 1: DISAMBIGUATION
 
@@ -52,6 +55,7 @@ Please select A-G:
 **Wait for user response.**
 
 Update state:
+
 ```json
 {
   "phases": {
@@ -135,26 +139,31 @@ Please select A or B:
 Perform 2-3 targeted searches based on page type:
 
 **For Landing Pages:**
+
 1. `Next.js 15 landing page best practices`
 2. `shadcn landing page components hero section`
 3. `responsive landing page layout App Router`
 
 **For Dashboards:**
+
 1. `Next.js 15 dashboard layout App Router`
 2. `shadcn dashboard components data table`
 3. `Recharts React charts dashboard`
 
 **For Form Pages:**
+
 1. `Next.js 15 server actions form handling`
 2. `react-hook-form zod validation`
 3. `shadcn form components`
 
 **For List Pages:**
+
 1. `Next.js 15 pagination App Router`
 2. `shadcn data table filtering sorting`
 3. `server-side pagination searchParams`
 
 **For Detail Pages:**
+
 1. `Next.js 15 dynamic routes [id] App Router`
 2. `generateStaticParams ISR`
 3. `optimistic updates detail page`
@@ -162,6 +171,7 @@ Perform 2-3 targeted searches based on page type:
 Use Context7 for Next.js and ShadCN documentation.
 
 Document findings in state:
+
 ```json
 {
   "phases": {
@@ -222,6 +232,7 @@ Q6: [Research-derived question about specific feature]
 **Wait for all answers before proceeding.**
 
 Store all decisions in state:
+
 ```json
 {
   "phases": {
@@ -257,6 +268,7 @@ cat .claude/registry.json | jq '.pages'
 ```
 
 Present findings:
+
 ```
 Phase 5: PAGE ANALYSIS
 
@@ -332,6 +344,7 @@ export interface [Name]Filters {
 ```
 
 Present to user:
+
 ```
 Phase 6: DATA SCHEMA
 
@@ -361,6 +374,7 @@ ls -la src/app/api/v2/ 2>/dev/null | head -20
 ```
 
 If page requires API routes that don't exist:
+
 ```
 Phase 7: ENVIRONMENT CHECK
 
@@ -391,6 +405,7 @@ cat package.json | jq '.dependencies, .devDependencies' | grep -E "next-auth|@ta
 ```
 
 Report status:
+
 ```
 Environment Check:
   API Routes: [X/Y available]
@@ -411,65 +426,67 @@ Ready to proceed with TDD?
 ```typescript
 // src/app/[name]/__tests__/[name].e2e.test.ts
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test.describe('[Name] Page', () => {
+test.describe("[Name] Page", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/[name]');
+    await page.goto("/[name]");
   });
 
   // Basic Rendering Tests
-  test('page loads successfully', async ({ page }) => {
+  test("page loads successfully", async ({ page }) => {
     await expect(page).toHaveTitle(/[Name]/);
-    await expect(page.locator('h1')).toContainText('[Expected Title]');
+    await expect(page.locator("h1")).toContainText("[Expected Title]");
   });
 
-  test('displays main content section', async ({ page }) => {
-    await expect(page.getByRole('main')).toBeVisible();
+  test("displays main content section", async ({ page }) => {
+    await expect(page.getByRole("main")).toBeVisible();
   });
 
   // Data Display Tests (for List/Dashboard)
-  test('displays data items', async ({ page }) => {
-    await expect(page.locator('[data-testid="item-card"]')).toHaveCount.greaterThan(0);
+  test("displays data items", async ({ page }) => {
+    await expect(
+      page.locator('[data-testid="item-card"]'),
+    ).toHaveCount.greaterThan(0);
   });
 
   // Form Tests (for Form pages)
-  test('form validation works', async ({ page }) => {
+  test("form validation works", async ({ page }) => {
     await page.click('button[type="submit"]');
-    await expect(page.getByText('Required field')).toBeVisible();
+    await expect(page.getByText("Required field")).toBeVisible();
   });
 
-  test('form submission works', async ({ page }) => {
-    await page.fill('input[name="email"]', 'test@example.com');
+  test("form submission works", async ({ page }) => {
+    await page.fill('input[name="email"]', "test@example.com");
     await page.click('button[type="submit"]');
-    await expect(page.getByText('Success')).toBeVisible();
+    await expect(page.getByText("Success")).toBeVisible();
   });
 
   // Navigation Tests
-  test('navigation works correctly', async ({ page }) => {
+  test("navigation works correctly", async ({ page }) => {
     await page.click('a[href="/[name]/details"]');
     await expect(page).toHaveURL(/\/[name]\/details/);
   });
 
   // Responsive Tests
-  test('mobile layout works', async ({ page }) => {
+  test("mobile layout works", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    await expect(page.getByRole('navigation')).toBeVisible();
+    await expect(page.getByRole("navigation")).toBeVisible();
   });
 
   // Auth Tests (if protected)
-  test('redirects to login when unauthenticated', async ({ page }) => {
+  test("redirects to login when unauthenticated", async ({ page }) => {
     // Clear auth state
     await page.context().clearCookies();
-    await page.goto('/[name]');
+    await page.goto("/[name]");
     await expect(page).toHaveURL(/\/login/);
   });
 
   // Performance Tests
-  test('page loads within performance budget', async ({ page }) => {
+  test("page loads within performance budget", async ({ page }) => {
     const startTime = Date.now();
-    await page.goto('/[name]');
-    await page.waitForLoadState('networkidle');
+    await page.goto("/[name]");
+    await page.waitForLoadState("networkidle");
     const loadTime = Date.now() - startTime;
     expect(loadTime).toBeLessThan(3000); // 3 second budget
   });
@@ -674,6 +691,7 @@ Step 4: Performance Metrics
 ```
 
 **Present 4-step results:**
+
 ```
 Phase 10: VERIFICATION (4-Step)
 
@@ -707,11 +725,46 @@ Any issues to fix?
 
 ---
 
-# Phase 11: TDD REFACTOR
+# Phase 11: CODE REVIEW (Greptile)
 
-**Goal:** Clean up code while tests pass
+**Goal:** AI-powered code review before refactoring
+
+Run Greptile code review to catch issues early:
+
+- Bug detection with full codebase context
+- Security vulnerability scanning (OWASP top 10)
+- Performance issue identification
+- Accessibility concerns
+
+**Requires:** GREPTILE_API_KEY + GITHUB_TOKEN
+
+Present results:
+
+```
+Phase 11: CODE REVIEW
+
+Greptile found [N] issue(s):
+
+  1. [file:line] - [severity] [issue description]
+  2. [file:line] - [severity] [issue description]
+
+How should I proceed?
+  A) Fix all issues in refactor phase
+  B) Fix critical only, defer others
+  C) Skip - no issues to fix
+```
+
+**Wait for user response.**
+
+---
+
+# Phase 12: TDD REFACTOR
+
+**Goal:** Fix code review issues + clean up code while tests pass
 
 Refactoring checklist:
+
+- [ ] Address Greptile issues (bugs, security, performance)
 - [ ] Extract repeated components to `_components/`
 - [ ] Move data fetching to dedicated functions
 - [ ] Extract server actions to `_lib/actions.ts`
@@ -721,20 +774,22 @@ Refactoring checklist:
 - [ ] Extract types to `_types/`
 
 Run tests after each refactor:
+
 ```bash
 pnpm playwright test src/app/[name]
 ```
 
 ---
 
-# Phase 12: DOCUMENTATION
+# Phase 13: DOCUMENTATION
 
 **Goal:** Complete all documentation
 
 ### Page Documentation
 
 Create or update:
-```typescript
+
+````typescript
 // src/app/[name]/README.md (optional)
 
 # [Name] Page
@@ -756,8 +811,9 @@ Create or update:
 ## Testing
 ```bash
 pnpm playwright test src/app/[name]
-```
-```
+````
+
+````
 
 ### Registry Entry
 
@@ -784,9 +840,10 @@ Update `.claude/registry.json`:
     }
   }
 }
-```
+````
 
 Present checklist:
+
 ```
 Phase 12: DOCUMENTATION
 
@@ -802,7 +859,7 @@ Documentation complete?
 
 ---
 
-# Phase 13: COMPLETION
+# Phase 14: COMPLETION
 
 **Goal:** Final output and showcase integration
 
@@ -880,11 +937,17 @@ Update state: `phases.completion.status = "complete"`
       "phases": {
         "disambiguation": { "status": "complete", "page_type": "dashboard" },
         "scope": { "status": "complete" },
-        "design_research": { "status": "complete", "brand_guide_applied": true },
+        "design_research": {
+          "status": "complete",
+          "brand_guide_applied": true
+        },
         "interview": { "status": "complete", "decisions": {} },
         "page_analysis": { "status": "complete", "components_selected": [] },
         "data_schema": { "status": "complete", "schema_file": "..." },
-        "environment_check": { "status": "complete", "api_routes_verified": true },
+        "environment_check": {
+          "status": "complete",
+          "api_routes_verified": true
+        },
         "tdd_red": { "status": "complete", "tests_written": 15 },
         "tdd_green": { "status": "complete", "tests_passed": 15 },
         "verify": { "status": "complete", "four_step_passed": true },
@@ -901,19 +964,19 @@ Update state: `phases.completion.status = "complete"`
 
 # Hooks That Enforce This Workflow
 
-| Phase | Hook | Purpose |
-|-------|------|---------|
-| 1 | `enforce-ui-disambiguation.py` | Validates page type selection |
-| 3 | `enforce-brand-guide.py` | Ensures brand guide is checked |
-| 4 | `enforce-ui-interview.py` | Injects interview decisions |
-| 5 | `enforce-page-components.py` | Checks registry for components |
-| 6 | `enforce-page-data-schema.py` | Validates data types defined |
-| 7 | `check-api-routes.py` | Verifies required API routes |
-| 8 | `check-playwright-setup.py` | Ensures Playwright is configured |
-| 10 | `verify-after-green.py` | Triggers 4-step verification |
-| 12 | `update-registry.py` | Adds page to registry |
-| 12 | `update-ui-showcase.py` | Updates showcase |
-| 13 | `api-workflow-check.py` | Blocks if incomplete |
+| Phase | Hook                           | Purpose                          |
+| ----- | ------------------------------ | -------------------------------- |
+| 1     | `enforce-ui-disambiguation.py` | Validates page type selection    |
+| 3     | `enforce-brand-guide.py`       | Ensures brand guide is checked   |
+| 4     | `enforce-ui-interview.py`      | Injects interview decisions      |
+| 5     | `enforce-page-components.py`   | Checks registry for components   |
+| 6     | `enforce-page-data-schema.py`  | Validates data types defined     |
+| 7     | `check-api-routes.py`          | Verifies required API routes     |
+| 8     | `check-playwright-setup.py`    | Ensures Playwright is configured |
+| 10    | `verify-after-green.py`        | Triggers 4-step verification     |
+| 12    | `update-registry.py`           | Adds page to registry            |
+| 12    | `update-ui-showcase.py`        | Updates showcase                 |
+| 13    | `api-workflow-check.py`        | Blocks if incomplete             |
 
 ---
 
@@ -929,5 +992,5 @@ Update state: `phases.completion.status = "complete"`
 
 ---
 
-**Version:** 3.10.0
-**Last Updated:** 2025-12-12
+**Version:** 3.11.0
+**Last Updated:** 2025-12-28

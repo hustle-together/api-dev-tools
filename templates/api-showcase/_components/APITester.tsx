@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 interface ParameterDoc {
   name: string;
@@ -45,15 +45,15 @@ interface ResponseState {
 // Default request bodies for known APIs
 const DEFAULT_BODIES: Record<string, Record<string, object>> = {
   brandfetch: {
-    default: { domain: 'stripe.com' },
+    default: { domain: "stripe.com" },
   },
   elevenlabs: {
     tts: {
-      text: 'Hello, this is a test of the ElevenLabs text-to-speech API.',
-      voiceId: '21m00Tcm4TlvDq8ikWAM',
-      modelId: 'eleven_multilingual_v2',
-      outputFormat: 'mp3_44100_128',
-      responseFormat: 'json',
+      text: "Hello, this is a test of the ElevenLabs text-to-speech API.",
+      voiceId: "21m00Tcm4TlvDq8ikWAM",
+      modelId: "eleven_multilingual_v2",
+      outputFormat: "mp3_44100_128",
+      responseFormat: "json",
     },
     voices: {},
     models: {},
@@ -63,8 +63,8 @@ const DEFAULT_BODIES: Record<string, Record<string, object>> = {
 // Default query params for GET requests
 const DEFAULT_QUERY_PARAMS: Record<string, Record<string, string>> = {
   elevenlabs: {
-    voices: 'search=&pageSize=10',
-    models: '',
+    voices: "search=&pageSize=10",
+    models: "",
   },
 };
 
@@ -82,12 +82,19 @@ const DEFAULT_QUERY_PARAMS: Record<string, Record<string, string>> = {
  *
  * Created with Hustle API Dev Tools (v3.9.2)
  */
-export function APITester({ id, endpoint, methods, selectedEndpoint, schemaPath, schema }: APITesterProps) {
+export function APITester({
+  id,
+  endpoint,
+  methods,
+  selectedEndpoint,
+  schemaPath,
+  schema,
+}: APITesterProps) {
   // Get default body for this API/endpoint
   const getDefaultBody = () => {
     const apiDefaults = DEFAULT_BODIES[id];
     if (apiDefaults) {
-      const endpointDefaults = apiDefaults[selectedEndpoint || 'default'];
+      const endpointDefaults = apiDefaults[selectedEndpoint || "default"];
       if (endpointDefaults && Object.keys(endpointDefaults).length > 0) {
         return JSON.stringify(endpointDefaults, null, 2);
       }
@@ -99,24 +106,24 @@ export function APITester({ id, endpoint, methods, selectedEndpoint, schemaPath,
   const getDefaultQueryParams = () => {
     const apiParams = DEFAULT_QUERY_PARAMS[id];
     if (apiParams && selectedEndpoint) {
-      return apiParams[selectedEndpoint] || '';
+      return apiParams[selectedEndpoint] || "";
     }
-    return '';
+    return "";
   };
 
   const [request, setRequest] = useState<RequestState>({
-    method: methods[0] || 'POST',
+    method: methods[0] || "POST",
     body: getDefaultBody(),
     queryParams: getDefaultQueryParams(),
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
   });
 
   const [response, setResponse] = useState<ResponseState>({
     status: null,
-    statusText: '',
-    body: '',
+    statusText: "",
+    body: "",
     time: null,
     error: null,
     contentType: null,
@@ -129,26 +136,33 @@ export function APITester({ id, endpoint, methods, selectedEndpoint, schemaPath,
   useEffect(() => {
     setRequest((prev) => ({
       ...prev,
-      method: methods[0] || 'POST',
+      method: methods[0] || "POST",
       body: getDefaultBody(),
       queryParams: getDefaultQueryParams(),
     }));
     // Clear previous response
     setResponse({
       status: null,
-      statusText: '',
-      body: '',
+      statusText: "",
+      body: "",
       time: null,
       error: null,
       contentType: null,
     });
     setAudioUrl(null);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedEndpoint, id]);
 
   const handleSubmit = async () => {
     setIsLoading(true);
-    setResponse({ status: null, statusText: '', body: '', time: null, error: null, contentType: null });
+    setResponse({
+      status: null,
+      statusText: "",
+      body: "",
+      time: null,
+      error: null,
+      contentType: null,
+    });
     setAudioUrl(null);
 
     const startTime = performance.now();
@@ -156,7 +170,7 @@ export function APITester({ id, endpoint, methods, selectedEndpoint, schemaPath,
     try {
       // Build URL with query params for GET
       let url = endpoint;
-      if (request.method === 'GET' && request.queryParams.trim()) {
+      if (request.method === "GET" && request.queryParams.trim()) {
         url = `${endpoint}?${request.queryParams}`;
       }
 
@@ -166,31 +180,34 @@ export function APITester({ id, endpoint, methods, selectedEndpoint, schemaPath,
       };
 
       // Add body for non-GET requests
-      if (request.method !== 'GET' && request.body.trim()) {
+      if (request.method !== "GET" && request.body.trim()) {
         fetchOptions.body = request.body;
       }
 
       const res = await fetch(url, fetchOptions);
       const endTime = performance.now();
 
-      const contentType = res.headers.get('content-type') || '';
-      let responseBody = '';
+      const contentType = res.headers.get("content-type") || "";
+      let responseBody = "";
 
       // Handle different content types
-      if (contentType.includes('audio/') || contentType.includes('application/octet-stream')) {
+      if (
+        contentType.includes("audio/") ||
+        contentType.includes("application/octet-stream")
+      ) {
         // Binary audio response
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
         setAudioUrl(url);
         responseBody = `[Audio Response - ${blob.size} bytes]\nContent-Type: ${contentType}`;
-      } else if (contentType.includes('application/json')) {
+      } else if (contentType.includes("application/json")) {
         const json = await res.json();
         responseBody = JSON.stringify(json, null, 2);
 
         // Check if JSON contains base64 audio
-        if (json.audio && typeof json.audio === 'string') {
+        if (json.audio && typeof json.audio === "string") {
           try {
-            const format = json.format || 'mp3';
+            const format = json.format || "mp3";
             const audioData = atob(json.audio);
             const bytes = new Uint8Array(audioData.length);
             for (let i = 0; i < audioData.length; i++) {
@@ -219,10 +236,11 @@ export function APITester({ id, endpoint, methods, selectedEndpoint, schemaPath,
       const endTime = performance.now();
       setResponse({
         status: null,
-        statusText: '',
-        body: '',
+        statusText: "",
+        body: "",
         time: Math.round(endTime - startTime),
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
         contentType: null,
       });
     } finally {
@@ -231,22 +249,26 @@ export function APITester({ id, endpoint, methods, selectedEndpoint, schemaPath,
   };
 
   const getStatusColor = (status: number | null) => {
-    if (!status) return 'text-gray-500';
-    if (status >= 200 && status < 300) return 'text-green-500';
-    if (status >= 400 && status < 500) return 'text-yellow-500';
-    if (status >= 500) return 'text-red-500';
-    return 'text-gray-500';
+    if (!status) return "text-gray-500";
+    if (status >= 200 && status < 300) return "text-green-500";
+    if (status >= 400 && status < 500) return "text-yellow-500";
+    if (status >= 500) return "text-red-500";
+    return "text-gray-500";
   };
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       {/* Request Panel */}
       <div className="space-y-4">
-        <h3 className="text-lg font-bold text-black dark:text-white">Request</h3>
+        <h3 className="text-lg font-bold text-black dark:text-white">
+          Request
+        </h3>
 
         {/* Method Selection */}
         <div>
-          <label className="mb-1 block text-sm font-bold text-black dark:text-white">Method</label>
+          <label className="mb-1 block text-sm font-bold text-black dark:text-white">
+            Method
+          </label>
           <div className="flex gap-2">
             {methods.map((method) => (
               <button
@@ -254,8 +276,8 @@ export function APITester({ id, endpoint, methods, selectedEndpoint, schemaPath,
                 onClick={() => setRequest((prev) => ({ ...prev, method }))}
                 className={`border-2 px-4 py-2 text-sm font-medium transition-colors ${
                   request.method === method
-                    ? 'border-[#BA0C2F] bg-[#BA0C2F] text-white'
-                    : 'border-black bg-white text-black hover:border-[#BA0C2F] dark:border-gray-600 dark:bg-gray-800 dark:text-white'
+                    ? "border-[#BA0C2F] bg-[#BA0C2F] text-white"
+                    : "border-black bg-white text-black hover:border-[#BA0C2F] dark:border-gray-600 dark:bg-gray-800 dark:text-white"
                 }`}
               >
                 {method}
@@ -266,20 +288,28 @@ export function APITester({ id, endpoint, methods, selectedEndpoint, schemaPath,
 
         {/* Endpoint Display */}
         <div>
-          <label className="mb-1 block text-sm font-bold text-black dark:text-white">Endpoint</label>
+          <label className="mb-1 block text-sm font-bold text-black dark:text-white">
+            Endpoint
+          </label>
           <div className="flex items-center border-2 border-black bg-gray-50 px-3 py-2 dark:border-gray-600 dark:bg-gray-800">
-            <span className="font-mono text-sm text-gray-700 dark:text-gray-300">{endpoint}</span>
+            <span className="font-mono text-sm text-gray-700 dark:text-gray-300">
+              {endpoint}
+            </span>
           </div>
         </div>
 
         {/* Query Parameters (for GET requests) */}
-        {request.method === 'GET' && (
+        {request.method === "GET" && (
           <div>
-            <label className="mb-1 block text-sm font-bold text-black dark:text-white">Query Parameters</label>
+            <label className="mb-1 block text-sm font-bold text-black dark:text-white">
+              Query Parameters
+            </label>
             <input
               type="text"
               value={request.queryParams}
-              onChange={(e) => setRequest((prev) => ({ ...prev, queryParams: e.target.value }))}
+              onChange={(e) =>
+                setRequest((prev) => ({ ...prev, queryParams: e.target.value }))
+              }
               className="w-full border-2 border-black bg-white px-3 py-2 font-mono text-sm focus:border-[#BA0C2F] focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-white"
               placeholder="key1=value1&key2=value2"
             />
@@ -290,12 +320,16 @@ export function APITester({ id, endpoint, methods, selectedEndpoint, schemaPath,
         )}
 
         {/* Body Editor (hide for GET) */}
-        {request.method !== 'GET' && (
+        {request.method !== "GET" && (
           <div>
             <div className="mb-1 flex items-center justify-between">
-              <label className="block text-sm font-bold text-black dark:text-white">Body (JSON)</label>
+              <label className="block text-sm font-bold text-black dark:text-white">
+                Body (JSON)
+              </label>
               <button
-                onClick={() => setRequest((prev) => ({ ...prev, body: getDefaultBody() }))}
+                onClick={() =>
+                  setRequest((prev) => ({ ...prev, body: getDefaultBody() }))
+                }
                 className="text-xs text-gray-600 hover:text-[#BA0C2F] dark:text-gray-400"
               >
                 Reset to defaults
@@ -303,7 +337,9 @@ export function APITester({ id, endpoint, methods, selectedEndpoint, schemaPath,
             </div>
             <textarea
               value={request.body}
-              onChange={(e) => setRequest((prev) => ({ ...prev, body: e.target.value }))}
+              onChange={(e) =>
+                setRequest((prev) => ({ ...prev, body: e.target.value }))
+              }
               className="h-48 w-full border-2 border-black bg-white p-3 font-mono text-sm focus:border-[#BA0C2F] focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-white"
               placeholder='{"key": "value"}'
             />
@@ -315,18 +351,24 @@ export function APITester({ id, endpoint, methods, selectedEndpoint, schemaPath,
           <ParameterDocs
             requestParams={schema.request}
             queryParams={schema.queryParams}
-            isGetRequest={request.method === 'GET'}
+            isGetRequest={request.method === "GET"}
           />
         ) : null}
 
         {/* Headers */}
         <div>
-          <label className="mb-1 block text-sm font-bold text-black dark:text-white">Headers</label>
+          <label className="mb-1 block text-sm font-bold text-black dark:text-white">
+            Headers
+          </label>
           <div className="border-2 border-black bg-gray-50 p-3 dark:border-gray-600 dark:bg-gray-800">
             {Object.entries(request.headers).map(([key, value]) => (
               <div key={key} className="flex items-center gap-2 text-sm">
-                <span className="font-bold text-black dark:text-white">{key}:</span>
-                <span className="text-gray-600 dark:text-gray-400">{value}</span>
+                <span className="font-bold text-black dark:text-white">
+                  {key}:
+                </span>
+                <span className="text-gray-600 dark:text-gray-400">
+                  {value}
+                </span>
               </div>
             ))}
           </div>
@@ -374,33 +416,45 @@ export function APITester({ id, endpoint, methods, selectedEndpoint, schemaPath,
       {/* Response Panel */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-bold text-black dark:text-white">Response</h3>
+          <h3 className="text-lg font-bold text-black dark:text-white">
+            Response
+          </h3>
           {response.time !== null && (
-            <span className="text-sm text-gray-600 dark:text-gray-400">{response.time}ms</span>
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              {response.time}ms
+            </span>
           )}
         </div>
 
         {/* Status */}
         {response.status !== null && (
           <div className="flex items-center gap-2">
-            <span className={`text-2xl font-bold ${getStatusColor(response.status)}`}>
+            <span
+              className={`text-2xl font-bold ${getStatusColor(response.status)}`}
+            >
               {response.status}
             </span>
-            <span className="text-gray-600 dark:text-gray-400">{response.statusText}</span>
+            <span className="text-gray-600 dark:text-gray-400">
+              {response.statusText}
+            </span>
           </div>
         )}
 
         {/* Error */}
         {response.error && (
           <div className="border-2 border-red-600 bg-red-50 p-4 dark:bg-red-900/20">
-            <p className="text-sm text-red-800 dark:text-red-300">{response.error}</p>
+            <p className="text-sm text-red-800 dark:text-red-300">
+              {response.error}
+            </p>
           </div>
         )}
 
         {/* Audio Player */}
         {audioUrl && (
           <div className="border-2 border-black bg-gray-50 p-4 dark:border-gray-600 dark:bg-gray-800">
-            <p className="mb-2 text-sm font-bold text-black dark:text-white">Audio Response</p>
+            <p className="mb-2 text-sm font-bold text-black dark:text-white">
+              Audio Response
+            </p>
             <audio controls className="w-full" src={audioUrl}>
               Your browser does not support the audio element.
             </audio>
@@ -423,7 +477,9 @@ export function APITester({ id, endpoint, methods, selectedEndpoint, schemaPath,
         ) : (
           <div className="flex h-48 items-center justify-center border-2 border-dashed border-black dark:border-gray-600">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              {isLoading ? 'Waiting for response...' : 'Send a request to see the response'}
+              {isLoading
+                ? "Waiting for response..."
+                : "Send a request to see the response"}
             </p>
           </div>
         )}
@@ -457,7 +513,7 @@ function ParameterDocs({
         className="flex w-full items-center justify-between bg-gray-50 px-3 py-2 text-left dark:bg-gray-800"
       >
         <span className="text-sm font-bold text-black dark:text-white">
-          {isGetRequest ? 'Query Parameters' : 'Request Body'} Documentation
+          {isGetRequest ? "Query Parameters" : "Request Body"} Documentation
         </span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -469,7 +525,7 @@ function ParameterDocs({
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className={`text-gray-500 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+          className={`text-gray-500 transition-transform ${isExpanded ? "rotate-180" : ""}`}
         >
           <polyline points="6 9 12 15 18 9" />
         </svg>
@@ -480,7 +536,9 @@ function ParameterDocs({
           {paramsToShow.map((param) => (
             <div key={param.name} className="px-3 py-2">
               <div className="flex items-center gap-2">
-                <code className="text-sm font-bold text-[#BA0C2F]">{param.name}</code>
+                <code className="text-sm font-bold text-[#BA0C2F]">
+                  {param.name}
+                </code>
                 <span className="border border-gray-300 bg-gray-100 px-1.5 py-0.5 text-xs text-gray-600 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400">
                   {param.type}
                 </span>
@@ -510,7 +568,10 @@ function ParameterDocs({
               )}
               {param.default !== undefined && (
                 <p className="mt-1 text-xs text-gray-500">
-                  Default: <code className="text-gray-700 dark:text-gray-300">{String(param.default)}</code>
+                  Default:{" "}
+                  <code className="text-gray-700 dark:text-gray-300">
+                    {String(param.default)}
+                  </code>
                 </p>
               )}
             </div>

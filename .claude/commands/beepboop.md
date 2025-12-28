@@ -21,7 +21,7 @@ Arguments: $ARGUMENTS
 
 **IMPORTANT Communication Format:**
 
-1. **Opening**: Begin with "*Beep boop, I am Claude Code 🤖, my user has reviewed and approved the following written by me:*"
+1. **Opening**: Begin with "_Beep boop, I am Claude Code 🤖, my user has reviewed and approved the following written by me:_"
    - Use italics for this line
    - Clearly establishes AI authorship
 
@@ -29,7 +29,7 @@ Arguments: $ARGUMENTS
    - Execute whatever communication task the user requested
    - Write the actual content that accomplishes the user's goal
 
-3. **Closing**: End with "*Beep boop, Claude Code 🤖 out!*"
+3. **Closing**: End with "_Beep boop, Claude Code 🤖 out!_"
    - Use italics for this line
    - Provides clear closure
 
@@ -43,7 +43,6 @@ This command ensures transparency about AI usage while maintaining that the user
 - Adding a comment to a GitHub issue
 - Responding to feedback with AI-generated explanations
 - Any communication where AI attribution is valuable
-
 
 ## 🛡 Project Rules (Injected into every command)
 
@@ -69,7 +68,7 @@ This command ensures transparency about AI usage while maintaining that the user
 4. **API KEY MANAGEMENT:**
    - Support three loading methods:
      - Server environment variables
-     - NEXT_PUBLIC_ variables (client-side)
+     - NEXT*PUBLIC* variables (client-side)
      - Custom headers (X-OpenAI-Key, X-Anthropic-Key, etc.)
    - Never hardcode API keys
    - Always validate key availability before use

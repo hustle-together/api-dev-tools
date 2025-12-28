@@ -12,8 +12,10 @@ allowed-tools: WebSearch WebFetch mcp__context7 mcp__github AskUserQuestion Read
 ---
 
 ---
+
 description: Creates a pull request using GitHub MCP
 argument-hint: [optional-pr-title-and-description]
+
 ---
 
 # Create Pull Request
@@ -82,7 +84,6 @@ Arguments: $ARGUMENTS
 3. Set the base branch (default: main)
 4. Include relevant issue references if found in commit messages
 
-
 ## 🛡 Project Rules (Injected into every command)
 
 1. **NO BROKEN BUILDS:**
@@ -107,7 +108,7 @@ Arguments: $ARGUMENTS
 4. **API KEY MANAGEMENT:**
    - Support three loading methods:
      - Server environment variables
-     - NEXT_PUBLIC_ variables (client-side)
+     - NEXT*PUBLIC* variables (client-side)
      - Custom headers (X-OpenAI-Key, X-Anthropic-Key, etc.)
    - Never hardcode API keys
    - Always validate key availability before use

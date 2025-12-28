@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 interface RegistryAPI {
   name: string;
@@ -15,7 +15,7 @@ interface RegistryAPI {
 
 interface APICardProps {
   id: string;
-  type: 'api' | 'combined';
+  type: "api" | "combined";
   data: RegistryAPI;
   onClick: () => void;
 }
@@ -32,22 +32,24 @@ interface APICardProps {
 export function APICard({ id, type, data, onClick }: APICardProps) {
   // Method badge colors
   const methodColors: Record<string, string> = {
-    GET: 'border-green-600 bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-    POST: 'border-blue-600 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
-    PUT: 'border-yellow-600 bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
-    PATCH: 'border-orange-600 bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
-    DELETE: 'border-red-600 bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+    GET: "border-green-600 bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+    POST: "border-blue-600 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+    PUT: "border-yellow-600 bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
+    PATCH:
+      "border-orange-600 bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
+    DELETE:
+      "border-red-600 bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400",
   };
 
   // Status colors
   const statusColors: Record<string, string> = {
-    complete: 'bg-green-500',
-    'in-progress': 'bg-yellow-500',
-    error: 'bg-red-500',
+    complete: "bg-green-500",
+    "in-progress": "bg-yellow-500",
+    error: "bg-red-500",
   };
 
-  const methods = data.methods || ['POST'];
-  const status = data.status || 'complete';
+  const methods = data.methods || ["POST"];
+  const status = data.status || "complete";
 
   return (
     <button
@@ -59,7 +61,7 @@ export function APICard({ id, type, data, onClick }: APICardProps) {
         <div className="flex-1">
           {/* Type Badge */}
           <div className="mb-2 flex items-center gap-2">
-            {type === 'combined' ? (
+            {type === "combined" ? (
               <span className="border border-purple-600 bg-purple-50 px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
                 Combined API
               </span>
@@ -70,7 +72,7 @@ export function APICard({ id, type, data, onClick }: APICardProps) {
             )}
             {/* Status Dot */}
             <span
-              className={`h-2.5 w-2.5 rounded-full ${statusColors[status] || 'bg-gray-400'}`}
+              className={`h-2.5 w-2.5 rounded-full ${statusColors[status] || "bg-gray-400"}`}
               title={status}
             />
           </div>
@@ -119,7 +121,8 @@ export function APICard({ id, type, data, onClick }: APICardProps) {
             <span
               key={method}
               className={`border px-2 py-0.5 font-mono text-xs font-bold ${
-                methodColors[method] || 'border-gray-400 bg-gray-100 text-gray-700'
+                methodColors[method] ||
+                "border-gray-400 bg-gray-100 text-gray-700"
               }`}
             >
               {method}
@@ -128,10 +131,11 @@ export function APICard({ id, type, data, onClick }: APICardProps) {
         </div>
 
         {/* Combined Info */}
-        {type === 'combined' && data.combines && (
+        {type === "combined" && data.combines && (
           <div className="mt-3 border-t border-gray-200 pt-3 dark:border-gray-700">
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              <span className="font-semibold">Combines:</span> {data.combines.join(', ')}
+              <span className="font-semibold">Combines:</span>{" "}
+              {data.combines.join(", ")}
             </p>
             {data.flow_type && (
               <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -145,7 +149,7 @@ export function APICard({ id, type, data, onClick }: APICardProps) {
       {/* Footer */}
       <div className="border-t border-gray-200 bg-gray-50 px-4 py-2 dark:border-gray-700 dark:bg-gray-800">
         <p className="text-xs text-gray-500 dark:text-gray-400">
-          {data.created_at ? `Created ${data.created_at}` : 'Click to test'}
+          {data.created_at ? `Created ${data.created_at}` : "Click to test"}
         </p>
       </div>
     </button>

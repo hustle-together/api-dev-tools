@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { __COMPONENT_NAME__ } from './__COMPONENT_NAME__';
+import type { Meta, StoryObj } from "@storybook/react";
+import { __COMPONENT_NAME__ } from "./__COMPONENT_NAME__";
 
 /**
  * __COMPONENT_NAME__ - __COMPONENT_DESCRIPTION__
@@ -7,51 +7,51 @@ import { __COMPONENT_NAME__ } from './__COMPONENT_NAME__';
  * This component was created using the Hustle UI Create workflow.
  */
 const meta: Meta<typeof __COMPONENT_NAME__> = {
-  title: 'Components/__COMPONENT_NAME__',
+  title: "Components/__COMPONENT_NAME__",
   component: __COMPONENT_NAME__,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
     docs: {
       description: {
-        component: '__COMPONENT_DESCRIPTION__',
+        component: "__COMPONENT_DESCRIPTION__",
       },
     },
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     variant: {
-      control: 'select',
-      options: ['primary', 'secondary', 'destructive', 'outline', 'ghost'],
-      description: 'Visual style variant',
+      control: "select",
+      options: ["primary", "secondary", "destructive", "outline", "ghost"],
+      description: "Visual style variant",
       table: {
-        defaultValue: { summary: 'primary' },
+        defaultValue: { summary: "primary" },
       },
     },
     size: {
-      control: 'select',
-      options: ['sm', 'md', 'lg'],
-      description: 'Size variant',
+      control: "select",
+      options: ["sm", "md", "lg"],
+      description: "Size variant",
       table: {
-        defaultValue: { summary: 'md' },
+        defaultValue: { summary: "md" },
       },
     },
     loading: {
-      control: 'boolean',
-      description: 'Shows loading spinner',
+      control: "boolean",
+      description: "Shows loading spinner",
       table: {
-        defaultValue: { summary: 'false' },
+        defaultValue: { summary: "false" },
       },
     },
     disabled: {
-      control: 'boolean',
-      description: 'Disables the component',
+      control: "boolean",
+      description: "Disables the component",
       table: {
-        defaultValue: { summary: 'false' },
+        defaultValue: { summary: "false" },
       },
     },
     children: {
-      control: 'text',
-      description: 'Content inside the component',
+      control: "text",
+      description: "Content inside the component",
     },
   },
 };
@@ -64,8 +64,8 @@ type Story = StoryObj<typeof meta>;
  */
 export const Primary: Story = {
   args: {
-    variant: 'primary',
-    children: 'Primary __COMPONENT_NAME__',
+    variant: "primary",
+    children: "Primary __COMPONENT_NAME__",
   },
 };
 
@@ -74,8 +74,8 @@ export const Primary: Story = {
  */
 export const Secondary: Story = {
   args: {
-    variant: 'secondary',
-    children: 'Secondary __COMPONENT_NAME__',
+    variant: "secondary",
+    children: "Secondary __COMPONENT_NAME__",
   },
 };
 
@@ -84,8 +84,8 @@ export const Secondary: Story = {
  */
 export const Destructive: Story = {
   args: {
-    variant: 'destructive',
-    children: 'Delete Item',
+    variant: "destructive",
+    children: "Delete Item",
   },
 };
 
@@ -94,8 +94,8 @@ export const Destructive: Story = {
  */
 export const Outline: Story = {
   args: {
-    variant: 'outline',
-    children: 'Outline __COMPONENT_NAME__',
+    variant: "outline",
+    children: "Outline __COMPONENT_NAME__",
   },
 };
 
@@ -104,8 +104,8 @@ export const Outline: Story = {
  */
 export const Ghost: Story = {
   args: {
-    variant: 'ghost',
-    children: 'Ghost __COMPONENT_NAME__',
+    variant: "ghost",
+    children: "Ghost __COMPONENT_NAME__",
   },
 };
 
@@ -114,8 +114,8 @@ export const Ghost: Story = {
  */
 export const Small: Story = {
   args: {
-    size: 'sm',
-    children: 'Small __COMPONENT_NAME__',
+    size: "sm",
+    children: "Small __COMPONENT_NAME__",
   },
 };
 
@@ -124,8 +124,8 @@ export const Small: Story = {
  */
 export const Large: Story = {
   args: {
-    size: 'lg',
-    children: 'Large __COMPONENT_NAME__',
+    size: "lg",
+    children: "Large __COMPONENT_NAME__",
   },
 };
 
@@ -135,7 +135,7 @@ export const Large: Story = {
 export const Loading: Story = {
   args: {
     loading: true,
-    children: 'Loading...',
+    children: "Loading...",
   },
 };
 
@@ -145,7 +145,7 @@ export const Loading: Story = {
 export const Disabled: Story = {
   args: {
     disabled: true,
-    children: 'Disabled __COMPONENT_NAME__',
+    children: "Disabled __COMPONENT_NAME__",
   },
 };
 
@@ -158,7 +158,9 @@ export const AllVariants: Story = {
       <div className="flex gap-2">
         <__COMPONENT_NAME__ variant="primary">Primary</__COMPONENT_NAME__>
         <__COMPONENT_NAME__ variant="secondary">Secondary</__COMPONENT_NAME__>
-        <__COMPONENT_NAME__ variant="destructive">Destructive</__COMPONENT_NAME__>
+        <__COMPONENT_NAME__ variant="destructive">
+          Destructive
+        </__COMPONENT_NAME__>
         <__COMPONENT_NAME__ variant="outline">Outline</__COMPONENT_NAME__>
         <__COMPONENT_NAME__ variant="ghost">Ghost</__COMPONENT_NAME__>
       </div>
