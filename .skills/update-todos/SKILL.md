@@ -112,6 +112,7 @@ You are a TodoWrite progress updater. Your job is to:
 ### Status Logic
 
 For a given `current_phase` number:
+
 - Phases < current_phase: `"completed"`
 - Phase == current_phase: `"in_progress"`
 - Phases > current_phase: `"pending"`
@@ -121,6 +122,7 @@ For a given `current_phase` number:
 User calls: `/update-todos api-create 3`
 
 You build:
+
 ```json
 [
   {"content": "Phase 1: Disambiguation", "status": "completed", "activeForm": "Clarified API terms"},
@@ -136,17 +138,23 @@ Then call TodoWrite with this array.
 ## Special Cases
 
 ### Initialization (phase 0)
+
 When `current_phase = 0`, all phases are `"pending"` with one `"in_progress"`:
+
 - Phase 1: `"in_progress"` (starting workflow)
 - Phases 2-13: `"pending"`
 
 ### Completion (phase 13 for 13-phase workflows)
+
 When `current_phase = 13`:
+
 - All phases: `"completed"`
 - Display completion message
 
 ### Loop-Back Scenarios
+
 If a verification phase fails (e.g., Phase 10 requires going back to Phase 8):
+
 - The calling workflow will call `/update-todos` with the looped-back phase number
 - Example: After Phase 10 fails verification → `/update-todos api-create 8`
 - Phase 8 becomes `"in_progress"` again
@@ -155,6 +163,7 @@ If a verification phase fails (e.g., Phase 10 requires going back to Phase 8):
 ## Error Handling
 
 If invalid parameters:
+
 - Invalid workflow name → Use `api-create` as default, warn user
 - Invalid phase number → Clamp to valid range (0-13 or 0-12)
 - Missing parameters → Ask user to provide them
@@ -162,6 +171,7 @@ If invalid parameters:
 ## Silent Operation
 
 **CRITICAL:** This is a helper skill. After calling TodoWrite, you MUST:
+
 - **NOT output any text to the user**
 - **NOT explain what you did**
 - **NOT ask follow-up questions**
@@ -172,38 +182,49 @@ The calling workflow (e.g., `/api-create`) will handle all user communication.
 ## Usage Examples
 
 ### From api-create workflow
+
 ```markdown
 # Start of workflow
+
 /update-todos api-create 0
 
 # After Phase 1 completes
+
 /update-todos api-create 1
 
 # After Phase 10 verification fails (loop back to Phase 8)
+
 /update-todos api-create 8
 ```
 
 ### From ui-create-component workflow
+
 ```markdown
 # Start of workflow
+
 /update-todos ui-create-component 0
 
 # After completing Brand Guide check
+
 /update-todos ui-create-component 2
 ```
 
 ### From combine workflow
+
 ```markdown
 # Start of workflow (note: only 12 phases)
+
 /update-todos combine 0
 
 # After Flow Type selection
+
 /update-todos combine 3
 ```
 
 ## Integration Points
 
 This skill is called by:
+
 - `.skills/api-create/SKILL.md` (or `/hustle-api-create`)
 - `.skills/hustle-ui-create/SKILL.md` (component mode)
 - `.skills/hustle-ui-create-page/SKILL.md` (page mode)
@@ -212,6 +233,7 @@ This skill is called by:
 ## Testing
 
 To test this helper independently:
+
 ```bash
 /update-todos api-create 5
 # Should show phases 1-4 completed, phase 5 in_progress, 6-13 pending

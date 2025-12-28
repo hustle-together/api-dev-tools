@@ -12,8 +12,10 @@ allowed-tools: WebSearch WebFetch mcp__context7 mcp__github AskUserQuestion Read
 ---
 
 ---
+
 description: Summarize conversation progress and next steps
 argument-hint: [optional additional info]
+
 ---
 
 ## General Guidelines
@@ -54,7 +56,6 @@ Provide a summary with these sections:
 
 Keep the summary concise and actionable - suitable for pasting into a new conversation to quickly restore context without needing the full conversation history.
 
-
 ## 🛡 Project Rules (Injected into every command)
 
 1. **NO BROKEN BUILDS:**
@@ -79,7 +80,7 @@ Keep the summary concise and actionable - suitable for pasting into a new conver
 4. **API KEY MANAGEMENT:**
    - Support three loading methods:
      - Server environment variables
-     - NEXT_PUBLIC_ variables (client-side)
+     - NEXT*PUBLIC* variables (client-side)
      - Custom headers (X-OpenAI-Key, X-Anthropic-Key, etc.)
    - Never hardcode API keys
    - Always validate key availability before use

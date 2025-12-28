@@ -1,4 +1,5 @@
 # API Dev Tools Enhancement Strategy
+
 **Version:** 3.11.0 Roadmap (CORRECTED)
 **Scope:** api-create, ui-create, combine workflows
 **Date:** 2025-12-24 (✅ Skills Migration COMPLETE)
@@ -11,6 +12,7 @@
 **Successfully migrated to Agent Skills open standard!**
 
 ### Deliverables Completed
+
 - ✅ **23 Agent Skills**: All commands converted to `SKILL.md` format with YAML frontmatter
 - ✅ **marketplace.json**: Plugin distribution configuration created
 - ✅ **.skills/README.md**: Comprehensive skills documentation
@@ -21,12 +23,14 @@
 - ✅ **Documentation**: Updated README, CHANGELOG, package.json
 
 ### Architecture Unchanged
+
 - ✅ **13-Phase Workflow**: All phases remain identical
 - ✅ **State Tracking**: `.claude/api-dev-state.json` structure preserved
 - ✅ **Research Cache**: 7-day freshness system intact
 - ✅ **Hook System**: All 18 enforcement hooks working
 
 ### Distribution Ready
+
 - ✅ **GitHub**: Package ready for repository creation
 - ✅ **NPM**: v3.11.0 with Agent Skills metadata
 - ⏳ **SkillsMP**: Ready for submission
@@ -39,6 +43,7 @@ See [SKILLS_MIGRATION_CHECKLIST.md](./SKILLS_MIGRATION_CHECKLIST.md) for complet
 ## 🚨 **MAJOR STRATEGIC SHIFT: Skills-First Architecture**
 
 **Breaking News (Dec 18, 2025):**
+
 - Anthropic released **Agent Skills as an open standard** ([agentskills.io](https://agentskills.io))
 - **25,000+ skills** available in marketplace ([SkillsMP.com](https://skillsmp.com))
 - **Claude Code** now supports: async subagents, plugins marketplace, prompt suggestions
@@ -62,20 +67,21 @@ This document analyzes 9 user-reported gaps + new Claude Code capabilities. Key 
 
 ### **CORRECTED Tool Understanding:**
 
-| Tool | Purpose | Cost | Use Case |
-|------|---------|------|----------|
-| **Context7 MCP** | Library documentation | Free | ✅ API docs discovery |
-| **WebSearch** | Community knowledge | Free | ✅ API docs discovery |
-| **Skills Marketplace** | Specialized workflows | Free | ✅ API research skills |
-| **Greptile** | AI code review | $30/dev/month | ✅ PR reviews (NOT docs!) |
-| **CodeRabbit** | AI code review | $12/dev/month | ✅ PR reviews (NOT docs!) |
-| **Graphite** | Stacked PRs + AI review | $20/user/month | ✅ Workflow optimization |
+| Tool                   | Purpose                 | Cost           | Use Case                  |
+| ---------------------- | ----------------------- | -------------- | ------------------------- |
+| **Context7 MCP**       | Library documentation   | Free           | ✅ API docs discovery     |
+| **WebSearch**          | Community knowledge     | Free           | ✅ API docs discovery     |
+| **Skills Marketplace** | Specialized workflows   | Free           | ✅ API research skills    |
+| **Greptile**           | AI code review          | $30/dev/month  | ✅ PR reviews (NOT docs!) |
+| **CodeRabbit**         | AI code review          | $12/dev/month  | ✅ PR reviews (NOT docs!) |
+| **Graphite**           | Stacked PRs + AI review | $20/user/month | ✅ Workflow optimization  |
 
 ---
 
 ## 🎯 **Revised Strategy**
 
 ### **OLD Plan (WRONG):**
+
 ```
 ❌ Use Greptile MCP for API documentation discovery
 ❌ Commands-based architecture
@@ -84,6 +90,7 @@ This document analyzes 9 user-reported gaps + new Claude Code capabilities. Key 
 ```
 
 ### **NEW Plan (CORRECT):**
+
 ```
 ✅ Context7 + WebSearch + Skills for documentation discovery
 ✅ Skills-first architecture (open standard, cross-platform)
@@ -97,6 +104,7 @@ This document analyzes 9 user-reported gaps + new Claude Code capabilities. Key 
 ## Analysis of Reported Issues
 
 ### 1. 📁 Documentation Folder Structure
+
 **Status:** ✅ Valid Enhancement
 **Priority:** P2 (Medium)
 **Effort:** Low
@@ -107,6 +115,7 @@ This document analyzes 9 user-reported gaps + new Claude Code capabilities. Key 
 #### 🔴 Current Setup (Flat File Structure)
 
 **How it works now:**
+
 ```
 .claude/research/
 ├── index.json                      # All research in one file
@@ -116,6 +125,7 @@ This document analyzes 9 user-reported gaps + new Claude Code capabilities. Key 
 ```
 
 **Problems:**
+
 1. ❌ File name collisions (e.g., `button.md` vs `button-primary.md`)
 2. ❌ Can't share research (single file, not a folder)
 3. ❌ Can't run multiple workflows concurrently (state conflicts)
@@ -126,6 +136,7 @@ This document analyzes 9 user-reported gaps + new Claude Code capabilities. Key 
 #### 🟢 Proposed Change (Per-API Folder Structure)
 
 **How it will work:**
+
 ```
 .claude/research/
 ├── index.json                 # Freshness tracking only
@@ -147,6 +158,7 @@ This document analyzes 9 user-reported gaps + new Claude Code capabilities. Key 
 ---
 
 ### 2. 🔍 Comprehensive Research Strategy (CORRECTED)
+
 **Status:** 🎯 CRITICAL GAP
 **Priority:** P0 (Highest)
 **Effort:** Medium
@@ -157,6 +169,7 @@ This document analyzes 9 user-reported gaps + new Claude Code capabilities. Key 
 #### 🔴 Current Setup (Search-First, 60% Coverage)
 
 **How it works now:**
+
 ```
 Phase 3: Initial Research
 1. Context7 MCP query: "Show {library} API documentation"
@@ -166,10 +179,12 @@ Phase 3: Initial Research
 ```
 
 **Current coverage:**
+
 - ✅ Discovers: Core endpoints, main parameters, auth methods
 - ❌ Misses: Webhooks, batch endpoints, rate limits, undocumented params, error codes
 
 **Real Example (Firecrawl API):**
+
 - Found: 3 endpoints, ~15 parameters
 - Missed: `/webhooks`, `/batch`, `/credits`, rate limits, advanced params
 - **Coverage: ~60%**
@@ -181,15 +196,18 @@ Phase 3: Initial Research
 **Phase 3: Enhanced Research (95% Coverage)**
 
 **Strategy 1: Context7 MCP (Official Docs)**
+
 ```
 1. resolve-library-id: "firecrawl" → "/mendable/firecrawl"
 2. get-library-docs: "/mendable/firecrawl" topic="api-endpoints"
 3. get-library-docs: "/mendable/firecrawl" topic="webhooks"
 4. get-library-docs: "/mendable/firecrawl" topic="rate-limits"
 ```
+
 **Cost:** Free | **Coverage:** 70-80%
 
 **Strategy 2: WebSearch (Multiple Targeted Searches)**
+
 ```
 1. "[Library] official API documentation"
 2. "[Library] webhooks setup guide"
@@ -198,17 +216,21 @@ Phase 3: Initial Research
 5. "[Library] error codes reference"
 6. "[Library] advanced parameters GitHub"
 ```
+
 **Cost:** Free | **Coverage:** 80-85%
 
 **Strategy 3: Skills Marketplace (Specialized Research)**
+
 ```
 1. Search SkillsMP.com for "api-research" skills
 2. Install relevant skills (e.g., "api-documentation-scraper")
 3. Let specialized skills discover advanced features
 ```
+
 **Cost:** Free | **Coverage:** 85-90%
 
 **Strategy 4: Async Parallel Research (NEW!)**
+
 ```
 [Main Agent] Starts Phase 3
 ├─> [Async Agent 1] Context7 research [Ctrl+B → background]
@@ -218,24 +240,26 @@ Phase 3: Initial Research
 [Main Agent] Phase 4: Interview (while agents work)
 [Agents surface results] → Comprehensive 95% coverage
 ```
+
 **Total Time:** 5-10 min (parallelized) vs 20-30 min (sequential)
 
 ---
 
 #### ⚖️ Comparison: Research Strategies
 
-| Method | Cost | Coverage | Speed | Cross-Platform |
-|--------|------|----------|-------|----------------|
-| **Current (Context7 only)** | Free | 60% | Fast | ✅ |
-| **ToC Scraping (OLD plan)** | $0.51/API | 85% | Slow | ❌ |
-| **Greptile (WRONG!)** | $0.15/query | N/A | N/A | ❌ Code review, not docs! |
-| **✅ Multi-Strategy + Async** | Free | 95% | Fast | ✅ |
+| Method                        | Cost        | Coverage | Speed | Cross-Platform            |
+| ----------------------------- | ----------- | -------- | ----- | ------------------------- |
+| **Current (Context7 only)**   | Free        | 60%      | Fast  | ✅                        |
+| **ToC Scraping (OLD plan)**   | $0.51/API   | 85%      | Slow  | ❌                        |
+| **Greptile (WRONG!)**         | $0.15/query | N/A      | N/A   | ❌ Code review, not docs! |
+| **✅ Multi-Strategy + Async** | Free        | 95%      | Fast  | ✅                        |
 
 **Winner:** ✅ **Multi-Strategy with Async Parallelization** (free, 95% coverage, fast)
 
 ---
 
 ### 3. 🆕 Code Quality Integration (Greptile/CodeRabbit/Graphite)
+
 **Status:** 🆕 NEW SECTION
 **Priority:** P1 (High)
 **Effort:** Low (just integration)
@@ -246,6 +270,7 @@ Phase 3: Initial Research
 #### What Are These Tools? (CORRECTED UNDERSTANDING)
 
 **Greptile** ([greptile.com](https://www.greptile.com/))
+
 - **Purpose:** AI-powered PR code review
 - **Features:** 82% bug catch rate, enforces best practices, full codebase context
 - **Performance:** 4x faster merges, catches 3x more bugs than traditional review
@@ -253,6 +278,7 @@ Phase 3: Initial Research
 - **Sources:** [Greptile Home](https://www.greptile.com), [Y Combinator](https://www.ycombinator.com/companies/greptile), [Benchmarks](https://www.greptile.com/benchmarks)
 
 **CodeRabbit** ([coderabbit.ai](https://www.coderabbit.ai/))
+
 - **Purpose:** AI code review with 40+ industry tools
 - **Features:** Line-by-line reviews, one-click fixes, security analysis
 - **Adoption:** 2M+ repos, 13M+ PRs reviewed
@@ -260,6 +286,7 @@ Phase 3: Initial Research
 - **Sources:** [CodeRabbit Docs](https://docs.coderabbit.ai/), [G2 Reviews](https://www.g2.com/products/coderabbit/reviews)
 
 **Graphite** ([graphite.com](https://graphite.com/))
+
 - **Purpose:** Stacked PRs + AI code review
 - **Features:** Parallel development, dependency management, workflow optimization
 - **Benefits:** Distributed teams work in parallel across timezones
@@ -271,6 +298,7 @@ Phase 3: Initial Research
 #### 🟢 Proposed Integration (Phase 13+)
 
 **NEW Phase 14: Code Quality Review**
+
 ```
 Phase 13: Completion (tests pass, docs written)
   └─> Create PR
@@ -284,11 +312,13 @@ User reviews AI feedback → Fix issues → Merge
 ```
 
 **When to use which:**
+
 - **Greptile:** Best codebase context, custom rules, team standards
 - **CodeRabbit:** Most comprehensive (40+ tools), free for open source
 - **Graphite:** Teams using stacked workflow, distributed development
 
 **Implementation:**
+
 - Add hooks: `run-code-review.py` (optional, user-configured)
 - User selects preferred tool in `.claude/settings.json`
 - Auto-comment on PRs with review results
@@ -296,6 +326,7 @@ User reviews AI feedback → Fix issues → Merge
 ---
 
 ### 4. 🆕 Skills-First Architecture (Open Standard)
+
 **Status:** 🆕 GAME CHANGER
 **Priority:** P0 (Critical)
 **Effort:** Medium (migration from commands)
@@ -306,6 +337,7 @@ User reviews AI feedback → Fix issues → Merge
 #### Why Skills > Commands?
 
 **Commands (OLD approach):**
+
 ```
 ❌ Claude Code specific (not portable)
 ❌ Full prompts loaded into context (bloat)
@@ -315,6 +347,7 @@ User reviews AI feedback → Fix issues → Merge
 ```
 
 **Skills (NEW open standard):**
+
 ```
 ✅ Cross-platform (Claude, Cursor, VS Code, ChatGPT, GitHub Copilot)
 ✅ Lightweight (few dozen tokens when summarized)
@@ -331,6 +364,7 @@ User reviews AI feedback → Fix issues → Merge
 **Convert Commands → Skills:**
 
 **Before (Commands):**
+
 ```bash
 /api-create firecrawl
 /ui-create button --brand
@@ -338,13 +372,16 @@ User reviews AI feedback → Fix issues → Merge
 ```
 
 **After (Skills):**
+
 ```markdown
 # api-create.skill/SKILL.md
 
 ## Description
+
 Interview-driven API development with TDD workflow
 
 ## Capabilities
+
 - Phase 1-13 workflow automation
 - Multi-strategy research (Context7 + WebSearch + Skills)
 - Async parallel endpoint research
@@ -352,11 +389,13 @@ Interview-driven API development with TDD workflow
 - OpenAPI spec generation
 
 ## Usage
+
 /api-create [endpoint-name]
 /api-create [endpoint-name] --async
 ```
 
 **Migration steps:**
+
 1. Create `.skill/` folders for each command
 2. Write `SKILL.md` files following [agentskills.io spec](https://agentskills.io)
 3. Package hooks, subagents, MCP servers into skill
@@ -368,6 +407,7 @@ Interview-driven API development with TDD workflow
 ---
 
 ### 5. 🆕 Async Subagents for Parallelization
+
 **Status:** 🆕 3X FASTER
 **Priority:** P0 (Critical)
 **Effort:** Low (Claude Code supports it now!)
@@ -378,6 +418,7 @@ Interview-driven API development with TDD workflow
 #### How Async Subagents Work
 
 **NEW Claude Code Features (Dec 2025):**
+
 - Press `Ctrl+B` to background running subagents
 - Use `/tasks` to monitor background work
 - Subagents continue independently, surface results when done
@@ -387,6 +428,7 @@ Interview-driven API development with TDD workflow
 #### 🟢 Multi-Endpoint Workflow (NEW)
 
 **OLD (Sequential - 30 min per endpoint):**
+
 ```
 User: /api-create firecrawl --endpoints=all
 
@@ -398,6 +440,7 @@ Total: 90 minutes for 3 endpoints
 ```
 
 **NEW (Parallel - 35 min total!):**
+
 ```
 User: /api-create firecrawl --endpoints=all --async
 
@@ -418,6 +461,7 @@ Total: ~35 minutes for 3 endpoints (2.5x faster!)
 ```
 
 **Implementation:**
+
 - Add `--async` flag to `/api-create`
 - Spawn background agents for Phase 3 research
 - Main agent orchestrates results
@@ -428,6 +472,7 @@ Total: ~35 minutes for 3 endpoints (2.5x faster!)
 ---
 
 ### 6. 🆕 Plugins Marketplace Distribution
+
 **Status:** 🆕 REACH THOUSANDS OF USERS
 **Priority:** P1 (High)
 **Effort:** Medium
@@ -438,6 +483,7 @@ Total: ~35 minutes for 3 endpoints (2.5x faster!)
 #### What Are Plugins?
 
 **Plugins package:**
+
 - Slash commands
 - Subagents
 - MCP servers
@@ -450,6 +496,7 @@ Total: ~35 minutes for 3 endpoints (2.5x faster!)
 #### 🟢 Package as Plugin
 
 **Create `plugin.json`:**
+
 ```json
 {
   "name": "api-dev-tools",
@@ -476,6 +523,7 @@ Total: ~35 minutes for 3 endpoints (2.5x faster!)
 ```
 
 **Installation:**
+
 ```bash
 # Users install with:
 claude plugin marketplace add hustle-together/api-dev-tools
@@ -485,6 +533,7 @@ claude plugin marketplace add hustle-together/api-dev-tools
 ```
 
 **Benefits:**
+
 - Users get entire workflow in one command
 - Auto-updates when we release new versions
 - Enterprise can provision org-wide
@@ -495,6 +544,7 @@ claude plugin marketplace add hustle-together/api-dev-tools
 ---
 
 ### 7. 🆕 Skill Discovery Skill (Meta-Skill!)
+
 **Status:** 🆕 META-CAPABILITY
 **Priority:** P2 (Medium)
 **Effort:** Low
@@ -511,13 +561,16 @@ A skill that discovers other skills to enhance workflows!
 #### 🟢 Implementation
 
 **skill-finder.skill:**
+
 ```markdown
 # skill-finder.skill/SKILL.md
 
 ## Description
+
 Discover and recommend Agent Skills for your workflow
 
 ## Capabilities
+
 - Search SkillsMP.com (25,000+ skills)
 - Query anthropics/skills examples
 - Filter by category, author, popularity
@@ -525,11 +578,13 @@ Discover and recommend Agent Skills for your workflow
 - Suggest skills based on current task
 
 ## Usage
+
 /skill-finder [category]
 /skill-finder api-development
 /skill-finder testing
 
 ## Example
+
 User: /skill-finder api-development
 
 Skill: Found 12 relevant skills for API development:
@@ -546,6 +601,7 @@ Install skill #1? [Y/n]
 ---
 
 ### 8. 💰 Cost & Time Tracking (Original Issue #5)
+
 **Status:** ✅ Essential Feature
 **Priority:** P0 (Highest)
 **Effort:** Medium
@@ -556,6 +612,7 @@ Install skill #1? [Y/n]
 #### 🟢 Proposed Change (Comprehensive Session Metrics)
 
 **What to track:**
+
 ```json
 {
   "session_metrics": {
@@ -584,7 +641,7 @@ Install skill #1? [Y/n]
     },
     "code_review_phase": {
       "tool": "coderabbit",
-      "cost_usd": 0.00 // Free for open source
+      "cost_usd": 0.0 // Free for open source
     },
     "total_cost_usd": 1.27
   }
@@ -592,6 +649,7 @@ Install skill #1? [Y/n]
 ```
 
 **Display at Phase 13:**
+
 ```
 ═══════════════════════════════════════════════════
 🎉 API Development Complete: firecrawl/scrape
@@ -626,6 +684,7 @@ Install skill #1? [Y/n]
 ---
 
 ### 9. 🐛 Registry Issues (Original Issue #9)
+
 **Status:** 🐛 CRITICAL BUGS
 **Priority:** P0 (Highest)
 **Effort:** Low
@@ -636,24 +695,28 @@ Install skill #1? [Y/n]
 #### 🔴 Current Problems (4 Critical Bugs)
 
 **Bug #1: Registry Doesn't Update**
+
 - Hook `update-registry.py` not firing or failing silently
 
 **Bug #2: Registry Not Fetched**
+
 - Showcase pages can't load `registry.json` (Next.js App Router issue)
 
 **Bug #3: Examples Have Empty Values**
+
 ```json
 {
   "method": "POST",
   "endpoint": "/api/v2/brandfetch",
   "body": {
-    "domain": "",  // ❌ Empty
-    "format": ""   // ❌ Empty
+    "domain": "", // ❌ Empty
+    "format": "" // ❌ Empty
   }
 }
 ```
 
 **Bug #4: Inconsistent HTTP Methods**
+
 - No clear pattern for GET vs POST
 
 ---
@@ -661,6 +724,7 @@ Install skill #1? [Y/n]
 #### 🟢 Fixes
 
 **Fix #1: Update Hook**
+
 ```python
 # .claude/hooks/update-registry.py
 def update_registry(state):
@@ -670,15 +734,17 @@ def update_registry(state):
 ```
 
 **Fix #2: API Route**
+
 ```typescript
 // src/app/api/registry/route.ts
 export async function GET() {
-  const registry = JSON.parse(fs.readFileSync('.claude/registry.json'))
-  return NextResponse.json(registry)
+  const registry = JSON.parse(fs.readFileSync(".claude/registry.json"));
+  return NextResponse.json(registry);
 }
 ```
 
 **Fix #3: Smart Example Generation**
+
 ```python
 def get_example_value(field_name, field_schema):
     if 'email' in field_name.lower():
@@ -768,6 +834,7 @@ def get_example_value(field_name, field_schema):
 ## What Changed from Original Plan?
 
 ### ❌ **REMOVED (Wrong Understanding):**
+
 - Greptile MCP for documentation discovery
 - ToC scraping with Firecrawl
 - Commands-only architecture
@@ -775,6 +842,7 @@ def get_example_value(field_name, field_schema):
 - Greptile pricing research ($0.15/query)
 
 ### ✅ **ADDED (Correct Understanding):**
+
 - Skills-first architecture (open standard)
 - Multi-strategy research (Context7 + WebSearch + Skills)
 - Async parallel research (background subagents)
@@ -788,6 +856,7 @@ def get_example_value(field_name, field_schema):
 ## Sources & References
 
 ### **Agent Skills:**
+
 - [Agent Skills Open Standard](https://agentskills.io)
 - [Anthropic Skills Repository](https://github.com/anthropics/skills)
 - [SkillsMP Marketplace](https://skillsmp.com) (25,000+ skills)
@@ -795,6 +864,7 @@ def get_example_value(field_name, field_schema):
 - [Claude Partner Directory](https://claude.com/connectors)
 
 ### **Code Review Tools:**
+
 - [Greptile - AI Code Review](https://www.greptile.com/)
 - [Greptile Benchmarks](https://www.greptile.com/benchmarks) (82% bug catch rate)
 - [CodeRabbit - AI Reviews](https://www.coderabbit.ai/)
@@ -803,11 +873,13 @@ def get_example_value(field_name, field_schema):
 - [Graphite Stacking Guide](https://graphite.com/blog/stacking-for-distributed-teams)
 
 ### **Claude Code:**
+
 - [Async Subagents](https://code.claude.com/docs/en/sub-agents)
 - [Plugins Marketplace](https://code.claude.com/docs/en/discover-plugins)
 - [Claude Code Best Practices](https://www.anthropic.com/engineering/claude-code-best-practices)
 
 ### **Context7:**
+
 - [Context7 MCP](https://github.com/upstash/context7)
 - [Context7 Blog](https://upstash.com/blog/context7-mcp)
 
@@ -821,6 +893,7 @@ def get_example_value(field_name, field_schema):
 ---
 
 **Next Steps:**
+
 1. User reviews this corrected roadmap
 2. Prioritize v3.10.2 (critical bugs) vs v3.11.0 (skills migration)
 3. Decide on code review tool integration (Greptile vs CodeRabbit vs Graphite)

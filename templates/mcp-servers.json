@@ -17,11 +17,6 @@
       "command": "npx",
       "args": ["-y", "@anthropics/mcp-playwright"],
       "description": "Browser automation for visual testing and screenshot capture"
-    },
-    "sequential-thinking": {
-      "command": "npx",
-      "args": ["-y", "@anthropics/mcp-sequential-thinking"],
-      "description": "Methodical problem breakdown for complex reasoning tasks"
     }
   },
   "_readme": {
@@ -34,25 +29,6 @@
     "verification": [
       "Run /mcp in Claude Code to verify servers are connected",
       "Use 'claude mcp list' to see all configured servers"
-    ],
-    "optional_servers": {
-      "sentry": {
-        "command": "npx",
-        "args": ["-y", "@sentry/mcp-server"],
-        "env": { "SENTRY_AUTH_TOKEN": "" },
-        "description": "Error monitoring and debugging"
-      },
-      "puppeteer": {
-        "command": "npx",
-        "args": ["-y", "@anthropics/mcp-puppeteer"],
-        "description": "Alternative browser automation (Chromium-based)"
-      },
-      "brave-search": {
-        "command": "npx",
-        "args": ["-y", "@anthropics/mcp-brave-search"],
-        "env": { "BRAVE_API_KEY": "" },
-        "description": "Alternative web search provider"
-      }
-    }
+    ]
   }
 }

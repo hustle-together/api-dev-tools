@@ -46,6 +46,7 @@ After tests pass (Phase 9 → Phase 10), verify that the implementation matches 
 
 6. **Report Findings**
    Return a structured diff:
+
    ```
    ## Implementation vs Documentation Report
 

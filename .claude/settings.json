@@ -18,10 +18,7 @@
       "Bash(git log:*)",
       "Bash(ccusage:*)"
     ],
-    "deny": [
-      "Read(./.env*)",
-      "Bash(rm -rf:*)"
-    ]
+    "deny": ["Read(./.env*)", "Bash(rm -rf:*)"]
   },
   "hooks": {
     "SessionStart": [

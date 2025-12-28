@@ -1,11 +1,11 @@
-import type { Metadata } from 'next';
+import type { Metadata } from "next";
 
 /**
  * Page metadata for SEO
  */
 export const metadata: Metadata = {
-  title: '__PAGE_TITLE__',
-  description: '__PAGE_DESCRIPTION__',
+  title: "__PAGE_TITLE__",
+  description: "__PAGE_DESCRIPTION__",
 };
 
 /**

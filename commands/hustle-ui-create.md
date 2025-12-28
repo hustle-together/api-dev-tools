@@ -13,6 +13,7 @@ You are creating a UI element using the Hustle Together interview-driven workflo
 ## Pre-Flight Check
 
 Before starting, verify state file exists:
+
 ```bash
 cat .claude/api-dev-state.json 2>/dev/null || echo "Creating new state file"
 ```
@@ -50,6 +51,7 @@ Set `mode` based on response: "component" or "page"
 **Goal:** Clarify component type and scope
 
 Ask the user:
+
 ```
 Phase 1: DISAMBIGUATION
 
@@ -65,6 +67,7 @@ Please select A, B, or C:
 **Wait for user response.**
 
 Update state:
+
 ```json
 {
   "workflow": "ui-create-component",
@@ -149,6 +152,7 @@ If B: Ask for URL or description
 ### Step 3b: Design Pattern Research
 
 Perform 2-3 targeted searches:
+
 1. `[component-name] component best practices accessibility`
 2. `shadcn [component-name] implementation`
 3. `radix [component-name] primitive`
@@ -156,6 +160,7 @@ Perform 2-3 targeted searches:
 Use Context7 for ShadCN/Radix documentation.
 
 Document findings in state:
+
 ```json
 {
   "phases": {
@@ -209,6 +214,7 @@ Q5: [Research-derived question about specific feature]
 **Wait for all answers before proceeding.**
 
 Store all decisions in state:
+
 ```json
 {
   "phases": {
@@ -237,6 +243,7 @@ ls -la src/components/ui/ 2>/dev/null || echo "No existing ShadCN components"
 ```
 
 If components found:
+
 ```
 Phase 5: COMPONENT ANALYSIS
 
@@ -261,6 +268,7 @@ Please select:
 **Wait for user response.**
 
 Also check registry for custom components:
+
 ```bash
 cat .claude/registry.json | jq '.components'
 ```
@@ -300,6 +308,7 @@ export interface [Name]Props {
 ```
 
 Present to user:
+
 ```
 Phase 6: PROPS SCHEMA
 
@@ -323,16 +332,19 @@ Please select:
 **Goal:** Verify required packages and Storybook setup
 
 Check for required packages:
+
 ```bash
 cat package.json | jq '.dependencies, .devDependencies' | grep -E "radix|shadcn|class-variance|clsx|tailwind"
 ```
 
 Check Storybook:
+
 ```bash
 ls -la .storybook/ 2>/dev/null || echo "Storybook not configured"
 ```
 
 If Storybook not found:
+
 ```
 Phase 7: ENVIRONMENT CHECK
 
@@ -346,6 +358,7 @@ Please select:
 ```
 
 Report status:
+
 ```
 Environment Check:
   Packages: [radix, class-variance-authority, clsx]
@@ -569,6 +582,7 @@ Step 3: Test Results
 ```
 
 Run accessibility audit:
+
 ```bash
 pnpm dlx @axe-core/cli http://localhost:6006/iframe.html?id=components-[name]--primary
 ```
@@ -587,6 +601,7 @@ Step 4: Performance Metrics
 ```
 
 **Present 4-step results:**
+
 ```
 Phase 10: VERIFICATION (4-Step)
 
@@ -627,6 +642,7 @@ Any issues to fix?
 **Goal:** Clean up code while tests pass
 
 Refactoring checklist:
+
 - [ ] Extract repeated logic to custom hooks
 - [ ] Optimize re-renders with useMemo/useCallback if needed
 - [ ] Clean up unused imports
@@ -634,6 +650,7 @@ Refactoring checklist:
 - [ ] Add JSDoc comments to exported functions
 
 Run tests after each refactor:
+
 ```bash
 pnpm test src/components/[Name]
 ```
@@ -651,7 +668,8 @@ Ensure `tags: ['autodocs']` is set in story meta.
 ### JSDoc Comments
 
 Add to component file:
-```typescript
+
+````typescript
 /**
  * [Name] component - [Brief description]
  *
@@ -662,11 +680,12 @@ Add to component file:
  * </[Name]>
  * ```
  */
-```
+````
 
 ### Registry Entry
 
 Update `.claude/registry.json`:
+
 ```json
 {
   "components": {
@@ -688,6 +707,7 @@ Update `.claude/registry.json`:
 ```
 
 Present checklist:
+
 ```
 Phase 12: DOCUMENTATION
 
@@ -791,7 +811,10 @@ See full page mode documentation in `/hustle-ui-create-page.md` (if implementing
       "phases": {
         "disambiguation": { "status": "complete" },
         "scope": { "status": "complete" },
-        "design_research": { "status": "complete", "brand_guide_applied": true },
+        "design_research": {
+          "status": "complete",
+          "brand_guide_applied": true
+        },
         "interview": { "status": "complete", "decisions": {} },
         "component_analysis": { "status": "complete", "dependencies": [] },
         "props_schema": { "status": "complete", "schema_file": "..." },

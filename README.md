@@ -51,25 +51,25 @@ Add to your Claude Code MCP configuration:
 
 ## What Gets Installed
 
-| Component | Location | Purpose |
-|-----------|----------|---------|
-| **23 Agent Skills** | `.skills/` | Cross-platform workflow commands |
-| **18 Enforcement Hooks** | `.claude/hooks/` | Block progress until phases complete |
-| **3 Subagents** | `.claude/agents/` | Parallel research & code review |
-| **State Tracking** | `.claude/api-dev-state.json` | Track progress across sessions |
-| **Research Cache** | `.claude/research/` | 7-day freshness documentation cache |
-| **MCP Templates** | `templates/mcp-servers.json` | Pre-configured MCP servers |
+| Component                | Location                     | Purpose                              |
+| ------------------------ | ---------------------------- | ------------------------------------ |
+| **23 Agent Skills**      | `.skills/`                   | Cross-platform workflow commands     |
+| **18 Enforcement Hooks** | `.claude/hooks/`             | Block progress until phases complete |
+| **3 Subagents**          | `.claude/agents/`            | Parallel research & code review      |
+| **State Tracking**       | `.claude/api-dev-state.json` | Track progress across sessions       |
+| **Research Cache**       | `.claude/research/`          | 7-day freshness documentation cache  |
+| **MCP Templates**        | `templates/mcp-servers.json` | Pre-configured MCP servers           |
 
 ---
 
 ## Four Main Workflows
 
-| Command | Phases | Purpose |
-|---------|--------|---------|
-| `/api-create [endpoint]` | 13 | Create API endpoint with full TDD |
-| `/hustle-ui-create [name]` | 13 | Create UI component with Storybook |
-| `/hustle-ui-create-page [name]` | 13 | Create Next.js page with Playwright E2E |
-| `/hustle-combine api` | 13 | Combine existing APIs into orchestration |
+| Command                         | Phases | Purpose                                  |
+| ------------------------------- | ------ | ---------------------------------------- |
+| `/api-create [endpoint]`        | 13     | Create API endpoint with full TDD        |
+| `/hustle-ui-create [name]`      | 13     | Create UI component with Storybook       |
+| `/hustle-ui-create-page [name]` | 13     | Create Next.js page with Playwright E2E  |
+| `/hustle-combine api`           | 13     | Combine existing APIs into orchestration |
 
 ### 13-Phase Flow (All Workflows)
 
@@ -94,6 +94,7 @@ Add to your Claude Code MCP configuration:
 ## Essential Commands
 
 ### TDD Workflow
+
 ```bash
 /red              # Write ONE failing test
 /green            # Minimal implementation to pass
@@ -102,6 +103,7 @@ Add to your Claude Code MCP configuration:
 ```
 
 ### Git Operations
+
 ```bash
 /commit           # Semantic commit with attribution
 /pr               # Create pull request
@@ -109,6 +111,7 @@ Add to your Claude Code MCP configuration:
 ```
 
 ### Planning & Analysis
+
 ```bash
 /plan [feature]   # Create implementation plan
 /gap              # Find unaddressed items
@@ -121,22 +124,22 @@ Add to your Claude Code MCP configuration:
 
 Three specialized agents run in parallel for faster research:
 
-| Agent | Model | Purpose |
-|-------|-------|---------|
-| `research-validator` | Haiku | Scrape ToC, find all endpoints |
-| `implementation-reviewer` | Sonnet | Compare code to docs |
-| `code-reviewer` | Sonnet | Security & performance review |
+| Agent                     | Model  | Purpose                        |
+| ------------------------- | ------ | ------------------------------ |
+| `research-validator`      | Haiku  | Scrape ToC, find all endpoints |
+| `implementation-reviewer` | Sonnet | Compare code to docs           |
+| `code-reviewer`           | Sonnet | Security & performance review  |
 
 ---
 
 ## Hooks (Automatic Enforcement)
 
-| Event | Hooks | What They Do |
-|-------|-------|--------------|
-| **SessionStart** | `session-startup.py` | Inject state context |
-| **PreToolUse** | 12 enforcement hooks | Block writes until phases complete |
-| **PostToolUse** | `verify-after-green.py`, `periodic-reground.py` | Trigger verification, re-ground every 7 turns |
-| **Stop** | `api-workflow-check.py` | Block if phases incomplete |
+| Event            | Hooks                                           | What They Do                                  |
+| ---------------- | ----------------------------------------------- | --------------------------------------------- |
+| **SessionStart** | `session-startup.py`                            | Inject state context                          |
+| **PreToolUse**   | 12 enforcement hooks                            | Block writes until phases complete            |
+| **PostToolUse**  | `verify-after-green.py`, `periodic-reground.py` | Trigger verification, re-ground every 7 turns |
+| **Stop**         | `api-workflow-check.py`                         | Block if phases incomplete                    |
 
 ---
 
@@ -156,13 +159,13 @@ ccusage
 
 ## Configuration Files
 
-| File | Purpose |
-|------|---------|
-| `.claude/settings.json` | Hook registration, permissions |
-| `.claude/api-dev-state.json` | Workflow state tracking |
-| `.claude/research/` | Cached documentation |
-| `.claude/registry.json` | Created APIs, components, pages |
-| `.mcp.json` | MCP server configuration |
+| File                         | Purpose                         |
+| ---------------------------- | ------------------------------- |
+| `.claude/settings.json`      | Hook registration, permissions  |
+| `.claude/api-dev-state.json` | Workflow state tracking         |
+| `.claude/research/`          | Cached documentation            |
+| `.claude/registry.json`      | Created APIs, components, pages |
+| `.mcp.json`                  | MCP server configuration        |
 
 ---
 
@@ -179,13 +182,13 @@ npx @hustle-together/api-dev-tools --with-sandpack    # Live editing
 
 ## Documentation
 
-| Document | Description |
-|----------|-------------|
+| Document                                                   | Description                            |
+| ---------------------------------------------------------- | -------------------------------------- |
 | [BEST_PRACTICES_ANALYSIS.md](./BEST_PRACTICES_ANALYSIS.md) | Full phase documentation, hook details |
-| [INSTALLATION_GUIDE.md](./INSTALLATION_GUIDE.md) | Detailed setup instructions |
-| [.skills/README.md](./.skills/README.md) | All 23 skills with usage |
-| [VERSION_3.2_OVERVIEW.md](./VERSION_3.2_OVERVIEW.md) | Roadmap and planning |
-| [CHANGELOG.md](./CHANGELOG.md) | Version history |
+| [INSTALLATION_GUIDE.md](./INSTALLATION_GUIDE.md)           | Detailed setup instructions            |
+| [.skills/README.md](./.skills/README.md)                   | All 23 skills with usage               |
+| [VERSION_3.2_OVERVIEW.md](./VERSION_3.2_OVERVIEW.md)       | Roadmap and planning                   |
+| [CHANGELOG.md](./CHANGELOG.md)                             | Version history                        |
 
 ---
 

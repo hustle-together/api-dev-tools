@@ -24,11 +24,11 @@ You built an interview-driven API development workflow with 13 phases and Python
 
 ## 🐛 What's Broken (Fix Now - v3.10.2)
 
-| Issue | Impact | Fix |
-|-------|--------|-----|
-| Registry doesn't update | Showcase pages broken | Fix `update-registry.py` hook |
-| Examples have empty values | Can't test APIs | Use schema defaults for examples |
-| No cost tracking | Can't optimize | Add session metrics to state |
+| Issue                      | Impact                | Fix                              |
+| -------------------------- | --------------------- | -------------------------------- |
+| Registry doesn't update    | Showcase pages broken | Fix `update-registry.py` hook    |
+| Examples have empty values | Can't test APIs       | Use schema defaults for examples |
+| No cost tracking           | Can't optimize        | Add session metrics to state     |
 
 **Timeline:** 1 week | **Cost to fix:** $0 (just code)
 
@@ -39,10 +39,12 @@ You built an interview-driven API development workflow with 13 phases and Python
 **Problem:** Research discovers ~60% of API features
 
 **Why:** Current approach searches for what you know to ask for
+
 - You search "Firecrawl scrape endpoint" → finds `/scrape`
 - But MISSES `/webhooks`, `/batch`, rate limits (not searched for)
 
 **Solution:** Map-Reduce Research Pattern
+
 1. **MAP (breadth):** Scrape docs ToC with Haiku (~$0.01)
 2. **CATEGORIZE:** Group endpoints (core, advanced, utils)
 3. **REDUCE (depth):** Deep dive selected endpoints with Sonnet (~$0.50)
@@ -54,12 +56,14 @@ You built an interview-driven API development workflow with 13 phases and Python
 ## 💡 Skills vs Commands (Architecture Shift)
 
 ### Current (Commands - User Invoked)
+
 ```
 You: /hustle-api-create brandfetch
 Claude: [runs 13 phases]
 ```
 
 ### Future (Skills - Model Invoked)
+
 ```
 You: "Integrate Brandfetch API"
 Claude: [auto-detects → uses api-development Skill → runs 13 phases]
@@ -68,11 +72,13 @@ Claude: [auto-detects → uses api-development Skill → runs 13 phases]
 ### Recommendation: HYBRID (Both)
 
 **Keep Commands:**
+
 - Explicit control
 - 100% predictable
 - Legacy users know syntax
 
 **Add Skills:**
+
 - Natural language
 - Easier for new users
 - Better UX
@@ -84,20 +90,22 @@ Claude: [auto-detects → uses api-development Skill → runs 13 phases]
 ## 🧪 Testing Strategy (Without Spending $1,700/week)
 
 ### Problem
+
 - Full workflow run: $1.70
 - 10 APIs/day: $17/day
 - 50 runs/week: $850/week
 
 ### Solutions
 
-| Method | Cost | When |
-|--------|------|------|
-| **Hook unit tests** | $0 | Development (instant feedback) |
-| **Demo snapshots** | $1.70 once | Regression testing |
-| **QA System (MCP)** | $0.10/run | CI/CD automation |
-| **GitHub Actions** | Free | Every pull request |
+| Method              | Cost       | When                           |
+| ------------------- | ---------- | ------------------------------ |
+| **Hook unit tests** | $0         | Development (instant feedback) |
+| **Demo snapshots**  | $1.70 once | Regression testing             |
+| **QA System (MCP)** | $0.10/run  | CI/CD automation               |
+| **GitHub Actions**  | Free       | Every pull request             |
 
 **Recommended Stack:**
+
 - Dev: Hook tests (free, fast)
 - Pre-commit: Snapshot diff (catch regressions)
 - CI/CD: QA System (comprehensive, cheap)
@@ -109,6 +117,7 @@ Claude: [auto-detects → uses api-development Skill → runs 13 phases]
 ## 🗺️ Roadmap Summary
 
 ### v3.10.2 (This Week) - Fix Bugs
+
 - ✅ Fix registry update hook
 - ✅ Fix example value generation
 - ✅ Add cost/time tracking
@@ -120,6 +129,7 @@ Claude: [auto-detects → uses api-development Skill → runs 13 phases]
 ---
 
 ### v3.11.0 (2 Weeks) - Research Overhaul
+
 - ✅ Map-reduce research (ToC scraping)
 - ✅ Skills implementation (hybrid)
 - ✅ Research folder structure (per-API folders)
@@ -131,6 +141,7 @@ Claude: [auto-detects → uses api-development Skill → runs 13 phases]
 ---
 
 ### v3.11.1 (1 Week) - UX Polish
+
 - ✅ Multi-endpoint tracking (50+ endpoints)
 - ✅ Auto-approve with patterns
 - ✅ Answer files (proto-autonomous)
@@ -141,6 +152,7 @@ Claude: [auto-detects → uses api-development Skill → runs 13 phases]
 ---
 
 ### v3.12.0 (2 Weeks) - Advanced Features
+
 - ✅ Skills-first architecture
 - ✅ Replace hooks with Skills (where better)
 - ✅ Rollback/undo support
@@ -154,18 +166,21 @@ Claude: [auto-detects → uses api-development Skill → runs 13 phases]
 ## 🤔 My Honest Thoughts
 
 ### What's Working ✅
+
 - Core TDD workflow (Red-Green-Refactor)
 - Hook enforcement system
 - Interview-driven approach
 - State tracking
 
 ### What's Broken ❌
+
 - **Research too shallow** (60% coverage - CRITICAL)
 - **Registry bugs** (showcase broken - CRITICAL)
 - **No cost visibility** (can't optimize)
 - **Docs too late** (memory loss over 50+ turns)
 
 ### What's Missing ⚠️
+
 - Multi-endpoint support
 - Rollback/undo
 - Visual verification
@@ -178,12 +193,14 @@ Claude: [auto-detects → uses api-development Skill → runs 13 phases]
 **Fix research FIRST.** Everything else builds on accurate research.
 
 If research discovers only 60% of features:
+
 - Other 40% never implemented
 - Manual additions later
 - Reduced trust in workflow
 - Wasted time
 
 **Immediate Action:**
+
 1. Ship v3.10.2 (bug fixes) this week
 2. Focus 100% on v3.11.0 (research overhaul) next
 
@@ -197,6 +214,7 @@ If research discovers only 60% of features:
 **I'm skeptical:** Defeats interview-driven purpose
 
 **Compromise:** Answer files
+
 ```json
 // .claude/research/brandfetch/answers.json
 {
@@ -217,6 +235,7 @@ Run with: `/hustle-api-create brandfetch --answers=answers.json`
 **I'm concerned:** Security risk
 
 **Compromise:** Pattern-based
+
 ```json
 {
   "auto_approve": {
@@ -234,6 +253,7 @@ Run with: `/hustle-api-create brandfetch --answers=answers.json`
 ## 📊 Key Metrics
 
 ### Current State
+
 - **Research coverage:** ~60%
 - **Cost per API:** $1.70
 - **Testing cost:** $850/week
@@ -241,6 +261,7 @@ Run with: `/hustle-api-create brandfetch --answers=answers.json`
 - **Cost tracking:** None
 
 ### After v3.11.0
+
 - **Research coverage:** ~100% (ToC scraping)
 - **Cost per API:** $1.93 (+$0.23 for breadth)
 - **Testing cost:** $750/week (QA system)
@@ -265,16 +286,19 @@ Total: **1 week, ~$2 cost, massive impact**
 ## 🎓 What I Learned
 
 ### Skills Are New (Oct 2025)
+
 - Not battle-tested yet
 - Hybrid approach is safest
 - Can migrate later when stable
 
 ### Testing Is Critical
+
 - Can't improve what you don't measure
 - Low-cost strategies exist
 - Must test before adding features
 
 ### Research Is Foundation
+
 - Everything builds on accurate research
 - 40% gap = 40% wasted effort later
 - Worth +$0.23/API for 3x coverage
@@ -283,18 +307,18 @@ Total: **1 week, ~$2 cost, massive impact**
 
 ## ✅ Questions Answered
 
-| Your Question | Answer |
-|---------------|--------|
+| Your Question                | Answer                                            |
+| ---------------------------- | ------------------------------------------------- |
 | Where does documentation go? | Per-API folders in `.claude/research/[api-name]/` |
-| How to track 50 endpoints? | Multi-endpoint state + checkbox selection |
-| How to get all features? | Map-reduce: scrape ToC, then deep dive |
-| Can I use Haiku for cost? | Yes! Map phase uses Haiku (~$0.01) |
-| Autonomous mode? | Answer files, not full autonomy |
-| Cost tracking? | Session metrics in state file + dashboard |
-| Auto-approve edits? | Pattern-based (safe paths only) |
-| Docs during research? | Iterative (write as you go) |
-| Template output? | Need clarification (still unclear) |
-| Registry broken? | Yes, fixing in v3.10.2 |
+| How to track 50 endpoints?   | Multi-endpoint state + checkbox selection         |
+| How to get all features?     | Map-reduce: scrape ToC, then deep dive            |
+| Can I use Haiku for cost?    | Yes! Map phase uses Haiku (~$0.01)                |
+| Autonomous mode?             | Answer files, not full autonomy                   |
+| Cost tracking?               | Session metrics in state file + dashboard         |
+| Auto-approve edits?          | Pattern-based (safe paths only)                   |
+| Docs during research?        | Iterative (write as you go)                       |
+| Template output?             | Need clarification (still unclear)                |
+| Registry broken?             | Yes, fixing in v3.10.2                            |
 
 ---
 
@@ -303,6 +327,7 @@ Total: **1 week, ~$2 cost, massive impact**
 **Your workflow is 80% excellent, 20% broken.**
 
 **Fix the 20% in 4 weeks:**
+
 - Week 1: Bug fixes + testing infrastructure
 - Weeks 2-3: Research overhaul (biggest impact)
 - Week 4: UX polish

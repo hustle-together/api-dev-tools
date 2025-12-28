@@ -6,12 +6,12 @@ Complete setup instructions for @hustle-together/api-dev-tools v3.11.0
 
 ## Prerequisites
 
-| Requirement | Version | Check Command |
-|-------------|---------|---------------|
-| Node.js | 18+ | `node --version` |
-| pnpm | 10.11.0+ | `pnpm --version` |
-| Python | 3.9+ | `python3 --version` |
-| Claude Code | 1.0.0+ | `claude --version` |
+| Requirement | Version  | Check Command       |
+| ----------- | -------- | ------------------- |
+| Node.js     | 18+      | `node --version`    |
+| pnpm        | 10.11.0+ | `pnpm --version`    |
+| Python      | 3.9+     | `python3 --version` |
+| Claude Code | 1.0.0+   | `claude --version`  |
 
 ---
 
@@ -23,6 +23,7 @@ npx @hustle-together/api-dev-tools --scope=project
 ```
 
 This installs:
+
 - 23 Agent Skills in `.skills/`
 - 18 Enforcement Hooks in `.claude/hooks/`
 - 3 Subagents in `.claude/agents/`
@@ -68,6 +69,7 @@ ls -la .skills/
 ```
 
 Expected output:
+
 ```
 .claude/
 ├── agents/
@@ -225,6 +227,7 @@ claude
 ### 2. Check Hooks Loaded
 
 You should see:
+
 ```
 SessionStart:resume hook success: Success
 ```

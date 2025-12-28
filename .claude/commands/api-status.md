@@ -18,6 +18,7 @@ Path: .claude/api-dev-state.json
 ```
 
 Parse the JSON and display a formatted status report showing:
+
 - Current endpoint being worked on
 - Phase completion status (scope, research, interview, TDD, docs)
 - Sources consulted during research
@@ -60,6 +61,7 @@ VERIFICATION:
 ## What This Shows
 
 ### For Specific Endpoint
+
 ```
 📊 Status: /api/v2/generate-css
 
@@ -87,6 +89,7 @@ Next Steps: None - endpoint complete
 ```
 
 ### For All Endpoints
+
 ```
 📊 V2 API Implementation Status
 
@@ -122,12 +125,14 @@ Last updated: 2025-12-06
 ## Commands
 
 ### View Status
+
 ```bash
 /api-status generate-css    # Specific endpoint
 /api-status --all           # All endpoints
 ```
 
 ### Update Status
+
 ```bash
 /api-status generate-css --phase=testing
 /api-status generate-css --complete
@@ -138,6 +143,7 @@ Last updated: 2025-12-06
 Updates: `/src/v2/docs/v2-api-implementation-status.md`
 
 **Format:**
+
 ```markdown
 # V2 API Implementation Status
 
@@ -148,6 +154,7 @@ Updates: `/src/v2/docs/v2-api-implementation-status.md`
 ## Endpoints
 
 ### ✅ /api/v2/health
+
 - **Status:** Complete
 - **Tests:** 15/15 passing
 - **Coverage:** 100%
@@ -156,6 +163,7 @@ Updates: `/src/v2/docs/v2-api-implementation-status.md`
 - **Purpose:** System health check with dependency validation
 
 ### 🚧 /api/v2/generate-css
+
 - **Status:** In Progress (Testing)
 - **Tests:** 20/33 passing
 - **Coverage:** 85%
@@ -165,6 +173,7 @@ Updates: `/src/v2/docs/v2-api-implementation-status.md`
 - **Next:** Complete remaining tests
 
 ### 📋 /api/v2/generate-html
+
 - **Status:** Planned
 - **Priority:** High
 - **Dependencies:** None
@@ -175,24 +184,28 @@ Updates: `/src/v2/docs/v2-api-implementation-status.md`
 ## Integration with Workflow
 
 ### After Interview
+
 ```bash
 /api-interview generate-css
 /api-status generate-css --phase=interview-complete
 ```
 
 ### After Research
+
 ```bash
 /api-research gemini-flash
 /api-status generate-css --phase=research-complete
 ```
 
 ### After TDD Cycle
+
 ```bash
 /cycle generate CSS with Gemini
 /api-status generate-css --complete
 ```
 
 ### Before Commit
+
 ```bash
 pnpm test:run
 /api-status --all  # Verify all green
@@ -202,6 +215,7 @@ pnpm test:run
 ## Automatic Updates
 
 The `/api-create` command automatically updates status:
+
 - Interview phase → "Interview Complete"
 - Red phase → "Tests Written"
 - Green phase → "Implementation Complete"
@@ -224,21 +238,27 @@ The `/api-create` command automatically updates status:
 ## Reports
 
 ### Coverage Report
+
 ```bash
 /api-status --coverage
 ```
+
 Shows test coverage for all V2 endpoints.
 
 ### Migration Report
+
 ```bash
 /api-status --migration
 ```
+
 Shows progress from legacy to V2.
 
 ### Blockers Report
+
 ```bash
 /api-status --blocked
 ```
+
 Shows endpoints blocked by missing keys, dependencies, etc.
 
 <claude-commands-template>
@@ -256,4 +276,4 @@ Shows endpoints blocked by missing keys, dependencies, etc.
 - Used by /commit to verify readiness
 - Used by team to see what's done
 - Used for planning future work
-</claude-commands-template>
+  </claude-commands-template>

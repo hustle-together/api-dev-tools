@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useState, useMemo } from 'react';
-import { HeroHeader } from '../shared/HeroHeader';
-import { PreviewCard } from './PreviewCard';
-import { PreviewModal } from './PreviewModal';
+import { useState, useMemo } from "react";
+import { HeroHeader } from "../shared/HeroHeader";
+import { PreviewCard } from "./PreviewCard";
+import { PreviewModal } from "./PreviewModal";
 
 // Import registry - this will be updated by the CLI when components are created
 // Note: In production, this could be fetched from an API route
-import registry from '@/../.claude/registry.json';
+import registry from "@/../.claude/registry.json";
 
-type FilterType = 'all' | 'components' | 'pages';
+type FilterType = "all" | "components" | "pages";
 
 interface RegistryItem {
   name: string;
@@ -48,11 +48,11 @@ interface Registry {
  * Created with Hustle API Dev Tools (v3.9.2)
  */
 export function UIShowcase() {
-  const [filter, setFilter] = useState<FilterType>('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [filter, setFilter] = useState<FilterType>("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedItem, setSelectedItem] = useState<{
     id: string;
-    type: 'component' | 'page';
+    type: "component" | "page";
     data: RegistryItem;
   } | null>(null);
 
@@ -63,18 +63,18 @@ export function UIShowcase() {
   const allItems = useMemo(() => {
     const items: Array<{
       id: string;
-      type: 'component' | 'page';
+      type: "component" | "page";
       data: RegistryItem;
     }> = [];
 
     // Add components
     Object.entries(typedRegistry.components || {}).forEach(([id, data]) => {
-      items.push({ id, type: 'component', data });
+      items.push({ id, type: "component", data });
     });
 
     // Add pages
     Object.entries(typedRegistry.pages || {}).forEach(([id, data]) => {
-      items.push({ id, type: 'page', data });
+      items.push({ id, type: "page", data });
     });
 
     return items;
@@ -84,7 +84,7 @@ export function UIShowcase() {
   const filteredItems = useMemo(() => {
     return allItems.filter((item) => {
       // Type filter
-      if (filter !== 'all' && filter !== `${item.type}s`) {
+      if (filter !== "all" && filter !== `${item.type}s`) {
         return false;
       }
 
@@ -92,7 +92,9 @@ export function UIShowcase() {
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
         const matchesName = item.data.name?.toLowerCase().includes(query);
-        const matchesDescription = item.data.description?.toLowerCase().includes(query);
+        const matchesDescription = item.data.description
+          ?.toLowerCase()
+          .includes(query);
         return matchesName || matchesDescription;
       }
 
@@ -112,8 +114,8 @@ export function UIShowcase() {
         badge="Component Library"
         description={
           <>
-            Live preview and testing for all{' '}
-            <strong>Hustle</strong> components and pages.
+            Live preview and testing for all <strong>Hustle</strong> components
+            and pages.
           </>
         }
       />
@@ -125,11 +127,17 @@ export function UIShowcase() {
             {/* Stats */}
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600 dark:text-gray-400">
-                <strong className="text-black dark:text-white">{componentCount}</strong> components
+                <strong className="text-black dark:text-white">
+                  {componentCount}
+                </strong>{" "}
+                components
               </span>
               <span className="h-4 w-px bg-black dark:bg-gray-600" />
               <span className="text-sm text-gray-600 dark:text-gray-400">
-                <strong className="text-black dark:text-white">{pageCount}</strong> pages
+                <strong className="text-black dark:text-white">
+                  {pageCount}
+                </strong>{" "}
+                pages
               </span>
             </div>
 
@@ -148,31 +156,31 @@ export function UIShowcase() {
           {/* Filter Tabs */}
           <div className="mt-4 flex gap-2">
             <button
-              onClick={() => setFilter('all')}
+              onClick={() => setFilter("all")}
               className={`border-2 px-3 py-1.5 text-sm font-bold transition-colors ${
-                filter === 'all'
-                  ? 'border-[#BA0C2F] bg-[#BA0C2F] text-white'
-                  : 'border-black bg-white text-black hover:border-[#BA0C2F] dark:border-gray-600 dark:bg-gray-800 dark:text-white'
+                filter === "all"
+                  ? "border-[#BA0C2F] bg-[#BA0C2F] text-white"
+                  : "border-black bg-white text-black hover:border-[#BA0C2F] dark:border-gray-600 dark:bg-gray-800 dark:text-white"
               }`}
             >
               All ({allItems.length})
             </button>
             <button
-              onClick={() => setFilter('components')}
+              onClick={() => setFilter("components")}
               className={`border-2 px-3 py-1.5 text-sm font-bold transition-colors ${
-                filter === 'components'
-                  ? 'border-[#BA0C2F] bg-[#BA0C2F] text-white'
-                  : 'border-black bg-white text-black hover:border-[#BA0C2F] dark:border-gray-600 dark:bg-gray-800 dark:text-white'
+                filter === "components"
+                  ? "border-[#BA0C2F] bg-[#BA0C2F] text-white"
+                  : "border-black bg-white text-black hover:border-[#BA0C2F] dark:border-gray-600 dark:bg-gray-800 dark:text-white"
               }`}
             >
               Components ({componentCount})
             </button>
             <button
-              onClick={() => setFilter('pages')}
+              onClick={() => setFilter("pages")}
               className={`border-2 px-3 py-1.5 text-sm font-bold transition-colors ${
-                filter === 'pages'
-                  ? 'border-[#BA0C2F] bg-[#BA0C2F] text-white'
-                  : 'border-black bg-white text-black hover:border-[#BA0C2F] dark:border-gray-600 dark:bg-gray-800 dark:text-white'
+                filter === "pages"
+                  ? "border-[#BA0C2F] bg-[#BA0C2F] text-white"
+                  : "border-black bg-white text-black hover:border-[#BA0C2F] dark:border-gray-600 dark:bg-gray-800 dark:text-white"
               }`}
             >
               Pages ({pageCount})
@@ -204,12 +212,12 @@ export function UIShowcase() {
               </svg>
             </div>
             <h2 className="text-xl font-bold text-black dark:text-white">
-              {searchQuery ? 'No results found' : 'No items yet'}
+              {searchQuery ? "No results found" : "No items yet"}
             </h2>
             <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
               {searchQuery
                 ? `No components or pages match "${searchQuery}"`
-                : 'Run /ui-create to add components and pages'}
+                : "Run /ui-create to add components and pages"}
             </p>
           </div>
         ) : (
@@ -245,7 +253,7 @@ export function UIShowcase() {
       {/* Footer */}
       <footer className="border-t-2 border-black py-6 text-center text-sm text-gray-600 dark:border-gray-600 dark:text-gray-400">
         <p>
-          Created with{' '}
+          Created with{" "}
           <a
             href="https://github.com/hustle-together/api-dev-tools"
             target="_blank"
@@ -253,7 +261,7 @@ export function UIShowcase() {
             className="font-bold text-black hover:text-[#BA0C2F] dark:text-white"
           >
             Hustle API Dev Tools
-          </a>{' '}
+          </a>{" "}
           v3.9.2
         </p>
       </footer>

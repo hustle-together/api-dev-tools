@@ -54,7 +54,7 @@ Bash command output: (exclamation)git status(backticks)
 **Bash Commands (exclamation prefix)**: Limited to current working directory only.
 
 - ✅ Works: `! + backtick + git status + backtick` (in project dir)
-- ❌ Blocked: `! + backtick + ls /outside/project + backtick` (outside project)  
+- ❌ Blocked: `! + backtick + ls /outside/project + backtick` (outside project)
 - ❌ Blocked: `! + backtick + pwd + backtick` (if referencing dirs outside project)
 
 **File References (`@` prefix)**: No directory restrictions.
@@ -90,6 +90,7 @@ Compare @src/old.js with @src/new.js and explain differences
 ---
 allowed-tools: Bash(git status:*), Bash(git branch:*), Bash(git log:*)
 ---
+
 Current status: (!)git status(`)
 Current branch: (!)git branch --show-current(`)
 Recent commits: (!)git log --oneline -5(`)
@@ -123,7 +124,8 @@ echo "Ask GPT-5 about: ＄ARGUMENTS" > ~/.claude/commands/ai/gpt5.md
 ### Safe Commands (No Security Issues)
 
 ```markdown
-# System prompt editor (file reference only)  
+# System prompt editor (file reference only)
+
 (@)path/to/system/prompt.md
 
 Edit your system prompt above.
@@ -135,6 +137,7 @@ Edit your system prompt above.
 ---
 allowed-tools: Bash(git status:*), Bash(npm list:*)
 ---
+
 Current git status: (!)git status(`)
 Package info: (!)npm list --depth=0(`)
 
@@ -145,6 +148,7 @@ Review project state and suggest next steps.
 
 ```markdown
 # Compare config files
+
 Compare (@)path/to/system.md with (@)project/config.md
 
 Show differences and suggest improvements.
@@ -155,7 +159,6 @@ Show differences and suggest improvements.
 After creating: `/<command-name> [arguments]`
 
 Example: `/review` or `/ai:gpt5 "explain this code"`
-
 
 ## 🛡 Project Rules (Injected into every command)
 
@@ -181,7 +184,7 @@ Example: `/review` or `/ai:gpt5 "explain this code"`
 4. **API KEY MANAGEMENT:**
    - Support three loading methods:
      - Server environment variables
-     - NEXT_PUBLIC_ variables (client-side)
+     - NEXT*PUBLIC* variables (client-side)
      - Custom headers (X-OpenAI-Key, X-Anthropic-Key, etc.)
    - Never hardcode API keys
    - Always validate key availability before use

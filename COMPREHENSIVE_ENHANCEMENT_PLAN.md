@@ -22,6 +22,7 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
 - **Stats & Rename Commands** (v3.11.1)
 
 ### Current State (v3.11.0 Phase 1 Complete)
+
 - ✅ Skills Migration complete (23 skills in SKILL.md format)
 - ✅ marketplace.json for plugin distribution
 - ✅ 18 hooks packaged in `.skills/_shared/hooks/`
@@ -31,6 +32,7 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
 - ❌ No Phase 14 (code review)
 
 ### Proposed State (After Full Implementation)
+
 - ✅ Real-time TodoWrite visual progress
 - ✅ Async background agents with Ctrl+B
 - ✅ 95% research coverage (vs 60% current)
@@ -49,6 +51,7 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
 **Status:** Shipped 2025-12-24
 
 **Deliverables:**
+
 - ✅ 23 Agent Skills in SKILL.md format
 - ✅ marketplace.json for distribution
 - ✅ Cross-platform compatibility (Claude Code, VS Code, Cursor, ChatGPT)
@@ -87,6 +90,7 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
    - 12 phases (one less than others)
 
 **Files to Modify:**
+
 - `.skills/api-create/SKILL.md` - Add TodoWrite calls
 - `.skills/hustle-ui-create/SKILL.md` - Add TodoWrite calls
 - `.skills/hustle-ui-create-page/SKILL.md` - Add TodoWrite calls
@@ -94,6 +98,7 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
 - `.claude/api-dev-state.json` (template) - Add `current_phase` field
 
 **Testing Checklist:**
+
 - [ ] All 4 workflows show proper phase progression
 - [ ] Todos update in real-time as phases complete
 - [ ] Loop-back scenarios work (e.g., Phase 10 verify fails → back to Phase 8)
@@ -108,6 +113,7 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
 **Estimated Effort:** 8-10 hours
 
 **Benefits:**
+
 - Research time: 20-30 min → 8-10 min (parallelized)
 - Coverage: 60% → 95%
 - Cost: Same (agents run in parallel, not sequentially)
@@ -118,11 +124,13 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
 
 ```markdown
 # Current (Sequential)
+
 1. Context7 query → results
 2. WebSearch query → results
 3. Process and save
 
 # NEW (Parallel with background agents)
+
 1. Spawn Agent-1: Context7 deep dive [Ctrl+B]
 2. Spawn Agent-2: WebSearch multiple queries [Ctrl+B]
 3. Spawn Agent-3: Skills marketplace search [Ctrl+B]
@@ -130,10 +138,12 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
 5. Agents surface results → comprehensive research ready
 
 # User monitors with:
+
 /tasks → Shows all background agents and progress
 ```
 
 **Files to Modify:**
+
 - `.skills/api-create/SKILL.md` - Add async agent spawning logic in Phase 3
 - Add instructions for:
   - `Ctrl+B` to background agents
@@ -141,6 +151,7 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
   - Agent result aggregation
 
 **New State Fields:**
+
 ```json
 {
   "async_agents_used": 3,
@@ -163,12 +174,14 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
 #### The 3 Strategies
 
 **Strategy 1: Context7 MCP (Official Docs)**
+
 - resolve-library-id → get-library-docs
 - Multiple topics: "api-endpoints", "webhooks", "rate-limits", "error-handling"
 - Coverage: 70% (official documentation)
 - Cost: Free
 
 **Strategy 2: WebSearch (Targeted Queries)**
+
 - 6+ specific searches:
   - "[Library] official API documentation"
   - "[Library] webhooks setup guide"
@@ -180,6 +193,7 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
 - Cost: Free
 
 **Strategy 3: Skills Marketplace (Specialized Research)**
+
 - `/skill-finder api-research` to discover tools
 - Install: api-documentation-scraper, openapi-parameter-discoverer
 - Automated comprehensive discovery
@@ -187,12 +201,14 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
 - Cost: Free
 
 **Files to Modify:**
+
 - `.skills/api-create/SKILL.md` - Expand Phase 3 with 3 strategies
 - Add explicit Context7 multi-topic queries
 - Add 6+ WebSearch queries
 - Integrate skill-finder invocation
 
 **Success Metrics:**
+
 - Parameter discovery: 60% → 95%
 - Undocumented features found: 0 → 10-15
 - Research time (with async): 20 min → 8 min
@@ -208,12 +224,14 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
 **New Skill:** `.skills/skill-finder/SKILL.md`
 
 **Capabilities:**
+
 - Search SkillsMP.com (25,000+ skills)
 - Filter by category, author, popularity
 - Install recommended skills
 - Suggest skills based on current task
 
 **Usage:**
+
 ```bash
 /skill-finder [category]
 /skill-finder api-development
@@ -221,15 +239,18 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
 ```
 
 **Integration:**
+
 - Called from Phase 3 of api-create workflow
 - Searches for "api-research" category
 - Presents top 3 results with star ratings
 - Asks user to install and use
 
 **Files to Create:**
+
 - `.skills/skill-finder/SKILL.md`
 
 **Files to Modify:**
+
 - `.skills/api-create/SKILL.md` - Add skill-finder invocation in Phase 3
 
 ---
@@ -241,6 +262,7 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
 **Estimated Effort:** 4-5 hours
 
 **Current Structure:**
+
 ```
 .claude/research/
 ├── index.json
@@ -250,6 +272,7 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
 ```
 
 **NEW Structure:**
+
 ```
 .claude/research/
 ├── index.json                      # Freshness tracking only
@@ -267,17 +290,20 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
 ```
 
 **Benefits:**
+
 - No file name collisions
 - Easy to share research (entire folder)
 - Supports concurrent workflows
 - Related files grouped together
 
 **Files to Modify:**
+
 - `.skills/api-create/SKILL.md` - Update Phase 3 to create folders
 - Update all Write calls to use new folder structure
 - Hooks that read research files need updates
 
 **Migration Script:**
+
 ```python
 # .skills/_shared/migrate-research-folders.py
 # Converts existing flat files to folder structure
@@ -292,6 +318,7 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
 **Estimated Effort:** 6-8 hours
 
 **Tracked Metrics:**
+
 ```json
 {
   "session_metrics": {
@@ -324,6 +351,7 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
 ```
 
 **Display at Phase 13:**
+
 ```
 ═══════════════════════════════════════════════════
 🎉 API Development Complete: stripe-payment
@@ -349,10 +377,12 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
 ```
 
 **Files to Create:**
+
 - `.skills/_shared/hooks/track-session-metrics.py` (PostToolUse)
 - `.claude/hustle-api-sessions/[endpoint]/session.json` (per session)
 
 **Files to Modify:**
+
 - `.skills/api-create/SKILL.md` - Display metrics at Phase 13
 
 ---
@@ -364,6 +394,7 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
 **Estimated Effort:** 10-12 hours
 
 **Phase 14 Workflow:**
+
 ```
 Phase 13: Completion (tests pass, docs written)
   └─> Create PR
@@ -381,6 +412,7 @@ User reviews AI feedback → Fix issues → Merge
 **Purpose:** AI-powered PR code review with full codebase context
 
 **API Integration:**
+
 ```typescript
 // POST https://api.greptile.com/v1/review
 {
@@ -391,6 +423,7 @@ User reviews AI feedback → Fix issues → Merge
 ```
 
 **Response:**
+
 ```json
 {
   "overall_score": 9.2,
@@ -414,6 +447,7 @@ User reviews AI feedback → Fix issues → Merge
 **Purpose:** 40+ industry linters with one-click auto-fix
 
 **Webhook Setup:**
+
 ```yaml
 # .github/workflows/coderabbit.yml
 on: [pull_request]
@@ -425,6 +459,7 @@ jobs:
 ```
 
 **Auto-Fixes:**
+
 - ESLint errors
 - TypeScript type issues
 - Prettier formatting
@@ -438,6 +473,7 @@ jobs:
 **Purpose:** Stacked PRs for distributed team collaboration
 
 **CLI Commands:**
+
 ```bash
 gt create --stack stripe-payment
 gt stack submit
@@ -445,6 +481,7 @@ gt stack status
 ```
 
 **Benefits:**
+
 - Parallel development across timezones
 - Incremental reviews without blocking
 - Dependency management between PRs
@@ -452,16 +489,18 @@ gt stack status
 **Cost:** Free (Hobby), $20/month (Starter)
 
 **Files to Create:**
+
 - `.skills/api-create/SKILL.md` - Add Phase 14 after Phase 13
 - `.skills/_shared/hooks/run-code-review.py` (optional, user-configured)
 - `.claude/settings.json` - Add preferred tool selection
 
 **User Configuration:**
+
 ```json
 {
   "code_review": {
     "enabled": true,
-    "tools": ["coderabbit", "greptile"],  // User selects
+    "tools": ["coderabbit", "greptile"], // User selects
     "auto_fix": true,
     "require_approval": false
   }
@@ -479,12 +518,14 @@ gt stack status
 #### /stats Command
 
 **Usage:**
+
 ```bash
 /stats
 /stats [session-name]
 ```
 
 **Output:**
+
 ```
 ╔═══════════════════════════════════════════════════
 ║ 📊 SESSION STATISTICS - /stats
@@ -509,17 +550,20 @@ gt stack status
 #### /rename Command
 
 **Usage:**
+
 ```bash
 /rename stripe-payment stripe-checkout
 ```
 
 **Actions:**
+
 - Renames session folder
 - Updates state file
 - Updates research folder
 - Updates session.json
 
 **Files to Create:**
+
 - `.skills/stats/SKILL.md`
 - `.skills/rename/SKILL.md`
 
@@ -579,6 +623,7 @@ gt stack status
 ## 🧪 Testing Strategy
 
 ### Unit Tests
+
 - [ ] TodoWrite updates correctly for all 4 workflows
 - [ ] Async agents spawn and report correctly
 - [ ] Research folder creation works
@@ -586,17 +631,20 @@ gt stack status
 - [ ] Stats command aggregates data properly
 
 ### Integration Tests
+
 - [ ] End-to-end api-create with ALL features
 - [ ] End-to-end ui-create-component with ALL features
 - [ ] End-to-end ui-create-page with ALL features
 - [ ] End-to-end combine with ALL features
 
 ### Performance Tests
+
 - [ ] Async research is 2-3x faster than sequential
 - [ ] TodoWrite doesn't slow down execution
 - [ ] Per-API folders don't impact I/O performance
 
 ### Cross-Platform Tests
+
 - [ ] Works in Claude Code
 - [ ] Works in VS Code with Claude extension
 - [ ] Works in Cursor
@@ -607,6 +655,7 @@ gt stack status
 ## 📊 Success Metrics
 
 ### Quantitative
+
 - **Research Coverage:** 60% → 95% (+58%)
 - **Research Time:** 20-30 min → 8-10 min (-60%)
 - **Cost Per Endpoint:** $1.89 → $1.42 (-25%)
@@ -614,6 +663,7 @@ gt stack status
 - **Bug Detection:** 82% catch rate (with Greptile)
 
 ### Qualitative
+
 - Users see real-time progress (TodoWrite)
 - Users understand what's happening (cost tracking)
 - Users trust the results (95% coverage)
@@ -624,23 +674,27 @@ gt stack status
 ## 🚀 Implementation Timeline
 
 ### Sprint 1 (Week 1): Core TodoWrite + Research
+
 - Phase 2: TodoWrite Integration
 - Phase 3: Async Parallel Research
 - Phase 4: Multi-Strategy Research
 - **Deliverable:** Real-time progress + 95% coverage
 
 ### Sprint 2 (Week 2): Organization + Discovery
+
 - Phase 5: Skill-Discovery Meta-Skill
 - Phase 6: Per-API Research Folders
 - Phase 7: Cost/Time Tracking
 - **Deliverable:** Better organization + visibility
 
 ### Sprint 3 (Week 3): Code Quality + Polish
+
 - Phase 8: Phase 14 - AI Code Review
 - Phase 9: Stats & Rename Commands
 - **Deliverable:** Production-ready v3.12.0
 
 ### Sprint 4 (Week 4): Testing + Documentation
+
 - Complete testing checklist
 - Update all documentation
 - Create demo videos
@@ -675,6 +729,7 @@ gt stack status
 ## ✅ Pre-Implementation Checklist
 
 **Before Starting:**
+
 - [x] Enhancement roadmap reviewed (ENHANCEMENT_ROADMAP_v3.11.0.md)
 - [x] Comprehensive plan created (this document)
 - [x] Demo created showing all features
@@ -682,12 +737,14 @@ gt stack status
 - [ ] Backup current codebase
 
 **During Implementation:**
+
 - [ ] Test each phase independently before moving to next
 - [ ] Update documentation as features are added
 - [ ] Keep demos in sync with implementation
 - [ ] Track actual time vs estimates
 
 **After Implementation:**
+
 - [ ] All tests passing
 - [ ] Documentation complete
 - [ ] Demos accurate
@@ -716,6 +773,7 @@ gt stack status
 **Last Updated:** 2025-12-24
 **Author:** Claude Sonnet 4.5
 **Related Files:**
+
 - [ENHANCEMENT_ROADMAP_v3.11.0.md](./ENHANCEMENT_ROADMAP_v3.11.0.md)
 - [demo/execution-trace-COMPREHENSIVE.html](./demo/execution-trace-COMPREHENSIVE.html)
 - [.skills/update-todos/SKILL.md](./.skills/update-todos/SKILL.md)

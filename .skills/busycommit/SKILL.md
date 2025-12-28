@@ -12,8 +12,10 @@ allowed-tools: WebSearch WebFetch mcp__context7 mcp__github AskUserQuestion Read
 ---
 
 ---
+
 description: Create multiple atomic git commits, one logical change at a time
 argument-hint: [optional-commit-description]
+
 ---
 
 ## General Guidelines
@@ -72,7 +74,6 @@ git add src/user-service.ts
 git commit -m "refactor: extract user lookup to helper"
 ```
 
-
 ## 🛡 Project Rules (Injected into every command)
 
 1. **NO BROKEN BUILDS:**
@@ -97,7 +98,7 @@ git commit -m "refactor: extract user lookup to helper"
 4. **API KEY MANAGEMENT:**
    - Support three loading methods:
      - Server environment variables
-     - NEXT_PUBLIC_ variables (client-side)
+     - NEXT*PUBLIC* variables (client-side)
      - Custom headers (X-OpenAI-Key, X-Anthropic-Key, etc.)
    - Never hardcode API keys
    - Always validate key availability before use

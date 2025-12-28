@@ -17,6 +17,7 @@ This command reads from `.claude/registry.json` to present available elements fo
 **YOU MUST USE THE `AskUserQuestion` TOOL AT EVERY CHECKPOINT.**
 
 This workflow requires REAL user input at each phase. You are **FORBIDDEN** from:
+
 - Self-answering questions
 - Assuming user responses
 - Proceeding without explicit user confirmation
@@ -34,9 +35,9 @@ At every prompt in this workflow, you MUST call the `AskUserQuestion` tool with 
       "header": "Phase",
       "multiSelect": false,
       "options": [
-        {"label": "Option A", "description": "What this option means"},
-        {"label": "Option B", "description": "What this option means"},
-        {"label": "Other", "description": "I'll type my own answer"}
+        { "label": "Option A", "description": "What this option means" },
+        { "label": "Option B", "description": "What this option means" },
+        { "label": "Other", "description": "I'll type my own answer" }
       ]
     }
   ]
@@ -44,6 +45,7 @@ At every prompt in this workflow, you MUST call the `AskUserQuestion` tool with 
 ```
 
 **CRITICAL REQUIREMENTS:**
+
 - `header`: Max 12 characters (e.g., "Mode", "Select", "Order")
 - `options`: 2-4 options, each with `label` (1-5 words) and `description`
 - `multiSelect`: Required boolean (true for checkboxes, false for radio)
@@ -56,17 +58,23 @@ At every prompt in this workflow, you MUST call the `AskUserQuestion` tool with 
 **Every phase requires an EXIT CONFIRMATION question** before proceeding to the next phase.
 
 Example:
+
 ```json
 {
-  "questions": [{
-    "question": "Phase complete. Ready to proceed to next phase?",
-    "header": "Proceed",
-    "multiSelect": false,
-    "options": [
-      {"label": "Yes, proceed", "description": "Move to next phase"},
-      {"label": "No, make changes", "description": "I need to modify something"}
-    ]
-  }]
+  "questions": [
+    {
+      "question": "Phase complete. Ready to proceed to next phase?",
+      "header": "Proceed",
+      "multiSelect": false,
+      "options": [
+        { "label": "Yes, proceed", "description": "Move to next phase" },
+        {
+          "label": "No, make changes",
+          "description": "I need to modify something"
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -77,17 +85,26 @@ Example:
 When running `/hustle-combine`, first determine the mode:
 
 Use AskUserQuestion:
+
 ```json
 {
-  "questions": [{
-    "question": "What would you like to combine?",
-    "header": "Mode",
-    "multiSelect": false,
-    "options": [
-      {"label": "APIs", "description": "Combine existing API endpoints into orchestration layer"},
-      {"label": "UI", "description": "Combine existing components/pages (coming soon)"}
-    ]
-  }]
+  "questions": [
+    {
+      "question": "What would you like to combine?",
+      "header": "Mode",
+      "multiSelect": false,
+      "options": [
+        {
+          "label": "APIs",
+          "description": "Combine existing API endpoints into orchestration layer"
+        },
+        {
+          "label": "UI",
+          "description": "Combine existing components/pages (coming soon)"
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -122,20 +139,27 @@ Read `.claude/registry.json` and present available APIs.
 **IMPORTANT:** Options are dynamically generated from registry.json. Only show APIs with `status: "complete"`.
 
 Use AskUserQuestion with multiSelect:
+
 ```json
 {
-  "questions": [{
-    "question": "Select APIs to combine (choose 2 or more):",
-    "header": "Select",
-    "multiSelect": true,
-    "options": [
-      {"label": "[api-name]", "description": "[api-description from registry]"}
-    ]
-  }]
+  "questions": [
+    {
+      "question": "Select APIs to combine (choose 2 or more):",
+      "header": "Select",
+      "multiSelect": true,
+      "options": [
+        {
+          "label": "[api-name]",
+          "description": "[api-description from registry]"
+        }
+      ]
+    }
+  ]
 }
 ```
 
 **After selection, store in state:**
+
 ```json
 {
   "workflow": "combine-api",
@@ -150,17 +174,23 @@ Use AskUserQuestion with multiSelect:
 ```
 
 **Phase Exit:**
+
 ```json
 {
-  "questions": [{
-    "question": "Selected [N] APIs. Ready to define the purpose?",
-    "header": "Proceed",
-    "multiSelect": false,
-    "options": [
-      {"label": "Yes, proceed", "description": "Move to Scope phase"},
-      {"label": "Change selection", "description": "I want to select different APIs"}
-    ]
-  }]
+  "questions": [
+    {
+      "question": "Selected [N] APIs. Ready to define the purpose?",
+      "header": "Proceed",
+      "multiSelect": false,
+      "options": [
+        { "label": "Yes, proceed", "description": "Move to Scope phase" },
+        {
+          "label": "Change selection",
+          "description": "I want to select different APIs"
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -172,31 +202,39 @@ Ask what the combined endpoint should do:
 
 ```json
 {
-  "questions": [{
-    "question": "What should this combined endpoint do? Describe the purpose:",
-    "header": "Purpose",
-    "multiSelect": false,
-    "options": [
-      {"label": "Describe it", "description": "I'll type the purpose"}
-    ]
-  }]
+  "questions": [
+    {
+      "question": "What should this combined endpoint do? Describe the purpose:",
+      "header": "Purpose",
+      "multiSelect": false,
+      "options": [
+        { "label": "Describe it", "description": "I'll type the purpose" }
+      ]
+    }
+  ]
 }
 ```
 
 Store the purpose in state for later use in schema and tests.
 
 **Phase Exit:**
+
 ```json
 {
-  "questions": [{
-    "question": "Purpose defined. Ready to research orchestration patterns?",
-    "header": "Proceed",
-    "multiSelect": false,
-    "options": [
-      {"label": "Yes, proceed", "description": "Move to Research phase"},
-      {"label": "Refine purpose", "description": "I want to clarify the purpose"}
-    ]
-  }]
+  "questions": [
+    {
+      "question": "Purpose defined. Ready to research orchestration patterns?",
+      "header": "Proceed",
+      "multiSelect": false,
+      "options": [
+        { "label": "Yes, proceed", "description": "Move to Research phase" },
+        {
+          "label": "Refine purpose",
+          "description": "I want to clarify the purpose"
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -205,41 +243,57 @@ Store the purpose in state for later use in schema and tests.
 ### Phase 3: INITIAL RESEARCH (Lighter)
 
 Since APIs already exist, focus ONLY on orchestration patterns:
+
 - Gateway aggregation patterns
 - Error propagation between services
 - Response composition strategies
 
 ```json
 {
-  "questions": [{
-    "question": "Research focus: I'll look up orchestration patterns for combining [API1] + [API2]. Proceed?",
-    "header": "Research",
-    "multiSelect": false,
-    "options": [
-      {"label": "Yes, proceed", "description": "Research orchestration patterns"},
-      {"label": "Skip research", "description": "I know how I want to combine them"}
-    ]
-  }]
+  "questions": [
+    {
+      "question": "Research focus: I'll look up orchestration patterns for combining [API1] + [API2]. Proceed?",
+      "header": "Research",
+      "multiSelect": false,
+      "options": [
+        {
+          "label": "Yes, proceed",
+          "description": "Research orchestration patterns"
+        },
+        {
+          "label": "Skip research",
+          "description": "I know how I want to combine them"
+        }
+      ]
+    }
+  ]
 }
 ```
 
 If user chooses to research, use WebSearch and Context7 for:
+
 - "API gateway aggregation patterns"
 - "Service composition error handling"
 - "Response aggregation TypeScript patterns"
 
 **Phase Exit:**
+
 ```json
 {
-  "questions": [{
-    "question": "Research complete. Ready for interview questions?",
-    "header": "Proceed",
-    "multiSelect": false,
-    "options": [
-      {"label": "Yes, interview", "description": "Move to Interview phase"},
-      {"label": "More research", "description": "I need to research [topic]"}
-    ]
-  }]
+  "questions": [
+    {
+      "question": "Research complete. Ready for interview questions?",
+      "header": "Proceed",
+      "multiSelect": false,
+      "options": [
+        { "label": "Yes, interview", "description": "Move to Interview phase" },
+        {
+          "label": "More research",
+          "description": "I need to research [topic]"
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -250,84 +304,124 @@ If user chooses to research, use WebSearch and Context7 for:
 Key questions for API combination (ask one at a time):
 
 **Q1: Endpoint Name**
+
 ```json
 {
-  "questions": [{
-    "question": "What should the combined endpoint be called?",
-    "header": "Name",
-    "multiSelect": false,
-    "options": [
-      {"label": "[suggested-name]", "description": "Suggested: /api/v2/[suggested-name]"},
-      {"label": "Custom name", "description": "I'll type my own"}
-    ]
-  }]
+  "questions": [
+    {
+      "question": "What should the combined endpoint be called?",
+      "header": "Name",
+      "multiSelect": false,
+      "options": [
+        {
+          "label": "[suggested-name]",
+          "description": "Suggested: /api/v2/[suggested-name]"
+        },
+        { "label": "Custom name", "description": "I'll type my own" }
+      ]
+    }
+  ]
 }
 ```
 
 **Q2: Execution Order**
+
 ```json
 {
-  "questions": [{
-    "question": "How should the APIs execute?",
-    "header": "Order",
-    "multiSelect": false,
-    "options": [
-      {"label": "Parallel", "description": "All at once, combine results"},
-      {"label": "Sequential", "description": "One after another, pass data between"},
-      {"label": "Conditional", "description": "Second API depends on first result"}
-    ]
-  }]
+  "questions": [
+    {
+      "question": "How should the APIs execute?",
+      "header": "Order",
+      "multiSelect": false,
+      "options": [
+        { "label": "Parallel", "description": "All at once, combine results" },
+        {
+          "label": "Sequential",
+          "description": "One after another, pass data between"
+        },
+        {
+          "label": "Conditional",
+          "description": "Second API depends on first result"
+        }
+      ]
+    }
+  ]
 }
 ```
 
 **Q3: Error Handling**
+
 ```json
 {
-  "questions": [{
-    "question": "If the first API fails, what should happen?",
-    "header": "Errors",
-    "multiSelect": false,
-    "options": [
-      {"label": "Fail entire request", "description": "Return error, don't call other APIs"},
-      {"label": "Continue with partial", "description": "Return what succeeded"},
-      {"label": "Retry once", "description": "Retry failed API, then fail if still failing"}
-    ]
-  }]
+  "questions": [
+    {
+      "question": "If the first API fails, what should happen?",
+      "header": "Errors",
+      "multiSelect": false,
+      "options": [
+        {
+          "label": "Fail entire request",
+          "description": "Return error, don't call other APIs"
+        },
+        {
+          "label": "Continue with partial",
+          "description": "Return what succeeded"
+        },
+        {
+          "label": "Retry once",
+          "description": "Retry failed API, then fail if still failing"
+        }
+      ]
+    }
+  ]
 }
 ```
 
 **Q4: Data Transformation**
+
 ```json
 {
-  "questions": [{
-    "question": "Do you need to transform data between APIs?",
-    "header": "Transform",
-    "multiSelect": false,
-    "options": [
-      {"label": "No", "description": "Use responses as-is"},
-      {"label": "Yes", "description": "I'll describe the transformation"}
-    ]
-  }]
+  "questions": [
+    {
+      "question": "Do you need to transform data between APIs?",
+      "header": "Transform",
+      "multiSelect": false,
+      "options": [
+        { "label": "No", "description": "Use responses as-is" },
+        { "label": "Yes", "description": "I'll describe the transformation" }
+      ]
+    }
+  ]
 }
 ```
 
 **Q5: Caching**
+
 ```json
 {
-  "questions": [{
-    "question": "Caching strategy?",
-    "header": "Cache",
-    "multiSelect": false,
-    "options": [
-      {"label": "No caching", "description": "Always fetch fresh"},
-      {"label": "Cache combined result", "description": "Cache the final response"},
-      {"label": "Cache individual APIs", "description": "Cache each API's response separately"}
-    ]
-  }]
+  "questions": [
+    {
+      "question": "Caching strategy?",
+      "header": "Cache",
+      "multiSelect": false,
+      "options": [
+        { "label": "No caching", "description": "Always fetch fresh" },
+        {
+          "label": "Cache combined result",
+          "description": "Cache the final response"
+        },
+        {
+          "label": "Cache individual APIs",
+          "description": "Cache each API's response separately"
+        }
+      ]
+    }
+  ]
 }
 ```
 
 **Store all decisions in state:**
+
 ```json
 {
   "phases": {
@@ -346,17 +440,26 @@ Key questions for API combination (ask one at a time):
 ```
 
 **Phase Exit:**
+
 ```json
 {
-  "questions": [{
-    "question": "Interview complete. Ready for deep research?",
-    "header": "Proceed",
-    "multiSelect": false,
-    "options": [
-      {"label": "Yes, proceed", "description": "Move to Deep Research phase"},
-      {"label": "Change answers", "description": "I want to modify my answers"}
-    ]
-  }]
+  "questions": [
+    {
+      "question": "Interview complete. Ready for deep research?",
+      "header": "Proceed",
+      "multiSelect": false,
+      "options": [
+        {
+          "label": "Yes, proceed",
+          "description": "Move to Deep Research phase"
+        },
+        {
+          "label": "Change answers",
+          "description": "I want to modify my answers"
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -368,20 +471,26 @@ Based on interview answers, propose targeted research:
 
 ```json
 {
-  "questions": [{
-    "question": "Based on your answers, should I research: [specific topics based on interview]?",
-    "header": "Deep",
-    "multiSelect": false,
-    "options": [
-      {"label": "Yes, research these", "description": "Run the searches"},
-      {"label": "Add more topics", "description": "I need [something specific]"},
-      {"label": "Skip to schema", "description": "I have enough info"}
-    ]
-  }]
+  "questions": [
+    {
+      "question": "Based on your answers, should I research: [specific topics based on interview]?",
+      "header": "Deep",
+      "multiSelect": false,
+      "options": [
+        { "label": "Yes, research these", "description": "Run the searches" },
+        {
+          "label": "Add more topics",
+          "description": "I need [something specific]"
+        },
+        { "label": "Skip to schema", "description": "I have enough info" }
+      ]
+    }
+  ]
 }
 ```
 
 Topics to propose based on interview:
+
 - If sequential: "data passing between API calls"
 - If parallel: "Promise.all error handling patterns"
 - If retry: "exponential backoff strategies"
@@ -395,9 +504,9 @@ Create Zod schema that COMPOSES existing schemas:
 
 ```typescript
 // src/app/api/v2/[combined-name]/schemas.ts
-import { z } from 'zod';
-import { Api1ResponseSchema } from '../api1/schemas';
-import { Api2ResponseSchema } from '../api2/schemas';
+import { z } from "zod";
+import { Api1ResponseSchema } from "../api1/schemas";
+import { Api2ResponseSchema } from "../api2/schemas";
 
 // Combined request schema
 export const CombinedRequestSchema = z.object({
@@ -416,17 +525,20 @@ export type CombinedResponse = z.infer<typeof CombinedResponseSchema>;
 ```
 
 **Ask for approval:**
+
 ```json
 {
-  "questions": [{
-    "question": "Combined schema created. It imports from [API1] and [API2] schemas. Approve?",
-    "header": "Schema",
-    "multiSelect": false,
-    "options": [
-      {"label": "Yes, approved", "description": "Schema looks correct"},
-      {"label": "Make changes", "description": "I need to modify something"}
-    ]
-  }]
+  "questions": [
+    {
+      "question": "Combined schema created. It imports from [API1] and [API2] schemas. Approve?",
+      "header": "Schema",
+      "multiSelect": false,
+      "options": [
+        { "label": "Yes, approved", "description": "Schema looks correct" },
+        { "label": "Make changes", "description": "I need to modify something" }
+      ]
+    }
+  ]
 }
 ```
 
@@ -439,6 +551,7 @@ Verify all API keys from combined APIs are available.
 Read the source API entries in registry.json to determine required environment variables.
 
 Report:
+
 ```
 Environment Check:
 [checkmark] API1_KEY - Found
@@ -449,15 +562,20 @@ All required keys available.
 
 ```json
 {
-  "questions": [{
-    "question": "Environment check passed. All [N] API keys found. Ready for TDD?",
-    "header": "Env",
-    "multiSelect": false,
-    "options": [
-      {"label": "Yes, write tests", "description": "Proceed to TDD Red"},
-      {"label": "No, need setup", "description": "I need to configure something"}
-    ]
-  }]
+  "questions": [
+    {
+      "question": "Environment check passed. All [N] API keys found. Ready for TDD?",
+      "header": "Env",
+      "multiSelect": false,
+      "options": [
+        { "label": "Yes, write tests", "description": "Proceed to TDD Red" },
+        {
+          "label": "No, need setup",
+          "description": "I need to configure something"
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -469,15 +587,15 @@ Write tests for the combined flow:
 
 ```typescript
 // src/app/api/v2/[combined-name]/__tests__/[combined-name].api.test.ts
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from "vitest";
 
-describe('[Combined Name] API', () => {
-  describe('POST /api/v2/[combined-name]', () => {
-    it('should call both APIs and combine results', async () => {
+describe("[Combined Name] API", () => {
+  describe("POST /api/v2/[combined-name]", () => {
+    it("should call both APIs and combine results", async () => {
       // Test combined flow
     });
 
-    it('should handle first API failure correctly', async () => {
+    it("should handle first API failure correctly", async () => {
       // Test error handling based on interview decisions
     });
 
@@ -489,17 +607,23 @@ describe('[Combined Name] API', () => {
 Run tests - they should FAIL (Red phase).
 
 **Phase Exit:**
+
 ```json
 {
-  "questions": [{
-    "question": "Failing tests written. Ready to implement?",
-    "header": "Proceed",
-    "multiSelect": false,
-    "options": [
-      {"label": "Yes, implement", "description": "Move to TDD Green phase"},
-      {"label": "Add more tests", "description": "I need to test more scenarios"}
-    ]
-  }]
+  "questions": [
+    {
+      "question": "Failing tests written. Ready to implement?",
+      "header": "Proceed",
+      "multiSelect": false,
+      "options": [
+        { "label": "Yes, implement", "description": "Move to TDD Green phase" },
+        {
+          "label": "Add more tests",
+          "description": "I need to test more scenarios"
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -511,8 +635,8 @@ Implement the orchestration logic:
 
 ```typescript
 // src/app/api/v2/[combined-name]/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-import { CombinedRequestSchema } from './schemas';
+import { NextRequest, NextResponse } from "next/server";
+import { CombinedRequestSchema } from "./schemas";
 
 export async function POST(request: NextRequest) {
   try {
@@ -530,10 +654,7 @@ export async function POST(request: NextRequest) {
       combined_at: new Date().toISOString(),
     });
   } catch (error) {
-    return NextResponse.json(
-      { error: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 ```
@@ -548,15 +669,23 @@ Test the full flow end-to-end:
 
 ```json
 {
-  "questions": [{
-    "question": "Integration tests pass. Should I verify the full flow manually with real API calls?",
-    "header": "Verify",
-    "multiSelect": false,
-    "options": [
-      {"label": "Yes, test real flow", "description": "Make actual API calls"},
-      {"label": "Skip, tests sufficient", "description": "Proceed to refactor"}
-    ]
-  }]
+  "questions": [
+    {
+      "question": "Integration tests pass. Should I verify the full flow manually with real API calls?",
+      "header": "Verify",
+      "multiSelect": false,
+      "options": [
+        {
+          "label": "Yes, test real flow",
+          "description": "Make actual API calls"
+        },
+        {
+          "label": "Skip, tests sufficient",
+          "description": "Proceed to refactor"
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -567,6 +696,7 @@ If verifying, make actual requests and report results.
 ### Phase 11: REFACTOR
 
 Clean up the orchestration code:
+
 - Extract reusable patterns
 - Add error logging
 - Optimize parallel calls if applicable
@@ -575,17 +705,26 @@ Clean up the orchestration code:
 Run tests after each change to ensure they still pass.
 
 **Phase Exit:**
+
 ```json
 {
-  "questions": [{
-    "question": "Refactoring complete. Tests still pass. Ready to document?",
-    "header": "Proceed",
-    "multiSelect": false,
-    "options": [
-      {"label": "Yes, document", "description": "Move to Documentation phase"},
-      {"label": "More refactoring", "description": "I want to clean up more"}
-    ]
-  }]
+  "questions": [
+    {
+      "question": "Refactoring complete. Tests still pass. Ready to document?",
+      "header": "Proceed",
+      "multiSelect": false,
+      "options": [
+        {
+          "label": "Yes, document",
+          "description": "Move to Documentation phase"
+        },
+        {
+          "label": "More refactoring",
+          "description": "I want to clean up more"
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -594,21 +733,27 @@ Run tests after each change to ensure they still pass.
 ### Phase 12: DOCUMENTATION
 
 Update:
+
 1. `api-tests-manifest.json` - Add new combined endpoint
 2. `registry.json` - Add to `combined` section
 3. Any project docs as needed
 
 ```json
 {
-  "questions": [{
-    "question": "Documentation updated. Ready to complete?",
-    "header": "Docs",
-    "multiSelect": false,
-    "options": [
-      {"label": "Yes, complete", "description": "Finalize and update registry"},
-      {"label": "Need more docs", "description": "I want to add something"}
-    ]
-  }]
+  "questions": [
+    {
+      "question": "Documentation updated. Ready to complete?",
+      "header": "Docs",
+      "multiSelect": false,
+      "options": [
+        {
+          "label": "Yes, complete",
+          "description": "Finalize and update registry"
+        },
+        { "label": "Need more docs", "description": "I want to add something" }
+      ]
+    }
+  ]
 }
 ```
 
@@ -638,17 +783,23 @@ Update registry.json with the new combined API:
 ```
 
 **Final confirmation:**
+
 ```json
 {
-  "questions": [{
-    "question": "Combined API complete. Registry updated. Anything else?",
-    "header": "Complete",
-    "multiSelect": false,
-    "options": [
-      {"label": "Done", "description": "Workflow complete"},
-      {"label": "Create another", "description": "Start new combine workflow"}
-    ]
-  }]
+  "questions": [
+    {
+      "question": "Combined API complete. Registry updated. Anything else?",
+      "header": "Complete",
+      "multiSelect": false,
+      "options": [
+        { "label": "Done", "description": "Workflow complete" },
+        {
+          "label": "Create another",
+          "description": "Start new combine workflow"
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -659,6 +810,7 @@ Update registry.json with the new combined API:
 UI combination requires `/hustle-ui-create` to be implemented first.
 
 Three sub-modes planned:
+
 - **A) Composed Component** - Combine existing components
 - **B) Page with Components** - Create page using components
 - **C) Page with Components + API** - Create page with data fetching
@@ -685,19 +837,74 @@ Three sub-modes planned:
   },
 
   "phases": {
-    "selection": { "status": "complete", "apis_selected": 2, "user_question_asked": true, "phase_exit_confirmed": true },
-    "scope": { "status": "complete", "purpose": "...", "user_question_asked": true, "phase_exit_confirmed": true },
-    "research_initial": { "status": "complete", "user_question_asked": true, "phase_exit_confirmed": true },
-    "interview": { "status": "complete", "decisions": {}, "user_question_asked": true, "phase_exit_confirmed": true },
-    "research_deep": { "status": "skipped", "user_question_asked": true, "phase_exit_confirmed": true },
-    "schema_creation": { "status": "complete", "user_question_asked": true, "phase_exit_confirmed": true },
-    "environment_check": { "status": "complete", "user_question_asked": true, "phase_exit_confirmed": true },
-    "tdd_red": { "status": "complete", "user_question_asked": true, "phase_exit_confirmed": true },
-    "tdd_green": { "status": "complete", "user_question_asked": true, "phase_exit_confirmed": true },
-    "verify": { "status": "complete", "user_question_asked": true, "phase_exit_confirmed": true },
-    "tdd_refactor": { "status": "complete", "user_question_asked": true, "phase_exit_confirmed": true },
-    "documentation": { "status": "complete", "user_question_asked": true, "phase_exit_confirmed": true },
-    "completion": { "status": "complete", "user_question_asked": true, "phase_exit_confirmed": true }
+    "selection": {
+      "status": "complete",
+      "apis_selected": 2,
+      "user_question_asked": true,
+      "phase_exit_confirmed": true
+    },
+    "scope": {
+      "status": "complete",
+      "purpose": "...",
+      "user_question_asked": true,
+      "phase_exit_confirmed": true
+    },
+    "research_initial": {
+      "status": "complete",
+      "user_question_asked": true,
+      "phase_exit_confirmed": true
+    },
+    "interview": {
+      "status": "complete",
+      "decisions": {},
+      "user_question_asked": true,
+      "phase_exit_confirmed": true
+    },
+    "research_deep": {
+      "status": "skipped",
+      "user_question_asked": true,
+      "phase_exit_confirmed": true
+    },
+    "schema_creation": {
+      "status": "complete",
+      "user_question_asked": true,
+      "phase_exit_confirmed": true
+    },
+    "environment_check": {
+      "status": "complete",
+      "user_question_asked": true,
+      "phase_exit_confirmed": true
+    },
+    "tdd_red": {
+      "status": "complete",
+      "user_question_asked": true,
+      "phase_exit_confirmed": true
+    },
+    "tdd_green": {
+      "status": "complete",
+      "user_question_asked": true,
+      "phase_exit_confirmed": true
+    },
+    "verify": {
+      "status": "complete",
+      "user_question_asked": true,
+      "phase_exit_confirmed": true
+    },
+    "tdd_refactor": {
+      "status": "complete",
+      "user_question_asked": true,
+      "phase_exit_confirmed": true
+    },
+    "documentation": {
+      "status": "complete",
+      "user_question_asked": true,
+      "phase_exit_confirmed": true
+    },
+    "completion": {
+      "status": "complete",
+      "user_question_asked": true,
+      "phase_exit_confirmed": true
+    }
   }
 }
 ```

@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
 interface HeroHeaderProps {
   title: string;
@@ -29,8 +29,8 @@ export function HeroHeader({ title, description, badge }: HeroHeaderProps) {
   useEffect(() => {
     const checkDarkMode = () => {
       setIsDark(
-        document.documentElement.classList.contains('dark') ||
-          document.documentElement.getAttribute('data-theme') === 'dark'
+        document.documentElement.classList.contains("dark") ||
+          document.documentElement.getAttribute("data-theme") === "dark",
       );
     };
 
@@ -40,7 +40,7 @@ export function HeroHeader({ title, description, badge }: HeroHeaderProps) {
     const observer = new MutationObserver(checkDarkMode);
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ['class', 'data-theme'],
+      attributeFilter: ["class", "data-theme"],
     });
 
     return () => observer.disconnect();
@@ -52,7 +52,7 @@ export function HeroHeader({ title, description, badge }: HeroHeaderProps) {
     const header = headerRef.current;
     if (!canvas || !header) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     let animationId: number;
@@ -79,7 +79,7 @@ export function HeroHeader({ title, description, badge }: HeroHeaderProps) {
     const createRow = (): GridCell[] => {
       const cells: GridCell[] = [];
       for (let c = 0; c < gridWidth; c++) {
-        cells.push({ active: false, alpha: 0, color: 'rgba(186, 12, 47' });
+        cells.push({ active: false, alpha: 0, color: "rgba(186, 12, 47" });
       }
       return cells;
     };
@@ -96,7 +96,7 @@ export function HeroHeader({ title, description, badge }: HeroHeaderProps) {
 
     const project = (
       x: number,
-      z: number
+      z: number,
     ): { x: number; y: number; scale: number } | null => {
       if (z <= 0) return null;
       const scale = fov / z;
@@ -106,7 +106,7 @@ export function HeroHeader({ title, description, badge }: HeroHeaderProps) {
     };
 
     const updateGridState = () => {
-      const secondaryColor = isDark ? 'rgba(60, 60, 60' : 'rgba(30, 30, 30';
+      const secondaryColor = isDark ? "rgba(60, 60, 60" : "rgba(30, 30, 30";
 
       if (Math.random() > 0.92) {
         const r = Math.floor(Math.random() * (gridRows.length - 5)) + 2;
@@ -115,7 +115,8 @@ export function HeroHeader({ title, description, badge }: HeroHeaderProps) {
         if (!cell.active) {
           cell.active = true;
           cell.alpha = 1.0;
-          cell.color = Math.random() > 0.7 ? secondaryColor : 'rgba(186, 12, 47';
+          cell.color =
+            Math.random() > 0.7 ? secondaryColor : "rgba(186, 12, 47";
         }
       }
 
@@ -128,7 +129,7 @@ export function HeroHeader({ title, description, badge }: HeroHeaderProps) {
               cell.alpha = 0;
             }
           }
-        })
+        }),
       );
     };
 
@@ -145,7 +146,7 @@ export function HeroHeader({ title, description, badge }: HeroHeaderProps) {
       updateGridState();
       ctx.lineWidth = 1;
 
-      const lineColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
+      const lineColor = isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)";
 
       // Draw rows (back to front)
       for (let r = gridRows.length - 1; r >= 0; r--) {
@@ -208,7 +209,7 @@ export function HeroHeader({ title, description, badge }: HeroHeaderProps) {
       }
 
       // Fog / fade gradient
-      const fadeColor = isDark ? '0,0,0' : '255,255,255';
+      const fadeColor = isDark ? "0,0,0" : "255,255,255";
       const g = ctx.createLinearGradient(0, 0, 0, canvas.height / 1.5);
       g.addColorStop(0, `rgba(${fadeColor}, 1)`);
       g.addColorStop(0.3, `rgba(${fadeColor}, 0.8)`);
@@ -220,11 +221,11 @@ export function HeroHeader({ title, description, badge }: HeroHeaderProps) {
     };
 
     resize();
-    window.addEventListener('resize', resize);
+    window.addEventListener("resize", resize);
     draw();
 
     return () => {
-      window.removeEventListener('resize', resize);
+      window.removeEventListener("resize", resize);
       cancelAnimationFrame(animationId);
     };
   }, [isDark]);

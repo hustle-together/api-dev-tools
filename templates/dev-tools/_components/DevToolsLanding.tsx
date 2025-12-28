@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { HeroHeader } from '../../shared/HeroHeader';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { HeroHeader } from "../../shared/HeroHeader";
 
 interface Registry {
   version?: string;
@@ -25,7 +25,7 @@ export function DevToolsLanding() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/registry')
+    fetch("/api/registry")
       .then((res) => res.json())
       .then((data) => {
         setRegistry(data);
@@ -52,7 +52,7 @@ export function DevToolsLanding() {
         badge="Developer Portal"
         description={
           <>
-            Central hub for <strong>API development</strong>,{' '}
+            Central hub for <strong>API development</strong>,{" "}
             <strong>UI components</strong>, and documentation. Built with the
             Hustle Together workflow.
           </>
@@ -64,7 +64,7 @@ export function DevToolsLanding() {
         <div className="mb-8 flex flex-wrap items-center gap-6 border-2 border-black bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-900">
           <div className="flex items-center gap-2">
             <span className="text-3xl font-bold text-black dark:text-white">
-              {loading ? '...' : total}
+              {loading ? "..." : total}
             </span>
             <span className="text-gray-600 dark:text-gray-400">
               Total Items
@@ -207,7 +207,7 @@ export function DevToolsLanding() {
               source of truth for the showcase pages.
             </p>
             <div className="text-sm font-bold text-[#BA0C2F]">
-              Version: {registry.version || '1.0.0'}
+              Version: {registry.version || "1.0.0"}
             </div>
           </Link>
         </div>

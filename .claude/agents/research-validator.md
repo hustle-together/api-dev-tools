@@ -49,6 +49,7 @@ Scrape official documentation to find ALL available endpoints, webhooks, paramet
 
 6. **Report Findings**
    Return a structured summary:
+
    ```
    ## API Coverage Report
 

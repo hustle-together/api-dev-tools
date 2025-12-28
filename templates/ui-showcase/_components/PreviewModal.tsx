@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useCallback, useState } from 'react';
-import { Sandpack, SandpackTheme } from '@codesandbox/sandpack-react';
+import { useEffect, useCallback, useState } from "react";
+import { Sandpack, SandpackTheme } from "@codesandbox/sandpack-react";
 
 interface RegistryItem {
   name: string;
@@ -19,17 +19,17 @@ interface RegistryItem {
 
 interface PreviewModalProps {
   id: string;
-  type: 'component' | 'page';
+  type: "component" | "page";
   data: RegistryItem;
   onClose: () => void;
 }
 
-type ViewportSize = 'desktop' | 'tablet' | 'mobile';
+type ViewportSize = "desktop" | "tablet" | "mobile";
 
 const VIEWPORT_WIDTHS: Record<ViewportSize, string> = {
-  desktop: '100%',
-  tablet: '768px',
-  mobile: '375px',
+  desktop: "100%",
+  tablet: "768px",
+  mobile: "375px",
 };
 
 /**
@@ -47,27 +47,27 @@ export function PreviewModal({ id, type, data, onClose }: PreviewModalProps) {
   // Close on Escape key
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         onClose();
       }
     },
-    [onClose]
+    [onClose],
   );
 
   useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown);
-    document.body.style.overflow = 'hidden';
+    document.addEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden";
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = '';
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
     };
   }, [handleKeyDown]);
 
   // Get page route from file path
   const getPageRoute = () => {
     if (data.route) return data.route;
-    if (data.file?.includes('src/app/')) {
+    if (data.file?.includes("src/app/")) {
       const match = data.file.match(/src\/app\/(.+?)\/page\.tsx?$/);
       if (match) return `/${match[1]}`;
     }
@@ -94,11 +94,14 @@ export function PreviewModal({ id, type, data, onClose }: PreviewModalProps) {
         <div className="h-1 w-full bg-[#BA0C2F]" />
         <header className="flex items-center justify-between border-b-2 border-black px-6 py-4 dark:border-gray-700">
           <div>
-            <h2 id="modal-title" className="text-lg font-bold text-black dark:text-white">
+            <h2
+              id="modal-title"
+              className="text-lg font-bold text-black dark:text-white"
+            >
               {data.name || id}
             </h2>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              {type === 'component' ? 'Component Preview' : 'Page Preview'}
+              {type === "component" ? "Component Preview" : "Page Preview"}
             </p>
           </div>
           <button
@@ -125,7 +128,7 @@ export function PreviewModal({ id, type, data, onClose }: PreviewModalProps) {
 
         {/* Preview Area */}
         <div className="flex-1 overflow-auto">
-          {type === 'component' ? (
+          {type === "component" ? (
             <ComponentPreview id={id} data={data} />
           ) : (
             <PagePreview route={getPageRoute()} />
@@ -147,7 +150,7 @@ export function PreviewModal({ id, type, data, onClose }: PreviewModalProps) {
 
             {/* Actions */}
             <div className="flex gap-2">
-              {type === 'page' && (
+              {type === "page" && (
                 <a
                   href={getPageRoute()}
                   target="_blank"
@@ -159,10 +162,12 @@ export function PreviewModal({ id, type, data, onClose }: PreviewModalProps) {
               )}
               <button
                 onClick={() => {
-                  const importPath = data.file?.replace(/^src\//, '@/').replace(/\.tsx?$/, '');
+                  const importPath = data.file
+                    ?.replace(/^src\//, "@/")
+                    .replace(/\.tsx?$/, "");
                   if (importPath) {
                     navigator.clipboard.writeText(
-                      `import { ${data.name || id} } from '${importPath}';`
+                      `import { ${data.name || id} } from '${importPath}';`,
                     );
                   }
                 }}
@@ -181,43 +186,47 @@ export function PreviewModal({ id, type, data, onClose }: PreviewModalProps) {
 // Hustle Together theme for Sandpack
 const hustleTheme: SandpackTheme = {
   colors: {
-    surface1: '#ffffff',
-    surface2: '#f8f8f8',
-    surface3: '#f0f0f0',
-    clickable: '#666666',
-    base: '#000000',
-    disabled: '#cccccc',
-    hover: '#BA0C2F',
-    accent: '#BA0C2F',
-    error: '#ef4444',
-    errorSurface: '#fef2f2',
+    surface1: "#ffffff",
+    surface2: "#f8f8f8",
+    surface3: "#f0f0f0",
+    clickable: "#666666",
+    base: "#000000",
+    disabled: "#cccccc",
+    hover: "#BA0C2F",
+    accent: "#BA0C2F",
+    error: "#ef4444",
+    errorSurface: "#fef2f2",
   },
   syntax: {
-    plain: '#000000',
-    comment: { color: '#666666', fontStyle: 'italic' },
-    keyword: '#BA0C2F',
-    tag: '#BA0C2F',
-    punctuation: '#000000',
-    definition: '#000000',
-    property: '#BA0C2F',
-    static: '#BA0C2F',
-    string: '#22c55e',
+    plain: "#000000",
+    comment: { color: "#666666", fontStyle: "italic" },
+    keyword: "#BA0C2F",
+    tag: "#BA0C2F",
+    punctuation: "#000000",
+    definition: "#000000",
+    property: "#BA0C2F",
+    static: "#BA0C2F",
+    string: "#22c55e",
   },
   font: {
     body: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif',
     mono: '"SF Mono", Monaco, Inconsolata, "Fira Code", monospace',
-    size: '13px',
-    lineHeight: '1.5',
+    size: "13px",
+    lineHeight: "1.5",
   },
 };
 
 // Generate example code for different component types
-function generateComponentCode(name: string, variants: string[], selectedVariant: string | null): string {
-  const variant = selectedVariant || variants[0] || 'primary';
+function generateComponentCode(
+  name: string,
+  variants: string[],
+  selectedVariant: string | null,
+): string {
+  const variant = selectedVariant || variants[0] || "primary";
 
   // Generate code based on component type
   switch (name.toLowerCase()) {
-    case 'button':
+    case "button":
       return `export default function App() {
   return (
     <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-start' }}>
@@ -228,9 +237,9 @@ function generateComponentCode(name: string, variants: string[], selectedVariant
         padding: '0.75rem 1.5rem',
         fontSize: '14px',
         fontWeight: 'bold',
-        border: '2px solid ${variant === 'ghost' ? '#000' : '#BA0C2F'}',
-        background: '${variant === 'ghost' ? 'transparent' : variant === 'secondary' ? '#fff' : '#BA0C2F'}',
-        color: '${variant === 'ghost' || variant === 'secondary' ? '#000' : '#fff'}',
+        border: '2px solid ${variant === "ghost" ? "#000" : "#BA0C2F"}',
+        background: '${variant === "ghost" ? "transparent" : variant === "secondary" ? "#fff" : "#BA0C2F"}',
+        color: '${variant === "ghost" || variant === "secondary" ? "#000" : "#fff"}',
         cursor: 'pointer',
       }}>
         Click Me
@@ -238,29 +247,33 @@ function generateComponentCode(name: string, variants: string[], selectedVariant
 
       {/* All variants */}
       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-        ${variants.map(v => `<button style={{
+        ${variants
+          .map(
+            (v) => `<button style={{
           padding: '0.5rem 1rem',
           fontSize: '12px',
           fontWeight: 'bold',
-          border: '2px solid ${v === 'ghost' ? '#000' : '#BA0C2F'}',
-          background: '${v === 'ghost' ? 'transparent' : v === 'secondary' ? '#fff' : '#BA0C2F'}',
-          color: '${v === 'ghost' || v === 'secondary' ? '#000' : '#fff'}',
+          border: '2px solid ${v === "ghost" ? "#000" : "#BA0C2F"}',
+          background: '${v === "ghost" ? "transparent" : v === "secondary" ? "#fff" : "#BA0C2F"}',
+          color: '${v === "ghost" || v === "secondary" ? "#000" : "#fff"}',
           cursor: 'pointer',
-        }}>${v}</button>`).join('\n        ')}
+        }}>${v}</button>`,
+          )
+          .join("\n        ")}
       </div>
     </div>
   );
 }`;
 
-    case 'card':
+    case "card":
       return `export default function App() {
   return (
     <div style={{ padding: '2rem', fontFamily: 'system-ui' }}>
       <h2 style={{ margin: '0 0 1rem' }}>Card - ${variant}</h2>
 
       <div style={{
-        border: '${variant === 'bordered' ? '2px solid #000' : '1px solid #ccc'}',
-        boxShadow: '${variant === 'elevated' ? '4px 4px 0 rgba(0,0,0,0.1)' : 'none'}',
+        border: '${variant === "bordered" ? "2px solid #000" : "1px solid #ccc"}',
+        boxShadow: '${variant === "elevated" ? "4px 4px 0 rgba(0,0,0,0.1)" : "none"}',
         background: '#fff',
         maxWidth: '320px',
       }}>
@@ -292,7 +305,7 @@ function generateComponentCode(name: string, variants: string[], selectedVariant
   );
 }`;
 
-    case 'formfield':
+    case "formfield":
       return `import { useState } from 'react';
 
 export default function App() {
@@ -310,10 +323,12 @@ export default function App() {
 
       <div style={{ marginBottom: '1rem' }}>
         <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '14px' }}>
-          ${variant === 'email' ? 'Email Address' : variant === 'password' ? 'Password' : variant === 'textarea' ? 'Message' : 'Username'}
+          ${variant === "email" ? "Email Address" : variant === "password" ? "Password" : variant === "textarea" ? "Message" : "Username"}
         </label>
 
-        ${variant === 'textarea' ? `<textarea
+        ${
+          variant === "textarea"
+            ? `<textarea
           value={value}
           onChange={handleChange}
           placeholder="Enter your message..."
@@ -326,11 +341,12 @@ export default function App() {
             fontFamily: 'inherit',
             boxSizing: 'border-box',
           }}
-        />` : `<input
+        />`
+            : `<input
           type="${variant}"
           value={value}
           onChange={handleChange}
-          placeholder="${variant === 'email' ? 'you@example.com' : variant === 'password' ? '••••••••' : 'Enter text...'}"
+          placeholder="${variant === "email" ? "you@example.com" : variant === "password" ? "••••••••" : "Enter text..."}"
           style={{
             width: '100%',
             padding: '0.75rem',
@@ -338,7 +354,8 @@ export default function App() {
             fontSize: '14px',
             boxSizing: 'border-box',
           }}
-        />`}
+        />`
+        }
 
         {error && (
           <p style={{ color: '#ef4444', fontSize: '12px', marginTop: '0.5rem' }}>
@@ -381,7 +398,7 @@ export default function App() {
         </div>
 
         <p style={{ margin: 0, fontWeight: 'bold' }}>${name} Component</p>
-        ${selectedVariant ? `<p style={{ margin: '0.5rem 0 0', color: '#BA0C2F', fontSize: '14px' }}>Variant: ${selectedVariant}</p>` : ''}
+        ${selectedVariant ? `<p style={{ margin: '0.5rem 0 0', color: '#BA0C2F', fontSize: '14px' }}>Variant: ${selectedVariant}</p>` : ""}
 
         <p style={{ margin: '1rem 0 0', color: '#666', fontSize: '14px' }}>
           Edit the code on the left to customize this component
@@ -399,21 +416,15 @@ export default function App() {
  * Uses CodeSandbox's Sandpack to render live, editable component previews.
  * No server/client boundary issues - runs entirely in the browser.
  */
-function ComponentPreview({
-  id,
-  data,
-}: {
-  id: string;
-  data: RegistryItem;
-}) {
+function ComponentPreview({ id, data }: { id: string; data: RegistryItem }) {
   const [selectedVariant, setSelectedVariant] = useState<string | null>(
-    data.variants?.[0] || null
+    data.variants?.[0] || null,
   );
 
   const componentCode = generateComponentCode(
     data.name || id,
     data.variants || [],
-    selectedVariant
+    selectedVariant,
   );
 
   return (
@@ -421,7 +432,9 @@ function ComponentPreview({
       {/* Variant Controls */}
       {data.variants && data.variants.length > 0 && (
         <div className="mb-4">
-          <h3 className="mb-3 text-sm font-bold text-black dark:text-white">Variants</h3>
+          <h3 className="mb-3 text-sm font-bold text-black dark:text-white">
+            Variants
+          </h3>
           <div className="flex flex-wrap gap-2">
             {data.variants.map((variant) => (
               <button
@@ -429,8 +442,8 @@ function ComponentPreview({
                 onClick={() => setSelectedVariant(variant)}
                 className={`border-2 px-3 py-1.5 text-sm font-medium transition-colors ${
                   selectedVariant === variant
-                    ? 'border-[#BA0C2F] bg-[#BA0C2F] text-white'
-                    : 'border-black bg-white text-black hover:border-[#BA0C2F] dark:border-gray-600 dark:bg-gray-700 dark:text-white'
+                    ? "border-[#BA0C2F] bg-[#BA0C2F] text-white"
+                    : "border-black bg-white text-black hover:border-[#BA0C2F] dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                 }`}
               >
                 {variant}
@@ -446,7 +459,7 @@ function ComponentPreview({
           template="react"
           theme={hustleTheme}
           files={{
-            '/App.js': componentCode,
+            "/App.js": componentCode,
           }}
           options={{
             showNavigator: false,
@@ -462,21 +475,31 @@ function ComponentPreview({
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         {data.props_interface && (
           <div className="border-2 border-black bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
-            <h3 className="mb-2 text-sm font-bold text-black dark:text-white">Props Interface</h3>
-            <code className="font-mono text-sm text-gray-700 dark:text-gray-300">{data.props_interface}</code>
+            <h3 className="mb-2 text-sm font-bold text-black dark:text-white">
+              Props Interface
+            </h3>
+            <code className="font-mono text-sm text-gray-700 dark:text-gray-300">
+              {data.props_interface}
+            </code>
           </div>
         )}
 
         {data.file && (
           <div className="border-2 border-black bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
-            <h3 className="mb-2 text-sm font-bold text-black dark:text-white">File Location</h3>
-            <code className="font-mono text-sm text-gray-700 dark:text-gray-300">{data.file}</code>
+            <h3 className="mb-2 text-sm font-bold text-black dark:text-white">
+              File Location
+            </h3>
+            <code className="font-mono text-sm text-gray-700 dark:text-gray-300">
+              {data.file}
+            </code>
           </div>
         )}
 
         {data.uses_components && data.uses_components.length > 0 && (
           <div className="border-2 border-black bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
-            <h3 className="mb-2 text-sm font-bold text-black dark:text-white">Uses Components</h3>
+            <h3 className="mb-2 text-sm font-bold text-black dark:text-white">
+              Uses Components
+            </h3>
             <div className="flex flex-wrap gap-1">
               {data.uses_components.map((comp) => (
                 <span
@@ -491,7 +514,9 @@ function ComponentPreview({
         )}
 
         <div className="border-2 border-black bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
-          <h3 className="mb-2 text-sm font-bold text-black dark:text-white">Powered by</h3>
+          <h3 className="mb-2 text-sm font-bold text-black dark:text-white">
+            Powered by
+          </h3>
           <p className="text-sm text-gray-600 dark:text-gray-400">
             <a
               href="https://sandpack.codesandbox.io/"
@@ -500,7 +525,8 @@ function ComponentPreview({
               className="text-[#BA0C2F] hover:underline"
             >
               Sandpack
-            </a> by CodeSandbox - Edit the code live!
+            </a>{" "}
+            by CodeSandbox - Edit the code live!
           </p>
         </div>
       </div>
@@ -515,17 +541,19 @@ function ComponentPreview({
  * Checks if the route exists before rendering to avoid 404s.
  */
 function PagePreview({ route }: { route: string }) {
-  const [viewport, setViewport] = useState<ViewportSize>('desktop');
-  const [routeStatus, setRouteStatus] = useState<'checking' | 'exists' | 'not-found'>('checking');
+  const [viewport, setViewport] = useState<ViewportSize>("desktop");
+  const [routeStatus, setRouteStatus] = useState<
+    "checking" | "exists" | "not-found"
+  >("checking");
 
   // Check if the route exists
   useEffect(() => {
     const checkRoute = async () => {
       try {
-        const res = await fetch(route, { method: 'HEAD' });
-        setRouteStatus(res.ok ? 'exists' : 'not-found');
+        const res = await fetch(route, { method: "HEAD" });
+        setRouteStatus(res.ok ? "exists" : "not-found");
       } catch {
-        setRouteStatus('not-found');
+        setRouteStatus("not-found");
       }
     };
     checkRoute();
@@ -536,11 +564,11 @@ function PagePreview({ route }: { route: string }) {
       {/* Responsive Size Controls */}
       <div className="mb-4 flex justify-center gap-2">
         <button
-          onClick={() => setViewport('desktop')}
+          onClick={() => setViewport("desktop")}
           className={`flex items-center gap-1.5 border-2 px-3 py-1.5 text-sm font-medium transition-colors ${
-            viewport === 'desktop'
-              ? 'border-[#BA0C2F] bg-[#BA0C2F] text-white'
-              : 'border-black bg-white text-black hover:border-[#BA0C2F] dark:border-gray-600 dark:bg-gray-700 dark:text-white'
+            viewport === "desktop"
+              ? "border-[#BA0C2F] bg-[#BA0C2F] text-white"
+              : "border-black bg-white text-black hover:border-[#BA0C2F] dark:border-gray-600 dark:bg-gray-700 dark:text-white"
           }`}
         >
           <svg
@@ -561,11 +589,11 @@ function PagePreview({ route }: { route: string }) {
           Desktop
         </button>
         <button
-          onClick={() => setViewport('tablet')}
+          onClick={() => setViewport("tablet")}
           className={`flex items-center gap-1.5 border-2 px-3 py-1.5 text-sm font-medium transition-colors ${
-            viewport === 'tablet'
-              ? 'border-[#BA0C2F] bg-[#BA0C2F] text-white'
-              : 'border-black bg-white text-black hover:border-[#BA0C2F] dark:border-gray-600 dark:bg-gray-700 dark:text-white'
+            viewport === "tablet"
+              ? "border-[#BA0C2F] bg-[#BA0C2F] text-white"
+              : "border-black bg-white text-black hover:border-[#BA0C2F] dark:border-gray-600 dark:bg-gray-700 dark:text-white"
           }`}
         >
           <svg
@@ -585,11 +613,11 @@ function PagePreview({ route }: { route: string }) {
           Tablet
         </button>
         <button
-          onClick={() => setViewport('mobile')}
+          onClick={() => setViewport("mobile")}
           className={`flex items-center gap-1.5 border-2 px-3 py-1.5 text-sm font-medium transition-colors ${
-            viewport === 'mobile'
-              ? 'border-[#BA0C2F] bg-[#BA0C2F] text-white'
-              : 'border-black bg-white text-black hover:border-[#BA0C2F] dark:border-gray-600 dark:bg-gray-700 dark:text-white'
+            viewport === "mobile"
+              ? "border-[#BA0C2F] bg-[#BA0C2F] text-white"
+              : "border-black bg-white text-black hover:border-[#BA0C2F] dark:border-gray-600 dark:bg-gray-700 dark:text-white"
           }`}
         >
           <svg
@@ -615,14 +643,19 @@ function PagePreview({ route }: { route: string }) {
         className="mx-auto overflow-hidden border-2 border-black bg-white transition-all duration-300 dark:border-gray-700"
         style={{ width: VIEWPORT_WIDTHS[viewport] }}
       >
-        {routeStatus === 'checking' ? (
+        {routeStatus === "checking" ? (
           <div className="flex h-[500px] items-center justify-center bg-gray-50 dark:bg-gray-800">
             <div className="text-center">
-              <div className="mx-auto mb-4 h-8 w-8 animate-spin border-4 border-gray-300 border-t-[#BA0C2F]" style={{ borderRadius: '50%' }} />
-              <p className="text-sm text-gray-600 dark:text-gray-400">Checking route...</p>
+              <div
+                className="mx-auto mb-4 h-8 w-8 animate-spin border-4 border-gray-300 border-t-[#BA0C2F]"
+                style={{ borderRadius: "50%" }}
+              />
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Checking route...
+              </p>
             </div>
           </div>
-        ) : routeStatus === 'not-found' ? (
+        ) : routeStatus === "not-found" ? (
           <div className="flex h-[500px] items-center justify-center bg-gray-50 dark:bg-gray-800">
             <div className="max-w-sm p-8 text-center">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center border-2 border-black bg-gray-100 dark:border-gray-600 dark:bg-gray-700">
@@ -643,12 +676,20 @@ function PagePreview({ route }: { route: string }) {
                   <line x1="9" x2="15" y1="15" y2="15" />
                 </svg>
               </div>
-              <h3 className="mb-2 font-bold text-black dark:text-white">Page Not Found</h3>
+              <h3 className="mb-2 font-bold text-black dark:text-white">
+                Page Not Found
+              </h3>
               <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
-                The route <code className="border border-gray-300 bg-gray-100 px-1 dark:border-gray-600 dark:bg-gray-700">{route}</code> doesn&apos;t exist yet.
+                The route{" "}
+                <code className="border border-gray-300 bg-gray-100 px-1 dark:border-gray-600 dark:bg-gray-700">
+                  {route}
+                </code>{" "}
+                doesn&apos;t exist yet.
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                Create the page at <code className="text-[#BA0C2F]">src/app{route}/page.tsx</code> to see the preview.
+                Create the page at{" "}
+                <code className="text-[#BA0C2F]">src/app{route}/page.tsx</code>{" "}
+                to see the preview.
               </p>
             </div>
           </div>
@@ -665,7 +706,7 @@ function PagePreview({ route }: { route: string }) {
       {/* Viewport Info */}
       <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
         Viewport: {VIEWPORT_WIDTHS[viewport]} • Route: {route}
-        {routeStatus === 'not-found' && (
+        {routeStatus === "not-found" && (
           <span className="ml-2 border border-yellow-400 bg-yellow-50 px-2 py-0.5 text-xs text-yellow-700 dark:border-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400">
             Route does not exist
           </span>

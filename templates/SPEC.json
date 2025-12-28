@@ -15,7 +15,10 @@
       "blocks_writes": true,
       "requires_user_confirmation": true,
       "required_state_fields": {
-        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete"] },
+        "status": {
+          "type": "enum",
+          "values": ["not_started", "in_progress", "complete"]
+        },
         "clarified": { "type": "string", "nullable": true },
         "search_variations": { "type": "array" },
         "user_question_asked": { "type": "boolean" },
@@ -34,13 +37,20 @@
       "blocks_writes": true,
       "requires_user_confirmation": true,
       "required_state_fields": {
-        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete"] },
+        "status": {
+          "type": "enum",
+          "values": ["not_started", "in_progress", "complete"]
+        },
         "confirmed": { "type": "boolean" },
         "user_question_asked": { "type": "boolean" },
         "user_confirmed": { "type": "boolean" },
         "phase_exit_confirmed": { "type": "boolean" }
       },
-      "completion_conditions": ["user_question_asked", "user_confirmed", "phase_exit_confirmed"]
+      "completion_conditions": [
+        "user_question_asked",
+        "user_confirmed",
+        "phase_exit_confirmed"
+      ]
     },
     "3_research_initial": {
       "number": 3,
@@ -52,14 +62,21 @@
       "blocks_writes": true,
       "requires_user_confirmation": true,
       "required_state_fields": {
-        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete"] },
+        "status": {
+          "type": "enum",
+          "values": ["not_started", "in_progress", "complete"]
+        },
         "sources": { "type": "array" },
         "summary_shown": { "type": "boolean" },
         "user_question_asked": { "type": "boolean" },
         "user_approved": { "type": "boolean" },
         "phase_exit_confirmed": { "type": "boolean" }
       },
-      "completion_conditions": ["sources.length > 0", "user_approved", "phase_exit_confirmed"]
+      "completion_conditions": [
+        "sources.length > 0",
+        "user_approved",
+        "phase_exit_confirmed"
+      ]
     },
     "4_interview": {
       "number": 4,
@@ -71,7 +88,10 @@
       "blocks_writes": true,
       "requires_user_confirmation": true,
       "required_state_fields": {
-        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete"] },
+        "status": {
+          "type": "enum",
+          "values": ["not_started", "in_progress", "complete"]
+        },
         "questions": { "type": "array" },
         "user_question_count": { "type": "number" },
         "structured_question_count": { "type": "number" },
@@ -80,7 +100,11 @@
         "user_completed": { "type": "boolean" },
         "phase_exit_confirmed": { "type": "boolean" }
       },
-      "completion_conditions": ["user_question_count >= 1", "user_completed", "phase_exit_confirmed"]
+      "completion_conditions": [
+        "user_question_count >= 1",
+        "user_completed",
+        "phase_exit_confirmed"
+      ]
     },
     "5_research_deep": {
       "number": 5,
@@ -92,7 +116,10 @@
       "blocks_writes": true,
       "requires_user_confirmation": true,
       "required_state_fields": {
-        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete", "skipped"] },
+        "status": {
+          "type": "enum",
+          "values": ["not_started", "in_progress", "complete", "skipped"]
+        },
         "sources": { "type": "array" },
         "proposed_searches": { "type": "array" },
         "approved_searches": { "type": "array" },
@@ -114,7 +141,10 @@
       "blocks_writes": true,
       "requires_user_confirmation": true,
       "required_state_fields": {
-        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete"] },
+        "status": {
+          "type": "enum",
+          "values": ["not_started", "in_progress", "complete"]
+        },
         "schema_file": { "type": "string", "nullable": true },
         "fields_count": { "type": "number" },
         "schema_shown": { "type": "boolean" },
@@ -122,7 +152,11 @@
         "user_confirmed": { "type": "boolean" },
         "phase_exit_confirmed": { "type": "boolean" }
       },
-      "completion_conditions": ["schema_file !== null", "user_confirmed", "phase_exit_confirmed"]
+      "completion_conditions": [
+        "schema_file !== null",
+        "user_confirmed",
+        "phase_exit_confirmed"
+      ]
     },
     "7_environment": {
       "number": 7,
@@ -134,7 +168,10 @@
       "blocks_writes": true,
       "requires_user_confirmation": true,
       "required_state_fields": {
-        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete"] },
+        "status": {
+          "type": "enum",
+          "values": ["not_started", "in_progress", "complete"]
+        },
         "keys_required": { "type": "array" },
         "keys_found": { "type": "array" },
         "keys_missing": { "type": "array" },
@@ -155,7 +192,10 @@
       "blocks_writes": true,
       "requires_user_confirmation": true,
       "required_state_fields": {
-        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete"] },
+        "status": {
+          "type": "enum",
+          "values": ["not_started", "in_progress", "complete"]
+        },
         "test_file": { "type": "string", "nullable": true },
         "test_count": { "type": "number" },
         "test_scenarios": { "type": "array" },
@@ -164,7 +204,12 @@
         "user_approved": { "type": "boolean" },
         "phase_exit_confirmed": { "type": "boolean" }
       },
-      "completion_conditions": ["test_file !== null", "test_count > 0", "user_approved", "phase_exit_confirmed"]
+      "completion_conditions": [
+        "test_file !== null",
+        "test_count > 0",
+        "user_approved",
+        "phase_exit_confirmed"
+      ]
     },
     "9_tdd_green": {
       "number": 9,
@@ -176,7 +221,10 @@
       "blocks_writes": true,
       "requires_user_confirmation": false,
       "required_state_fields": {
-        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete"] },
+        "status": {
+          "type": "enum",
+          "values": ["not_started", "in_progress", "complete"]
+        },
         "implementation_file": { "type": "string", "nullable": true },
         "all_tests_passing": { "type": "boolean" },
         "phase_exit_confirmed": { "type": "boolean" }
@@ -193,7 +241,10 @@
       "blocks_writes": true,
       "requires_user_confirmation": true,
       "required_state_fields": {
-        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete"] },
+        "status": {
+          "type": "enum",
+          "values": ["not_started", "in_progress", "complete"]
+        },
         "gaps_found": { "type": "number" },
         "gaps_fixed": { "type": "number" },
         "gaps_skipped": { "type": "number" },
@@ -205,7 +256,11 @@
         "user_decision": { "type": "string", "nullable": true },
         "phase_exit_confirmed": { "type": "boolean" }
       },
-      "completion_conditions": ["re_research_done", "user_decided", "phase_exit_confirmed"]
+      "completion_conditions": [
+        "re_research_done",
+        "user_decided",
+        "phase_exit_confirmed"
+      ]
     },
     "11_refactor": {
       "number": 11,
@@ -217,7 +272,10 @@
       "blocks_writes": false,
       "requires_user_confirmation": false,
       "required_state_fields": {
-        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete", "skipped"] },
+        "status": {
+          "type": "enum",
+          "values": ["not_started", "in_progress", "complete", "skipped"]
+        },
         "phase_exit_confirmed": { "type": "boolean" }
       },
       "completion_conditions": ["status === 'complete' || status === 'skipped'"]
@@ -232,7 +290,10 @@
       "blocks_writes": true,
       "requires_user_confirmation": true,
       "required_state_fields": {
-        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete"] },
+        "status": {
+          "type": "enum",
+          "values": ["not_started", "in_progress", "complete"]
+        },
         "files_updated": { "type": "array" },
         "manifest_updated": { "type": "boolean" },
         "openapi_updated": { "type": "boolean" },
@@ -242,7 +303,12 @@
         "user_confirmed": { "type": "boolean" },
         "phase_exit_confirmed": { "type": "boolean" }
       },
-      "completion_conditions": ["manifest_updated", "research_cached", "user_confirmed", "phase_exit_confirmed"]
+      "completion_conditions": [
+        "manifest_updated",
+        "research_cached",
+        "user_confirmed",
+        "phase_exit_confirmed"
+      ]
     },
     "13_completion": {
       "number": 13,
@@ -254,7 +320,10 @@
       "blocks_writes": false,
       "requires_user_confirmation": false,
       "required_state_fields": {
-        "status": { "type": "enum", "values": ["not_started", "in_progress", "complete"] },
+        "status": {
+          "type": "enum",
+          "values": ["not_started", "in_progress", "complete"]
+        },
         "all_tests_passing": { "type": "boolean" },
         "coverage_100_percent": { "type": "boolean" },
         "typescript_compiles": { "type": "boolean" },
@@ -265,7 +334,17 @@
         "phase_exit_confirmed": { "type": "boolean" }
       },
       "completion_conditions": ["all_tests_passing", "docs_updated"],
-      "output_generates": ["summary", "files_created", "files_modified", "test_commands", "curl_examples", "parameter_table", "scope_coverage", "research_cache_location", "next_steps"]
+      "output_generates": [
+        "summary",
+        "files_created",
+        "files_modified",
+        "test_commands",
+        "curl_examples",
+        "parameter_table",
+        "scope_coverage",
+        "research_cache_location",
+        "next_steps"
+      ]
     }
   },
 
@@ -390,13 +469,23 @@
       "track-tool-use.py": {
         "description": "Log research and tool usage, update state",
         "matcher": "WebSearch|WebFetch|mcp__context7.*|AskUserQuestion",
-        "actions": ["log_research", "update_state", "count_turns", "populate_research_index"]
+        "actions": [
+          "log_research",
+          "update_state",
+          "count_turns",
+          "populate_research_index"
+        ]
       },
       "periodic-reground.py": {
         "description": "Re-inject context every 7 turns",
         "matcher": "WebSearch|WebFetch|mcp__context7.*|AskUserQuestion",
         "interval": 7,
-        "actions": ["inject_endpoint", "inject_phase", "inject_decisions", "inject_freshness_warning"]
+        "actions": [
+          "inject_endpoint",
+          "inject_phase",
+          "inject_decisions",
+          "inject_freshness_warning"
+        ]
       },
       "verify-after-green.py": {
         "description": "Trigger Phase 10 verification after tests pass",
@@ -406,7 +495,13 @@
       "cache-research.py": {
         "description": "Create research cache files from state",
         "matcher": "Write|Edit",
-        "actions": ["create_sources_json", "create_interview_json", "create_schema_json", "update_current_md", "update_index_json"],
+        "actions": [
+          "create_sources_json",
+          "create_interview_json",
+          "create_schema_json",
+          "update_current_md",
+          "update_index_json"
+        ],
         "added_in": "3.6.7"
       },
       "track-scope-coverage.py": {
@@ -423,7 +518,12 @@
       },
       "session-logger.py": {
         "description": "Save session to .claude/api-sessions/",
-        "actions": ["copy_jsonl", "convert_to_markdown", "snapshot_state", "generate_summary"],
+        "actions": [
+          "copy_jsonl",
+          "convert_to_markdown",
+          "snapshot_state",
+          "generate_summary"
+        ],
         "added_in": "3.6.7"
       }
     }
@@ -486,20 +586,58 @@
   "state_structure": {
     "root": {
       "version": { "type": "string", "description": "State file version" },
-      "created_at": { "type": "string", "nullable": true, "description": "ISO timestamp of creation" },
-      "active_endpoint": { "type": "string", "nullable": true, "description": "Currently active endpoint name" },
-      "endpoints": { "type": "object", "description": "All endpoint workflows" },
-      "turn_count": { "type": "number", "description": "Total turns in session" },
+      "created_at": {
+        "type": "string",
+        "nullable": true,
+        "description": "ISO timestamp of creation"
+      },
+      "active_endpoint": {
+        "type": "string",
+        "nullable": true,
+        "description": "Currently active endpoint name"
+      },
+      "endpoints": {
+        "type": "object",
+        "description": "All endpoint workflows"
+      },
+      "turn_count": {
+        "type": "number",
+        "description": "Total turns in session"
+      },
       "last_turn_timestamp": { "type": "string", "nullable": true },
-      "research_queries": { "type": "array", "description": "All research queries made" },
-      "prompt_detections": { "type": "array", "description": "Detected API terms in prompts" },
-      "decisions_history": { "type": "array", "description": "History of interview decision changes", "added_in": "3.6.7" },
-      "reground_history": { "type": "array", "description": "History of re-grounding injections" }
+      "research_queries": {
+        "type": "array",
+        "description": "All research queries made"
+      },
+      "prompt_detections": {
+        "type": "array",
+        "description": "Detected API terms in prompts"
+      },
+      "decisions_history": {
+        "type": "array",
+        "description": "History of interview decision changes",
+        "added_in": "3.6.7"
+      },
+      "reground_history": {
+        "type": "array",
+        "description": "History of re-grounding injections"
+      }
     },
     "endpoint": {
-      "started_at": { "type": "string", "description": "ISO timestamp when workflow started" },
-      "status": { "type": "enum", "values": ["not_started", "in_progress", "complete"], "description": "Overall workflow status" },
-      "library": { "type": "string", "nullable": true, "description": "External library/API name" },
+      "started_at": {
+        "type": "string",
+        "description": "ISO timestamp when workflow started"
+      },
+      "status": {
+        "type": "enum",
+        "values": ["not_started", "in_progress", "complete"],
+        "description": "Overall workflow status"
+      },
+      "library": {
+        "type": "string",
+        "nullable": true,
+        "description": "External library/API name"
+      },
       "phases": { "type": "object", "description": "Phase-specific state" },
       "scope": {
         "type": "object",
@@ -574,7 +712,13 @@
       {
         "name": "summary",
         "title": "API Implementation Complete",
-        "includes": ["status", "phases_completed", "test_count", "coverage", "duration"]
+        "includes": [
+          "status",
+          "phases_completed",
+          "test_count",
+          "coverage",
+          "duration"
+        ]
       },
       {
         "name": "files_created",
@@ -607,7 +751,11 @@
       {
         "name": "scope_coverage",
         "title": "Implementation Scope",
-        "includes": ["implemented_features", "deferred_features", "coverage_percent"],
+        "includes": [
+          "implemented_features",
+          "deferred_features",
+          "coverage_percent"
+        ],
         "added_in": "3.6.7"
       },
       {

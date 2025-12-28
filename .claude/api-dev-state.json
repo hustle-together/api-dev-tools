@@ -74,6 +74,20 @@
         "confidence": "critical"
       },
       "injected": true
+    },
+    {
+      "timestamp": "2025-12-28T00:02:59.253624",
+      "prompt_preview": "What do you mean you added those other elements, like Brave and whatnot? I don't really get that. An...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "does sequential thinking come in here? i don't get",
+          "change a bunch of things. i just wanted you to do "
+        ],
+        "patterns_matched": ["question_pattern", "always_research"],
+        "confidence": "critical"
+      },
+      "injected": true
     }
   ],
   "phases": {

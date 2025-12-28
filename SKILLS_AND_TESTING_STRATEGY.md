@@ -9,46 +9,54 @@
 ## User-Reported Concerns (Original Messages)
 
 ### Message 1: Documentation Folder Structure
+
 > Just a couple of notes I noticed that the documentation, I'm not sure where it goes necessarily. If it makes a folder or something, but I think we should have our own directory for that. Currently in our research folder, we have index.json but not the folder within there, which I think would be more ideal.
 >
 > Additionally, I'm noticing once we make our plan in step three with that research, for instance, we might say, "Hey, do you want to do all these end points?" We might say there's 50 of them with 10 end points each or something. How does that get tracked?
 
 ### Message 2: Comprehensive Research Hook (Critical Gap)
+
 > I noticed the actual research was really good, but I missed some things. I think we need to add a hook to give it all comprehension of everything. Like, if I asked for a Fire Crawl API and did a decent amount of research for all the APIs, but the research wasn't broad enough. We almost need a deeper research. And we need to ensure that it can identify if there's a documentation page of full documentation, and then try and gain a deep understanding of the high-level hierarchy so we can have a better frame of mind on what's available. For instance, in Fire Crawl, unless it went to a specific page, it wouldn't know that there's a web hook available. We would need to be able to solve this. My thought process is by looking at this table of contents, and/or maybe using Fire Crawl within here as an API call can be helpful potentially, or just scraping what we consider to be the docs page by trying to identify that and seeing all the different elements possible throughout. And then even potentially doing a high-level scrape these pages with the lower-end model just to identify these things. And maybe that's an element too for certain scrapings or elements. Maybe we can have them on this step be run with a low-end model like Haiku or even an Open Router sort of thing where I connect it to a lower-end model with our own account. And basically that's the one that will identify all those things, get all the pages real quick, and then say "Hey, here's what's on there."
 
 ### Message 3: Autonomous Mode + Cost Tracking
+
 > Let's also have the ability to run a mode that lets it just go autonomously where the questions are answered by Claude. Also, we need cost tracking of the tokens and everything. So, we know what the session is and the session time at the end of how long it all took.
 
 ### Message 4: Auto-Approve Edits
+
 > I also need the ability to allow all the edits to happen by default without needing user permission every time.
 
 ### Message 5: Iterative Documentation
+
 > Okay, also I noticed the documentation happens at the end but not during the actual research phase, which is a little confusing to me. It feels like we need to iteratively add to the documentation so we don't lose track and we can see all the possibilities at a high level. Like I mentioned before, with understanding the full level of documentation and abilities. That way, then as we go through all those, we can iterate and add additional docs, docs, docs, and at the end, we can read the documentation as well and document of course everything with the API.
 
 ### Message 6: Template Output
+
 > The template is an output at the end with the API.
 
 ### Message 7: Registry Bugs
+
 > The registry didn't update at the end. And the registry doesn't actually get fetched into the template page, I notice. Also, in my example API test, and post and get. Want to make sure that all the examples have full examples so that when we test them, they give the example of how they should be run currently based on empty values. Also, some have get, some have post, some have both. I don't know that's a good example.
 
 ---
 
 ## How This Document Addresses Each Concern
 
-| Message | Concern | Addressed In | Status |
-|---------|---------|--------------|--------|
-| **1** | Documentation folder structure | Original Plan Document (Section 1) + Testing (Snapshot validation) | ✅ Planned |
-| **1** | Multi-endpoint tracking | Original Plan Document (Section 3) + Roadmap v3.11.1 | ✅ Designed |
-| **2** | Comprehensive research (ToC scraping, Firecrawl) | Original Plan Document (Section 2) + Roadmap v3.11.0 | 🎯 Critical - P0 |
-| **2** | Use low-cost models (Haiku) for breadth | Testing Strategy (QA System, Cost optimization) | ✅ Recommended |
-| **3** | Autonomous mode | Original Plan Document (Section 4) + Answer file approach | ⚠️ Hybrid solution |
-| **3** | Cost & time tracking | Original Plan Document (Section 5) + Roadmap v3.10.2 | ✅ Essential - P0 |
-| **4** | Auto-approve edits | Original Plan Document (Section 6) + Pattern-based safety | ✅ Designed |
-| **5** | Iterative documentation | Original Plan Document (Section 7) + Roadmap v3.11.0 | ✅ Better UX - P1 |
-| **6** | Template output | Original Plan Document (Section 8) | ❓ Needs clarification |
-| **7** | Registry bugs (updates, fetch, examples) | Original Plan Document (Section 9) + Roadmap v3.10.2 | 🐛 Broken - P0 |
+| Message | Concern                                          | Addressed In                                                       | Status                 |
+| ------- | ------------------------------------------------ | ------------------------------------------------------------------ | ---------------------- |
+| **1**   | Documentation folder structure                   | Original Plan Document (Section 1) + Testing (Snapshot validation) | ✅ Planned             |
+| **1**   | Multi-endpoint tracking                          | Original Plan Document (Section 3) + Roadmap v3.11.1               | ✅ Designed            |
+| **2**   | Comprehensive research (ToC scraping, Firecrawl) | Original Plan Document (Section 2) + Roadmap v3.11.0               | 🎯 Critical - P0       |
+| **2**   | Use low-cost models (Haiku) for breadth          | Testing Strategy (QA System, Cost optimization)                    | ✅ Recommended         |
+| **3**   | Autonomous mode                                  | Original Plan Document (Section 4) + Answer file approach          | ⚠️ Hybrid solution     |
+| **3**   | Cost & time tracking                             | Original Plan Document (Section 5) + Roadmap v3.10.2               | ✅ Essential - P0      |
+| **4**   | Auto-approve edits                               | Original Plan Document (Section 6) + Pattern-based safety          | ✅ Designed            |
+| **5**   | Iterative documentation                          | Original Plan Document (Section 7) + Roadmap v3.11.0               | ✅ Better UX - P1      |
+| **6**   | Template output                                  | Original Plan Document (Section 8)                                 | ❓ Needs clarification |
+| **7**   | Registry bugs (updates, fetch, examples)         | Original Plan Document (Section 9) + Roadmap v3.10.2               | 🐛 Broken - P0         |
 
 **Legend:**
+
 - ✅ = Fully addressed with implementation plan
 - 🎯 = Highest priority, most critical
 - 🐛 = Bug that needs immediate fix
@@ -62,6 +70,7 @@
 This document explores how **Claude Code Skills** (launched October 2025) affect our api-dev-tools architecture and provides comprehensive testing strategies to validate workflows without incurring high costs.
 
 **Key Findings:**
+
 - Skills are **model-invoked** (Claude decides when to use) vs our **user-invoked** commands
 - Current architecture should evolve to hybrid: Commands + Skills
 - Multiple low-cost testing strategies exist (hook unit tests, demo snapshots, QA systems)
@@ -77,6 +86,7 @@ This document explores how **Claude Code Skills** (launched October 2025) affect
 Agent Skills are **model-invoked** modular capabilities that extend Claude's functionality in Claude Code. Unlike slash commands (user-invoked), Skills are autonomously triggered by Claude based on request context and the Skill's description.
 
 **Key Characteristics:**
+
 - Discoverable capabilities packaged in organized folders
 - Consist of a `SKILL.md` file with instructions plus optional supporting files
 - Claude decides when to use them based on your request and the Skill's description
@@ -84,12 +94,12 @@ Agent Skills are **model-invoked** modular capabilities that extend Claude's fun
 
 ### Model-Invoked vs User-Invoked
 
-| Feature | Type | Invocation | Use Case |
-|---------|------|-----------|----------|
-| **Skills** | Model-invoked | Claude decides autonomously | Capability extensions |
-| **Slash commands** | User-invoked | Explicit `/command` | Direct user actions |
-| **Hooks** | Programmatic | Triggered by SDK/plugins | Custom workflows |
-| **Plugins** | Distribution mechanism | Installed by users | Bundled capabilities and Skills |
+| Feature            | Type                   | Invocation                  | Use Case                        |
+| ------------------ | ---------------------- | --------------------------- | ------------------------------- |
+| **Skills**         | Model-invoked          | Claude decides autonomously | Capability extensions           |
+| **Slash commands** | User-invoked           | Explicit `/command`         | Direct user actions             |
+| **Hooks**          | Programmatic           | Triggered by SDK/plugins    | Custom workflows                |
+| **Plugins**        | Distribution mechanism | Installed by users          | Bundled capabilities and Skills |
 
 ---
 
@@ -98,6 +108,7 @@ Agent Skills are **model-invoked** modular capabilities that extend Claude's fun
 ### Current Architecture (v3.10.x)
 
 **Commands (User-Invoked):**
+
 ```bash
 /hustle-api-create brandfetch
 /hustle-ui-create Button
@@ -105,6 +116,7 @@ Agent Skills are **model-invoked** modular capabilities that extend Claude's fun
 ```
 
 **Hooks (Event-Triggered Enforcement):**
+
 ```python
 enforce-research.py     # Blocks Write before research
 enforce-interview.py    # Blocks Write before interview
@@ -114,6 +126,7 @@ verify-after-green.py   # Triggers after tests pass
 ### Future Architecture Proposal
 
 #### Immediate (v3.10.2) - NO CHANGE
+
 **Reason:** Skills are brand new (Oct 2025), not battle-tested yet. Keep commands for stability.
 
 #### Medium-term (v3.11.0) - HYBRID APPROACH
@@ -121,17 +134,20 @@ verify-after-green.py   # Triggers after tests pass
 Offer both Commands and Skills:
 
 **1. Commands (Explicit):**
+
 ```bash
 /hustle-api-create brandfetch
 ```
 
 **2. Skills (Autonomous):**
+
 ```bash
 User: "I need to integrate the Brandfetch API"
 Claude: (Detects API integration → uses api-development Skill → runs 13 phases)
 ```
 
 **Directory Structure:**
+
 ```
 .claude/skills/api-development/
 ├── SKILL.md              # Main skill definition
@@ -142,6 +158,7 @@ Claude: (Detects API integration → uses api-development Skill → runs 13 phas
 ```
 
 **SKILL.md Example:**
+
 ```yaml
 ---
 name: api-development
@@ -171,13 +188,14 @@ For detailed phase breakdown, see [REFERENCE.md](REFERENCE.md).
 
 Replace hooks with Skills where appropriate:
 
-| Current Hook | Future Skill | Benefit |
-|--------------|--------------|---------|
-| `enforce-research.py` | `research-validator` Skill | Claude understands WHY research is needed |
-| `enforce-interview.py` | `interview-conductor` Skill | More intelligent question generation |
-| `verify-after-green.py` | `implementation-verifier` Skill | Better diff analysis |
+| Current Hook            | Future Skill                    | Benefit                                   |
+| ----------------------- | ------------------------------- | ----------------------------------------- |
+| `enforce-research.py`   | `research-validator` Skill      | Claude understands WHY research is needed |
+| `enforce-interview.py`  | `interview-conductor` Skill     | More intelligent question generation      |
+| `verify-after-green.py` | `implementation-verifier` Skill | Better diff analysis                      |
 
 **Why Skills > Hooks:**
+
 - **Context-aware:** Skills see the full conversation
 - **Flexible:** Can use multiple tools, not just block/allow
 - **Composable:** Skills can invoke other skills
@@ -190,6 +208,7 @@ Replace hooks with Skills where appropriate:
 ### The Problem
 
 Running full workflow tests incurs significant costs:
+
 - Full `/hustle-api-create` run: ~$1.70
 - 10 test runs: ~$17.00
 - CI/CD with 50 runs/week: ~$850/week
@@ -203,6 +222,7 @@ Running full workflow tests incurs significant costs:
 **What:** Self-hosted automated testing system for Claude Code workflows
 
 **Setup:**
+
 ```bash
 npm install -g @dylanredfield/claude-qa-system
 ```
@@ -210,6 +230,7 @@ npm install -g @dylanredfield/claude-qa-system
 **How it works:**
 
 1. Define test cases in YAML:
+
 ```yaml
 # tests/api-workflows.yaml
 tests:
@@ -243,11 +264,13 @@ tests:
 ```
 
 2. Run tests:
+
 ```bash
 claude-qa-system run tests/api-workflows.yaml
 ```
 
 3. View results:
+
 ```
 ═══════════════════════════════════════════════
 Test: API Create - Brandfetch
@@ -292,6 +315,7 @@ diff <(jq -S . tests/snapshots/brandfetch-baseline.json) \
 ```
 
 **What to compare:**
+
 ```json
 {
   "phases_completed": 13,
@@ -300,16 +324,17 @@ diff <(jq -S . tests/snapshots/brandfetch-baseline.json) \
     "src/app/api/v2/brandfetch/__tests__/brandfetch.test.ts"
   ],
   "registry_updated": true,
-  "cost_usd": 1.70,
+  "cost_usd": 1.7,
   "duration_minutes": 45
 }
 ```
 
 **Validation script:**
+
 ```javascript
 // scripts/validate-snapshot.js
-const baseline = require('./tests/snapshots/brandfetch-baseline.json');
-const latest = require('./.claude/demo-sessions/brandfetch-latest.json');
+const baseline = require("./tests/snapshots/brandfetch-baseline.json");
+const latest = require("./.claude/demo-sessions/brandfetch-latest.json");
 
 function validate() {
   // Check phases
@@ -329,16 +354,19 @@ function validate() {
 
   // Check cost threshold
   if (latest.cost_usd > baseline.cost_usd * 1.2) {
-    console.warn(`Cost increased: $${latest.cost_usd} (baseline: $${baseline.cost_usd})`);
+    console.warn(
+      `Cost increased: $${latest.cost_usd} (baseline: $${baseline.cost_usd})`,
+    );
   }
 
-  console.log('✓ Snapshot validation passed');
+  console.log("✓ Snapshot validation passed");
 }
 
 validate();
 ```
 
 **Cost:**
+
 - Baseline generation: $1.70 (one-time)
 - Snapshot comparisons: $0 (file diffs)
 
@@ -420,6 +448,7 @@ def test_blocks_edit_without_interview():
 ```
 
 **Run tests:**
+
 ```bash
 # Install pytest
 pip install pytest pytest-cov
@@ -465,7 +494,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Install dependencies
         run: |
@@ -523,6 +552,7 @@ jobs:
 ```
 
 **Cost:**
+
 - GitHub Actions: Free (2,000 minutes/month)
 - Claude API calls: ~$0.50/run in demo mode
 
@@ -547,6 +577,7 @@ diff tests/snapshots/baseline.json .claude/demo-sessions/test-api.json
 ```
 
 **Files to create:**
+
 - `tests/test_hooks/test_enforce_research.py`
 - `tests/test_hooks/test_enforce_interview.py`
 - `tests/test_hooks/test_verify_after_green.py`
@@ -583,6 +614,7 @@ claude-qa-system run tests/workflow-suite.yaml
 ```
 
 **Test cases to create:**
+
 1. ✅ All 13 phases complete
 2. ✅ Registry updates correctly
 3. ✅ Cost tracking records data
@@ -604,6 +636,7 @@ claude-qa-system run tests/workflow-suite.yaml
 ```
 
 **Estimated costs:**
+
 - Per PR: ~$2.50 (5 APIs × $0.50 demo mode)
 - Per day (10 PRs): ~$25
 - Per month: ~$750 (vs $850 with full runs)
@@ -619,6 +652,7 @@ claude-qa-system run tests/workflow-suite.yaml
 **Focus:** Fix bugs + Add testing infrastructure
 
 **Tasks:**
+
 1. Fix registry update hook
 2. Fix example value generation
 3. Add cost/time tracking
@@ -628,11 +662,13 @@ claude-qa-system run tests/workflow-suite.yaml
 7. **NEW:** Document testing strategy
 
 **Testing additions:**
+
 - Hook unit tests with pytest (FREE)
 - Demo snapshot baselines ($1.70 one-time)
 - State validation scripts (FREE)
 
 **Deliverables:**
+
 - `tests/test_hooks/` directory with full coverage
 - `scripts/validate-snapshot.js`
 - GitHub Actions workflow file
@@ -645,6 +681,7 @@ claude-qa-system run tests/workflow-suite.yaml
 **Focus:** Research overhaul + Skills introduction
 
 **Tasks:**
+
 1. Implement map-reduce research pattern
 2. Add ToC scraping (Firecrawl integration)
 3. Add feature matrix generation
@@ -655,6 +692,7 @@ claude-qa-system run tests/workflow-suite.yaml
 8. **NEW:** Set up CI/CD workflow tests
 
 **New architecture additions:**
+
 - `.claude/skills/api-development/SKILL.md`
 - `.claude/skills/ui-development/SKILL.md`
 - `.claude/skills/combine-development/SKILL.md`
@@ -662,6 +700,7 @@ claude-qa-system run tests/workflow-suite.yaml
 - `.github/workflows/test-api-workflows.yml`
 
 **Testing enhancements:**
+
 - QA system integration ($0.10/run)
 - CI/CD automation (free)
 - Comprehensive test suite
@@ -673,6 +712,7 @@ claude-qa-system run tests/workflow-suite.yaml
 **Focus:** UX enhancements
 
 **Tasks:**
+
 1. Multi-endpoint selection UI
 2. Auto-approve with patterns
 3. Answer file support (proto-autonomous)
@@ -680,6 +720,7 @@ claude-qa-system run tests/workflow-suite.yaml
 5. Update all command docs (api, ui, combine)
 
 **Testing:**
+
 - Test multi-endpoint flows
 - Validate answer file processing
 - Verify auto-approve patterns
@@ -691,6 +732,7 @@ claude-qa-system run tests/workflow-suite.yaml
 **Focus:** Skills-first architecture + Advanced features
 
 **Tasks:**
+
 1. Replace hooks with Skills where beneficial
 2. Rollback/undo support
 3. Visual diff view
@@ -699,11 +741,13 @@ claude-qa-system run tests/workflow-suite.yaml
 6. Schema validation tests
 
 **Architecture shift:**
+
 - `enforce-research.py` → `research-validator` Skill
 - `enforce-interview.py` → `interview-conductor` Skill
 - `verify-after-green.py` → `implementation-verifier` Skill
 
 **Testing:**
+
 - Full automated test suite
 - Performance benchmarks
 - Cost optimization analysis
@@ -714,24 +758,24 @@ claude-qa-system run tests/workflow-suite.yaml
 
 ### Testing Approaches
 
-| Method | Cost/Run | Setup Time | Coverage | CI/CD Ready | Recommended For |
-|--------|----------|------------|----------|-------------|-----------------|
-| Hook unit tests | $0 | 2 hours | Hooks only | ✅ Yes | Development |
-| Demo snapshots | $0 (after $1.70 baseline) | 1 hour | Full workflow | ✅ Yes | Regression |
-| QA System | $0.10 | 4 hours | End-to-end | ✅ Yes | CI/CD |
-| GitHub Actions | Free (+ API) | 6 hours | Integration | ✅ Yes | Pull requests |
-| Manual testing | $1.70 | 0 | Full workflow | ❌ No | Debugging |
+| Method          | Cost/Run                  | Setup Time | Coverage      | CI/CD Ready | Recommended For |
+| --------------- | ------------------------- | ---------- | ------------- | ----------- | --------------- |
+| Hook unit tests | $0                        | 2 hours    | Hooks only    | ✅ Yes      | Development     |
+| Demo snapshots  | $0 (after $1.70 baseline) | 1 hour     | Full workflow | ✅ Yes      | Regression      |
+| QA System       | $0.10                     | 4 hours    | End-to-end    | ✅ Yes      | CI/CD           |
+| GitHub Actions  | Free (+ API)              | 6 hours    | Integration   | ✅ Yes      | Pull requests   |
+| Manual testing  | $1.70                     | 0          | Full workflow | ❌ No       | Debugging       |
 
 ### Skills vs Commands
 
-| Aspect | Commands | Skills | Hybrid |
-|--------|----------|--------|--------|
-| **User invocation** | Explicit `/command` | Natural language | Both |
-| **Learning curve** | Must memorize syntax | Intuitive | Easy onboarding |
-| **Reliability** | 100% predictable | ~90% (model decides) | Best of both |
-| **Flexibility** | Fixed workflow | Adaptive | Adaptive + fallback |
-| **Implementation** | Already done | Need to create | Medium effort |
-| **Recommended** | Legacy support | New features | **Yes** |
+| Aspect              | Commands             | Skills               | Hybrid              |
+| ------------------- | -------------------- | -------------------- | ------------------- |
+| **User invocation** | Explicit `/command`  | Natural language     | Both                |
+| **Learning curve**  | Must memorize syntax | Intuitive            | Easy onboarding     |
+| **Reliability**     | 100% predictable     | ~90% (model decides) | Best of both        |
+| **Flexibility**     | Fixed workflow       | Adaptive             | Adaptive + fallback |
+| **Implementation**  | Already done         | Need to create       | Medium effort       |
+| **Recommended**     | Legacy support       | New features         | **Yes**             |
 
 ---
 
@@ -777,12 +821,14 @@ claude-qa-system run tests/workflow-suite.yaml
 ### Q: Will Skills replace all hooks?
 
 **A:** No. Some hooks are better:
+
 - **Keep hooks for:** Hard enforcement (blocking operations)
 - **Use Skills for:** Intelligent assistance (validation, verification)
 
 ### Q: How much will testing cost?
 
 **A:** With proposed strategy:
+
 - Development: $0 (hook tests)
 - One-time baselines: ~$10 (5-6 APIs)
 - CI/CD per month: ~$750 (vs $850 manual)
@@ -797,17 +843,20 @@ claude-qa-system run tests/workflow-suite.yaml
 ## Resources & Sources
 
 ### Official Documentation
+
 - [Agent Skills - Claude Code Docs](https://docs.claude.com/en/docs/claude-code/skills)
 - [Agent Skills - Engineering Blog](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)
 - [Claude Code Best Practices](https://www.anthropic.com/engineering/claude-code-best-practices)
 
 ### Skills Resources
+
 - [Official Skills GitHub Repository](https://github.com/anthropics/skills)
 - [Awesome Claude Skills Collection](https://github.com/travisvn/awesome-claude-skills)
 - [Claude Skills Tutorial](https://www.siddharthbharath.com/claude-skills/)
 - [How to Create Claude Skill Guide](https://skywork.ai/blog/ai-agent/how-to-create-claude-skill-step-by-step-guide/)
 
 ### Testing Resources
+
 - [Claude QA System MCP](https://lobehub.com/mcp/dylanredfield-claude-qa-system)
 - [Claude Code Testing Automation Playbook](https://skywork.ai/blog/agent/claude-code-2025-testing-automation-playbook/)
 - [GitHub Actions + Claude Code Guide](https://smartscope.blog/en/ai-development/github-actions-automated-testing-claude-code-2025/)
@@ -852,12 +901,14 @@ Clarify ambiguous terms before research begins.
 
 **Example:**
 ```
+
 User: "I want to integrate the AI API"
 Claude: Which AI API do you mean?
 [1] OpenAI API
 [2] Anthropic Claude API
 [3] Google Gemini API
 [4] Cohere API
+
 ```
 
 ### Phase 2: Scope Confirmation
@@ -930,7 +981,9 @@ Final summary shows total cost and time spent.
 
 **Input:**
 ```
+
 User: "Integrate the Brandfetch API to get company logos"
+
 ```
 
 **Skill execution:**
@@ -947,7 +1000,9 @@ User: "Integrate the Brandfetch API to get company logos"
 
 **Input:**
 ```
+
 User: "Add Firecrawl for web scraping"
+
 ```
 
 **Skill execution:**

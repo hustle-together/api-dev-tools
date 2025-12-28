@@ -12,9 +12,11 @@
 We have TWO main planning documents - here's what each one does:
 
 ### 1. **ENHANCEMENT_ROADMAP_v3.11.0.md** (Strategic Overview)
+
 **File:** [ENHANCEMENT_ROADMAP_v3.11.0.md](./ENHANCEMENT_ROADMAP_v3.11.0.md)
 **Purpose:** High-level strategic document analyzing the gaps and the big picture
 **What's Inside:**
+
 - Analysis of 9 user-reported gaps
 - Strategic shift to Skills-first architecture
 - Tool comparisons (Greptile vs CodeRabbit vs Graphite)
@@ -23,9 +25,11 @@ We have TWO main planning documents - here's what each one does:
 - **Why it exists:** This is the "why" document - it explains the strategic decisions
 
 ### 2. **COMPREHENSIVE_ENHANCEMENT_PLAN.md** (Implementation Plan)
+
 **File:** [COMPREHENSIVE_ENHANCEMENT_PLAN.md](./COMPREHENSIVE_ENHANCEMENT_PLAN.md)
 **Purpose:** Detailed implementation plan with step-by-step instructions
 **What's Inside:**
+
 - 9 implementation phases with hour estimates
 - Exact file changes needed (what to modify, what to create)
 - Code examples and implementation strategies
@@ -34,6 +38,7 @@ We have TWO main planning documents - here's what each one does:
 - **Why it exists:** This is the "how" document - it tells you exactly how to implement everything
 
 **TL;DR:**
+
 - Read **ENHANCEMENT_ROADMAP** to understand the strategy and why we're doing this
 - Read **COMPREHENSIVE_ENHANCEMENT_PLAN** when you're ready to start coding
 
@@ -44,12 +49,14 @@ We have TWO main planning documents - here's what each one does:
 Version 3.2 (marketed as v3.12.0) will include ALL of these features:
 
 ### ✅ Already Complete (v3.11.0 Phase 1)
+
 - Skills Migration (23 skills in SKILL.md format)
 - marketplace.json for plugin distribution
 - 18 hooks packaged
 - Cross-platform compatibility
 
 ### 🚧 Planned (v3.11.0 - v3.12.0)
+
 1. **TodoWrite Integration** - Real-time visual progress tracking
 2. **Async Parallel Research** - 3x faster with background agents
 3. **Multi-Strategy Research** - 95% coverage (Context7 + WebSearch + Skills)
@@ -65,12 +72,12 @@ Version 3.2 (marketed as v3.12.0) will include ALL of these features:
 
 ### Main Planning Documents
 
-| File | Lines | Purpose | Read When... |
-|------|-------|---------|--------------|
-| [ENHANCEMENT_ROADMAP_v3.11.0.md](./ENHANCEMENT_ROADMAP_v3.11.0.md) | 828 | Strategic overview, tool comparisons, version roadmaps | You want to understand the "why" |
-| [COMPREHENSIVE_ENHANCEMENT_PLAN.md](./COMPREHENSIVE_ENHANCEMENT_PLAN.md) | 721 | Implementation plan, 9 phases, file changes, timelines | You're ready to start coding |
-| [.skills/update-todos/SKILL.md](./.skills/update-todos/SKILL.md) | 228 | TodoWrite helper skill for all 4 workflows | You're implementing TodoWrite |
-| **VERSION_3.2_OVERVIEW.md** | - | **This file - your navigation hub** | You're confused and need orientation |
+| File                                                                     | Lines | Purpose                                                | Read When...                         |
+| ------------------------------------------------------------------------ | ----- | ------------------------------------------------------ | ------------------------------------ |
+| [ENHANCEMENT_ROADMAP_v3.11.0.md](./ENHANCEMENT_ROADMAP_v3.11.0.md)       | 828   | Strategic overview, tool comparisons, version roadmaps | You want to understand the "why"     |
+| [COMPREHENSIVE_ENHANCEMENT_PLAN.md](./COMPREHENSIVE_ENHANCEMENT_PLAN.md) | 721   | Implementation plan, 9 phases, file changes, timelines | You're ready to start coding         |
+| [.skills/update-todos/SKILL.md](./.skills/update-todos/SKILL.md)         | 228   | TodoWrite helper skill for all 4 workflows             | You're implementing TodoWrite        |
+| **VERSION_3.2_OVERVIEW.md**                                              | -     | **This file - your navigation hub**                    | You're confused and need orientation |
 
 ---
 
@@ -79,10 +86,12 @@ Version 3.2 (marketed as v3.12.0) will include ALL of these features:
 We created 4 HTML demos to visualize how everything will work:
 
 ### 1. **Comprehensive Execution Trace** (RECOMMENDED - COMPLETE ROADMAP)
+
 **File:** [demo/execution-trace-COMPREHENSIVE.html](./demo/execution-trace-COMPREHENSIVE.html)
 **Lines:** 1,021
 **Shows:** ALL v3.11.0 + v3.12.0 features in terminal-style execution
 **Features:**
+
 - ✅ TodoWrite (14 phases including Phase 14)
 - ✅ Async Parallel Research (3 background agents with Ctrl+B)
 - ✅ Multi-Strategy Research (Context7 70% + WebSearch 85% + Skills 95%)
@@ -98,10 +107,12 @@ We created 4 HTML demos to visualize how everything will work:
 ---
 
 ### 2. **Execution Trace Simulation** (TodoWrite Only)
+
 **File:** [demo/execution-trace-simulation.html](./demo/execution-trace-simulation.html)
 **Lines:** 802
 **Shows:** v3.11.0 TodoWrite integration only
 **Features:**
+
 - ✅ TodoWrite sidebar with checkboxes
 - ✅ Hooks, tools, interviews, state updates
 - ✅ User vs agent differentiation
@@ -112,10 +123,12 @@ We created 4 HTML demos to visualize how everything will work:
 ---
 
 ### 3. **Full Workflow Simulation** (Phase Cards View)
+
 **File:** [demo/full-workflow-simulation.html](./demo/full-workflow-simulation.html)
 **Lines:** 1,343
 **Shows:** All 4 workflows with TodoWrite in card format
 **Features:**
+
 - ✅ Phase cards for API Create, UI Component, UI Page, Combine APIs
 - ✅ TodoWrite sidebar with progress bar
 - ✅ Detailed step-by-step instructions per phase
@@ -126,10 +139,12 @@ We created 4 HTML demos to visualize how everything will work:
 ---
 
 ### 4. **TodoWrite Concept Demo**
+
 **File:** [demo/todowrite-workflow-demo.html](./demo/todowrite-workflow-demo.html)
 **Lines:** 611
 **Shows:** TodoWrite concept and interaction
 **Features:**
+
 - ✅ All 4 workflow modes
 - ✅ Real-time checkbox updates
 - ✅ Phase progression animation
@@ -142,17 +157,17 @@ We created 4 HTML demos to visualize how everything will work:
 
 ### Current Status (v3.11.0 Phase 1 Complete)
 
-| Phase | Feature | Effort | Status | Files Affected |
-|-------|---------|--------|--------|----------------|
-| **1** | Skills Migration | - | ✅ **COMPLETE** | 23 skills converted |
-| **2** | TodoWrite Integration | 6-8h | 📝 Planned | 4 workflow skills |
-| **3** | Async Parallel Research | 8-10h | 📝 Planned | api-create skill |
-| **4** | Multi-Strategy Research | 6-8h | 📝 Planned | api-create skill |
-| **5** | Skill-Discovery Meta-Skill | 4-6h | 📝 Planned | 1 new skill |
-| **6** | Per-API Research Folders | 4-5h | 📝 Planned | All hooks |
-| **7** | Cost/Time Tracking | 6-8h | 📝 Planned | 1 new hook |
-| **8** | Phase 14: Code Review | 10-12h | 📝 Planned | 1 new phase |
-| **9** | Stats & Rename Commands | 3-4h | 📝 Planned | 2 new skills |
+| Phase | Feature                    | Effort | Status          | Files Affected      |
+| ----- | -------------------------- | ------ | --------------- | ------------------- |
+| **1** | Skills Migration           | -      | ✅ **COMPLETE** | 23 skills converted |
+| **2** | TodoWrite Integration      | 6-8h   | 📝 Planned      | 4 workflow skills   |
+| **3** | Async Parallel Research    | 8-10h  | 📝 Planned      | api-create skill    |
+| **4** | Multi-Strategy Research    | 6-8h   | 📝 Planned      | api-create skill    |
+| **5** | Skill-Discovery Meta-Skill | 4-6h   | 📝 Planned      | 1 new skill         |
+| **6** | Per-API Research Folders   | 4-5h   | 📝 Planned      | All hooks           |
+| **7** | Cost/Time Tracking         | 6-8h   | 📝 Planned      | 1 new hook          |
+| **8** | Phase 14: Code Review      | 10-12h | 📝 Planned      | 1 new phase         |
+| **9** | Stats & Rename Commands    | 3-4h   | 📝 Planned      | 2 new skills        |
 
 **Total Effort:** 48-61 hours (6-8 weeks across 4 sprints)
 
@@ -186,21 +201,23 @@ We created 4 HTML demos to visualize how everything will work:
 
 ## 🎯 Success Metrics (What We're Aiming For)
 
-| Metric | Current | Target | Improvement |
-|--------|---------|--------|-------------|
-| Research Coverage | 60% | 95% | +58% |
-| Research Time | 20-30 min | 8-10 min | -60% |
-| Cost Per Endpoint | $1.89 | $1.42 | -25% |
-| User Abandonment | Baseline | -40% | TodoWrite visibility |
-| Bug Detection Rate | Baseline | 82% | Greptile Phase 14 |
+| Metric             | Current   | Target   | Improvement          |
+| ------------------ | --------- | -------- | -------------------- |
+| Research Coverage  | 60%       | 95%      | +58%                 |
+| Research Time      | 20-30 min | 8-10 min | -60%                 |
+| Cost Per Endpoint  | $1.89     | $1.42    | -25%                 |
+| User Abandonment   | Baseline  | -40%     | TodoWrite visibility |
+| Bug Detection Rate | Baseline  | 82%      | Greptile Phase 14    |
 
 ---
 
 ## 🚀 Implementation Sprints
 
 ### Sprint 1 (Week 1): Core TodoWrite + Research
+
 **Goal:** Real-time progress + 95% coverage
 **Tasks:**
+
 - Phase 2: TodoWrite Integration
 - Phase 3: Async Parallel Research
 - Phase 4: Multi-Strategy Research
@@ -210,8 +227,10 @@ We created 4 HTML demos to visualize how everything will work:
 ---
 
 ### Sprint 2 (Week 2): Organization + Discovery
+
 **Goal:** Better organization + visibility
 **Tasks:**
+
 - Phase 5: Skill-Discovery Meta-Skill
 - Phase 6: Per-API Research Folders
 - Phase 7: Cost/Time Tracking
@@ -221,8 +240,10 @@ We created 4 HTML demos to visualize how everything will work:
 ---
 
 ### Sprint 3 (Week 3): Code Quality + Polish
+
 **Goal:** Production-ready v3.12.0
 **Tasks:**
+
 - Phase 8: Phase 14 - AI Code Review
 - Phase 9: Stats & Rename Commands
 
@@ -231,8 +252,10 @@ We created 4 HTML demos to visualize how everything will work:
 ---
 
 ### Sprint 4 (Week 4): Testing + Documentation
+
 **Goal:** Public release
 **Tasks:**
+
 - Complete testing checklist
 - Update all documentation
 - Create demo videos
@@ -244,18 +267,21 @@ We created 4 HTML demos to visualize how everything will work:
 ## 🎓 How to Use This Documentation
 
 ### If you're NEW to this project:
+
 1. **Start here:** Read this file (VERSION_3.2_OVERVIEW.md)
 2. **Understand the why:** Read [ENHANCEMENT_ROADMAP_v3.11.0.md](./ENHANCEMENT_ROADMAP_v3.11.0.md)
 3. **See it in action:** Open [demo/execution-trace-COMPREHENSIVE.html](./demo/execution-trace-COMPREHENSIVE.html)
 4. **Ready to code:** Read [COMPREHENSIVE_ENHANCEMENT_PLAN.md](./COMPREHENSIVE_ENHANCEMENT_PLAN.md)
 
 ### If you want to IMPLEMENT a specific feature:
+
 1. **Find the phase:** Check the tracking table above
 2. **Read the plan:** See [COMPREHENSIVE_ENHANCEMENT_PLAN.md](./COMPREHENSIVE_ENHANCEMENT_PLAN.md) for that phase
 3. **Check the demo:** See how it should work in the comprehensive demo
 4. **Start coding:** Follow the file changes list
 
 ### If you want to SEE how it will work:
+
 1. **Full experience:** [demo/execution-trace-COMPREHENSIVE.html](./demo/execution-trace-COMPREHENSIVE.html) (recommended)
 2. **Just TodoWrite:** [demo/execution-trace-simulation.html](./demo/execution-trace-simulation.html)
 3. **Phase structure:** [demo/full-workflow-simulation.html](./demo/full-workflow-simulation.html)
@@ -289,17 +315,20 @@ Before starting implementation, we need decisions on:
 ## 🔗 All Links at a Glance
 
 ### Planning Documents
+
 - [ENHANCEMENT_ROADMAP_v3.11.0.md](./ENHANCEMENT_ROADMAP_v3.11.0.md) - Strategic overview
 - [COMPREHENSIVE_ENHANCEMENT_PLAN.md](./COMPREHENSIVE_ENHANCEMENT_PLAN.md) - Implementation plan
 - [.skills/update-todos/SKILL.md](./.skills/update-todos/SKILL.md) - TodoWrite helper
 
 ### Demos
+
 - [demo/execution-trace-COMPREHENSIVE.html](./demo/execution-trace-COMPREHENSIVE.html) - Complete roadmap
 - [demo/execution-trace-simulation.html](./demo/execution-trace-simulation.html) - TodoWrite only
 - [demo/full-workflow-simulation.html](./demo/full-workflow-simulation.html) - Phase cards
 - [demo/todowrite-workflow-demo.html](./demo/todowrite-workflow-demo.html) - TodoWrite concept
 
 ### Repository
+
 - [GitHub: hustle-together/api-dev-tools](https://github.com/hustle-together/api-dev-tools)
 
 ---

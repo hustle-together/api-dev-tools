@@ -12,8 +12,10 @@ allowed-tools: WebSearch WebFetch mcp__context7 mcp__github AskUserQuestion Read
 ---
 
 ---
+
 description: Create a git commit following project standards
 argument-hint: [optional-commit-description]
+
 ---
 
 ## General Guidelines
@@ -43,7 +45,6 @@ git add <files>
 git commit -m "feat(#123): add validation to user input form"
 ```
 
-
 ## 🛡 Project Rules (Injected into every command)
 
 1. **NO BROKEN BUILDS:**
@@ -68,7 +69,7 @@ git commit -m "feat(#123): add validation to user input form"
 4. **API KEY MANAGEMENT:**
    - Support three loading methods:
      - Server environment variables
-     - NEXT_PUBLIC_ variables (client-side)
+     - NEXT*PUBLIC* variables (client-side)
      - Custom headers (X-OpenAI-Key, X-Anthropic-Key, etc.)
    - Never hardcode API keys
    - Always validate key availability before use

@@ -5,6 +5,7 @@ All notable changes to `@hustle-together/api-dev-tools` will be documented in th
 ## [3.10.0] - 2025-12-12
 
 ### Added
+
 - **UI Page Mode** - Full `/hustle-ui-create-page` workflow with dedicated documentation
   - Page types: landing, dashboard, form, list, detail, auth
   - Playwright E2E test generation (15+ test cases)
@@ -28,6 +29,7 @@ All notable changes to `@hustle-together/api-dev-tools` will be documented in th
   - Component and page metadata extraction
 
 ### Changed
+
 - **State Template** (`api-dev-state.json`)
   - Added `workflow` field: api-create, combine-api, ui-create-component, ui-create-page
   - Added `combine_config` section for orchestration settings
@@ -42,12 +44,14 @@ All notable changes to `@hustle-together/api-dev-tools` will be documented in th
   - Version updated to 3.10.0
 
 ### Fixed
+
 - Phase numbering now correctly uses 1-13 (was 0-12 in some files)
 - Workflow type detection in api-workflow-check.py for all workflow types
 
 ## [3.9.2] - 2025-12-10
 
 ### Added
+
 - Animated Hero Header with 3D perspective grid
 - Dev Tools landing page at `/dev-tools`
 - Multi-endpoint selector for APIs with sub-endpoints
@@ -55,6 +59,7 @@ All notable changes to `@hustle-together/api-dev-tools` will be documented in th
 - CLI flags: `--with-sandpack`, `--with-storybook`, `--with-playwright`
 
 ### Changed
+
 - Updated BRAND_GUIDE.md with complete Hustle brand
 - Enhanced showcase components with dark mode support
 - Boxy 90s styling with 2px borders
@@ -62,6 +67,7 @@ All notable changes to `@hustle-together/api-dev-tools` will be documented in th
 ## [3.9.0] - 2025-12-08
 
 ### Added
+
 - `/hustle-ui-create` command for UI components/pages
 - Brand guide integration with time to update
 - ShadCN component detection in Phase 5
@@ -71,6 +77,7 @@ All notable changes to `@hustle-together/api-dev-tools` will be documented in th
 ## [3.8.0] - 2025-12-05
 
 ### Added
+
 - `/hustle-combine` command for API orchestration
 - Registry.json central tracking
 - Combined entry support in update-registry.py
@@ -79,6 +86,7 @@ All notable changes to `@hustle-together/api-dev-tools` will be documented in th
 ## [3.7.0] - 2025-12-01
 
 ### Added
+
 - Multi-API state support (endpoints object)
 - Research cache freshness tracking (7-day threshold)
 - Comprehensive manifest generation with 50+ test cases
@@ -87,6 +95,7 @@ All notable changes to `@hustle-together/api-dev-tools` will be documented in th
 ## [3.6.7] - 2025-11-28
 
 ### Added
+
 - Phase 13 completion output with curl examples
 - Scope coverage report
 - Research cache location in output

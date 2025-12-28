@@ -1,569 +1,812 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>COMPREHENSIVE Workflow Execution - v3.11.0 + v3.12.0 Roadmap</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: 'Courier New', monospace;
-            background: #0a0a0a;
-            color: #00ff00;
-            padding: 20px;
-            min-height: 100vh;
-        }
+      body {
+        font-family: "Courier New", monospace;
+        background: #0a0a0a;
+        color: #00ff00;
+        padding: 20px;
+        min-height: 100vh;
+      }
 
-        .container {
-            max-width: 1900px;
-            margin: 0 auto;
-        }
+      .container {
+        max-width: 1900px;
+        margin: 0 auto;
+      }
 
-        h1 {
-            text-align: center;
-            color: #00ff00;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px #00ff00;
-            animation: glow 2s ease-in-out infinite alternate;
-        }
+      h1 {
+        text-align: center;
+        color: #00ff00;
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        text-shadow: 0 0 10px #00ff00;
+        animation: glow 2s ease-in-out infinite alternate;
+      }
 
-        @keyframes glow {
-            from { text-shadow: 0 0 5px #00ff00; }
-            to { text-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00; }
+      @keyframes glow {
+        from {
+          text-shadow: 0 0 5px #00ff00;
         }
+        to {
+          text-shadow:
+            0 0 20px #00ff00,
+            0 0 30px #00ff00;
+        }
+      }
 
-        .subtitle {
-            text-align: center;
-            color: #888;
-            margin-bottom: 20px;
-            font-size: 1.2em;
-        }
+      .subtitle {
+        text-align: center;
+        color: #888;
+        margin-bottom: 20px;
+        font-size: 1.2em;
+      }
 
-        .planned-notice {
-            background: linear-gradient(135deg, rgba(255, 165, 0, 0.1), rgba(0, 255, 0, 0.1));
-            border: 3px solid #FFA500;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
+      .planned-notice {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 165, 0, 0.1),
+          rgba(0, 255, 0, 0.1)
+        );
+        border: 3px solid #ffa500;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
 
-        .planned-notice-title {
-            color: #FFA500;
-            font-weight: bold;
-            font-size: 1.3em;
-            margin-bottom: 10px;
-        }
+      .planned-notice-title {
+        color: #ffa500;
+        font-weight: bold;
+        font-size: 1.3em;
+        margin-bottom: 10px;
+      }
 
-        .planned-notice-text {
-            color: #ccc;
-            font-size: 1em;
-            line-height: 1.6;
-        }
+      .planned-notice-text {
+        color: #ccc;
+        font-size: 1em;
+        line-height: 1.6;
+      }
 
-        .features-list {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 15px;
-            text-align: left;
-        }
+      .features-list {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 15px;
+        text-align: left;
+      }
 
-        .feature-item {
-            color: #00ff00;
-            padding: 8px;
-            background: rgba(0, 255, 0, 0.05);
-            border-left: 2px solid #00ff00;
-            font-size: 0.9em;
-        }
+      .feature-item {
+        color: #00ff00;
+        padding: 8px;
+        background: rgba(0, 255, 0, 0.05);
+        border-left: 2px solid #00ff00;
+        font-size: 0.9em;
+      }
 
-        .workflow-selector {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+      .workflow-selector {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-bottom: 20px;
+      }
 
-        .workflow-btn {
-            padding: 15px;
-            background: #1a1a1a;
-            border: 2px solid #00ff00;
-            color: #00ff00;
-            font-family: 'Courier New', monospace;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-            font-size: 0.9em;
-        }
+      .workflow-btn {
+        padding: 15px;
+        background: #1a1a1a;
+        border: 2px solid #00ff00;
+        color: #00ff00;
+        font-family: "Courier New", monospace;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-align: center;
+        font-size: 0.9em;
+      }
 
-        .workflow-btn:hover {
-            background: #00ff00;
-            color: #000;
-        }
+      .workflow-btn:hover {
+        background: #00ff00;
+        color: #000;
+      }
 
-        .workflow-btn.active {
-            background: #00ff00;
-            color: #000;
-            font-weight: bold;
-        }
+      .workflow-btn.active {
+        background: #00ff00;
+        color: #000;
+        font-weight: bold;
+      }
 
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
+      .main-grid {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
 
-        .terminal-container {
-            background: #000;
-            border: 2px solid #00ff00;
-            border-radius: 5px;
-            padding: 20px;
-            height: 800px;
-            overflow-y: auto;
-            font-size: 0.85em;
-            line-height: 1.4;
-        }
+      .terminal-container {
+        background: #000;
+        border: 2px solid #00ff00;
+        border-radius: 5px;
+        padding: 20px;
+        height: 800px;
+        overflow-y: auto;
+        font-size: 0.85em;
+        line-height: 1.4;
+      }
 
-        .terminal-header {
-            color: #00ff00;
-            font-size: 1.2em;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #00ff00;
-        }
+      .terminal-header {
+        color: #00ff00;
+        font-size: 1.2em;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #00ff00;
+      }
 
-        .terminal-line {
-            margin: 4px 0;
-            padding-left: 10px;
-            opacity: 0;
-            animation: fadeIn 0.3s forwards;
-        }
+      .terminal-line {
+        margin: 4px 0;
+        padding-left: 10px;
+        opacity: 0;
+        animation: fadeIn 0.3s forwards;
+      }
 
-        @keyframes fadeIn {
-            to { opacity: 1; }
+      @keyframes fadeIn {
+        to {
+          opacity: 1;
         }
+      }
 
-        .log-system { color: #00ff00; }
-        .log-phase { color: #ffff00; font-weight: bold; font-size: 1.1em; }
-        .log-hook { color: #ff00ff; }
-        .log-tool { color: #00ffff; }
-        .log-state { color: #ff6600; }
-        .log-user-input {
-            color: #ffffff;
-            font-weight: bold;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 8px;
-            margin: 8px 0;
-            border-left: 3px solid #ffffff;
-        }
-        .log-user { color: #ffffff; font-weight: bold; }
-        .log-error { color: #ff0000; }
-        .log-success { color: #00ff00; font-weight: bold; }
-        .log-wait { color: #ffaa00; animation: blink 1s infinite; }
-        .log-agent { color: #00ffff; }
-        .log-cost { color: #ffff00; font-weight: bold; }
+      .log-system {
+        color: #00ff00;
+      }
+      .log-phase {
+        color: #ffff00;
+        font-weight: bold;
+        font-size: 1.1em;
+      }
+      .log-hook {
+        color: #ff00ff;
+      }
+      .log-tool {
+        color: #00ffff;
+      }
+      .log-state {
+        color: #ff6600;
+      }
+      .log-user-input {
+        color: #ffffff;
+        font-weight: bold;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 8px;
+        margin: 8px 0;
+        border-left: 3px solid #ffffff;
+      }
+      .log-user {
+        color: #ffffff;
+        font-weight: bold;
+      }
+      .log-error {
+        color: #ff0000;
+      }
+      .log-success {
+        color: #00ff00;
+        font-weight: bold;
+      }
+      .log-wait {
+        color: #ffaa00;
+        animation: blink 1s infinite;
+      }
+      .log-agent {
+        color: #00ffff;
+      }
+      .log-cost {
+        color: #ffff00;
+        font-weight: bold;
+      }
 
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0.3; }
+      @keyframes blink {
+        0%,
+        50% {
+          opacity: 1;
         }
+        51%,
+        100% {
+          opacity: 0.3;
+        }
+      }
 
-        .separator {
-            border-top: 1px dashed #333;
-            margin: 10px 0;
-        }
+      .separator {
+        border-top: 1px dashed #333;
+        margin: 10px 0;
+      }
 
-        .todo-sidebar {
-            background: #1a1a1a;
-            border: 2px solid #00ff00;
-            border-radius: 5px;
-            padding: 20px;
-            height: 500px;
-            overflow-y: auto;
-            margin-bottom: 15px;
-        }
+      .todo-sidebar {
+        background: #1a1a1a;
+        border: 2px solid #00ff00;
+        border-radius: 5px;
+        padding: 20px;
+        height: 500px;
+        overflow-y: auto;
+        margin-bottom: 15px;
+      }
 
-        .cost-panel {
-            background: #1a1a1a;
-            border: 2px solid #ffff00;
-            border-radius: 5px;
-            padding: 15px;
-            height: 265px;
-            overflow-y: auto;
-        }
+      .cost-panel {
+        background: #1a1a1a;
+        border: 2px solid #ffff00;
+        border-radius: 5px;
+        padding: 15px;
+        height: 265px;
+        overflow-y: auto;
+      }
 
-        .todo-header, .cost-header {
-            color: #00ff00;
-            font-size: 1.2em;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #00ff00;
-        }
+      .todo-header,
+      .cost-header {
+        color: #00ff00;
+        font-size: 1.2em;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #00ff00;
+      }
 
-        .cost-header {
-            color: #ffff00;
-            border-bottom-color: #ffff00;
-        }
+      .cost-header {
+        color: #ffff00;
+        border-bottom-color: #ffff00;
+      }
 
-        .todo-item {
-            background: #0a0a0a;
-            border-left: 3px solid #333;
-            padding: 10px;
-            margin: 8px 0;
-            font-size: 0.85em;
-        }
+      .todo-item {
+        background: #0a0a0a;
+        border-left: 3px solid #333;
+        padding: 10px;
+        margin: 8px 0;
+        font-size: 0.85em;
+      }
 
-        .todo-item.pending {
-            opacity: 0.4;
-        }
+      .todo-item.pending {
+        opacity: 0.4;
+      }
 
-        .todo-item.in_progress {
-            border-left-color: #ffff00;
-            background: rgba(255, 255, 0, 0.1);
-            animation: pulse 2s infinite;
-        }
+      .todo-item.in_progress {
+        border-left-color: #ffff00;
+        background: rgba(255, 255, 0, 0.1);
+        animation: pulse 2s infinite;
+      }
 
-        .todo-item.completed {
-            border-left-color: #00ff00;
-            opacity: 0.6;
-        }
+      .todo-item.completed {
+        border-left-color: #00ff00;
+        opacity: 0.6;
+      }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
         }
+        50% {
+          opacity: 0.7;
+        }
+      }
 
-        .todo-checkbox {
-            display: inline-block;
-            width: 16px;
-            margin-right: 8px;
-        }
+      .todo-checkbox {
+        display: inline-block;
+        width: 16px;
+        margin-right: 8px;
+      }
 
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+      .controls {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
 
-        .control-btn {
-            padding: 12px 25px;
-            background: #1a1a1a;
-            border: 2px solid #00ff00;
-            color: #00ff00;
-            font-family: 'Courier New', monospace;
-            cursor: pointer;
-            font-size: 1em;
-            transition: all 0.3s;
-        }
+      .control-btn {
+        padding: 12px 25px;
+        background: #1a1a1a;
+        border: 2px solid #00ff00;
+        color: #00ff00;
+        font-family: "Courier New", monospace;
+        cursor: pointer;
+        font-size: 1em;
+        transition: all 0.3s;
+      }
 
-        .control-btn:hover {
-            background: #00ff00;
-            color: #000;
-        }
+      .control-btn:hover {
+        background: #00ff00;
+        color: #000;
+      }
 
-        .control-btn.reset {
-            border-color: #ff0000;
-            color: #ff0000;
-        }
+      .control-btn.reset {
+        border-color: #ff0000;
+        color: #ff0000;
+      }
 
-        .control-btn.reset:hover {
-            background: #ff0000;
-            color: #fff;
-        }
+      .control-btn.reset:hover {
+        background: #ff0000;
+        color: #fff;
+      }
 
-        .state-panel {
-            background: #1a1a1a;
-            border: 2px solid #ff6600;
-            border-radius: 5px;
-            padding: 15px;
-            margin-top: 15px;
-            font-size: 0.8em;
-            height: 300px;
-            overflow-y: auto;
-        }
+      .state-panel {
+        background: #1a1a1a;
+        border: 2px solid #ff6600;
+        border-radius: 5px;
+        padding: 15px;
+        margin-top: 15px;
+        font-size: 0.8em;
+        height: 300px;
+        overflow-y: auto;
+      }
 
-        .state-header {
-            color: #ff6600;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
+      .state-header {
+        color: #ff6600;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
 
-        .state-item {
-            color: #ccc;
-            margin: 5px 0;
-        }
+      .state-item {
+        color: #ccc;
+        margin: 5px 0;
+      }
 
-        .state-key {
-            color: #ff6600;
-        }
+      .state-key {
+        color: #ff6600;
+      }
 
-        .state-value {
-            color: #00ff00;
-        }
+      .state-value {
+        color: #00ff00;
+      }
 
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
 
-        ::-webkit-scrollbar-track {
-            background: #000;
-        }
+      ::-webkit-scrollbar-track {
+        background: #000;
+      }
 
-        ::-webkit-scrollbar-thumb {
-            background: #00ff00;
-            border-radius: 4px;
-        }
+      ::-webkit-scrollbar-thumb {
+        background: #00ff00;
+        border-radius: 4px;
+      }
 
-        .interview-dialog {
-            background: rgba(0, 0, 0, 0.95);
-            border: 3px solid #ffff00;
-            padding: 20px;
-            margin: 15px 0;
-            border-radius: 5px;
-        }
+      .interview-dialog {
+        background: rgba(0, 0, 0, 0.95);
+        border: 3px solid #ffff00;
+        padding: 20px;
+        margin: 15px 0;
+        border-radius: 5px;
+      }
 
-        .interview-question {
-            color: #ffff00;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
+      .interview-question {
+        color: #ffff00;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
 
-        .interview-options {
-            margin-left: 20px;
-        }
+      .interview-options {
+        margin-left: 20px;
+      }
 
-        .interview-option {
-            color: #00ffff;
-            margin: 5px 0;
-            cursor: pointer;
-        }
+      .interview-option {
+        color: #00ffff;
+        margin: 5px 0;
+        cursor: pointer;
+      }
 
-        .cost-item {
-            background: rgba(255, 255, 0, 0.05);
-            border-left: 2px solid #ffff00;
-            padding: 8px;
-            margin: 5px 0;
-            font-size: 0.85em;
-        }
+      .cost-item {
+        background: rgba(255, 255, 0, 0.05);
+        border-left: 2px solid #ffff00;
+        padding: 8px;
+        margin: 5px 0;
+        font-size: 0.85em;
+      }
 
-        .agent-badge {
-            display: inline-block;
-            padding: 3px 8px;
-            background: rgba(0, 255, 255, 0.2);
-            border: 1px solid #00ffff;
-            border-radius: 3px;
-            font-size: 0.9em;
-            margin-right: 5px;
-        }
+      .agent-badge {
+        display: inline-block;
+        padding: 3px 8px;
+        background: rgba(0, 255, 255, 0.2);
+        border: 1px solid #00ffff;
+        border-radius: 3px;
+        font-size: 0.9em;
+        margin-right: 5px;
+      }
 
-        .skill-result {
-            background: rgba(255, 0, 255, 0.1);
-            border: 1px solid #ff00ff;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-        }
+      .skill-result {
+        background: rgba(255, 0, 255, 0.1);
+        border: 1px solid #ff00ff;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+      }
 
-        .phase-14-box {
-            background: rgba(255, 165, 0, 0.1);
-            border: 2px solid #FFA500;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 5px;
-        }
+      .phase-14-box {
+        background: rgba(255, 165, 0, 0.1);
+        border: 2px solid #ffa500;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 5px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1>⚡ COMPREHENSIVE WORKFLOW EXECUTION ⚡</h1>
-        <p class="subtitle">v3.11.0 + v3.12.0 Complete Roadmap Visualization</p>
+      <h1>⚡ COMPREHENSIVE WORKFLOW EXECUTION ⚡</h1>
+      <p class="subtitle">v3.11.0 + v3.12.0 Complete Roadmap Visualization</p>
 
-        <div class="planned-notice">
-            <div class="planned-notice-title">🚀 COMPLETE PLANNED IMPLEMENTATION - v3.11.0 + v3.12.0</div>
-            <div class="planned-notice-text">
-                This demo shows the COMPLETE planned state after ALL enhancements are implemented.<br>
-                Current state (v3.11.0 Phase 1) has basic Skills migration. This shows the FULL FUTURE with all roadmap features.
-            </div>
-            <div class="features-list">
-                <div class="feature-item">✅ TodoWrite Integration</div>
-                <div class="feature-item">✅ Async Parallel Research</div>
-                <div class="feature-item">✅ Multi-Strategy Research</div>
-                <div class="feature-item">✅ Context7 + WebSearch + Skills</div>
-                <div class="feature-item">✅ Skill-Discovery Meta-Skill</div>
-                <div class="feature-item">✅ Per-API Research Folders</div>
-                <div class="feature-item">✅ Cost/Time Tracking</div>
-                <div class="feature-item">✅ Phase 14: Code Review</div>
-                <div class="feature-item">✅ Greptile Integration</div>
-                <div class="feature-item">✅ CodeRabbit Integration</div>
-                <div class="feature-item">✅ Graphite PR Stacking</div>
-                <div class="feature-item">✅ Stats & Rename Commands</div>
-            </div>
+      <div class="planned-notice">
+        <div class="planned-notice-title">
+          🚀 COMPLETE PLANNED IMPLEMENTATION - v3.11.0 + v3.12.0
+        </div>
+        <div class="planned-notice-text">
+          This demo shows the COMPLETE planned state after ALL enhancements are
+          implemented.<br />
+          Current state (v3.11.0 Phase 1) has basic Skills migration. This shows
+          the FULL FUTURE with all roadmap features.
+        </div>
+        <div class="features-list">
+          <div class="feature-item">✅ TodoWrite Integration</div>
+          <div class="feature-item">✅ Async Parallel Research</div>
+          <div class="feature-item">✅ Multi-Strategy Research</div>
+          <div class="feature-item">✅ Context7 + WebSearch + Skills</div>
+          <div class="feature-item">✅ Skill-Discovery Meta-Skill</div>
+          <div class="feature-item">✅ Per-API Research Folders</div>
+          <div class="feature-item">✅ Cost/Time Tracking</div>
+          <div class="feature-item">✅ Phase 14: Code Review</div>
+          <div class="feature-item">✅ Greptile Integration</div>
+          <div class="feature-item">✅ CodeRabbit Integration</div>
+          <div class="feature-item">✅ Graphite PR Stacking</div>
+          <div class="feature-item">✅ Stats & Rename Commands</div>
+        </div>
+      </div>
+
+      <div class="workflow-selector">
+        <button class="workflow-btn active" data-workflow="api-create">
+          📡 API Create (14 Phases)
+        </button>
+        <button class="workflow-btn" data-workflow="ui-component">
+          🎨 UI Component (14 Phases)
+        </button>
+        <button class="workflow-btn" data-workflow="ui-page">
+          📄 UI Page (14 Phases)
+        </button>
+        <button class="workflow-btn" data-workflow="combine">
+          🔗 Combine APIs (13 Phases)
+        </button>
+      </div>
+
+      <div class="controls">
+        <button class="control-btn" onclick="startExecution()">
+          ▶ Start Execution
+        </button>
+        <button class="control-btn" onclick="pauseExecution()">⏸ Pause</button>
+        <button class="control-btn" onclick="stepExecution()">
+          ⏭ Step Forward
+        </button>
+        <button class="control-btn reset" onclick="resetExecution()">
+          ↻ Reset
+        </button>
+      </div>
+
+      <div class="main-grid">
+        <div class="terminal-container" id="terminal">
+          <div class="terminal-header">🖥️ TERMINAL OUTPUT</div>
+          <div id="terminal-content"></div>
         </div>
 
-        <div class="workflow-selector">
-            <button class="workflow-btn active" data-workflow="api-create">
-                📡 API Create (14 Phases)
-            </button>
-            <button class="workflow-btn" data-workflow="ui-component">
-                🎨 UI Component (14 Phases)
-            </button>
-            <button class="workflow-btn" data-workflow="ui-page">
-                📄 UI Page (14 Phases)
-            </button>
-            <button class="workflow-btn" data-workflow="combine">
-                🔗 Combine APIs (13 Phases)
-            </button>
-        </div>
+        <div>
+          <div class="todo-sidebar">
+            <div class="todo-header">✓ TodoWrite Progress</div>
+            <div id="todo-list"></div>
+          </div>
 
-        <div class="controls">
-            <button class="control-btn" onclick="startExecution()">▶ Start Execution</button>
-            <button class="control-btn" onclick="pauseExecution()">⏸ Pause</button>
-            <button class="control-btn" onclick="stepExecution()">⏭ Step Forward</button>
-            <button class="control-btn reset" onclick="resetExecution()">↻ Reset</button>
-        </div>
-
-        <div class="main-grid">
-            <div class="terminal-container" id="terminal">
-                <div class="terminal-header">🖥️ TERMINAL OUTPUT</div>
-                <div id="terminal-content"></div>
+          <div class="cost-panel">
+            <div class="cost-header">💰 Cost Tracking (Real-Time)</div>
+            <div id="cost-content">
+              <div class="cost-item">Session: Not started</div>
             </div>
+          </div>
 
-            <div>
-                <div class="todo-sidebar">
-                    <div class="todo-header">✓ TodoWrite Progress</div>
-                    <div id="todo-list"></div>
-                </div>
-
-                <div class="cost-panel">
-                    <div class="cost-header">💰 Cost Tracking (Real-Time)</div>
-                    <div id="cost-content">
-                        <div class="cost-item">Session: Not started</div>
-                    </div>
-                </div>
-
-                <div class="state-panel">
-                    <div class="state-header">📊 State File (.claude/api-dev-state.json)</div>
-                    <div id="state-content"></div>
-                </div>
+          <div class="state-panel">
+            <div class="state-header">
+              📊 State File (.claude/api-dev-state.json)
             </div>
+            <div id="state-content"></div>
+          </div>
         </div>
+      </div>
     </div>
 
     <script>
-        const workflows = {
-            'api-create': {
-                name: 'API Create - Stripe Payment (v3.12.0)',
-                totalPhases: 14, // Now includes Phase 14: Code Review
-                todos: [
-                    { id: 1, content: 'Phase 1: Disambiguation', activeForm: 'Clarifying API terms' },
-                    { id: 2, content: 'Phase 2: Scope Confirmation', activeForm: 'Confirming endpoint scope' },
-                    { id: 3, content: 'Phase 3: Multi-Strategy Research', activeForm: 'Researching with Context7 + WebSearch + Skills' },
-                    { id: 4, content: 'Phase 4: Interview', activeForm: 'Asking questions FROM research' },
-                    { id: 5, content: 'Phase 5: Deep Research', activeForm: 'Adaptive propose-approve searches' },
-                    { id: 6, content: 'Phase 6: Schema Design', activeForm: 'Creating Zod schema' },
-                    { id: 7, content: 'Phase 7: Environment Check', activeForm: 'Verifying API keys' },
-                    { id: 8, content: 'Phase 8: TDD Red', activeForm: 'Writing failing tests' },
-                    { id: 9, content: 'Phase 9: TDD Green', activeForm: 'Minimal implementation' },
-                    { id: 10, content: 'Phase 10: Verify', activeForm: 'Re-researching documentation' },
-                    { id: 11, content: 'Phase 11: TDD Refactor', activeForm: 'Cleaning up code' },
-                    { id: 12, content: 'Phase 12: Documentation', activeForm: 'Updating manifests' },
-                    { id: 13, content: 'Phase 13: Completion', activeForm: 'Final verification' },
-                    { id: 14, content: 'Phase 14: Code Review', activeForm: 'AI code review (Greptile/CodeRabbit/Graphite)' }
-                ],
-                phases: [
-                    {
-                        name: 'User Request',
-                        logs: [
-                            { type: 'user-input', text: '$ /hustle-api-create stripe-payment' },
-                            { type: 'user-input', text: '>>> User: "Create an endpoint for Stripe payment intents"' },
-                            { type: 'separator' }
-                        ]
-                    },
-                    {
-                        name: 'Session Start',
-                        logs: [
-                            { type: 'system', text: '🚀 Agent: Starting /hustle-api-create stripe-payment...' },
-                            { type: 'system', text: '📂 Working directory: /Users/dev/project' },
-                            { type: 'hook', text: '🔗 HOOK: session-startup.py triggered' },
-                            { type: 'system', text: '📊 Loading state from .claude/api-dev-state.json...' },
-                            { type: 'state', text: '   State: { endpoint: null, turn_count: 0, workflow: "api-create" }' },
-                            { type: 'hook', text: '✅ HOOK: State context injected into conversation' },
-                            { type: 'system', text: '🎯 Starting cost tracking...' },
-                            { type: 'cost', text: '💰 Session ID: stripe-payment-2025-12-24-1234' },
-                            { type: 'separator' }
-                        ]
-                    },
-                    {
-                        name: 'Phase 1: Disambiguation',
-                        logs: [
-                            { type: 'phase', text: '━━━━━ PHASE 1: DISAMBIGUATION ━━━━━' },
-                            { type: 'system', text: 'Agent: Detected ambiguous term "stripe"' },
-                            { type: 'tool', text: '🔧 TOOL: WebSearch("stripe")' },
-                            { type: 'system', text: '   Found: Stripe payment platform' },
-                            { type: 'tool', text: '💬 TOOL: AskUserQuestion' },
-                            { type: 'interview', question: 'What type of Stripe integration?', options: [
-                                'REST API (direct HTTP)',
-                                'Node.js SDK (@stripe/stripe-js)',
-                                'Both (server + client)'
-                            ]},
-                            { type: 'wait', text: '⏸ WAITING FOR USER INPUT...' },
-                            { type: 'user-input', text: '>>> User clicks: [2] Node.js SDK (@stripe/stripe-js)' },
-                            { type: 'separator' },
-                            { type: 'state', text: '   Update: phases.disambiguation.status = "complete"' },
-                            { type: 'tool', text: '📝 TOOL: TodoWrite' },
-                            { type: 'system', text: '   ✓ Phase 1 complete, ⊙ Phase 2 in progress' },
-                            { type: 'separator' }
-                        ]
-                    },
-                    {
-                        name: 'Phase 3: Multi-Strategy Research (ENHANCED)',
-                        logs: [
-                            { type: 'phase', text: '━━━━━ PHASE 3: MULTI-STRATEGY RESEARCH ━━━━━' },
-                            { type: 'system', text: '🎯 Agent: Launching PARALLEL research across 3 strategies...' },
-                            { type: 'separator' },
+      const workflows = {
+        "api-create": {
+          name: "API Create - Stripe Payment (v3.12.0)",
+          totalPhases: 14, // Now includes Phase 14: Code Review
+          todos: [
+            {
+              id: 1,
+              content: "Phase 1: Disambiguation",
+              activeForm: "Clarifying API terms",
+            },
+            {
+              id: 2,
+              content: "Phase 2: Scope Confirmation",
+              activeForm: "Confirming endpoint scope",
+            },
+            {
+              id: 3,
+              content: "Phase 3: Multi-Strategy Research",
+              activeForm: "Researching with Context7 + WebSearch + Skills",
+            },
+            {
+              id: 4,
+              content: "Phase 4: Interview",
+              activeForm: "Asking questions FROM research",
+            },
+            {
+              id: 5,
+              content: "Phase 5: Deep Research",
+              activeForm: "Adaptive propose-approve searches",
+            },
+            {
+              id: 6,
+              content: "Phase 6: Schema Design",
+              activeForm: "Creating Zod schema",
+            },
+            {
+              id: 7,
+              content: "Phase 7: Environment Check",
+              activeForm: "Verifying API keys",
+            },
+            {
+              id: 8,
+              content: "Phase 8: TDD Red",
+              activeForm: "Writing failing tests",
+            },
+            {
+              id: 9,
+              content: "Phase 9: TDD Green",
+              activeForm: "Minimal implementation",
+            },
+            {
+              id: 10,
+              content: "Phase 10: Verify",
+              activeForm: "Re-researching documentation",
+            },
+            {
+              id: 11,
+              content: "Phase 11: TDD Refactor",
+              activeForm: "Cleaning up code",
+            },
+            {
+              id: 12,
+              content: "Phase 12: Documentation",
+              activeForm: "Updating manifests",
+            },
+            {
+              id: 13,
+              content: "Phase 13: Completion",
+              activeForm: "Final verification",
+            },
+            {
+              id: 14,
+              content: "Phase 14: Code Review",
+              activeForm: "AI code review (Greptile/CodeRabbit/Graphite)",
+            },
+          ],
+          phases: [
+            {
+              name: "User Request",
+              logs: [
+                {
+                  type: "user-input",
+                  text: "$ /hustle-api-create stripe-payment",
+                },
+                {
+                  type: "user-input",
+                  text: '>>> User: "Create an endpoint for Stripe payment intents"',
+                },
+                { type: "separator" },
+              ],
+            },
+            {
+              name: "Session Start",
+              logs: [
+                {
+                  type: "system",
+                  text: "🚀 Agent: Starting /hustle-api-create stripe-payment...",
+                },
+                {
+                  type: "system",
+                  text: "📂 Working directory: /Users/dev/project",
+                },
+                { type: "hook", text: "🔗 HOOK: session-startup.py triggered" },
+                {
+                  type: "system",
+                  text: "📊 Loading state from .claude/api-dev-state.json...",
+                },
+                {
+                  type: "state",
+                  text: '   State: { endpoint: null, turn_count: 0, workflow: "api-create" }',
+                },
+                {
+                  type: "hook",
+                  text: "✅ HOOK: State context injected into conversation",
+                },
+                { type: "system", text: "🎯 Starting cost tracking..." },
+                {
+                  type: "cost",
+                  text: "💰 Session ID: stripe-payment-2025-12-24-1234",
+                },
+                { type: "separator" },
+              ],
+            },
+            {
+              name: "Phase 1: Disambiguation",
+              logs: [
+                { type: "phase", text: "━━━━━ PHASE 1: DISAMBIGUATION ━━━━━" },
+                {
+                  type: "system",
+                  text: 'Agent: Detected ambiguous term "stripe"',
+                },
+                { type: "tool", text: '🔧 TOOL: WebSearch("stripe")' },
+                { type: "system", text: "   Found: Stripe payment platform" },
+                { type: "tool", text: "💬 TOOL: AskUserQuestion" },
+                {
+                  type: "interview",
+                  question: "What type of Stripe integration?",
+                  options: [
+                    "REST API (direct HTTP)",
+                    "Node.js SDK (@stripe/stripe-js)",
+                    "Both (server + client)",
+                  ],
+                },
+                { type: "wait", text: "⏸ WAITING FOR USER INPUT..." },
+                {
+                  type: "user-input",
+                  text: ">>> User clicks: [2] Node.js SDK (@stripe/stripe-js)",
+                },
+                { type: "separator" },
+                {
+                  type: "state",
+                  text: '   Update: phases.disambiguation.status = "complete"',
+                },
+                { type: "tool", text: "📝 TOOL: TodoWrite" },
+                {
+                  type: "system",
+                  text: "   ✓ Phase 1 complete, ⊙ Phase 2 in progress",
+                },
+                { type: "separator" },
+              ],
+            },
+            {
+              name: "Phase 3: Multi-Strategy Research (ENHANCED)",
+              logs: [
+                {
+                  type: "phase",
+                  text: "━━━━━ PHASE 3: MULTI-STRATEGY RESEARCH ━━━━━",
+                },
+                {
+                  type: "system",
+                  text: "🎯 Agent: Launching PARALLEL research across 3 strategies...",
+                },
+                { type: "separator" },
 
-                            // Strategy 1: Context7 MCP
-                            { type: 'system', text: '📚 STRATEGY 1: Context7 MCP (Official Docs)' },
-                            { type: 'tool', text: '🔧 TOOL: mcp__context7__resolve-library-id("stripe")' },
-                            { type: 'system', text: '   Found: /stripe/stripe-node (v14.14.0)' },
-                            { type: 'tool', text: '🔧 TOOL: mcp__context7__get-library-docs("/stripe/stripe-node", topic="payment-intents")' },
-                            { type: 'system', text: '   Retrieved: paymentIntents.create() documentation' },
-                            { type: 'tool', text: '🔧 TOOL: mcp__context7__get-library-docs("/stripe/stripe-node", topic="webhooks")' },
-                            { type: 'system', text: '   Retrieved: Webhook handling documentation' },
-                            { type: 'tool', text: '🔧 TOOL: mcp__context7__get-library-docs("/stripe/stripe-node", topic="error-handling")' },
-                            { type: 'system', text: '   Retrieved: Error codes and handling' },
-                            { type: 'success', text: '   ✅ Context7 Coverage: 70% (core params, auth, errors)' },
-                            { type: 'separator' },
+                // Strategy 1: Context7 MCP
+                {
+                  type: "system",
+                  text: "📚 STRATEGY 1: Context7 MCP (Official Docs)",
+                },
+                {
+                  type: "tool",
+                  text: '🔧 TOOL: mcp__context7__resolve-library-id("stripe")',
+                },
+                {
+                  type: "system",
+                  text: "   Found: /stripe/stripe-node (v14.14.0)",
+                },
+                {
+                  type: "tool",
+                  text: '🔧 TOOL: mcp__context7__get-library-docs("/stripe/stripe-node", topic="payment-intents")',
+                },
+                {
+                  type: "system",
+                  text: "   Retrieved: paymentIntents.create() documentation",
+                },
+                {
+                  type: "tool",
+                  text: '🔧 TOOL: mcp__context7__get-library-docs("/stripe/stripe-node", topic="webhooks")',
+                },
+                {
+                  type: "system",
+                  text: "   Retrieved: Webhook handling documentation",
+                },
+                {
+                  type: "tool",
+                  text: '🔧 TOOL: mcp__context7__get-library-docs("/stripe/stripe-node", topic="error-handling")',
+                },
+                {
+                  type: "system",
+                  text: "   Retrieved: Error codes and handling",
+                },
+                {
+                  type: "success",
+                  text: "   ✅ Context7 Coverage: 70% (core params, auth, errors)",
+                },
+                { type: "separator" },
 
-                            // Strategy 2: WebSearch Multiple Queries
-                            { type: 'system', text: '🔍 STRATEGY 2: WebSearch (Targeted Queries)' },
-                            { type: 'tool', text: '🔧 TOOL: WebSearch("stripe payment intents official docs")' },
-                            { type: 'system', text: '   URL: https://stripe.com/docs/api/payment_intents' },
-                            { type: 'tool', text: '🔧 TOOL: WebSearch("stripe webhooks setup guide")' },
-                            { type: 'system', text: '   Found: Webhook event types and verification' },
-                            { type: 'tool', text: '🔧 TOOL: WebSearch("stripe batch processing endpoints")' },
-                            { type: 'system', text: '   Found: /v1/payment_intents/bulk_create (undocumented!)' },
-                            { type: 'tool', text: '🔧 TOOL: WebSearch("stripe rate limits pricing 2025")' },
-                            { type: 'system', text: '   Found: 100 req/sec standard, 1000 req/sec enterprise' },
-                            { type: 'tool', text: '🔧 TOOL: WebSearch("stripe advanced parameters GitHub")' },
-                            { type: 'system', text: '   Found: Community discussions on undocumented params' },
-                            { type: 'success', text: '   ✅ WebSearch Coverage: 85% (including undocumented features)' },
-                            { type: 'separator' },
+                // Strategy 2: WebSearch Multiple Queries
+                {
+                  type: "system",
+                  text: "🔍 STRATEGY 2: WebSearch (Targeted Queries)",
+                },
+                {
+                  type: "tool",
+                  text: '🔧 TOOL: WebSearch("stripe payment intents official docs")',
+                },
+                {
+                  type: "system",
+                  text: "   URL: https://stripe.com/docs/api/payment_intents",
+                },
+                {
+                  type: "tool",
+                  text: '🔧 TOOL: WebSearch("stripe webhooks setup guide")',
+                },
+                {
+                  type: "system",
+                  text: "   Found: Webhook event types and verification",
+                },
+                {
+                  type: "tool",
+                  text: '🔧 TOOL: WebSearch("stripe batch processing endpoints")',
+                },
+                {
+                  type: "system",
+                  text: "   Found: /v1/payment_intents/bulk_create (undocumented!)",
+                },
+                {
+                  type: "tool",
+                  text: '🔧 TOOL: WebSearch("stripe rate limits pricing 2025")',
+                },
+                {
+                  type: "system",
+                  text: "   Found: 100 req/sec standard, 1000 req/sec enterprise",
+                },
+                {
+                  type: "tool",
+                  text: '🔧 TOOL: WebSearch("stripe advanced parameters GitHub")',
+                },
+                {
+                  type: "system",
+                  text: "   Found: Community discussions on undocumented params",
+                },
+                {
+                  type: "success",
+                  text: "   ✅ WebSearch Coverage: 85% (including undocumented features)",
+                },
+                { type: "separator" },
 
-                            // Strategy 3: Skills Marketplace
-                            { type: 'system', text: '🎪 STRATEGY 3: Skills Marketplace (Specialized Research)' },
-                            { type: 'system', text: 'Agent: Invoking skill-discovery meta-skill...' },
-                            { type: 'tool', text: '🔧 TOOL: Skill("skill-finder api-research")' },
-                            { type: 'skill-result', text: `
+                // Strategy 3: Skills Marketplace
+                {
+                  type: "system",
+                  text: "🎪 STRATEGY 3: Skills Marketplace (Specialized Research)",
+                },
+                {
+                  type: "system",
+                  text: "Agent: Invoking skill-discovery meta-skill...",
+                },
+                {
+                  type: "tool",
+                  text: '🔧 TOOL: Skill("skill-finder api-research")',
+                },
+                {
+                  type: "skill-result",
+                  text: `
 ╔════════════════════════════════════════════════════════════╗
 ║ 🔎 SKILL FINDER RESULTS - "api-research"                  ║
 ╠════════════════════════════════════════════════════════════╣
@@ -581,30 +824,67 @@
 ║    - Creates webhook handlers                              ║
 ║    - Author: webhook-hub                                   ║
 ╚════════════════════════════════════════════════════════════╝
-                            ` },
-                            { type: 'tool', text: '💬 TOOL: AskUserQuestion' },
-                            { type: 'interview', question: 'Install api-documentation-scraper skill?', options: [
-                                'Yes, install and use',
-                                'No, proceed with current research'
-                            ]},
-                            { type: 'user-input', text: '>>> User clicks: [1] Yes, install and use' },
-                            { type: 'separator' },
-                            { type: 'system', text: '📥 Installing skill: api-documentation-scraper...' },
-                            { type: 'tool', text: '🔧 TOOL: Skill("api-documentation-scraper stripe")' },
-                            { type: 'system', text: '   Scraping Stripe docs ToC...' },
-                            { type: 'system', text: '   Discovered: 147 endpoints, 589 parameters' },
-                            { type: 'success', text: '   ✅ Skills Coverage: 95% (comprehensive automated discovery)' },
-                            { type: 'separator' },
+                            `,
+                },
+                { type: "tool", text: "💬 TOOL: AskUserQuestion" },
+                {
+                  type: "interview",
+                  question: "Install api-documentation-scraper skill?",
+                  options: [
+                    "Yes, install and use",
+                    "No, proceed with current research",
+                  ],
+                },
+                {
+                  type: "user-input",
+                  text: ">>> User clicks: [1] Yes, install and use",
+                },
+                { type: "separator" },
+                {
+                  type: "system",
+                  text: "📥 Installing skill: api-documentation-scraper...",
+                },
+                {
+                  type: "tool",
+                  text: '🔧 TOOL: Skill("api-documentation-scraper stripe")',
+                },
+                { type: "system", text: "   Scraping Stripe docs ToC..." },
+                {
+                  type: "system",
+                  text: "   Discovered: 147 endpoints, 589 parameters",
+                },
+                {
+                  type: "success",
+                  text: "   ✅ Skills Coverage: 95% (comprehensive automated discovery)",
+                },
+                { type: "separator" },
 
-                            // Async Parallelization
-                            { type: 'system', text: '⚡ ASYNC PARALLELIZATION: Launching background agents...' },
-                            { type: 'agent', text: '<span class="agent-badge">[AGENT-1]</span> Context7 deep dive - running in background [Ctrl+B]' },
-                            { type: 'agent', text: '<span class="agent-badge">[AGENT-2]</span> WebSearch advanced queries - running in background [Ctrl+B]' },
-                            { type: 'agent', text: '<span class="agent-badge">[AGENT-3]</span> Skills marketplace installer - running in background [Ctrl+B]' },
-                            { type: 'separator' },
-                            { type: 'system', text: '📊 Agent: Monitor background agents with: /tasks' },
-                            { type: 'tool', text: '🔧 TOOL: Bash("claude-code /tasks")' },
-                            { type: 'system', text: `
+                // Async Parallelization
+                {
+                  type: "system",
+                  text: "⚡ ASYNC PARALLELIZATION: Launching background agents...",
+                },
+                {
+                  type: "agent",
+                  text: '<span class="agent-badge">[AGENT-1]</span> Context7 deep dive - running in background [Ctrl+B]',
+                },
+                {
+                  type: "agent",
+                  text: '<span class="agent-badge">[AGENT-2]</span> WebSearch advanced queries - running in background [Ctrl+B]',
+                },
+                {
+                  type: "agent",
+                  text: '<span class="agent-badge">[AGENT-3]</span> Skills marketplace installer - running in background [Ctrl+B]',
+                },
+                { type: "separator" },
+                {
+                  type: "system",
+                  text: "📊 Agent: Monitor background agents with: /tasks",
+                },
+                { type: "tool", text: '🔧 TOOL: Bash("claude-code /tasks")' },
+                {
+                  type: "system",
+                  text: `
 ╔═══════════════════════════════════════════════════════════╗
 ║ BACKGROUND TASKS                                           ║
 ╠═══════════════════════════════════════════════════════════╣
@@ -612,59 +892,122 @@
 ║ [AGENT-2] WebSearch queries       [██████████] 100% (3m) ║
 ║ [AGENT-3] Skills installation     [███████░░░] 70% (2m)  ║
 ╚═══════════════════════════════════════════════════════════╝
-                            ` },
-                            { type: 'separator' },
+                            `,
+                },
+                { type: "separator" },
 
-                            // Agents Surface Results
-                            { type: 'success', text: '✅ <span class="agent-badge">[AGENT-2]</span> WebSearch complete - 85% coverage achieved' },
-                            { type: 'success', text: '✅ <span class="agent-badge">[AGENT-3]</span> Skills installed - 95% coverage achieved' },
-                            { type: 'success', text: '✅ <span class="agent-badge">[AGENT-1]</span> Context7 complete - 70% coverage achieved' },
-                            { type: 'separator' },
+                // Agents Surface Results
+                {
+                  type: "success",
+                  text: '✅ <span class="agent-badge">[AGENT-2]</span> WebSearch complete - 85% coverage achieved',
+                },
+                {
+                  type: "success",
+                  text: '✅ <span class="agent-badge">[AGENT-3]</span> Skills installed - 95% coverage achieved',
+                },
+                {
+                  type: "success",
+                  text: '✅ <span class="agent-badge">[AGENT-1]</span> Context7 complete - 70% coverage achieved',
+                },
+                { type: "separator" },
 
-                            // Save to Per-API Folder
-                            { type: 'system', text: '📁 Agent: Saving research to per-API folder structure...' },
-                            { type: 'tool', text: '🔧 TOOL: Bash("mkdir -p .claude/research/stripe-payment")' },
-                            { type: 'tool', text: '🔧 TOOL: Write(.claude/research/stripe-payment/CURRENT.md)' },
-                            { type: 'system', text: '   ✓ Comprehensive research findings saved' },
-                            { type: 'tool', text: '🔧 TOOL: Write(.claude/research/stripe-payment/sources.json)' },
-                            { type: 'system', text: '   ✓ Source URLs and timestamps saved' },
-                            { type: 'tool', text: '🔧 TOOL: Write(.claude/research/stripe-payment/skills-cache.json)' },
-                            { type: 'system', text: '   ✓ Installed skills metadata cached' },
-                            { type: 'separator' },
+                // Save to Per-API Folder
+                {
+                  type: "system",
+                  text: "📁 Agent: Saving research to per-API folder structure...",
+                },
+                {
+                  type: "tool",
+                  text: '🔧 TOOL: Bash("mkdir -p .claude/research/stripe-payment")',
+                },
+                {
+                  type: "tool",
+                  text: "🔧 TOOL: Write(.claude/research/stripe-payment/CURRENT.md)",
+                },
+                {
+                  type: "system",
+                  text: "   ✓ Comprehensive research findings saved",
+                },
+                {
+                  type: "tool",
+                  text: "🔧 TOOL: Write(.claude/research/stripe-payment/sources.json)",
+                },
+                {
+                  type: "system",
+                  text: "   ✓ Source URLs and timestamps saved",
+                },
+                {
+                  type: "tool",
+                  text: "🔧 TOOL: Write(.claude/research/stripe-payment/skills-cache.json)",
+                },
+                {
+                  type: "system",
+                  text: "   ✓ Installed skills metadata cached",
+                },
+                { type: "separator" },
 
-                            // Summary
-                            { type: 'success', text: '🎉 RESEARCH COMPLETE - 95% COVERAGE ACHIEVED' },
-                            { type: 'system', text: '   - Context7: 70% (official docs)' },
-                            { type: 'system', text: '   - WebSearch: 85% (community + undocumented)' },
-                            { type: 'system', text: '   - Skills: 95% (automated comprehensive discovery)' },
-                            { type: 'system', text: '   - Total parameters discovered: 589' },
-                            { type: 'system', text: '   - Undocumented features: 12' },
-                            { type: 'system', text: '   - Research duration: 8 minutes (parallelized)' },
-                            { type: 'cost', text: '💰 Cost: $0.32 (Context7: $0, WebSearch: $0, Skills: $0, Claude: $0.32)' },
-                            { type: 'separator' },
+                // Summary
+                {
+                  type: "success",
+                  text: "🎉 RESEARCH COMPLETE - 95% COVERAGE ACHIEVED",
+                },
+                { type: "system", text: "   - Context7: 70% (official docs)" },
+                {
+                  type: "system",
+                  text: "   - WebSearch: 85% (community + undocumented)",
+                },
+                {
+                  type: "system",
+                  text: "   - Skills: 95% (automated comprehensive discovery)",
+                },
+                {
+                  type: "system",
+                  text: "   - Total parameters discovered: 589",
+                },
+                { type: "system", text: "   - Undocumented features: 12" },
+                {
+                  type: "system",
+                  text: "   - Research duration: 8 minutes (parallelized)",
+                },
+                {
+                  type: "cost",
+                  text: "💰 Cost: $0.32 (Context7: $0, WebSearch: $0, Skills: $0, Claude: $0.32)",
+                },
+                { type: "separator" },
 
-                            { type: 'state', text: '   Update: phases.research_initial.status = "complete"' },
-                            { type: 'state', text: '   Update: research_coverage = 95' },
-                            { type: 'tool', text: '📝 TOOL: TodoWrite' },
-                            { type: 'system', text: '   ✓ Phase 3 complete, ⊙ Phase 4 in progress' },
-                            { type: 'separator' }
-                        ]
-                    },
-                    {
-                        name: 'Phase 13: Completion',
-                        logs: [
-                            { type: 'phase', text: '━━━━━ PHASE 13: COMPLETION ━━━━━' },
-                            { type: 'system', text: '🎯 Agent: Final verification...' },
-                            { type: 'tool', text: '🔧 TOOL: Bash(pnpm test stripe-payment)' },
-                            { type: 'success', text: '   ✓ All 15 tests passing' },
-                            { type: 'tool', text: '🔧 TOOL: Bash(pnpm build)' },
-                            { type: 'success', text: '   ✓ Build successful' },
-                            { type: 'separator' },
+                {
+                  type: "state",
+                  text: '   Update: phases.research_initial.status = "complete"',
+                },
+                { type: "state", text: "   Update: research_coverage = 95" },
+                { type: "tool", text: "📝 TOOL: TodoWrite" },
+                {
+                  type: "system",
+                  text: "   ✓ Phase 3 complete, ⊙ Phase 4 in progress",
+                },
+                { type: "separator" },
+              ],
+            },
+            {
+              name: "Phase 13: Completion",
+              logs: [
+                { type: "phase", text: "━━━━━ PHASE 13: COMPLETION ━━━━━" },
+                { type: "system", text: "🎯 Agent: Final verification..." },
+                {
+                  type: "tool",
+                  text: "🔧 TOOL: Bash(pnpm test stripe-payment)",
+                },
+                { type: "success", text: "   ✓ All 15 tests passing" },
+                { type: "tool", text: "🔧 TOOL: Bash(pnpm build)" },
+                { type: "success", text: "   ✓ Build successful" },
+                { type: "separator" },
 
-                            // Cost/Time Tracking Display
-                            { type: 'system', text: '📊 GENERATING SESSION METRICS...' },
-                            { type: 'separator' },
-                            { type: 'cost', text: `
+                // Cost/Time Tracking Display
+                { type: "system", text: "📊 GENERATING SESSION METRICS..." },
+                { type: "separator" },
+                {
+                  type: "cost",
+                  text: `
 ╔═══════════════════════════════════════════════════════════╗
 ║ 🎉 API DEVELOPMENT COMPLETE: stripe-payment               ║
 ╠═══════════════════════════════════════════════════════════╣
@@ -704,29 +1047,59 @@
 ║ 📊 VIEW STATS: /stats                                      ║
 ║ ✏️  RENAME SESSION: /rename <new-name>                     ║
 ╚═══════════════════════════════════════════════════════════╝
-                            ` },
-                            { type: 'separator' },
-                            { type: 'state', text: '   Update: phases.completion.status = "complete"' },
-                            { type: 'tool', text: '📝 TOOL: TodoWrite' },
-                            { type: 'system', text: '   ✓ Phase 13 complete, → Phase 14 ready' },
-                            { type: 'separator' }
-                        ]
-                    },
-                    {
-                        name: 'Phase 14: Code Review (NEW - v3.12.0)',
-                        logs: [
-                            { type: 'phase', text: '━━━━━ PHASE 14: AI CODE REVIEW (NEW!) ━━━━━' },
-                            { type: 'system', text: '🤖 Agent: Initiating AI code review with 3 tools...' },
-                            { type: 'separator' },
+                            `,
+                },
+                { type: "separator" },
+                {
+                  type: "state",
+                  text: '   Update: phases.completion.status = "complete"',
+                },
+                { type: "tool", text: "📝 TOOL: TodoWrite" },
+                {
+                  type: "system",
+                  text: "   ✓ Phase 13 complete, → Phase 14 ready",
+                },
+                { type: "separator" },
+              ],
+            },
+            {
+              name: "Phase 14: Code Review (NEW - v3.12.0)",
+              logs: [
+                {
+                  type: "phase",
+                  text: "━━━━━ PHASE 14: AI CODE REVIEW (NEW!) ━━━━━",
+                },
+                {
+                  type: "system",
+                  text: "🤖 Agent: Initiating AI code review with 3 tools...",
+                },
+                { type: "separator" },
 
-                            // Greptile Integration
-                            { type: 'system', text: '🔍 TOOL 1: Greptile (AI Code Review - Codebase Context)' },
-                            { type: 'tool', text: '🔧 TOOL: Bash(gh pr create --title "feat: Add Stripe payment endpoint")' },
-                            { type: 'system', text: '   PR created: https://github.com/user/repo/pull/123' },
-                            { type: 'tool', text: '🔧 TOOL: API call to Greptile review endpoint' },
-                            { type: 'system', text: '   Analyzing codebase context...' },
-                            { type: 'system', text: '   Running 82% bug catch algorithm...' },
-                            { type: 'phase-14-box', text: `
+                // Greptile Integration
+                {
+                  type: "system",
+                  text: "🔍 TOOL 1: Greptile (AI Code Review - Codebase Context)",
+                },
+                {
+                  type: "tool",
+                  text: '🔧 TOOL: Bash(gh pr create --title "feat: Add Stripe payment endpoint")',
+                },
+                {
+                  type: "system",
+                  text: "   PR created: https://github.com/user/repo/pull/123",
+                },
+                {
+                  type: "tool",
+                  text: "🔧 TOOL: API call to Greptile review endpoint",
+                },
+                { type: "system", text: "   Analyzing codebase context..." },
+                {
+                  type: "system",
+                  text: "   Running 82% bug catch algorithm...",
+                },
+                {
+                  type: "phase-14-box",
+                  text: `
 ╔═══════════════════════════════════════════════════════════╗
 ║ 🔍 GREPTILE REVIEW RESULTS                                ║
 ╠═══════════════════════════════════════════════════════════╣
@@ -738,14 +1111,23 @@
 ║ Overall Score: 9.2/10                                      ║
 ║ Bugs Caught: 0 critical, 1 optimization opportunity        ║
 ╚═══════════════════════════════════════════════════════════╝
-                            ` },
-                            { type: 'separator' },
+                            `,
+                },
+                { type: "separator" },
 
-                            // CodeRabbit Integration
-                            { type: 'system', text: '🐰 TOOL 2: CodeRabbit (40+ Linters + Auto-Fix)' },
-                            { type: 'tool', text: '🔧 TOOL: CodeRabbit webhook triggered by PR' },
-                            { type: 'system', text: '   Running 40+ industry tools...' },
-                            { type: 'phase-14-box', text: `
+                // CodeRabbit Integration
+                {
+                  type: "system",
+                  text: "🐰 TOOL 2: CodeRabbit (40+ Linters + Auto-Fix)",
+                },
+                {
+                  type: "tool",
+                  text: "🔧 TOOL: CodeRabbit webhook triggered by PR",
+                },
+                { type: "system", text: "   Running 40+ industry tools..." },
+                {
+                  type: "phase-14-box",
+                  text: `
 ╔═══════════════════════════════════════════════════════════╗
 ║ 🐰 CODERABBIT REVIEW RESULTS                              ║
 ╠═══════════════════════════════════════════════════════════╣
@@ -761,13 +1143,19 @@
 ║ 📝 Line-by-line comments added to PR                       ║
 ║ 🔧 One-click fixes available for 2 issues                  ║
 ╚═══════════════════════════════════════════════════════════╝
-                            ` },
-                            { type: 'separator' },
+                            `,
+                },
+                { type: "separator" },
 
-                            // Graphite Integration
-                            { type: 'system', text: '📊 TOOL 3: Graphite (PR Stacking + Workflow)' },
-                            { type: 'tool', text: '🔧 TOOL: Graphite stack analysis' },
-                            { type: 'phase-14-box', text: `
+                // Graphite Integration
+                {
+                  type: "system",
+                  text: "📊 TOOL 3: Graphite (PR Stacking + Workflow)",
+                },
+                { type: "tool", text: "🔧 TOOL: Graphite stack analysis" },
+                {
+                  type: "phase-14-box",
+                  text: `
 ╔═══════════════════════════════════════════════════════════╗
 ║ 📊 GRAPHITE WORKFLOW ANALYSIS                             ║
 ╠═══════════════════════════════════════════════════════════╣
@@ -781,53 +1169,100 @@
 ║ This enables parallel development across timezones         ║
 ║ Team can review incrementally without blocking             ║
 ╚═══════════════════════════════════════════════════════════╝
-                            ` },
-                            { type: 'separator' },
+                            `,
+                },
+                { type: "separator" },
 
-                            // User Review
-                            { type: 'tool', text: '💬 TOOL: AskUserQuestion' },
-                            { type: 'interview', question: 'Review feedback from Greptile, CodeRabbit, Graphite. Action?', options: [
-                                'Apply auto-fixes and merge',
-                                'Apply fixes manually, then merge',
-                                'Request changes from reviewer',
-                                'Merge as-is (feedback minor)'
-                            ]},
-                            { type: 'wait', text: '⏸ WAITING FOR USER INPUT...' },
-                            { type: 'user-input', text: '>>> User clicks: [1] Apply auto-fixes and merge' },
-                            { type: 'separator' },
+                // User Review
+                { type: "tool", text: "💬 TOOL: AskUserQuestion" },
+                {
+                  type: "interview",
+                  question:
+                    "Review feedback from Greptile, CodeRabbit, Graphite. Action?",
+                  options: [
+                    "Apply auto-fixes and merge",
+                    "Apply fixes manually, then merge",
+                    "Request changes from reviewer",
+                    "Merge as-is (feedback minor)",
+                  ],
+                },
+                { type: "wait", text: "⏸ WAITING FOR USER INPUT..." },
+                {
+                  type: "user-input",
+                  text: ">>> User clicks: [1] Apply auto-fixes and merge",
+                },
+                { type: "separator" },
 
-                            // Apply Fixes
-                            { type: 'system', text: 'Agent: Applying CodeRabbit auto-fixes...' },
-                            { type: 'tool', text: '🔧 TOOL: Edit(api/v2/stripe-payment/route.ts)' },
-                            { type: 'system', text: '   ✓ Removed unused import on line 12' },
-                            { type: 'system', text: '   ✓ Converted .then() to async/await on line 45' },
-                            { type: 'tool', text: '🔧 TOOL: Bash(git add . && git commit -m "fix: Apply CodeRabbit suggestions")' },
-                            { type: 'tool', text: '🔧 TOOL: Bash(git push)' },
-                            { type: 'success', text: '   ✓ Fixes applied and pushed' },
-                            { type: 'separator' },
+                // Apply Fixes
+                {
+                  type: "system",
+                  text: "Agent: Applying CodeRabbit auto-fixes...",
+                },
+                {
+                  type: "tool",
+                  text: "🔧 TOOL: Edit(api/v2/stripe-payment/route.ts)",
+                },
+                {
+                  type: "system",
+                  text: "   ✓ Removed unused import on line 12",
+                },
+                {
+                  type: "system",
+                  text: "   ✓ Converted .then() to async/await on line 45",
+                },
+                {
+                  type: "tool",
+                  text: '🔧 TOOL: Bash(git add . && git commit -m "fix: Apply CodeRabbit suggestions")',
+                },
+                { type: "tool", text: "🔧 TOOL: Bash(git push)" },
+                { type: "success", text: "   ✓ Fixes applied and pushed" },
+                { type: "separator" },
 
-                            // Final Merge
-                            { type: 'tool', text: '🔧 TOOL: Bash(gh pr merge 123 --squash)' },
-                            { type: 'success', text: '   ✅ PR #123 merged successfully!' },
-                            { type: 'separator' },
+                // Final Merge
+                {
+                  type: "tool",
+                  text: "🔧 TOOL: Bash(gh pr merge 123 --squash)",
+                },
+                { type: "success", text: "   ✅ PR #123 merged successfully!" },
+                { type: "separator" },
 
-                            { type: 'system', text: '🎉 PHASE 14 COMPLETE - AI CODE REVIEW PASSED' },
-                            { type: 'system', text: '   - Greptile: 9.2/10 score, 1 optimization applied' },
-                            { type: 'system', text: '   - CodeRabbit: 2 auto-fixes applied' },
-                            { type: 'system', text: '   - Graphite: PR stacking strategy suggested' },
-                            { type: 'cost', text: '💰 Cost: Greptile: $0.15, CodeRabbit: $0.00 (OSS), Graphite: $0.00 (Hobby)' },
-                            { type: 'separator' },
+                {
+                  type: "system",
+                  text: "🎉 PHASE 14 COMPLETE - AI CODE REVIEW PASSED",
+                },
+                {
+                  type: "system",
+                  text: "   - Greptile: 9.2/10 score, 1 optimization applied",
+                },
+                {
+                  type: "system",
+                  text: "   - CodeRabbit: 2 auto-fixes applied",
+                },
+                {
+                  type: "system",
+                  text: "   - Graphite: PR stacking strategy suggested",
+                },
+                {
+                  type: "cost",
+                  text: "💰 Cost: Greptile: $0.15, CodeRabbit: $0.00 (OSS), Graphite: $0.00 (Hobby)",
+                },
+                { type: "separator" },
 
-                            { type: 'state', text: '   Update: phases.code_review.status = "complete"' },
-                            { type: 'state', text: '   Update: pr_merged = true' },
-                            { type: 'tool', text: '📝 TOOL: TodoWrite' },
-                            { type: 'system', text: '   ✓ ALL 14 PHASES COMPLETE!' },
-                            { type: 'separator' },
+                {
+                  type: "state",
+                  text: '   Update: phases.code_review.status = "complete"',
+                },
+                { type: "state", text: "   Update: pr_merged = true" },
+                { type: "tool", text: "📝 TOOL: TodoWrite" },
+                { type: "system", text: "   ✓ ALL 14 PHASES COMPLETE!" },
+                { type: "separator" },
 
-                            // Final Stats Command
-                            { type: 'system', text: '📊 Agent: Generating final stats...' },
-                            { type: 'tool', text: '🔧 TOOL: Bash("claude-code /stats")' },
-                            { type: 'cost', text: `
+                // Final Stats Command
+                { type: "system", text: "📊 Agent: Generating final stats..." },
+                { type: "tool", text: '🔧 TOOL: Bash("claude-code /stats")' },
+                {
+                  type: "cost",
+                  text: `
 ╔═══════════════════════════════════════════════════════════╗
 ║ 📊 SESSION STATISTICS - /stats                            ║
 ╠═══════════════════════════════════════════════════════════╣
@@ -857,165 +1292,180 @@
 ║ - 35% better coverage (95% vs 60%)                         ║
 ║ - 40% faster (42 min vs 70 min sequential)                 ║
 ╚═══════════════════════════════════════════════════════════╝
-                            ` },
-                            { type: 'separator' },
+                            `,
+                },
+                { type: "separator" },
 
-                            { type: 'success', text: '🎊 WORKFLOW COMPLETE - ENDPOINT DEPLOYED!' },
-                            { type: 'system', text: '   Endpoint: POST /api/v2/stripe-payment' },
-                            { type: 'system', text: '   Tests: 15/15 passing (100% coverage)' },
-                            { type: 'system', text: '   PR: Merged to main branch' },
-                            { type: 'system', text: '   Code Quality: 9.2/10 (Greptile)' }
-                        ]
-                    }
-                ]
-            }
-        };
+                {
+                  type: "success",
+                  text: "🎊 WORKFLOW COMPLETE - ENDPOINT DEPLOYED!",
+                },
+                {
+                  type: "system",
+                  text: "   Endpoint: POST /api/v2/stripe-payment",
+                },
+                {
+                  type: "system",
+                  text: "   Tests: 15/15 passing (100% coverage)",
+                },
+                { type: "system", text: "   PR: Merged to main branch" },
+                { type: "system", text: "   Code Quality: 9.2/10 (Greptile)" },
+              ],
+            },
+          ],
+        },
+      };
 
-        let currentWorkflow = 'api-create';
-        let currentPhaseIndex = 0;
-        let currentLogIndex = 0;
-        let isPlaying = false;
-        let playInterval = null;
+      let currentWorkflow = "api-create";
+      let currentPhaseIndex = 0;
+      let currentLogIndex = 0;
+      let isPlaying = false;
+      let playInterval = null;
 
-        function switchWorkflow(workflowId) {
-            currentWorkflow = workflowId;
-            resetExecution();
-            document.querySelectorAll('.workflow-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.workflow === workflowId) {
-                    btn.classList.add('active');
-                }
-            });
-        }
-
-        document.querySelectorAll('.workflow-btn').forEach(btn => {
-            btn.addEventListener('click', () => switchWorkflow(btn.dataset.workflow));
+      function switchWorkflow(workflowId) {
+        currentWorkflow = workflowId;
+        resetExecution();
+        document.querySelectorAll(".workflow-btn").forEach((btn) => {
+          btn.classList.remove("active");
+          if (btn.dataset.workflow === workflowId) {
+            btn.classList.add("active");
+          }
         });
+      }
 
-        function startExecution() {
-            if (isPlaying) return;
-            isPlaying = true;
-            playInterval = setInterval(stepExecution, 100);
+      document.querySelectorAll(".workflow-btn").forEach((btn) => {
+        btn.addEventListener("click", () =>
+          switchWorkflow(btn.dataset.workflow),
+        );
+      });
+
+      function startExecution() {
+        if (isPlaying) return;
+        isPlaying = true;
+        playInterval = setInterval(stepExecution, 100);
+      }
+
+      function pauseExecution() {
+        isPlaying = false;
+        if (playInterval) {
+          clearInterval(playInterval);
+          playInterval = null;
+        }
+      }
+
+      function stepExecution() {
+        const workflow = workflows[currentWorkflow];
+        if (!workflow) return;
+
+        if (currentPhaseIndex >= workflow.phases.length) {
+          pauseExecution();
+          return;
         }
 
-        function pauseExecution() {
-            isPlaying = false;
-            if (playInterval) {
-                clearInterval(playInterval);
-                playInterval = null;
-            }
+        const phase = workflow.phases[currentPhaseIndex];
+        if (currentLogIndex >= phase.logs.length) {
+          currentPhaseIndex++;
+          currentLogIndex = 0;
+          updateTodos();
+          return;
         }
 
-        function stepExecution() {
-            const workflow = workflows[currentWorkflow];
-            if (!workflow) return;
+        const log = phase.logs[currentLogIndex];
+        appendLog(log);
 
-            if (currentPhaseIndex >= workflow.phases.length) {
-                pauseExecution();
-                return;
-            }
+        currentLogIndex++;
+      }
 
-            const phase = workflow.phases[currentPhaseIndex];
-            if (currentLogIndex >= phase.logs.length) {
-                currentPhaseIndex++;
-                currentLogIndex = 0;
-                updateTodos();
-                return;
-            }
+      function appendLog(log) {
+        const terminal = document.getElementById("terminal-content");
+        const line = document.createElement("div");
+        line.className = `terminal-line log-${log.type}`;
 
-            const log = phase.logs[currentLogIndex];
-            appendLog(log);
-
-            currentLogIndex++;
-        }
-
-        function appendLog(log) {
-            const terminal = document.getElementById('terminal-content');
-            const line = document.createElement('div');
-            line.className = `terminal-line log-${log.type}`;
-
-            if (log.type === 'separator') {
-                line.className = 'separator';
-            } else if (log.type === 'interview') {
-                line.innerHTML = `
+        if (log.type === "separator") {
+          line.className = "separator";
+        } else if (log.type === "interview") {
+          line.innerHTML = `
                     <div class="interview-dialog">
                         <div class="interview-question">❓ ${log.question}</div>
                         <div class="interview-options">
-                            ${log.options.map((opt, i) => `<div class="interview-option">[${i+1}] ${opt}</div>`).join('')}
+                            ${log.options.map((opt, i) => `<div class="interview-option">[${i + 1}] ${opt}</div>`).join("")}
                         </div>
                     </div>
                 `;
-            } else if (log.type === 'skill-result' || log.type === 'phase-14-box') {
-                line.innerHTML = `<pre class="${log.type === 'phase-14-box' ? 'phase-14-box' : 'skill-result'}">${log.text}</pre>`;
-            } else {
-                line.innerHTML = log.text || '';
-            }
-
-            terminal.appendChild(line);
-            terminal.scrollTop = terminal.scrollHeight;
-
-            // Update cost panel
-            if (log.type === 'cost') {
-                const costContent = document.getElementById('cost-content');
-                const costItem = document.createElement('div');
-                costItem.className = 'cost-item';
-                costItem.innerHTML = log.text.substring(0, 100) + '...';
-                costContent.appendChild(costItem);
-            }
-
-            // Update state panel
-            if (log.type === 'state') {
-                updateState(log.text);
-            }
+        } else if (log.type === "skill-result" || log.type === "phase-14-box") {
+          line.innerHTML = `<pre class="${log.type === "phase-14-box" ? "phase-14-box" : "skill-result"}">${log.text}</pre>`;
+        } else {
+          line.innerHTML = log.text || "";
         }
 
-        function updateTodos() {
-            const workflow = workflows[currentWorkflow];
-            if (!workflow) return;
+        terminal.appendChild(line);
+        terminal.scrollTop = terminal.scrollHeight;
 
-            const todoList = document.getElementById('todo-list');
-            todoList.innerHTML = '';
-
-            workflow.todos.forEach((todo, index) => {
-                const todoItem = document.createElement('div');
-                let status = 'pending';
-                if (index < currentPhaseIndex) {
-                    status = 'completed';
-                } else if (index === currentPhaseIndex) {
-                    status = 'in_progress';
-                }
-
-                todoItem.className = `todo-item ${status}`;
-                const checkbox = status === 'completed' ? '✓' :
-                                status === 'in_progress' ? '⊙' : '☐';
-                todoItem.innerHTML = `<span class="todo-checkbox">${checkbox}</span>${todo.content}`;
-                todoList.appendChild(todoItem);
-            });
+        // Update cost panel
+        if (log.type === "cost") {
+          const costContent = document.getElementById("cost-content");
+          const costItem = document.createElement("div");
+          costItem.className = "cost-item";
+          costItem.innerHTML = log.text.substring(0, 100) + "...";
+          costContent.appendChild(costItem);
         }
 
-        function updateState(stateText) {
-            const stateContent = document.getElementById('state-content');
-            const stateItem = document.createElement('div');
-            stateItem.className = 'state-item';
-            stateItem.textContent = stateText.replace('   Update: ', '').replace('   State: ', '');
-            stateContent.appendChild(stateItem);
-            if (stateContent.children.length > 20) {
-                stateContent.removeChild(stateContent.firstChild);
-            }
+        // Update state panel
+        if (log.type === "state") {
+          updateState(log.text);
         }
+      }
 
-        function resetExecution() {
-            currentPhaseIndex = 0;
-            currentLogIndex = 0;
-            pauseExecution();
-            document.getElementById('terminal-content').innerHTML = '';
-            document.getElementById('state-content').innerHTML = '';
-            document.getElementById('cost-content').innerHTML = '<div class="cost-item">Session: Ready to start</div>';
-            updateTodos();
+      function updateTodos() {
+        const workflow = workflows[currentWorkflow];
+        if (!workflow) return;
+
+        const todoList = document.getElementById("todo-list");
+        todoList.innerHTML = "";
+
+        workflow.todos.forEach((todo, index) => {
+          const todoItem = document.createElement("div");
+          let status = "pending";
+          if (index < currentPhaseIndex) {
+            status = "completed";
+          } else if (index === currentPhaseIndex) {
+            status = "in_progress";
+          }
+
+          todoItem.className = `todo-item ${status}`;
+          const checkbox =
+            status === "completed" ? "✓" : status === "in_progress" ? "⊙" : "☐";
+          todoItem.innerHTML = `<span class="todo-checkbox">${checkbox}</span>${todo.content}`;
+          todoList.appendChild(todoItem);
+        });
+      }
+
+      function updateState(stateText) {
+        const stateContent = document.getElementById("state-content");
+        const stateItem = document.createElement("div");
+        stateItem.className = "state-item";
+        stateItem.textContent = stateText
+          .replace("   Update: ", "")
+          .replace("   State: ", "");
+        stateContent.appendChild(stateItem);
+        if (stateContent.children.length > 20) {
+          stateContent.removeChild(stateContent.firstChild);
         }
+      }
 
-        // Initialize
+      function resetExecution() {
+        currentPhaseIndex = 0;
+        currentLogIndex = 0;
+        pauseExecution();
+        document.getElementById("terminal-content").innerHTML = "";
+        document.getElementById("state-content").innerHTML = "";
+        document.getElementById("cost-content").innerHTML =
+          '<div class="cost-item">Session: Ready to start</div>';
         updateTodos();
+      }
+
+      // Initialize
+      updateTodos();
     </script>
-</body>
+  </body>
 </html>

@@ -22,6 +22,7 @@ allowed-tools: WebSearch WebFetch mcp__context7 mcp__github AskUserQuestion Read
 **YOU MUST USE THE `AskUserQuestion` TOOL AT EVERY CHECKPOINT.**
 
 This workflow requires REAL user input at each phase. You are **FORBIDDEN** from:
+
 - Self-answering questions
 - Assuming user responses
 - Proceeding without explicit user confirmation
@@ -39,9 +40,9 @@ At every `[Y/n]` or multiple-choice prompt in this workflow, you MUST call the `
       "header": "Phase",
       "multiSelect": false,
       "options": [
-        {"label": "Option A", "description": "What this option means"},
-        {"label": "Option B", "description": "What this option means"},
-        {"label": "Other", "description": "I'll type my own answer"}
+        { "label": "Option A", "description": "What this option means" },
+        { "label": "Option B", "description": "What this option means" },
+        { "label": "Other", "description": "I'll type my own answer" }
       ]
     }
   ]
@@ -49,6 +50,7 @@ At every `[Y/n]` or multiple-choice prompt in this workflow, you MUST call the `
 ```
 
 **CRITICAL REQUIREMENTS:**
+
 - `header`: Max 12 characters (e.g., "Scope", "Research", "Format")
 - `options`: 2-4 options, each with `label` (1-5 words) and `description`
 - `multiSelect`: Required boolean (true for checkboxes, false for radio)
@@ -60,6 +62,7 @@ At every `[Y/n]` or multiple-choice prompt in this workflow, you MUST call the `
 ### Violation Detection
 
 The enforcement hooks will BLOCK your progress if:
+
 - `user_question_asked` is false for any phase
 - `user_confirmed`/`user_approved`/`user_completed` is false
 - `phase_exit_confirmed` is false (user must explicitly approve proceeding to next phase)
@@ -72,27 +75,35 @@ If you see "BLOCKED" messages, it means you skipped user interaction.
 **Every phase requires an EXIT CONFIRMATION question** before proceeding to the next phase. This prevents Claude from self-answering and moving on without explicit user approval.
 
 The exit confirmation question MUST:
+
 1. Summarize what was accomplished in the current phase
 2. Ask if user is ready to proceed to the next phase
 3. Include options like "Yes, proceed", "No, I have changes", "Add more"
 
 Example exit confirmation:
+
 ```json
 {
-  "questions": [{
-    "question": "Phase complete. Research found 5 sources. Ready to proceed to Interview phase?",
-    "header": "Proceed",
-    "multiSelect": false,
-    "options": [
-      {"label": "Yes, proceed", "description": "Move to next phase"},
-      {"label": "No, more research", "description": "I need additional research on [topic]"},
-      {"label": "Review sources", "description": "Show me what was found"}
-    ]
-  }]
+  "questions": [
+    {
+      "question": "Phase complete. Research found 5 sources. Ready to proceed to Interview phase?",
+      "header": "Proceed",
+      "multiSelect": false,
+      "options": [
+        { "label": "Yes, proceed", "description": "Move to next phase" },
+        {
+          "label": "No, more research",
+          "description": "I need additional research on [topic]"
+        },
+        { "label": "Review sources", "description": "Show me what was found" }
+      ]
+    }
+  ]
 }
 ```
 
 The `phase_exit_confirmed` flag is automatically set when:
+
 1. An `AskUserQuestion` is called with a question containing words like "proceed", "continue", "ready", "confirm", "approve"
 2. The user responds with an affirmative answer (yes, proceed, confirm, approve, etc.)
 
@@ -123,6 +134,7 @@ TodoWrite([
 ```
 
 **At each phase transition:**
+
 1. Mark current phase as `completed`
 2. Mark next phase as `in_progress`
 3. This gives the user visual progress during long workflows
@@ -507,16 +519,16 @@ This command creates:
 
 ## Hooks That Enforce This Workflow
 
-| Phase | Hook | Purpose |
-|-------|------|---------|
-| 0 | `enforce-external-research.py` | Detects API terms, requires disambiguation |
-| 2-4 | `track-tool-use.py` | Logs all research, tracks turns |
-| 7-8 | `enforce-research.py` | Blocks Write if no research done |
-| 7-8 | `enforce-interview.py` | Injects interview decisions |
-| 8 | `verify-implementation.py` | Blocks route if no test file |
-| 9 | `verify-after-green.py` | Triggers verification after tests pass |
-| All | `periodic-reground.py` | Re-grounds every 7 turns |
-| 11 | `api-workflow-check.py` | Blocks completion if docs incomplete |
+| Phase | Hook                           | Purpose                                    |
+| ----- | ------------------------------ | ------------------------------------------ |
+| 0     | `enforce-external-research.py` | Detects API terms, requires disambiguation |
+| 2-4   | `track-tool-use.py`            | Logs all research, tracks turns            |
+| 7-8   | `enforce-research.py`          | Blocks Write if no research done           |
+| 7-8   | `enforce-interview.py`         | Injects interview decisions                |
+| 8     | `verify-implementation.py`     | Blocks route if no test file               |
+| 9     | `verify-after-green.py`        | Triggers verification after tests pass     |
+| All   | `periodic-reground.py`         | Re-grounds every 7 turns                   |
+| 11    | `api-workflow-check.py`        | Blocks completion if docs incomplete       |
 
 <claude-commands-template>
 ## Project-Specific Rules
@@ -527,7 +539,7 @@ This command creates:
 4. **AI SDK**: Use Vercel AI SDK 5.0.11 patterns from `/src/v2/docs/ai-sdk-catalog.json`
 5. **Package Manager**: Use `pnpm` for all operations
 6. **Documentation**: Follow patterns in `/src/v2/docs/Main Doc – V2 Development Patterns.md`
-7. **API Keys**: Support three methods (env, NEXT_PUBLIC_, custom headers)
+7. **API Keys**: Support three methods (env, NEXT*PUBLIC*, custom headers)
 8. **Test Command**: `pnpm test:run` before commits
 
 ## Never Skip
@@ -539,4 +551,4 @@ This command creates:
 - Phase 10 (Verify) - Re-research after Green
 - Phase 12 (Documentation) - Keep docs in sync
 - Coverage verification - 100% required
-</claude-commands-template>
+  </claude-commands-template>

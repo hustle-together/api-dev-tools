@@ -3,19 +3,20 @@
 Browse and export saved session logs from previous API development workflows.
 
 ## Usage
+
 ```
 /hustle-api-sessions [options]
 ```
 
 ## Options
 
-| Option | Description |
-|--------|-------------|
-| `--list` | List all saved sessions |
-| `--view [endpoint]` | View a specific session |
-| `--export [endpoint] [format]` | Export session to PDF/HTML/MD |
-| `--search [term]` | Search across all sessions |
-| `--cleanup` | Remove old sessions (>30 days) |
+| Option                         | Description                    |
+| ------------------------------ | ------------------------------ |
+| `--list`                       | List all saved sessions        |
+| `--view [endpoint]`            | View a specific session        |
+| `--export [endpoint] [format]` | Export session to PDF/HTML/MD  |
+| `--search [term]`              | Search across all sessions     |
+| `--cleanup`                    | Remove old sessions (>30 days) |
 
 ## Examples
 

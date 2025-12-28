@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { HeroHeader } from '../shared/HeroHeader';
-import { APIShowcase } from './_components/APIShowcase';
+import { HeroHeader } from "../shared/HeroHeader";
+import { APIShowcase } from "./_components/APIShowcase";
 
 /**
  * API Showcase Page
@@ -27,7 +27,7 @@ export default function APIShowcasePage() {
         badge="API Documentation"
         description={
           <>
-            Interactive testing and documentation for all{' '}
+            Interactive testing and documentation for all{" "}
             <strong>Hustle</strong> API endpoints.
           </>
         }

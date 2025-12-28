@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
 interface PreviewCardProps {
   id: string;
-  type: 'component' | 'page';
+  type: "component" | "page";
   name: string;
   description?: string;
   variants?: string[];
@@ -38,7 +38,7 @@ export function PreviewCard({
   // Get page route from file path or prop
   const getPageRoute = () => {
     if (route) return route;
-    if (file?.includes('src/app/')) {
+    if (file?.includes("src/app/")) {
       const match = file.match(/src\/app\/(.+?)\/page\.tsx?$/);
       if (match) return `/${match[1]}`;
     }
@@ -52,28 +52,24 @@ export function PreviewCard({
     >
       {/* Preview Area */}
       <div className="relative aspect-video w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
-        {type === 'page' ? (
+        {type === "page" ? (
           // REAL iframe preview for pages - scaled down to fit
           <iframe
             src={getPageRoute()}
             title={`Preview of ${name}`}
             className="pointer-events-none h-full w-full origin-top-left scale-[0.5]"
-            style={{ width: '200%', height: '200%' }}
+            style={{ width: "200%", height: "200%" }}
             loading="lazy"
           />
         ) : (
           // Component preview - generated HTML matching Sandpack style
-          <ComponentPreview
-            id={id}
-            name={name}
-            variants={variants}
-          />
+          <ComponentPreview id={id} name={name} variants={variants} />
         )}
 
         {/* Type Badge */}
         <div className="absolute right-2 top-2">
           <span className="border border-black bg-white px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-black dark:border-gray-600 dark:bg-gray-800 dark:text-white">
-            {type === 'component' ? 'Component' : 'Page'}
+            {type === "component" ? "Component" : "Page"}
           </span>
         </div>
 
@@ -119,7 +115,7 @@ export function PreviewCard({
 
           {usesComponents && usesComponents.length > 0 && (
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              Uses: {usesComponents.slice(0, 3).join(', ')}
+              Uses: {usesComponents.slice(0, 3).join(", ")}
               {usesComponents.length > 3 && ` +${usesComponents.length - 3}`}
             </p>
           )}
@@ -143,7 +139,7 @@ function ComponentPreview({
   name: string;
   variants?: string[];
 }) {
-  const previewHtml = generatePreviewHtml(name, variants?.[0] || 'primary');
+  const previewHtml = generatePreviewHtml(name, variants?.[0] || "primary");
 
   return (
     <iframe
@@ -163,9 +159,9 @@ function ComponentPreview({
 function generatePreviewHtml(name: string, variant: string): string {
   const lowerName = name.toLowerCase();
 
-  let content = '';
+  let content = "";
 
-  if (lowerName.includes('button')) {
+  if (lowerName.includes("button")) {
     content = `
       <div style="display: flex; gap: 8px; align-items: center;">
         <button style="
@@ -188,7 +184,7 @@ function generatePreviewHtml(name: string, variant: string): string {
         ">Secondary</button>
       </div>
     `;
-  } else if (lowerName.includes('card')) {
+  } else if (lowerName.includes("card")) {
     content = `
       <div style="
         border: 2px solid #000;
@@ -203,7 +199,11 @@ function generatePreviewHtml(name: string, variant: string): string {
         </div>
       </div>
     `;
-  } else if (lowerName.includes('input') || lowerName.includes('field') || lowerName.includes('form')) {
+  } else if (
+    lowerName.includes("input") ||
+    lowerName.includes("field") ||
+    lowerName.includes("form")
+  ) {
     content = `
       <div style="width: 140px;">
         <label style="display: block; font-size: 11px; font-weight: bold; margin-bottom: 4px;">Label</label>
@@ -217,7 +217,7 @@ function generatePreviewHtml(name: string, variant: string): string {
         <p style="font-size: 10px; color: #666; margin: 4px 0 0;">Helper text</p>
       </div>
     `;
-  } else if (lowerName.includes('table')) {
+  } else if (lowerName.includes("table")) {
     content = `
       <div style="border: 2px solid #000; font-size: 10px; width: 160px;">
         <div style="display: flex; background: #f0f0f0; border-bottom: 1px solid #ccc;">
@@ -234,7 +234,7 @@ function generatePreviewHtml(name: string, variant: string): string {
         </div>
       </div>
     `;
-  } else if (lowerName.includes('header') || lowerName.includes('nav')) {
+  } else if (lowerName.includes("header") || lowerName.includes("nav")) {
     content = `
       <div style="border: 2px solid #000; background: white; padding: 8px 12px; width: 180px;">
         <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -247,7 +247,7 @@ function generatePreviewHtml(name: string, variant: string): string {
         </div>
       </div>
     `;
-  } else if (lowerName.includes('modal') || lowerName.includes('dialog')) {
+  } else if (lowerName.includes("modal") || lowerName.includes("dialog")) {
     content = `
       <div style="position: relative; width: 140px; height: 100px;">
         <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.3);"></div>

@@ -32,51 +32,51 @@ npx @hustle-together/api-dev-tools --scope=project
 
 ### API Development (6 skills)
 
-| Skill | Usage | Description |
-|-------|-------|-------------|
-| **api-create** | `/api-create [endpoint]` | Complete 13-phase API workflow with interview, research, TDD, verification |
-| **api-interview** | `/api-interview [endpoint]` | Structured requirements gathering with questions FROM research findings |
-| **api-research** | `/api-research [library]` | Adaptive documentation research with 7-day caching |
-| **api-verify** | `/api-verify [endpoint]` | Re-research after tests pass to catch implementation gaps |
-| **api-env** | `/api-env [endpoint]` | Check API keys and environment variables |
-| **api-status** | `/api-status [endpoint]` | Track progress through 13 phases |
+| Skill             | Usage                       | Description                                                                |
+| ----------------- | --------------------------- | -------------------------------------------------------------------------- |
+| **api-create**    | `/api-create [endpoint]`    | Complete 13-phase API workflow with interview, research, TDD, verification |
+| **api-interview** | `/api-interview [endpoint]` | Structured requirements gathering with questions FROM research findings    |
+| **api-research**  | `/api-research [library]`   | Adaptive documentation research with 7-day caching                         |
+| **api-verify**    | `/api-verify [endpoint]`    | Re-research after tests pass to catch implementation gaps                  |
+| **api-env**       | `/api-env [endpoint]`       | Check API keys and environment variables                                   |
+| **api-status**    | `/api-status [endpoint]`    | Track progress through 13 phases                                           |
 
 ### TDD Workflow (4 skills)
 
-| Skill | Usage | Description |
-|-------|-------|-------------|
-| **red** | `/red` | Write ONE failing test (defines success before implementation) |
-| **green** | `/green` | Minimal implementation to pass tests (no over-engineering) |
-| **refactor** | `/refactor` | Clean up code while keeping tests green |
-| **cycle** | `/cycle [description]` | Complete Red → Green → Refactor loop |
+| Skill        | Usage                  | Description                                                    |
+| ------------ | ---------------------- | -------------------------------------------------------------- |
+| **red**      | `/red`                 | Write ONE failing test (defines success before implementation) |
+| **green**    | `/green`               | Minimal implementation to pass tests (no over-engineering)     |
+| **refactor** | `/refactor`            | Clean up code while keeping tests green                        |
+| **cycle**    | `/cycle [description]` | Complete Red → Green → Refactor loop                           |
 
 ### Planning & Analysis (3 skills)
 
-| Skill | Usage | Description |
-|-------|-------|-------------|
-| **plan** | `/plan [feature]` | Create implementation plan with PRD-style discovery |
-| **gap** | `/gap` | Analyze code vs requirements for missing pieces |
-| **issue** | `/issue [url]` | Create TDD plan from GitHub issue |
+| Skill     | Usage             | Description                                         |
+| --------- | ----------------- | --------------------------------------------------- |
+| **plan**  | `/plan [feature]` | Create implementation plan with PRD-style discovery |
+| **gap**   | `/gap`            | Analyze code vs requirements for missing pieces     |
+| **issue** | `/issue [url]`    | Create TDD plan from GitHub issue                   |
 
 ### Git Operations (5 skills)
 
-| Skill | Usage | Description |
-|-------|-------|-------------|
-| **commit** | `/commit` | Semantic commit with co-author attribution |
-| **pr** | `/pr` | Create pull request with summary and test plan |
-| **busycommit** | `/busycommit` | Multiple atomic commits for complex changesets |
-| **worktree-add** | `/worktree-add [branch/issue]` | Add git worktree from branch or issue |
-| **worktree-cleanup** | `/worktree-cleanup` | Clean up merged worktrees |
+| Skill                | Usage                          | Description                                    |
+| -------------------- | ------------------------------ | ---------------------------------------------- |
+| **commit**           | `/commit`                      | Semantic commit with co-author attribution     |
+| **pr**               | `/pr`                          | Create pull request with summary and test plan |
+| **busycommit**       | `/busycommit`                  | Multiple atomic commits for complex changesets |
+| **worktree-add**     | `/worktree-add [branch/issue]` | Add git worktree from branch or issue          |
+| **worktree-cleanup** | `/worktree-cleanup`            | Clean up merged worktrees                      |
 
 ### Workflow Utilities (5 skills)
 
-| Skill | Usage | Description |
-|-------|-------|-------------|
-| **spike** | `/spike` | Exploratory coding before formal TDD |
-| **tdd** | `/tdd` | Remind agent about TDD practices |
-| **beepboop** | `/beepboop` | Transparent AI attribution markers |
-| **summarize** | `/summarize` | Conversation progress summary |
-| **add-command** | `/add-command` | Guide for creating new skills |
+| Skill           | Usage          | Description                          |
+| --------------- | -------------- | ------------------------------------ |
+| **spike**       | `/spike`       | Exploratory coding before formal TDD |
+| **tdd**         | `/tdd`         | Remind agent about TDD practices     |
+| **beepboop**    | `/beepboop`    | Transparent AI attribution markers   |
+| **summarize**   | `/summarize`   | Conversation progress summary        |
+| **add-command** | `/add-command` | Guide for creating new skills        |
 
 ## 🏗️ Architecture
 
@@ -101,6 +101,7 @@ Phase 13: COMPLETION         - Final verification, commit
 ### Loop-Back Architecture
 
 Every verification phase can loop back if not successful:
+
 - Phase 1: Loop if disambiguation unclear
 - Phase 3: Loop if more research needed
 - Phase 4: Loop if interview incomplete
@@ -161,13 +162,13 @@ For full workflow enforcement, install hooks to `.claude/hooks/`:
 
 ### Hook Types
 
-| Event | Hooks | Purpose |
-|-------|-------|---------|
-| **SessionStart** | session-startup.py | Inject state context at session start |
-| **UserPromptSubmit** | enforce-external-research.py | Detect API terms, require research |
-| **PreToolUse** | enforce-research.py<br>enforce-interview.py<br>verify-implementation.py | Block writes until research/interview done<br>Inject interview decisions<br>Require test file before route |
-| **PostToolUse** | track-tool-use.py<br>periodic-reground.py<br>verify-after-green.py | Log research, count turns<br>Re-ground every 7 turns<br>Trigger Phase 10 after test pass |
-| **Stop** | api-workflow-check.py | Block if phases incomplete |
+| Event                | Hooks                                                                   | Purpose                                                                                                    |
+| -------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| **SessionStart**     | session-startup.py                                                      | Inject state context at session start                                                                      |
+| **UserPromptSubmit** | enforce-external-research.py                                            | Detect API terms, require research                                                                         |
+| **PreToolUse**       | enforce-research.py<br>enforce-interview.py<br>verify-implementation.py | Block writes until research/interview done<br>Inject interview decisions<br>Require test file before route |
+| **PostToolUse**      | track-tool-use.py<br>periodic-reground.py<br>verify-after-green.py      | Log research, count turns<br>Re-ground every 7 turns<br>Trigger Phase 10 after test pass                   |
+| **Stop**             | api-workflow-check.py                                                   | Block if phases incomplete                                                                                 |
 
 ### What Hooks Enforce
 
@@ -288,4 +289,4 @@ See [CONTRIBUTING.md](../../CONTRIBUTING.md) for guidelines
 ---
 
 **Built with ❤️ by Hustle Together**
-*Empowering developers with interview-driven, research-first API development*
+_Empowering developers with interview-driven, research-first API development_

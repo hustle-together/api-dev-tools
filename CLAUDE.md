@@ -6,14 +6,14 @@ This project uses **@hustle-together/api-dev-tools** for interview-driven, resea
 
 ### Available Commands
 
-| Command | Purpose |
-|---------|---------|
-| `/api-create [endpoint]` | Complete 13-phase workflow |
-| `/api-interview [endpoint]` | Questions FROM research findings |
-| `/api-research [library]` | Adaptive propose-approve research |
-| `/api-verify [endpoint]` | Re-research and verify implementation |
-| `/api-env [endpoint]` | Check API keys |
-| `/api-status [endpoint]` | Track progress |
+| Command                     | Purpose                               |
+| --------------------------- | ------------------------------------- |
+| `/api-create [endpoint]`    | Complete 13-phase workflow            |
+| `/api-interview [endpoint]` | Questions FROM research findings      |
+| `/api-research [library]`   | Adaptive propose-approve research     |
+| `/api-verify [endpoint]`    | Re-research and verify implementation |
+| `/api-env [endpoint]`       | Check API keys                        |
+| `/api-status [endpoint]`    | Track progress                        |
 
 ### 13-Phase Flow
 
@@ -44,6 +44,7 @@ Phase 13: COMPLETION         - Final verification, commit
 ### State Tracking
 
 All progress is tracked in `.claude/api-dev-state.json`:
+
 - Current phase and status for each
 - Interview decisions (injected during implementation)
 - Research sources with freshness tracking
@@ -52,21 +53,22 @@ All progress is tracked in `.claude/api-dev-state.json`:
 ### Research Cache
 
 Research is cached in `.claude/research/` with 7-day freshness:
+
 - `index.json` - Freshness tracking
 - `[api-name]/CURRENT.md` - Latest research
 - Stale research (>7 days) triggers re-research prompt
 
 ### Hooks (Automatic Enforcement)
 
-| Hook | When | Action |
-|------|------|--------|
-| `session-startup.py` | Session start | Inject state context |
-| `enforce-external-research.py` | API questions | Require research first |
-| `enforce-research.py` | Write/Edit | Block without research |
-| `enforce-interview.py` | Write/Edit | Inject interview decisions |
-| `verify-after-green.py` | Tests pass | Trigger Phase 9 |
-| `periodic-reground.py` | Every 7 turns | Re-inject context |
-| `api-workflow-check.py` | Stop | Block if incomplete |
+| Hook                           | When          | Action                     |
+| ------------------------------ | ------------- | -------------------------- |
+| `session-startup.py`           | Session start | Inject state context       |
+| `enforce-external-research.py` | API questions | Require research first     |
+| `enforce-research.py`          | Write/Edit    | Block without research     |
+| `enforce-interview.py`         | Write/Edit    | Inject interview decisions |
+| `verify-after-green.py`        | Tests pass    | Trigger Phase 9            |
+| `periodic-reground.py`         | Every 7 turns | Re-inject context          |
+| `api-workflow-check.py`        | Stop          | Block if incomplete        |
 
 ### Usage
 

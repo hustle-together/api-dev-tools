@@ -7,6 +7,7 @@
 ## Key Principle: Questions FROM Research
 
 **OLD WAY (Generic Templates):**
+
 ```
 "Which AI provider should this endpoint support?"
 - OpenAI
@@ -15,6 +16,7 @@
 ```
 
 **NEW WAY (From Research):**
+
 ```
 Based on research, Brandfetch API has 7 parameters:
 
@@ -40,6 +42,7 @@ Based on research, Brandfetch API has 7 parameters:
 **Interview is BLOCKED until research is done.**
 
 The interview READS from the research findings:
+
 ```
 State file shows:
   research_initial.status = "complete"
@@ -57,6 +60,7 @@ Discovered parameters:
 For each discovered parameter, generate an appropriate question:
 
 #### Required Parameters (Confirmation Only)
+
 ```
 ┌────────────────────────────────────────────────────────────┐
 │ REQUIRED PARAMETERS                                        │
@@ -71,6 +75,7 @@ For each discovered parameter, generate an appropriate question:
 ```
 
 #### Enum Parameters (Multi-Select)
+
 ```
 ┌────────────────────────────────────────────────────────────┐
 │ FORMAT PARAMETER                                           │
@@ -87,6 +92,7 @@ For each discovered parameter, generate an appropriate question:
 ```
 
 #### Continuous Parameters (Test Strategy)
+
 ```
 ┌────────────────────────────────────────────────────────────┐
 │ QUALITY PARAMETER                                          │
@@ -105,6 +111,7 @@ For each discovered parameter, generate an appropriate question:
 ```
 
 #### Boolean Parameters (Enable/Disable)
+
 ```
 ┌────────────────────────────────────────────────────────────┐
 │ INCLUDE_COLORS PARAMETER                                   │
@@ -189,14 +196,14 @@ After interview, propose additional research:
 
 ## Question Types Summary
 
-| Discovered Type | Question Type | Example |
-|----------------|---------------|---------|
-| Required param | Confirmation | "Confirm these are understood?" |
-| Enum param | Multi-select | "Which formats to support?" |
-| Continuous range | Test strategy | "How to test 1-100 range?" |
-| Boolean param | Enable/disable | "Expose this parameter?" |
-| Optional feature | Priority | "Include this feature?" |
-| Error case | Handling strategy | "How to handle rate limits?" |
+| Discovered Type  | Question Type     | Example                         |
+| ---------------- | ----------------- | ------------------------------- |
+| Required param   | Confirmation      | "Confirm these are understood?" |
+| Enum param       | Multi-select      | "Which formats to support?"     |
+| Continuous range | Test strategy     | "How to test 1-100 range?"      |
+| Boolean param    | Enable/disable    | "Expose this parameter?"        |
+| Optional feature | Priority          | "Include this feature?"         |
+| Error case       | Handling strategy | "How to handle rate limits?"    |
 
 ## State Tracking
 
@@ -239,7 +246,7 @@ All decisions are saved to `.claude/api-dev-state.json`:
 
 Creates: `.claude/research/[api-name]/interview.md`
 
-```markdown
+````markdown
 # Interview: [API Name]
 
 **Date:** [current-date]
@@ -248,19 +255,19 @@ Creates: `.claude/research/[api-name]/interview.md`
 
 ## Discovered Parameters
 
-| Parameter | Type | Required | Decision |
-|-----------|------|----------|----------|
-| domain | string | Yes | Always required |
-| format | enum | No | json, svg, png |
-| quality | 1-100 | No | Boundary testing: 1, 50, 100 |
+| Parameter | Type   | Required | Decision                     |
+| --------- | ------ | -------- | ---------------------------- |
+| domain    | string | Yes      | Always required              |
+| format    | enum   | No       | json, svg, png               |
+| quality   | 1-100  | No       | Boundary testing: 1, 50, 100 |
 
 ## Feature Scope
 
-| Feature | Included | Reason |
-|---------|----------|--------|
-| Basic fetch | Yes | Core functionality |
-| Multiple formats | Yes | User selected |
-| Webhooks | No | Deferred to v2 |
+| Feature          | Included | Reason             |
+| ---------------- | -------- | ------------------ |
+| Basic fetch      | Yes      | Core functionality |
+| Multiple formats | Yes      | User selected      |
+| Webhooks         | No       | Deferred to v2     |
 
 ## Test Strategy
 
@@ -277,6 +284,7 @@ Creates: `.claude/research/[api-name]/interview.md`
   "rate_limit_handling": "exponential_backoff"
 }
 ```
+````
 
 ## Deep Research Approved
 
@@ -286,6 +294,7 @@ Creates: `.claude/research/[api-name]/interview.md`
 ## Open Questions
 
 [Any remaining ambiguities]
+
 ```
 
 ## Integration with Hooks
@@ -293,14 +302,17 @@ Creates: `.claude/research/[api-name]/interview.md`
 The `enforce-interview.py` hook injects these decisions when Claude tries to write implementation:
 
 ```
+
 INTERVIEW CONTEXT REMINDER
 
 When implementing, remember user decisions:
+
 - format: ["json", "svg", "png"] (raw excluded)
 - quality: boundary testing (1, 50, 100)
 - rate limits: exponential backoff
 
 Source: .claude/api-dev-state.json
+
 ```
 
 <claude-commands-template>
@@ -329,3 +341,4 @@ Source: .claude/api-dev-state.json
 - Decisions injected during implementation via hook
 - Consistency between interview answers and code enforced
 </claude-commands-template>
+```

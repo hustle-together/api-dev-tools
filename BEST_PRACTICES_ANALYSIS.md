@@ -31,23 +31,24 @@ This document provides a comprehensive analysis of the API Dev Tools repository 
 
 **13 Phases - Full TDD with Research Verification**
 
-| Phase | Name | Purpose | Hooks Involved | Loop-Back Condition |
-|-------|------|---------|----------------|---------------------|
-| 1 | **Disambiguation** | Clarify ambiguous API terms (REST vs SDK vs package) | `enforce-disambiguation.py` | User selects "Something else" |
-| 2 | **Scope** | Confirm endpoint purpose and understanding | `enforce-scope.py` | User has modifications |
-| 3 | **Initial Research** | 2-3 targeted searches (Context7, WebSearch) | `enforce-research.py`, `track-tool-use.py` | User wants more research |
-| 4 | **Interview** | Questions GENERATED from research findings | `enforce-interview.py` | User changes answers |
-| 5 | **Deep Research** | Adaptive propose-approve searches | `enforce-deep-research.py` | User adds topics |
-| 6 | **Schema** | Create Zod schema from research + interview | `enforce-schema.py` | Schema needs changes |
-| 7 | **Environment** | Verify API keys exist | `enforce-environment.py` | Keys missing |
-| 8 | **TDD Red** | Write failing tests from schema | `enforce-tdd-red.py`, `verify-implementation.py` | User modifies test plan |
-| 9 | **TDD Green** | Minimal implementation to pass tests | `verify-after-green.py` | Tests fail |
-| 10 | **Verify** | Re-research docs, compare to implementation | `enforce-verify.py` | Gaps found → back to Phase 8 |
-| 11 | **Refactor** | Clean up code while tests pass | `enforce-refactor.py` | Tests fail after refactor |
-| 12 | **Documentation** | Update manifests, cache research | `enforce-documentation.py` | Docs incomplete |
-| 13 | **Completion** | Final verification, commit | `api-workflow-check.py` | Any phase incomplete |
+| Phase | Name                 | Purpose                                              | Hooks Involved                                   | Loop-Back Condition           |
+| ----- | -------------------- | ---------------------------------------------------- | ------------------------------------------------ | ----------------------------- |
+| 1     | **Disambiguation**   | Clarify ambiguous API terms (REST vs SDK vs package) | `enforce-disambiguation.py`                      | User selects "Something else" |
+| 2     | **Scope**            | Confirm endpoint purpose and understanding           | `enforce-scope.py`                               | User has modifications        |
+| 3     | **Initial Research** | 2-3 targeted searches (Context7, WebSearch)          | `enforce-research.py`, `track-tool-use.py`       | User wants more research      |
+| 4     | **Interview**        | Questions GENERATED from research findings           | `enforce-interview.py`                           | User changes answers          |
+| 5     | **Deep Research**    | Adaptive propose-approve searches                    | `enforce-deep-research.py`                       | User adds topics              |
+| 6     | **Schema**           | Create Zod schema from research + interview          | `enforce-schema.py`                              | Schema needs changes          |
+| 7     | **Environment**      | Verify API keys exist                                | `enforce-environment.py`                         | Keys missing                  |
+| 8     | **TDD Red**          | Write failing tests from schema                      | `enforce-tdd-red.py`, `verify-implementation.py` | User modifies test plan       |
+| 9     | **TDD Green**        | Minimal implementation to pass tests                 | `verify-after-green.py`                          | Tests fail                    |
+| 10    | **Verify**           | Re-research docs, compare to implementation          | `enforce-verify.py`                              | Gaps found → back to Phase 8  |
+| 11    | **Refactor**         | Clean up code while tests pass                       | `enforce-refactor.py`                            | Tests fail after refactor     |
+| 12    | **Documentation**    | Update manifests, cache research                     | `enforce-documentation.py`                       | Docs incomplete               |
+| 13    | **Completion**       | Final verification, commit                           | `api-workflow-check.py`                          | Any phase incomplete          |
 
 **Output Artifacts:**
+
 - `.claude/api-dev-state.json` - State tracking
 - `.claude/research/[api-name]/CURRENT.md` - Research cache
 - `src/app/api/v2/[endpoint]/route.ts` - Route handler
@@ -61,29 +62,31 @@ This document provides a comprehensive analysis of the API Dev Tools repository 
 
 **13 Phases - Component Development with Storybook**
 
-| Phase | Name | Purpose | Testing Method | Loop-Back Condition |
-|-------|------|---------|----------------|---------------------|
-| 1 | **Disambiguation** | Clarify component type (Atom/Molecule/Organism) | - | Type unclear |
-| 2 | **Scope** | Confirm component purpose | - | Purpose unclear |
-| 3 | **Design Research** | Check brand guide + research patterns | Context7/WebSearch | More research needed |
-| 4 | **Interview** | Props, variants, accessibility level | - | Change answers |
-| 5 | **Component Analysis** | Check ShadCN for existing components | `ls src/components/ui/` | Different selection |
-| 6 | **Props Schema** | TypeScript interface from interview | - | Schema changes |
-| 7 | **Environment** | Verify packages + Storybook setup | `check-storybook-setup.py` | Storybook not configured |
-| 8 | **TDD Red** | Write failing tests + Storybook stories | Vitest + Storybook | Add scenarios |
-| 9 | **TDD Green** | Implement component to pass tests | Vitest | Tests fail |
-| 10 | **Verify** | 4-Step: Responsive + Brand + Tests + Performance | Playwright viewports | Issues found |
-| 11 | **Refactor** | Clean up, extract patterns | Vitest | Tests fail |
-| 12 | **Documentation** | Storybook autodocs + registry | - | Docs incomplete |
-| 13 | **Completion** | Final output + showcase link | - | Any phase incomplete |
+| Phase | Name                   | Purpose                                          | Testing Method             | Loop-Back Condition      |
+| ----- | ---------------------- | ------------------------------------------------ | -------------------------- | ------------------------ |
+| 1     | **Disambiguation**     | Clarify component type (Atom/Molecule/Organism)  | -                          | Type unclear             |
+| 2     | **Scope**              | Confirm component purpose                        | -                          | Purpose unclear          |
+| 3     | **Design Research**    | Check brand guide + research patterns            | Context7/WebSearch         | More research needed     |
+| 4     | **Interview**          | Props, variants, accessibility level             | -                          | Change answers           |
+| 5     | **Component Analysis** | Check ShadCN for existing components             | `ls src/components/ui/`    | Different selection      |
+| 6     | **Props Schema**       | TypeScript interface from interview              | -                          | Schema changes           |
+| 7     | **Environment**        | Verify packages + Storybook setup                | `check-storybook-setup.py` | Storybook not configured |
+| 8     | **TDD Red**            | Write failing tests + Storybook stories          | Vitest + Storybook         | Add scenarios            |
+| 9     | **TDD Green**          | Implement component to pass tests                | Vitest                     | Tests fail               |
+| 10    | **Verify**             | 4-Step: Responsive + Brand + Tests + Performance | Playwright viewports       | Issues found             |
+| 11    | **Refactor**           | Clean up, extract patterns                       | Vitest                     | Tests fail               |
+| 12    | **Documentation**      | Storybook autodocs + registry                    | -                          | Docs incomplete          |
+| 13    | **Completion**         | Final output + showcase link                     | -                          | Any phase incomplete     |
 
 **4-Step Verification (Phase 10):**
+
 1. **Responsive Check** - Desktop (1920px), Tablet (768px), Mobile (375px)
 2. **Brand Guide Match** - Colors, typography, spacing, border-radius
 3. **All Tests Passed** - Unit tests, Storybook stories, A11y audit
 4. **Performance Metrics** - Memory usage, re-renders, bundle size
 
 **Output Artifacts:**
+
 - `src/components/[Name]/[Name].tsx` - Component
 - `src/components/[Name]/[Name].types.ts` - TypeScript interface
 - `src/components/[Name]/[Name].stories.tsx` - Storybook stories
@@ -96,23 +99,24 @@ This document provides a comprehensive analysis of the API Dev Tools repository 
 
 **13 Phases - Next.js App Router Pages with Playwright E2E**
 
-| Phase | Name | Purpose | Testing Method | Loop-Back Condition |
-|-------|------|---------|----------------|---------------------|
-| 1 | **Disambiguation** | Page type (Landing/Dashboard/Form/List/Detail/Auth) | - | Type unclear |
-| 2 | **Scope** | Route structure + purpose | - | Purpose unclear |
-| 3 | **Design Research** | Brand guide + Next.js patterns | Context7/WebSearch | More research needed |
-| 4 | **Interview** | Data fetching, layout, auth, SEO | - | Change answers |
-| 5 | **Page Analysis** | Check registry for reusable components | Registry lookup | Different components |
-| 6 | **Data Schema** | TypeScript interfaces for page data | - | Schema changes |
-| 7 | **Environment** | Verify API routes + packages | `check-api-routes.py` | Routes missing |
-| 8 | **TDD Red** | Write failing Playwright E2E tests | Playwright | Add scenarios |
-| 9 | **TDD Green** | Implement page to pass tests | Playwright | Tests fail |
-| 10 | **Verify** | 4-Step: Responsive + Data + Tests + Performance | Playwright + Lighthouse | Issues found |
-| 11 | **Refactor** | Extract components, optimize | Playwright | Tests fail |
-| 12 | **Documentation** | Route docs + registry | - | Docs incomplete |
-| 13 | **Completion** | Final output + showcase link | - | Any phase incomplete |
+| Phase | Name                | Purpose                                             | Testing Method          | Loop-Back Condition  |
+| ----- | ------------------- | --------------------------------------------------- | ----------------------- | -------------------- |
+| 1     | **Disambiguation**  | Page type (Landing/Dashboard/Form/List/Detail/Auth) | -                       | Type unclear         |
+| 2     | **Scope**           | Route structure + purpose                           | -                       | Purpose unclear      |
+| 3     | **Design Research** | Brand guide + Next.js patterns                      | Context7/WebSearch      | More research needed |
+| 4     | **Interview**       | Data fetching, layout, auth, SEO                    | -                       | Change answers       |
+| 5     | **Page Analysis**   | Check registry for reusable components              | Registry lookup         | Different components |
+| 6     | **Data Schema**     | TypeScript interfaces for page data                 | -                       | Schema changes       |
+| 7     | **Environment**     | Verify API routes + packages                        | `check-api-routes.py`   | Routes missing       |
+| 8     | **TDD Red**         | Write failing Playwright E2E tests                  | Playwright              | Add scenarios        |
+| 9     | **TDD Green**       | Implement page to pass tests                        | Playwright              | Tests fail           |
+| 10    | **Verify**          | 4-Step: Responsive + Data + Tests + Performance     | Playwright + Lighthouse | Issues found         |
+| 11    | **Refactor**        | Extract components, optimize                        | Playwright              | Tests fail           |
+| 12    | **Documentation**   | Route docs + registry                               | -                       | Docs incomplete      |
+| 13    | **Completion**      | Final output + showcase link                        | -                       | Any phase incomplete |
 
 **Playwright E2E Test Categories:**
+
 - Basic rendering tests
 - Data display tests (List/Dashboard)
 - Form tests (validation, submission)
@@ -122,6 +126,7 @@ This document provides a comprehensive analysis of the API Dev Tools repository 
 - Performance tests (< 3 second budget)
 
 **Output Artifacts:**
+
 - `src/app/[name]/page.tsx` - Main page
 - `src/app/[name]/layout.tsx` - Optional layout
 - `src/app/[name]/loading.tsx` - Loading state
@@ -135,28 +140,30 @@ This document provides a comprehensive analysis of the API Dev Tools repository 
 
 **13 Phases - Combine Existing APIs into Orchestration Endpoints**
 
-| Phase | Name | Purpose | Special Considerations | Loop-Back Condition |
-|-------|------|---------|------------------------|---------------------|
-| 1 | **Selection** | Choose 2+ APIs from registry | Reads `registry.json` | Change selection |
-| 2 | **Scope** | Define combined endpoint purpose | - | Refine purpose |
-| 3 | **Initial Research** | Orchestration patterns (lighter) | APIs already researched | More research needed |
-| 4 | **Interview** | Order, errors, caching, naming | Flow-specific questions | Change answers |
-| 5 | **Deep Research** | Edge cases between APIs (optional) | Based on interview | Add topics |
-| 6 | **Combined Schema** | Zod types composing existing schemas | Imports from source APIs | Schema changes |
-| 7 | **Environment** | Verify all required API keys | Checks multiple APIs | Keys missing |
-| 8 | **TDD Red** | Integration tests for combined flow | Tests API interaction | Add scenarios |
-| 9 | **TDD Green** | Orchestration route implementation | Sequential/Parallel/Conditional | Tests fail |
-| 10 | **Verify** | Full flow end-to-end | Real API calls optional | Issues found |
-| 11 | **Refactor** | Optimize, add logging | - | Tests fail |
-| 12 | **Documentation** | Update manifest + registry | Adds to `combined` section | Docs incomplete |
-| 13 | **Completion** | Update registry with combined API | - | Any phase incomplete |
+| Phase | Name                 | Purpose                              | Special Considerations          | Loop-Back Condition  |
+| ----- | -------------------- | ------------------------------------ | ------------------------------- | -------------------- |
+| 1     | **Selection**        | Choose 2+ APIs from registry         | Reads `registry.json`           | Change selection     |
+| 2     | **Scope**            | Define combined endpoint purpose     | -                               | Refine purpose       |
+| 3     | **Initial Research** | Orchestration patterns (lighter)     | APIs already researched         | More research needed |
+| 4     | **Interview**        | Order, errors, caching, naming       | Flow-specific questions         | Change answers       |
+| 5     | **Deep Research**    | Edge cases between APIs (optional)   | Based on interview              | Add topics           |
+| 6     | **Combined Schema**  | Zod types composing existing schemas | Imports from source APIs        | Schema changes       |
+| 7     | **Environment**      | Verify all required API keys         | Checks multiple APIs            | Keys missing         |
+| 8     | **TDD Red**          | Integration tests for combined flow  | Tests API interaction           | Add scenarios        |
+| 9     | **TDD Green**        | Orchestration route implementation   | Sequential/Parallel/Conditional | Tests fail           |
+| 10    | **Verify**           | Full flow end-to-end                 | Real API calls optional         | Issues found         |
+| 11    | **Refactor**         | Optimize, add logging                | -                               | Tests fail           |
+| 12    | **Documentation**    | Update manifest + registry           | Adds to `combined` section      | Docs incomplete      |
+| 13    | **Completion**       | Update registry with combined API    | -                               | Any phase incomplete |
 
 **Flow Types Supported:**
+
 - **Sequential** - One after another, pass data between
 - **Parallel** - All at once, combine results
 - **Conditional** - Second API depends on first result
 
 **Error Strategies:**
+
 - **Fail-fast** - Return error, don't call other APIs
 - **Continue with partial** - Return what succeeded
 - **Retry once** - Retry failed API, then fail
@@ -167,26 +174,26 @@ This document provides a comprehensive analysis of the API Dev Tools repository 
 
 ### Hook Summary Table
 
-| Hook | Event | Purpose | Blocks When |
-|------|-------|---------|-------------|
-| `session-startup.py` | SessionStart | Inject state context | Never (advisory) |
-| `enforce-external-research.py` | UserPromptSubmit | Detect API terms, require research | API terms detected without research |
-| `enforce-disambiguation.py` | PreToolUse (Write/Edit) | Block until disambiguation complete | `user_question_asked = false` |
-| `enforce-scope.py` | PreToolUse (Write/Edit) | Block until scope confirmed | `confirmed = false` |
-| `enforce-research.py` | PreToolUse (Write/Edit) | Block if no research sources | `sources.length < 2` |
-| `enforce-interview.py` | PreToolUse (Write/Edit) | Inject interview decisions | Never (injects context) |
-| `enforce-deep-research.py` | PreToolUse (Write/Edit) | Validate deep research complete | Based on interview needs |
-| `enforce-schema.py` | PreToolUse (Write/Edit) | Block until schema approved | `schema_approved = false` |
-| `enforce-environment.py` | PreToolUse (Write/Edit) | Block if keys missing | Missing required keys |
-| `enforce-tdd-red.py` | PreToolUse (Write/Edit) | Block route if no test file | Test file doesn't exist |
-| `verify-implementation.py` | PreToolUse (Write/Edit) | Block route if tests don't exist | No test coverage |
-| `verify-after-green.py` | PostToolUse (Bash) | Trigger Phase 10 after tests pass | Never (triggers action) |
-| `enforce-verify.py` | PreToolUse (Write/Edit) | Block until verification complete | Gaps not addressed |
-| `enforce-refactor.py` | PreToolUse (Write/Edit) | Block if tests fail after refactor | Tests failing |
-| `enforce-documentation.py` | PreToolUse (Write/Edit) | Block if docs incomplete | Missing required docs |
-| `track-tool-use.py` | PostToolUse (WebSearch/Context7) | Log research, track turns | Never (logging only) |
-| `periodic-reground.py` | PostToolUse | Re-ground every 7 turns | Never (injects context) |
-| `api-workflow-check.py` | Stop | Block completion if incomplete | Any phase not complete |
+| Hook                           | Event                            | Purpose                             | Blocks When                         |
+| ------------------------------ | -------------------------------- | ----------------------------------- | ----------------------------------- |
+| `session-startup.py`           | SessionStart                     | Inject state context                | Never (advisory)                    |
+| `enforce-external-research.py` | UserPromptSubmit                 | Detect API terms, require research  | API terms detected without research |
+| `enforce-disambiguation.py`    | PreToolUse (Write/Edit)          | Block until disambiguation complete | `user_question_asked = false`       |
+| `enforce-scope.py`             | PreToolUse (Write/Edit)          | Block until scope confirmed         | `confirmed = false`                 |
+| `enforce-research.py`          | PreToolUse (Write/Edit)          | Block if no research sources        | `sources.length < 2`                |
+| `enforce-interview.py`         | PreToolUse (Write/Edit)          | Inject interview decisions          | Never (injects context)             |
+| `enforce-deep-research.py`     | PreToolUse (Write/Edit)          | Validate deep research complete     | Based on interview needs            |
+| `enforce-schema.py`            | PreToolUse (Write/Edit)          | Block until schema approved         | `schema_approved = false`           |
+| `enforce-environment.py`       | PreToolUse (Write/Edit)          | Block if keys missing               | Missing required keys               |
+| `enforce-tdd-red.py`           | PreToolUse (Write/Edit)          | Block route if no test file         | Test file doesn't exist             |
+| `verify-implementation.py`     | PreToolUse (Write/Edit)          | Block route if tests don't exist    | No test coverage                    |
+| `verify-after-green.py`        | PostToolUse (Bash)               | Trigger Phase 10 after tests pass   | Never (triggers action)             |
+| `enforce-verify.py`            | PreToolUse (Write/Edit)          | Block until verification complete   | Gaps not addressed                  |
+| `enforce-refactor.py`          | PreToolUse (Write/Edit)          | Block if tests fail after refactor  | Tests failing                       |
+| `enforce-documentation.py`     | PreToolUse (Write/Edit)          | Block if docs incomplete            | Missing required docs               |
+| `track-tool-use.py`            | PostToolUse (WebSearch/Context7) | Log research, track turns           | Never (logging only)                |
+| `periodic-reground.py`         | PostToolUse                      | Re-ground every 7 turns             | Never (injects context)             |
+| `api-workflow-check.py`        | Stop                             | Block completion if incomplete      | Any phase not complete              |
 
 ### Hook Lifecycle Flow
 
@@ -226,23 +233,23 @@ Stop
 
 ## Best Practices Comparison Matrix
 
-| Best Practice | Recommended | Your Implementation | Status | Notes |
-|---------------|-------------|---------------------|--------|-------|
-| **Stop hooks for continuous operation** | Test-driven stop hooks | `api-workflow-check.py` blocks incomplete | ✅ **Exceeds** | Phase-by-phase blocking is more granular |
-| **7-turn re-grounding** | Periodic context injection | `periodic-reground.py` every 7 turns | ✅ **Matches** | Exactly as recommended |
-| **PostToolUse auto-format** | prettier/eslint after edits | Not implemented | ❌ **Missing** | Add auto-format hook |
-| **PreToolUse validation** | Block dangerous operations | 12 enforcement hooks | ✅ **Exceeds** | Very comprehensive |
-| **SessionStart context** | Inject state at session start | `session-startup.py` | ✅ **Matches** | Full state injection |
-| **Desktop notifications** | Notification hook | Not implemented | ❌ **Missing** | For autonomous mode |
-| **Subagents** | Multi-subagent code review | None defined | ❌ **Missing** | Major gap |
-| **Skills in .claude/skills/** | Native discovery location | `.skills/` directory | ⚠️ **Different** | Works but non-standard |
-| **TodoWrite integration** | Real-time progress tracking | Planned, not active | ⚠️ **Pending** | `update-todos` skill exists |
-| **MCP servers (2-3 targeted)** | Context7, GitHub, Playwright | Context7 + GitHub | ✅ **Matches** | Add Playwright for visual testing |
-| **CLAUDE.md concise** | ~150-200 instructions max | ~50 lines | ✅ **Excellent** | Very concise |
-| **Research cache with freshness** | 7-day expiry | 7-day freshness tracking | ✅ **Matches** | Exact match |
-| **Verify after green** | Re-research after tests pass | `verify-after-green.py` | ✅ **Matches** | Exact implementation |
-| **Cost/time tracking** | Session metrics | Planned, not active | ⚠️ **Pending** | In enhancement roadmap |
-| **PermissionRequest hook** | Auto-approve patterns | Not implemented | ❌ **Missing** | For safe auto-approve |
+| Best Practice                           | Recommended                   | Your Implementation                       | Status           | Notes                                    |
+| --------------------------------------- | ----------------------------- | ----------------------------------------- | ---------------- | ---------------------------------------- |
+| **Stop hooks for continuous operation** | Test-driven stop hooks        | `api-workflow-check.py` blocks incomplete | ✅ **Exceeds**   | Phase-by-phase blocking is more granular |
+| **7-turn re-grounding**                 | Periodic context injection    | `periodic-reground.py` every 7 turns      | ✅ **Matches**   | Exactly as recommended                   |
+| **PostToolUse auto-format**             | prettier/eslint after edits   | Not implemented                           | ❌ **Missing**   | Add auto-format hook                     |
+| **PreToolUse validation**               | Block dangerous operations    | 12 enforcement hooks                      | ✅ **Exceeds**   | Very comprehensive                       |
+| **SessionStart context**                | Inject state at session start | `session-startup.py`                      | ✅ **Matches**   | Full state injection                     |
+| **Desktop notifications**               | Notification hook             | Not implemented                           | ❌ **Missing**   | For autonomous mode                      |
+| **Subagents**                           | Multi-subagent code review    | None defined                              | ❌ **Missing**   | Major gap                                |
+| **Skills in .claude/skills/**           | Native discovery location     | `.skills/` directory                      | ⚠️ **Different** | Works but non-standard                   |
+| **TodoWrite integration**               | Real-time progress tracking   | Planned, not active                       | ⚠️ **Pending**   | `update-todos` skill exists              |
+| **MCP servers (2-3 targeted)**          | Context7, GitHub, Playwright  | Context7 + GitHub                         | ✅ **Matches**   | Add Playwright for visual testing        |
+| **CLAUDE.md concise**                   | ~150-200 instructions max     | ~50 lines                                 | ✅ **Excellent** | Very concise                             |
+| **Research cache with freshness**       | 7-day expiry                  | 7-day freshness tracking                  | ✅ **Matches**   | Exact match                              |
+| **Verify after green**                  | Re-research after tests pass  | `verify-after-green.py`                   | ✅ **Matches**   | Exact implementation                     |
+| **Cost/time tracking**                  | Session metrics               | Planned, not active                       | ⚠️ **Pending**   | In enhancement roadmap                   |
+| **PermissionRequest hook**              | Auto-approve patterns         | Not implemented                           | ❌ **Missing**   | For safe auto-approve                    |
 
 ---
 
@@ -257,12 +264,13 @@ Stop
 **Solution:** Create `.claude/agents/` directory with specialized agents:
 
 ```markdown
-<!-- .claude/agents/research-validator.md -->
----
+## <!-- .claude/agents/research-validator.md -->
+
 name: research-validator
 description: Deep dive documentation validator. Use PROACTIVELY during Phase 3/5.
-tools: Read, WebSearch, WebFetch, mcp__context7
+tools: Read, WebSearch, WebFetch, mcp\_\_context7
 model: haiku
+
 ---
 
 Scrape table of contents from official docs.
@@ -287,9 +295,9 @@ Report missing areas to main agent.
 
 **FIRST:** Update progress tracker
 TodoWrite([
-  {"content": "Phase 1: Disambiguation", "status": "in_progress", "activeForm": "Clarifying API terms"},
-  {"content": "Phase 2: Scope", "status": "pending", "activeForm": "Confirming endpoint scope"},
-  // ... remaining 11 phases
+{"content": "Phase 1: Disambiguation", "status": "in_progress", "activeForm": "Clarifying API terms"},
+{"content": "Phase 2: Scope", "status": "pending", "activeForm": "Confirming endpoint scope"},
+// ... remaining 11 phases
 ])
 
 Then proceed with disambiguation...
@@ -312,13 +320,17 @@ Then proceed with disambiguation...
 ```json
 {
   "hooks": {
-    "PostToolUse": [{
-      "matcher": "Write|Edit",
-      "hooks": [{
-        "type": "command",
-        "command": "prettier --write \"$CLAUDE_FILE_PATHS\" && eslint --fix \"$CLAUDE_FILE_PATHS\" 2>/dev/null || true"
-      }]
-    }]
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "prettier --write \"$CLAUDE_FILE_PATHS\" && eslint --fix \"$CLAUDE_FILE_PATHS\" 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
   }
 }
 ```
@@ -357,6 +369,7 @@ Then proceed with disambiguation...
 **Problem:** Skills in `.skills/` not discoverable by Claude Code natively.
 
 **Solution:** Either:
+
 - Move `.skills/` to `.claude/skills/`
 - Or create symlink: `ln -s ../.skills .claude/skills`
 
@@ -402,11 +415,13 @@ Continue to Interview while agents work.
 **Problem:** No visibility into session metrics.
 
 **Solution:** Add to `session-startup.py`:
+
 ```python
 state["session_start_time"] = datetime.now().isoformat()
 ```
 
 Add to `api-workflow-check.py`:
+
 ```python
 session_duration = datetime.now() - datetime.fromisoformat(state["session_start_time"])
 print(f"Session: {session_duration}")
@@ -424,14 +439,19 @@ print(f"Estimated cost: ${state.get('turn_count', 0) * 0.05:.2f}")
 #### 8. Add Notification Hook
 
 **Solution:**
+
 ```json
 {
-  "Notification": [{
-    "hooks": [{
-      "type": "command",
-      "command": "osascript -e 'display notification \"Claude needs attention\" with title \"API Dev Tools\"'"
-    }]
-  }]
+  "Notification": [
+    {
+      "hooks": [
+        {
+          "type": "command",
+          "command": "osascript -e 'display notification \"Claude needs attention\" with title \"API Dev Tools\"'"
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -442,15 +462,20 @@ print(f"Estimated cost: ${state.get('turn_count', 0) * 0.05:.2f}")
 #### 9. Add PermissionRequest Auto-Approve
 
 **Solution:**
+
 ```json
 {
-  "PermissionRequest": [{
-    "matcher": "Write|Edit",
-    "hooks": [{
-      "type": "command",
-      "command": "if [[ \"$CLAUDE_FILE_PATHS\" == *\"/src/app/api/v2/\"* ]]; then echo 'approve'; fi"
-    }]
-  }]
+  "PermissionRequest": [
+    {
+      "matcher": "Write|Edit",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "if [[ \"$CLAUDE_FILE_PATHS\" == *\"/src/app/api/v2/\"* ]]; then echo 'approve'; fi"
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -462,13 +487,13 @@ print(f"Estimated cost: ${state.get('turn_count', 0) * 0.05:.2f}")
 
 ### Current Token Usage Patterns
 
-| Feature | Token Impact | Efficiency |
-|---------|--------------|------------|
-| CLAUDE.md | ~50 lines | ✅ Excellent - very concise |
-| 7-turn re-grounding | ~500 tokens/reground | ⚠️ Moderate - necessary for accuracy |
-| Session startup injection | ~300 tokens | ✅ Good - one-time cost |
-| Skills (23 total) | Loaded on-demand | ✅ Good - lazy loading |
-| Hooks (18 total) | Minimal overhead | ✅ Excellent - Python scripts |
+| Feature                   | Token Impact         | Efficiency                           |
+| ------------------------- | -------------------- | ------------------------------------ |
+| CLAUDE.md                 | ~50 lines            | ✅ Excellent - very concise          |
+| 7-turn re-grounding       | ~500 tokens/reground | ⚠️ Moderate - necessary for accuracy |
+| Session startup injection | ~300 tokens          | ✅ Good - one-time cost              |
+| Skills (23 total)         | Loaded on-demand     | ✅ Good - lazy loading               |
+| Hooks (18 total)          | Minimal overhead     | ✅ Excellent - Python scripts        |
 
 ### Recommendations for Token Efficiency
 
@@ -493,12 +518,14 @@ ccusage  # Shows token breakdown
 ## Usage Tracking Integration
 
 ### Current State
+
 - No usage tracking installed
 - `ccusage` not available
 
 ### Recommended Setup
 
 Add to `session-startup.py`:
+
 ```python
 # Track session metrics
 state["session_metrics"] = {
@@ -510,6 +537,7 @@ state["session_metrics"] = {
 ```
 
 Add to `api-workflow-check.py`:
+
 ```python
 # Output session summary
 metrics = state.get("session_metrics", {})

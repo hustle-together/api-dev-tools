@@ -95,6 +95,7 @@ api-dev-tools/
 ```
 
 **Tasks:**
+
 - [ ] Create `.claude-plugin/` directory
 - [ ] Create `.skills/` directory
 - [ ] Create subdirectories for each of the 20 commands
@@ -145,6 +146,7 @@ allowed-tools: WebSearch WebFetch mcp__context7 mcp__github AskUserQuestion Read
 Convert each of these 20 commands:
 
 #### API Development Commands
+
 - [ ] `api-create.md` → `.skills/api-create/SKILL.md`
 - [ ] `api-interview.md` → `.skills/api-interview/SKILL.md`
 - [ ] `api-research.md` → `.skills/api-research/SKILL.md`
@@ -153,33 +155,39 @@ Convert each of these 20 commands:
 - [ ] `api-status.md` → `.skills/api-status/SKILL.md`
 
 #### TDD Commands (from @wbern/claude-instructions)
+
 - [ ] `red.md` → `.skills/red/SKILL.md`
 - [ ] `green.md` → `.skills/green/SKILL.md`
 - [ ] `refactor.md` → `.skills/refactor/SKILL.md`
 - [ ] `cycle.md` → `.skills/cycle/SKILL.md`
 
 #### Planning & Analysis Commands
+
 - [ ] `plan.md` → `.skills/plan/SKILL.md`
 - [ ] `gap.md` → `.skills/gap/SKILL.md`
 - [ ] `issue.md` → `.skills/issue/SKILL.md`
 
 #### Git Commands
+
 - [ ] `commit.md` → `.skills/commit/SKILL.md`
 - [ ] `pr.md` → `.skills/pr/SKILL.md`
 - [ ] `busycommit.md` → `.skills/busycommit/SKILL.md`
 
 #### Workflow Commands
+
 - [ ] `spike.md` → `.skills/spike/SKILL.md`
 - [ ] `worktree-add.md` → `.skills/worktree-add/SKILL.md`
 - [ ] `worktree-cleanup.md` → `.skills/worktree-cleanup/SKILL.md`
 
 #### Meta Commands
+
 - [ ] `beepboop.md` → `.skills/beepboop/SKILL.md`
 - [ ] `add-command.md` → `.skills/add-command/SKILL.md`
 
 ### 2.4 Validation
 
 After conversion:
+
 - [ ] Install `skills-ref` CLI: `npm install -g @agentskills/skills-ref`
 - [ ] Validate each skill: `skills-ref validate .skills/api-create`
 - [ ] Validate all skills: `skills-ref validate .skills/`
@@ -194,12 +202,14 @@ After conversion:
 **Decision:** Keep hooks EXTERNAL to skills, referenced via settings.json
 
 **Rationale:**
+
 - Hooks enforce rules across ALL skills (not just one)
 - Hooks need PreToolUse/PostToolUse/SessionStart/Stop lifecycle events
 - Agent Skills spec doesn't define hook integration yet
 - Settings.json is Claude Code-specific and works perfectly
 
 **Implementation:**
+
 - [ ] Keep `.claude/hooks/` directory as-is (18 Python scripts)
 - [ ] Keep `.claude/settings.json` as-is (hook registrations)
 - [ ] Document hook requirements in `.skills/README.md`
@@ -208,6 +218,7 @@ After conversion:
 ### 3.2 Cross-Platform Hook Strategy
 
 For non-Claude Code platforms (VS Code, Cursor, ChatGPT):
+
 - [ ] Create `.skills/_shared/hooks/` directory with hook Python scripts
 - [ ] Add README in `.skills/_shared/hooks/README.md` explaining manual setup
 - [ ] Document that hooks are OPTIONAL for basic skill usage
@@ -232,7 +243,16 @@ Create `.claude-plugin/marketplace.json`:
   "version": "3.11.0",
   "repository": "https://github.com/hustle-together/api-dev-tools",
   "license": "MIT",
-  "keywords": ["api", "tdd", "workflow", "research", "interview", "verification", "hooks", "mcp"],
+  "keywords": [
+    "api",
+    "tdd",
+    "workflow",
+    "research",
+    "interview",
+    "verification",
+    "hooks",
+    "mcp"
+  ],
   "plugins": [
     {
       "name": "api-dev-tools",
@@ -285,6 +305,7 @@ Create `.claude-plugin/marketplace.json`:
 ```
 
 **Tasks:**
+
 - [ ] Create `.claude-plugin/marketplace.json`
 - [ ] Update version to match package.json
 - [ ] Add repository URL (update when GitHub repo created)
@@ -300,7 +321,7 @@ Create `.claude-plugin/marketplace.json`:
 
 Create `.skills/README.md`:
 
-```markdown
+````markdown
 # API Development Tools - Agent Skills
 
 **Version:** 3.11.0
@@ -310,18 +331,23 @@ Create `.skills/README.md`:
 ## Installation
 
 ### Via Claude Code Plugin
+
 \`\`\`bash
 /plugin marketplace add hustle-together/api-dev-tools
 /plugin install api-dev-tools@hustle-together
 \`\`\`
 
 ### Via SkillsMP Marketplace
+
 \`\`\`bash
+
 # Install from SkillsMP.com
+
 npm install -g @hustle-together/api-dev-tools
 \`\`\`
 
 ### Manual Installation
+
 1. Clone repository
 2. Copy `.skills/` to `~/.claude/skills/` (personal) or `.claude/skills/` (project)
 3. Copy `.claude/hooks/` to project (for enforcement)
@@ -330,6 +356,7 @@ npm install -g @hustle-together/api-dev-tools
 ## Available Skills
 
 ### API Development (6 skills)
+
 - **api-create** - Complete 13-phase API workflow
 - **api-interview** - Interview-driven requirements gathering
 - **api-research** - Adaptive documentation research
@@ -338,22 +365,26 @@ npm install -g @hustle-together/api-dev-tools
 - **api-status** - Track implementation progress
 
 ### TDD Workflow (4 skills)
+
 - **red** - Write ONE failing test
 - **green** - Minimal implementation to pass tests
 - **refactor** - Clean up code while tests pass
 - **cycle** - Complete Red → Green → Refactor loop
 
 ### Planning & Analysis (3 skills)
+
 - **plan** - Create implementation checklist
 - **gap** - Scan code vs requirements for gaps
 - **issue** - Start work from GitHub issue
 
 ### Git Operations (3 skills)
+
 - **commit** - Semantic commit with co-author
 - **pr** - Create pull request with summary
 - **busycommit** - Multiple atomic commits
 
 ### Workflow Utilities (4 skills)
+
 - **spike** - Exploratory coding phase
 - **worktree-add** - Add git worktree from issue
 - **worktree-cleanup** - Clean up merged worktrees
@@ -369,6 +400,7 @@ npm install -g @hustle-together/api-dev-tools
 ## Enforcement Hooks (Optional but Recommended)
 
 For full workflow enforcement, install hooks:
+
 1. Copy `.claude/hooks/` to your project
 2. Copy `.claude/settings.json` to your project
 3. Hooks enforce:
@@ -391,6 +423,7 @@ MIT License - See LICENSE file
 \`\`\`
 
 **Tasks:**
+
 - [ ] Create `.skills/README.md`
 - [ ] Update version numbers
 - [ ] Add installation instructions for all platforms
@@ -446,8 +479,10 @@ Update `/Users/alfonso/Documents/GitHub/api-dev-tools/package.json`:
   ]
 }
 ```
+````
 
 **Tasks:**
+
 - [ ] Add `claudeCode` field with plugin paths
 - [ ] Add `agent-skills` to keywords
 - [ ] Update `files` array to include `.skills/` and `.claude-plugin/`
@@ -532,6 +567,7 @@ echo "  3. Read documentation: .claude/commands/README.md"
 ```
 
 **Tasks:**
+
 - [ ] Create `.skills/_shared/install.sh`
 - [ ] Make executable: `chmod +x .skills/_shared/install.sh`
 - [ ] Test installation script
@@ -546,18 +582,21 @@ echo "  3. Read documentation: .claude/commands/README.md"
 Update `/Users/alfonso/Documents/GitHub/api-dev-tools/README.md`:
 
 **Add Installation Section:**
-```markdown
+
+````markdown
 ## Installation
 
 ### Quick Install (Recommended)
 
 #### Via Claude Code Plugin
+
 \`\`\`bash
 /plugin marketplace add hustle-together/api-dev-tools
 /plugin install api-dev-tools
 \`\`\`
 
 #### Via SkillsMP Marketplace
+
 \`\`\`bash
 npm install -g @hustle-together/api-dev-tools
 \`\`\`
@@ -565,20 +604,23 @@ npm install -g @hustle-together/api-dev-tools
 ### Manual Install
 
 #### NPM Package
+
 \`\`\`bash
 npx @hustle-together/api-dev-tools --scope=project
 \`\`\`
 
 #### From Source
+
 \`\`\`bash
 git clone https://github.com/hustle-together/api-dev-tools.git
 cd api-dev-tools
-./skills/_shared/install.sh
+./skills/\_shared/install.sh
 \`\`\`
 
 ## Platform Compatibility
 
 This toolkit uses the **Agent Skills open standard** and works across:
+
 - ✅ Claude Code
 - ✅ VS Code with GitHub Copilot
 - ✅ Cursor
@@ -590,9 +632,10 @@ This toolkit uses the **Agent Skills open standard** and works across:
 - **GitHub**: [hustle-together/api-dev-tools](https://github.com/hustle-together/api-dev-tools)
 - **SkillsMP**: [skillsmp.com/@hustle-together/api-dev-tools](https://skillsmp.com)
 - **NPM**: [@hustle-together/api-dev-tools](https://npmjs.com/package/@hustle-together/api-dev-tools)
-\`\`\`
+  \`\`\`
 
 **Tasks:**
+
 - [ ] Add installation instructions for all platforms
 - [ ] Add platform compatibility badges
 - [ ] Add links to marketplaces
@@ -608,6 +651,7 @@ Create `/Users/alfonso/Documents/GitHub/api-dev-tools/CHANGELOG.md`:
 ## [3.11.0] - 2025-12-24
 
 ### Added - Skills Migration
+
 - ✨ **Agent Skills Support**: Migrated all commands to Agent Skills open standard
 - 📦 **Cross-Platform**: Now works in Claude Code, VS Code, Cursor, ChatGPT, GitHub Copilot
 - 🏪 **Marketplace Distribution**: Added `.claude-plugin/marketplace.json` for one-command install
@@ -615,11 +659,13 @@ Create `/Users/alfonso/Documents/GitHub/api-dev-tools/CHANGELOG.md`:
 - 📚 **Skills README**: Complete documentation in `.skills/README.md`
 
 ### Changed
+
 - 📁 **Dual Distribution**: Kept `.claude/commands/` for backward compatibility
 - 🎯 **Enhanced Discovery**: Added keywords and descriptions for better skill selection
 - 🔗 **Hook Integration**: Documented hook setup for non-Claude Code platforms
 
 ### Maintained
+
 - ✅ **13-Phase Workflow**: All phases unchanged
 - ✅ **18 Enforcement Hooks**: All hooks unchanged
 - ✅ **Interview-Driven**: Research-first methodology unchanged
@@ -628,6 +674,7 @@ Create `/Users/alfonso/Documents/GitHub/api-dev-tools/CHANGELOG.md`:
 ## [3.0.0] - 2025-12-08
 
 ### Added - Major Workflow Overhaul
+
 - 🔴 **Phase 1: Disambiguation** - Clarify terms before research
 - ✅ **Phase 10: Verify** - Re-research after tests pass
 - 🔄 **Loop-Back Architecture** - Every phase can loop back
@@ -636,8 +683,10 @@ Create `/Users/alfonso/Documents/GitHub/api-dev-tools/CHANGELOG.md`:
 
 [Full changelog...]
 ```
+````
 
 **Tasks:**
+
 - [ ] Create CHANGELOG.md
 - [ ] Document Skills migration
 - [ ] Add version 3.11.0 entry
@@ -648,10 +697,12 @@ Create `/Users/alfonso/Documents/GitHub/api-dev-tools/CHANGELOG.md`:
 Update `/Users/alfonso/Documents/GitHub/api-dev-tools/ENHANCEMENT_ROADMAP_v3.11.0.md`:
 
 **Add "Skills Migration Complete" section:**
+
 ```markdown
 ## ✅ Phase 1: Skills Migration (COMPLETE)
 
 ### Objectives
+
 - [x] Convert all 20 commands to Agent Skills format
 - [x] Create `.claude-plugin/marketplace.json`
 - [x] Package hooks for cross-platform use
@@ -659,12 +710,14 @@ Update `/Users/alfonso/Documents/GitHub/api-dev-tools/ENHANCEMENT_ROADMAP_v3.11.
 - [x] Publish to SkillsMP marketplace
 
 ### Results
+
 - **20 Skills Created**: All commands converted to SKILL.md format
 - **Cross-Platform**: Works in Claude Code, VS Code, Cursor, ChatGPT
 - **One-Command Install**: `/plugin install api-dev-tools`
 - **Backward Compatible**: Original `.claude/commands/` still works
 
 ### Architecture
+
 - Dual distribution (commands + skills)
 - External hooks (referenced in settings.json)
 - State tracking unchanged
@@ -672,6 +725,7 @@ Update `/Users/alfonso/Documents/GitHub/api-dev-tools/ENHANCEMENT_ROADMAP_v3.11.
 ```
 
 **Tasks:**
+
 - [ ] Add Skills Migration section
 - [ ] Mark Phase 1 as complete
 - [ ] Document architecture decisions
@@ -692,6 +746,7 @@ Update `/Users/alfonso/Documents/GitHub/api-dev-tools/ENHANCEMENT_ROADMAP_v3.11.
 ### 9.2 Cross-Platform Testing
 
 #### Claude Code
+
 - [ ] Test `/plugin marketplace add [local-path]`
 - [ ] Test `/plugin install api-dev-tools`
 - [ ] Test each skill invocation
@@ -699,12 +754,14 @@ Update `/Users/alfonso/Documents/GitHub/api-dev-tools/ENHANCEMENT_ROADMAP_v3.11.
 - [ ] Verify state tracking
 
 #### VS Code
+
 - [ ] Install skills manually to `~/.claude/skills/`
 - [ ] Test skill discovery
 - [ ] Test skill invocation
 - [ ] Document limitations (no hooks)
 
 #### Cursor
+
 - [ ] Install skills manually
 - [ ] Test skill discovery
 - [ ] Test skill invocation
@@ -807,33 +864,39 @@ Update `/Users/alfonso/Documents/GitHub/api-dev-tools/ENHANCEMENT_ROADMAP_v3.11.
 ## 📊 Success Metrics
 
 ### Phase 1-2: Structure & Conversion (Week 1)
+
 - [ ] 20 skills converted to SKILL.md format
 - [ ] All skills validate with skills-ref
 - [ ] Directory structure complete
 
 ### Phase 3-5: Packaging (Week 1)
+
 - [ ] marketplace.json created
 - [ ] Installation script working
 - [ ] README.md updated
 
 ### Phase 6-8: Documentation (Week 2)
+
 - [ ] CHANGELOG.md created
 - [ ] All docs updated
 - [ ] Installation instructions tested
 
 ### Phase 9: Testing (Week 2)
+
 - [ ] Skills work in Claude Code
 - [ ] Skills work in VS Code
 - [ ] Skills work in Cursor
 - [ ] Installation script works
 
 ### Phase 10: Publishing (Week 3)
+
 - [ ] Published to GitHub
 - [ ] Published to NPM
 - [ ] Submitted to SkillsMP
 - [ ] Submitted to anthropics/skills
 
 ### Phase 11: Adoption (Ongoing)
+
 - [ ] 100+ GitHub stars
 - [ ] 50+ NPM downloads/week
 - [ ] 10+ community contributions
@@ -854,6 +917,7 @@ Update `/Users/alfonso/Documents/GitHub/api-dev-tools/ENHANCEMENT_ROADMAP_v3.11.
 ## 🔄 Rollback Plan
 
 If Skills migration fails:
+
 1. Keep `.claude/commands/` as primary distribution
 2. Mark `.skills/` as experimental
 3. Revert package.json changes
