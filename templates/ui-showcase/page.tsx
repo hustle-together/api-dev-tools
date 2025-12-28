@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { UIShowcase } from "./UIShowcase";
+import { UIShowcase } from "./_components/UIShowcase";
 
 export const metadata: Metadata = {
   title: "UI Showcase",

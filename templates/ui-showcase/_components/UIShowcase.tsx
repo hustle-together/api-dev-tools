@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { HeroHeader } from "../shared/HeroHeader";
+import { HeroHeader } from "../../shared/HeroHeader";
 import { PreviewCard } from "./PreviewCard";
 import { PreviewModal } from "./PreviewModal";
 
