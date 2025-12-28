@@ -84,12 +84,15 @@ def copy_showcase_templates(cwd):
     """Copy UI showcase templates to src/app/ui-showcase/."""
     # Source templates (installed by CLI)
     templates_dir = Path(__file__).parent.parent / "templates" / "ui-showcase"
+    shared_templates_dir = Path(__file__).parent.parent / "templates" / "shared"
 
     # Destination
     showcase_dir = cwd / "src" / "app" / "ui-showcase"
+    shared_dir = cwd / "src" / "app" / "shared"
 
-    # Create directory if needed
+    # Create directories if needed
     showcase_dir.mkdir(parents=True, exist_ok=True)
+    shared_dir.mkdir(parents=True, exist_ok=True)
 
     # Copy template files
     templates_to_copy = [
@@ -110,6 +113,15 @@ def copy_showcase_templates(cwd):
         if src_path.exists() and not dest_path.exists():
             shutil.copy2(src_path, dest_path)
             created_files.append(str(dest_path.relative_to(cwd)))
+
+    # Also copy shared components (HeroHeader, etc.)
+    if shared_templates_dir.exists():
+        for src_file in shared_templates_dir.iterdir():
+            if src_file.is_file():
+                dest_path = shared_dir / src_file.name
+                if not dest_path.exists():
+                    shutil.copy2(src_file, dest_path)
+                    created_files.append(str(dest_path.relative_to(cwd)))
 
     return created_files
 
