@@ -1,18 +1,25 @@
 #!/usr/bin/env python3
 """
-Phase 14: AI Code Review Hook
+Phase 11: AI Code Review Hook
 
-Triggers Greptile AI code review after Phase 13 (Completion).
-Runs automatically when a PR is created or manually via /code-review command.
+Triggers Greptile AI code review after Phase 10 (Verify) and BEFORE Phase 12 (Refactor).
+This ensures issues are caught early and can be fixed during the refactor phase,
+rather than after PR creation when it's too late.
 
-Hook Type: PostToolUse (triggers after mcp__github__create_pull_request)
+Hook Type: PostToolUse (triggers after tests pass in Phase 9/10)
+
+Greptile API:
+    POST https://api.greptile.com/v2/query
+    - Analyzes code changes against entire codebase context
+    - Returns issues with file:line references
+    - Provides actionable fix suggestions
 
 Environment Variables:
-    GREPTILE_API_KEY: Your Greptile API key
-    GITHUB_TOKEN: GitHub Personal Access Token
+    GREPTILE_API_KEY: Your Greptile API key (get from https://app.greptile.com)
+    GITHUB_TOKEN: GitHub Personal Access Token with repo access
     CODE_REVIEW_ENABLED: Set to 'true' to enable (default: true)
 
-Version: 1.0.0
+Version: 1.1.0
 """
 import os
 import sys
@@ -131,20 +138,24 @@ def should_run_review(hook_input: dict) -> bool:
     if os.environ.get("CODE_REVIEW_ENABLED", "true").lower() == "false":
         return False
 
-    # Only run after PR creation or on demand
     tool_name = hook_input.get("tool_name", "")
 
-    # Run after GitHub PR creation
-    if "github" in tool_name.lower() and "pull_request" in tool_name.lower():
-        return True
-
-    # Run after completion phase (bash test command)
+    # Run after tests pass (Phase 9/10) - triggers before refactoring
     if tool_name == "Bash":
         tool_input = hook_input.get("tool_input", {})
         command = tool_input.get("command", "")
+        tool_result = hook_input.get("tool_result", {})
+        stdout = tool_result.get("stdout", "")
+
         # Check if tests just passed
-        if "pnpm test" in command or "npm test" in command:
-            return True
+        if ("pnpm test" in command or "npm test" in command or "vitest" in command):
+            # Only run if tests passed (look for success indicators)
+            if "pass" in stdout.lower() or "✓" in stdout or "PASS" in stdout:
+                return True
+
+    # Also run if verify-after-green hook triggered
+    if "verify" in tool_name.lower():
+        return True
 
     return False
 
@@ -175,7 +186,7 @@ def main():
         status = get_status()
         print(json.dumps({
             "continue": True,
-            "message": f"Phase 14 Code Review skipped: {status['message']}"
+            "message": f"Phase 11 Code Review skipped: {status['message']}"
         }))
         return
 

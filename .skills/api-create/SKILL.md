@@ -127,10 +127,10 @@ TodoWrite([
   {"content": "Phase 8: TDD Red", "status": "pending", "activeForm": "Writing failing tests"},
   {"content": "Phase 9: TDD Green", "status": "pending", "activeForm": "Implementing to pass tests"},
   {"content": "Phase 10: Verify", "status": "pending", "activeForm": "Verifying against docs"},
-  {"content": "Phase 11: Refactor", "status": "pending", "activeForm": "Cleaning up code"},
-  {"content": "Phase 12: Documentation", "status": "pending", "activeForm": "Updating documentation"},
-  {"content": "Phase 13: Completion", "status": "pending", "activeForm": "Final verification"},
-  {"content": "Phase 14: Code Review", "status": "pending", "activeForm": "Running AI code review"}
+  {"content": "Phase 11: Code Review (Greptile)", "status": "pending", "activeForm": "Running AI code review"},
+  {"content": "Phase 12: Refactor", "status": "pending", "activeForm": "Fixing issues, cleaning up"},
+  {"content": "Phase 13: Documentation", "status": "pending", "activeForm": "Updating documentation"},
+  {"content": "Phase 14: Completion", "status": "pending", "activeForm": "Final commit and PR"}
 ])
 ```
 
@@ -455,9 +455,46 @@ TodoWrite([
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 11: TDD REFACTOR ──────────────────────────────────┐
+┌─ PHASE 11: AI CODE REVIEW (Greptile) ────────────────────┐
 │                                                           │
-│ Clean up code while tests stay green:                     │
+│ Run Greptile BEFORE refactoring to catch issues early:    │
+│   • Bug detection with full codebase context              │
+│   • Security vulnerability scanning (OWASP top 10)        │
+│   • Performance issue identification                      │
+│   • Code quality and maintainability checks               │
+│                                                           │
+│ Greptile uses query endpoint to review your diff:         │
+│   POST https://api.greptile.com/v2/query                  │
+│   - Analyzes changes against entire codebase              │
+│   - Returns issues with file:line references              │
+│   - Provides actionable fix suggestions                   │
+│                                                           │
+│ ⚠️ REQUIRED: Use AskUserQuestion tool:                    │
+│                                                           │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "Greptile review complete. Score: [N]/10  │
+│                  Issues found: [list]. How to proceed?",  │
+│       header: "Review",                                   │
+│       multiSelect: false,                                 │
+│       options: [                                          │
+│         {"label": "Fix all issues", "description": "Address each issue in Phase 12"},│
+│         {"label": "Fix critical only", "description": "Skip medium/low priority"},│
+│         {"label": "Skip review", "description": "Proceed without fixes (not recommended)"}│
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│                                                           │
+│ WAIT for user response. Do NOT auto-skip issues.          │
+│ REQUIRES: GREPTILE_API_KEY + GITHUB_TOKEN in .env         │
+│ ──── Loop back to Phase 9 if major issues found ────      │
+└───────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌─ PHASE 12: TDD REFACTOR ──────────────────────────────────┐
+│                                                           │
+│ Fix Greptile issues AND clean up code:                    │
+│   • Fix all issues from Phase 11 code review              │
 │   • Extract reusable patterns                             │
 │   • Improve error messages                                │
 │   • Add JSDoc comments                                    │
@@ -467,7 +504,7 @@ TodoWrite([
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 12: DOCUMENTATION ─────────────────────────────────┐
+┌─ PHASE 13: DOCUMENTATION ─────────────────────────────────┐
 │                                                           │
 │ Update documentation files, then:                         │
 │                                                           │
@@ -478,10 +515,11 @@ TodoWrite([
 │       question: "Documentation checklist: [list files].   │
 │                  All documentation complete?",            │
 │       header: "Docs",                                     │
+│       multiSelect: false,                                 │
 │       options: [                                          │
-│         "Yes, all documentation is done",                 │
-│         "No, I need to add something (I'll describe)",    │
-│         "Skip docs for now (not recommended)"             │
+│         {"label": "Yes, complete", "description": "All docs updated"},│
+│         {"label": "Need to add more", "description": "I'll describe what's missing"},│
+│         {"label": "Skip for now", "description": "Not recommended"}│
 │       ]                                                   │
 │     }]                                                    │
 │   })                                                      │
@@ -492,45 +530,18 @@ TodoWrite([
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 13: COMPLETION ────────────────────────────────────┐
+┌─ PHASE 14: COMPLETION ────────────────────────────────────┐
 │                                                           │
 │ Final verification:                                       │
 │   • All tests passing                                     │
 │   • 100% coverage                                         │
 │   • TypeScript compiles                                   │
+│   • Code review issues addressed                          │
 │   • Docs updated                                          │
 │   • State file shows all phases complete                  │
 │                                                           │
 │ Run /commit to create semantic commit.                    │
-└───────────────────────────────────────────────────────────┘
-        │
-        ▼
-┌─ PHASE 14: AI CODE REVIEW (Greptile) ────────────────────┐
-│                                                           │
-│ After PR is created, Greptile runs automatic code review: │
-│   • Bug detection with full codebase context              │
-│   • Security vulnerability scanning (OWASP top 10)        │
-│   • Performance issue identification                      │
-│   • Code quality and maintainability checks               │
-│                                                           │
-│ ⚠️ REQUIRED: Use AskUserQuestion tool:                    │
-│                                                           │
-│   AskUserQuestion({                                       │
-│     questions: [{                                         │
-│       question: "Greptile review complete. Score: [N]/10  │
-│                  Issues: [list]. How to proceed?",        │
-│       header: "Review",                                   │
-│       options: [                                          │
-│         "Fix issues - return to implementation",          │
-│         "Accept and merge PR",                            │
-│         "Skip issues (document reason)"                   │
-│       ]                                                   │
-│     }]                                                    │
-│   })                                                      │
-│                                                           │
-│ WAIT for user response. Do NOT auto-merge.                │
-│ REQUIRES: GREPTILE_API_KEY + GITHUB_TOKEN in .env         │
-│ ──── Loop back to Phase 9 if fixing issues ────           │
+│ Run /pr to create pull request.                           │
 └───────────────────────────────────────────────────────────┘
 ```
 
@@ -553,9 +564,10 @@ All phases are tracked in `.claude/api-dev-state.json`:
     "tdd_red": { "status": "complete", "test_count": 23 },
     "tdd_green": { "status": "complete" },
     "verify": { "status": "complete", "gaps_found": 2, "gaps_fixed": 2 },
+    "code_review": { "status": "complete", "score": 9, "issues_found": 1, "issues_fixed": 1 },
     "tdd_refactor": { "status": "complete" },
     "documentation": { "status": "complete" },
-    "code_review": { "status": "complete", "score": 9, "issues_found": 1 }
+    "completion": { "status": "complete" }
   }
 }
 ```
@@ -583,9 +595,9 @@ This command creates:
 | 7-8   | `enforce-interview.py`         | Injects interview decisions                |
 | 8     | `verify-implementation.py`     | Blocks route if no test file               |
 | 9     | `verify-after-green.py`        | Triggers verification after tests pass     |
+| 10    | `run-code-review.py`           | Triggers Greptile AI code review           |
 | All   | `periodic-reground.py`         | Re-grounds every 7 turns                   |
-| 11    | `api-workflow-check.py`        | Blocks completion if docs incomplete       |
-| 14    | `run-code-review.py`           | Triggers Greptile AI code review after PR  |
+| 14    | `api-workflow-check.py`        | Blocks completion if docs incomplete       |
 
 <claude-commands-template>
 ## Project-Specific Rules

@@ -29,10 +29,10 @@ Interview-driven, research-first API development toolkit with 13-phase TDD workf
 8. TDD Red - Write failing tests
 9. TDD Green - Minimal implementation to pass
 10. Verify - Re-research and compare to implementation
-11. TDD Refactor - Clean up while tests pass
-12. Documentation - Update manifests, cache research
-13. Completion - Final verification
-14. Code Review - Greptile AI-powered code review
+11. Code Review - Greptile AI-powered review (catches issues early)
+12. TDD Refactor - Fix review issues + clean up code
+13. Documentation - Update manifests, cache research
+14. Completion - Final commit and PR
 
 **23 Enforcement Hooks:**
 
@@ -42,12 +42,13 @@ Interview-driven, research-first API development toolkit with 13-phase TDD workf
 - PostToolUse: Auto-format, token tracking, notifications, code review
 - Stop: Block if workflow incomplete
 
-**Greptile AI Code Review (Phase 14):**
+**Greptile AI Code Review (Phase 11):**
 
-- Automatic code review after PR creation
+- Runs BEFORE refactoring so issues can be fixed
 - Bug detection with full codebase context
 - Security vulnerability scanning (OWASP top 10)
 - Performance issue identification
+- Returns actionable issues with file:line references
 - Requires: GREPTILE_API_KEY + GITHUB_TOKEN
 
 **Async Parallel Research:**
