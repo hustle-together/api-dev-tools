@@ -202,6 +202,159 @@
         "confidence": "critical"
       },
       "injected": true
+    },
+    {
+      "timestamp": "2025-12-27T22:52:43.366799",
+      "prompt_preview": "help me use that publish skill how do i get that code?",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "how do",
+          "publish"
+        ],
+        "patterns_matched": [
+          "technical_term",
+          "always_research",
+          "question_pattern"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-27T22:53:54.327491",
+      "prompt_preview": "id rather use the terminal command to open the pafge",
+      "detection": {
+        "detected": true,
+        "terms": [],
+        "patterns_matched": [],
+        "confidence": "low"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-27T22:58:35.375132",
+      "prompt_preview": "No no, I use a secret key, so you just open my page for me, and I just gave it access by using my se...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "secret",
+          "key"
+        ],
+        "patterns_matched": [
+          "technical_term"
+        ],
+        "confidence": "high"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-27T22:59:14.000695",
+      "prompt_preview": "No, that's dumb. Normally you just give me some commands that I run in terminal and they just work.N...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "publish"
+        ],
+        "patterns_matched": [
+          "technical_term",
+          "question_pattern"
+        ],
+        "confidence": "high"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-27T22:59:56.192298",
+      "prompt_preview": "  npm login run that and i will tap the security code access then you can run the publish command",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "publish"
+        ],
+        "patterns_matched": [
+          "technical_term"
+        ],
+        "confidence": "high"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-27T23:02:25.007015",
+      "prompt_preview": "ok i pushed it already",
+      "detection": {
+        "detected": false,
+        "terms": [],
+        "patterns_matched": [],
+        "confidence": "none"
+      },
+      "injected": false
+    },
+    {
+      "timestamp": "2025-12-27T23:05:45.854012",
+      "prompt_preview": "Yeah, let's create a new project with maybe a base Next.js application in it. We'll install the npm ...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "create a new project with maybe a base next.js app",
+          "install the npm command for this, so that we can t",
+          "test",
+          "install",
+          "next.js"
+        ],
+        "patterns_matched": [
+          "technical_term",
+          "question_pattern",
+          "always_research"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-27T23:10:02.864062",
+      "prompt_preview": "alfonso@Alfonsos-MacBook-Pro test-api-dev-tools % /api-create brandfetch\nzsh: no such file or direct...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "create brandfetch",
+          "api",
+          "test",
+          "test-api"
+        ],
+        "patterns_matched": [
+          "always_research",
+          "question_pattern",
+          "technical_term"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-27T23:12:38.166540",
+      "prompt_preview": "\n  A gift for you\n  Your rate limits are 2x higher through 12/31. Enjoy the extra room to think!\n  \u23bf...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "create brandfetch ",
+          "error",
+          "api",
+          "test",
+          "hook",
+          "hustle-api",
+          "test-api",
+          "v2.0.76",
+          "4.5"
+        ],
+        "patterns_matched": [
+          "always_research",
+          "technical_term",
+          "question_pattern"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
     }
   ],
   "phases": {

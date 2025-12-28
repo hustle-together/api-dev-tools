@@ -220,7 +220,7 @@ async function main() {
   const targetDir = process.cwd();
   const packageDir = path.dirname(__dirname);
   const claudeDir = path.join(targetDir, ".claude");
-  const hooksDir = path.join(targetDir, "hooks");
+  const hooksDir = path.join(claudeDir, "hooks");
 
   const totalSteps = 8;
   let currentStep = 0;
@@ -254,7 +254,7 @@ async function main() {
   logStep(++currentStep, totalSteps, "Installing slash commands");
 
   const commandsDir = path.join(claudeDir, "commands");
-  const sourceCommandsDir = path.join(packageDir, "commands");
+  const sourceCommandsDir = path.join(packageDir, ".claude", "commands");
 
   if (!fs.existsSync(commandsDir)) {
     fs.mkdirSync(commandsDir, { recursive: true });
@@ -308,7 +308,7 @@ async function main() {
     }
   }
 
-  logSuccess(`${hooksCopied} hooks installed to hooks/`);
+  logSuccess(`${hooksCopied} hooks installed to .claude/hooks/`);
   logInfo("Includes: enforce-*, notify-*, track-token-usage.py");
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -533,7 +533,7 @@ ${c.red}════════════════════════
 
 ${c.bold}Installed:${c.reset}
   ● Commands      .claude/commands/     (slash commands)
-  ● Hooks         hooks/                (enforcement)
+  ● Hooks         .claude/hooks/        (enforcement)
   ● Subagents     .claude/agents/       (parallel processing)
   ● Config        .claude/              (settings, state, registry)
   ● Templates     templates/            (.env.example)
