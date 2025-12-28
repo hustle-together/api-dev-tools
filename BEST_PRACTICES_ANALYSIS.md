@@ -1,16 +1,23 @@
 # API Dev Tools - Best Practices Analysis & Optimization Guide
 
-**Generated:** 2025-12-27
+**Generated:** 2025-12-28
 **Compared Against:** Claude Code Best Practices (December 2025)
-**Repository:** @hustle-together/api-dev-tools v3.11.0
+**Repository:** @hustle-together/api-dev-tools v3.12.0
 
 ---
 
 ## Executive Summary
 
-This document provides a comprehensive analysis of the API Dev Tools repository comparing it against Claude Code best practices from December 2025. The analysis covers all 4 main workflows, 18 enforcement hooks, 23 skills, and identifies optimization opportunities.
+This document provides a comprehensive analysis of the API Dev Tools repository comparing it against Claude Code best practices from December 2025. The analysis covers all 4 main workflows, 22 enforcement hooks, 7 subagents, 23 skills, and identifies optimization opportunities.
 
 **Overall Assessment:** The repository implements **advanced patterns** that exceed many standard Claude Code implementations. The 13-phase enforcement system with loop-back architecture is particularly sophisticated.
+
+**v3.12.0 Updates:** Many previously identified gaps have been addressed:
+
+- 7 subagents now available (was 0)
+- NTFY push notifications implemented
+- Token usage tracking per phase
+- 22 enforcement hooks (was 18)
 
 ---
 
@@ -237,11 +244,11 @@ Stop
 | --------------------------------------- | ----------------------------- | ----------------------------------------- | ---------------- | ---------------------------------------- |
 | **Stop hooks for continuous operation** | Test-driven stop hooks        | `api-workflow-check.py` blocks incomplete | ✅ **Exceeds**   | Phase-by-phase blocking is more granular |
 | **7-turn re-grounding**                 | Periodic context injection    | `periodic-reground.py` every 7 turns      | ✅ **Matches**   | Exactly as recommended                   |
-| **PostToolUse auto-format**             | prettier/eslint after edits   | Not implemented                           | ❌ **Missing**   | Add auto-format hook                     |
-| **PreToolUse validation**               | Block dangerous operations    | 12 enforcement hooks                      | ✅ **Exceeds**   | Very comprehensive                       |
+| **PostToolUse auto-format**             | prettier/eslint after edits   | Implemented in settings.json              | ✅ **Matches**   | Auto-formats on Write/Edit               |
+| **PreToolUse validation**               | Block dangerous operations    | 22 enforcement hooks                      | ✅ **Exceeds**   | Very comprehensive                       |
 | **SessionStart context**                | Inject state at session start | `session-startup.py`                      | ✅ **Matches**   | Full state injection                     |
-| **Desktop notifications**               | Notification hook             | Not implemented                           | ❌ **Missing**   | For autonomous mode                      |
-| **Subagents**                           | Multi-subagent code review    | None defined                              | ❌ **Missing**   | Major gap                                |
+| **Desktop notifications**               | Notification hook             | NTFY push notifications                   | ✅ **Matches**   | Phone notifications via ntfy.sh          |
+| **Subagents**                           | Multi-subagent code review    | 7 subagents in .claude/agents/            | ✅ **Exceeds**   | Haiku for speed, Sonnet for accuracy     |
 | **Skills in .claude/skills/**           | Native discovery location     | `.skills/` directory                      | ⚠️ **Different** | Works but non-standard                   |
 | **TodoWrite integration**               | Real-time progress tracking   | Planned, not active                       | ⚠️ **Pending**   | `update-todos` skill exists              |
 | **MCP servers (2-3 targeted)**          | Context7, GitHub, Playwright  | Context7 + GitHub                         | ✅ **Matches**   | Add Playwright for visual testing        |
@@ -569,16 +576,21 @@ Session Summary:
 
 ## Summary: Key Gaps to Address
 
-1. **No subagents** - Add for parallel research and code review
-2. **TodoWrite not active** - Integrate into workflow skills
-3. **No auto-format hook** - Add prettier/eslint PostToolUse
-4. **No Playwright MCP** - Add for visual testing
-5. **Skills in non-standard location** - Move or symlink to `.claude/skills/`
-6. **No cost tracking** - Add session metrics
-7. **No notifications** - Add for autonomous mode
+1. ~~**No subagents**~~ - ✅ 7 subagents added in v3.12.0
+2. **TodoWrite not active** - Integrate into workflow skills (pending)
+3. ~~**No auto-format hook**~~ - ✅ Added prettier/eslint PostToolUse
+4. **No Playwright MCP** - Add for visual testing (optional)
+5. **Skills in non-standard location** - Works via Agent Skills standard
+6. ~~**No cost tracking**~~ - ✅ Token tracking per phase in v3.12.0
+7. ~~**No notifications**~~ - ✅ NTFY push notifications in v3.12.0
+
+**Remaining Items:**
+
+- TodoWrite integration into workflow skills
+- Playwright MCP (optional enhancement)
 
 ---
 
-**Document Version:** 1.0.0
-**Last Updated:** 2025-12-27
+**Document Version:** 2.0.0
+**Last Updated:** 2025-12-28
 **Maintained By:** Analysis Session

@@ -2,6 +2,57 @@
 
 All notable changes to `@hustle-together/api-dev-tools` will be documented in this file.
 
+## [3.12.0] - 2025-12-28
+
+### Added
+
+- **Enhanced CLI Installer** with ASCII art banner and progress indicators
+  - Hustle ASCII art logo on startup
+  - 8-step progress with `[1/8]` indicators
+  - Animated spinners for long operations
+  - Red/black/white branding throughout
+- **NTFY Push Notifications**
+  - `hooks/lib/ntfy.py` - Shared notification library
+  - `hooks/notify-input-needed.py` - Alert when user input needed
+  - `hooks/notify-phase-complete.py` - Phase completion updates
+  - `/ntfy-setup` and `/ntfy-test` commands
+- **4 New Subagents** (7 total now)
+  - `parallel-researcher` (Haiku) - Parallel doc scraping
+  - `schema-generator` (Sonnet) - Zod schema generation
+  - `test-writer` (Sonnet) - TDD test writing
+  - `docs-generator` (Haiku) - TypeDoc generation
+- **Token Usage Tracking**
+  - `hooks/track-token-usage.py` - Per-phase token tracking
+  - Token info included in NTFY notifications
+- **Component Type Confirmation**
+  - Changed from Atom/Molecule/Organism to Basic/Complex naming
+  - `hooks/enforce-component-type-confirm.py` - Blocks until user confirms
+- **Environment Template**
+  - `templates/.env.example` with all configuration variables
+
+### Changed
+
+- README.md completely rewritten with problem/solution table
+- Hook count increased from 18 to 22
+- Subagent count increased from 3 to 7
+- CLI installer now zero-dependency for faster npx
+
+## [3.11.0] - 2025-12-27
+
+### Added
+
+- **Best Practices Analysis Document** - Comprehensive comparison against Claude Code best practices
+- **PostToolUse Auto-Formatting** - prettier/eslint after edits
+- **3 Subagents**
+  - `research-validator` - Deep dive documentation validator
+  - `implementation-reviewer` - Compare code to docs
+  - `code-reviewer` - Security and performance review
+
+### Changed
+
+- Updated settings.json with auto-format hooks
+- Enhanced session-startup.py with workflow-specific context
+
 ## [3.10.0] - 2025-12-12
 
 ### Added

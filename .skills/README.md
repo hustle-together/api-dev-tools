@@ -1,6 +1,6 @@
 # API Development Tools - Agent Skills
 
-**Version:** 3.11.0
+**Version:** 3.12.0
 **Standard:** [Agent Skills Open Format](https://agentskills.io)
 **Platform:** Cross-platform (Claude Code, VS Code, Cursor, ChatGPT, GitHub Copilot)
 
@@ -153,22 +153,22 @@ Documentation cached in `.claude/research/` with 7-day freshness:
 
 ### Optional but Recommended
 
-- **Enforcement Hooks**: 18 Python scripts that enforce workflow rules
+- **Enforcement Hooks**: 22 Python scripts that enforce workflow rules
 - **Settings.json**: Hook registration for lifecycle events
 
-## 🔒 Enforcement Hooks (Optional)
+## 🔒 Enforcement Hooks (22 Total)
 
-For full workflow enforcement, install hooks to `.claude/hooks/`:
+For full workflow enforcement, install hooks to `hooks/`:
 
 ### Hook Types
 
-| Event                | Hooks                                                                   | Purpose                                                                                                    |
-| -------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| **SessionStart**     | session-startup.py                                                      | Inject state context at session start                                                                      |
-| **UserPromptSubmit** | enforce-external-research.py                                            | Detect API terms, require research                                                                         |
-| **PreToolUse**       | enforce-research.py<br>enforce-interview.py<br>verify-implementation.py | Block writes until research/interview done<br>Inject interview decisions<br>Require test file before route |
-| **PostToolUse**      | track-tool-use.py<br>periodic-reground.py<br>verify-after-green.py      | Log research, count turns<br>Re-ground every 7 turns<br>Trigger Phase 10 after test pass                   |
-| **Stop**             | api-workflow-check.py                                                   | Block if phases incomplete                                                                                 |
+| Event                | Hooks                                                                                                                          | Purpose                                                                           |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------- |
+| **SessionStart**     | session-startup.py                                                                                                             | Inject state context at session start                                             |
+| **UserPromptSubmit** | enforce-external-research.py                                                                                                   | Detect API terms, require research                                                |
+| **PreToolUse**       | enforce-research.py, enforce-interview.py, verify-implementation.py, enforce-component-type-confirm.py, notify-input-needed.py | Block writes until phases complete, inject decisions, confirm component type      |
+| **PostToolUse**      | track-tool-use.py, periodic-reground.py, verify-after-green.py, notify-phase-complete.py, track-token-usage.py                 | Log research, re-ground every 7 turns, trigger verification, notify, track tokens |
+| **Stop**             | api-workflow-check.py                                                                                                          | Block if phases incomplete                                                        |
 
 ### What Hooks Enforce
 
