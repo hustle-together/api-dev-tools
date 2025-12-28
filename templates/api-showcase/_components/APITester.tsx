@@ -9,12 +9,22 @@ interface ParameterDoc {
   required?: boolean;
   default?: string | number | boolean;
   enum?: string[];
+  example?: string;
+  min?: number;
+  max?: number;
 }
 
 interface SchemaDoc {
   request?: ParameterDoc[];
   response?: ParameterDoc[];
   queryParams?: ParameterDoc[];
+}
+
+/** Example request from registry.json */
+interface EndpointExample {
+  description: string;
+  query: string;
+  curl: string;
 }
 
 interface APITesterProps {
@@ -24,6 +34,16 @@ interface APITesterProps {
   selectedEndpoint?: string | null;
   schemaPath?: string;
   schema?: SchemaDoc;
+  /** Parameters from registry.json endpoints section */
+  endpointParams?: ParameterDoc[];
+  /** API route file path for reference */
+  apiRoute?: string;
+  /** Pre-built examples from registry.json */
+  examples?: Record<string, EndpointExample>;
+  /** Callback to expose submit function to parent */
+  onSubmitRef?: (submitFn: () => Promise<void>) => void;
+  /** Callback to notify parent of loading state */
+  onLoadingChange?: (isLoading: boolean) => void;
 }
 
 interface RequestState {
@@ -80,7 +100,7 @@ const DEFAULT_QUERY_PARAMS: Record<string, Record<string, string>> = {
  * - Response display with timing
  * - Audio playback for binary responses
  *
- * Created with Hustle API Dev Tools (v3.9.2)
+ * Created with Hustle API Dev Tools (v3.12.10)
  */
 export function APITester({
   id,
@@ -89,7 +109,13 @@ export function APITester({
   selectedEndpoint,
   schemaPath,
   schema,
+  endpointParams,
+  apiRoute,
+  examples,
+  onSubmitRef,
+  onLoadingChange,
 }: APITesterProps) {
+  const [selectedExample, setSelectedExample] = useState<string | null>(null);
   // Get default body for this API/endpoint
   const getDefaultBody = () => {
     const apiDefaults = DEFAULT_BODIES[id];
@@ -104,10 +130,30 @@ export function APITester({
 
   // Get default query params for GET requests
   const getDefaultQueryParams = () => {
+    // First check hardcoded defaults
     const apiParams = DEFAULT_QUERY_PARAMS[id];
     if (apiParams && selectedEndpoint) {
       return apiParams[selectedEndpoint] || "";
     }
+
+    // Build from endpointParams if available
+    if (endpointParams && endpointParams.length > 0) {
+      const queryParts: string[] = [];
+      for (const param of endpointParams) {
+        if (param.name === "action") {
+          // Add action with the selectedEndpoint or default value
+          queryParts.push(`action=${selectedEndpoint || param.default || ""}`);
+        } else if (param.required && param.example) {
+          // Add required params with example values
+          queryParts.push(`${param.name}=${encodeURIComponent(param.example)}`);
+        } else if (param.required && param.default !== undefined) {
+          // Add required params with defaults
+          queryParts.push(`${param.name}=${encodeURIComponent(String(param.default))}`);
+        }
+      }
+      return queryParts.join("&");
+    }
+
     return "";
   };
 
@@ -132,6 +178,21 @@ export function APITester({
   const [isLoading, setIsLoading] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
+  // Expose submit function to parent for footer button
+  useEffect(() => {
+    if (onSubmitRef) {
+      onSubmitRef(handleSubmit);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onSubmitRef, request, endpoint]);
+
+  // Notify parent of loading state changes
+  useEffect(() => {
+    if (onLoadingChange) {
+      onLoadingChange(isLoading);
+    }
+  }, [isLoading, onLoadingChange]);
+
   // Update defaults when endpoint changes
   useEffect(() => {
     setRequest((prev) => ({
@@ -140,7 +201,7 @@ export function APITester({
       body: getDefaultBody(),
       queryParams: getDefaultQueryParams(),
     }));
-    // Clear previous response
+    // Clear previous response and example selection
     setResponse({
       status: null,
       statusText: "",
@@ -150,8 +211,9 @@ export function APITester({
       contentType: null,
     });
     setAudioUrl(null);
+    setSelectedExample(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedEndpoint, id]);
+  }, [selectedEndpoint, id, endpointParams, examples]);
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -298,6 +360,49 @@ export function APITester({
           </div>
         </div>
 
+        {/* Example Selector (for GET requests with examples) */}
+        {request.method === "GET" && examples && Object.keys(examples).length > 0 && (
+          <div>
+            <label className="mb-1 block text-sm font-bold text-black dark:text-white">
+              Example Requests
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(examples).map(([key, example]) => (
+                <button
+                  key={key}
+                  onClick={() => {
+                    setSelectedExample(key);
+                    setRequest((prev) => ({ ...prev, queryParams: example.query }));
+                  }}
+                  className={`border-2 px-3 py-1.5 text-xs font-medium transition-colors ${
+                    selectedExample === key
+                      ? "border-[#BA0C2F] bg-[#BA0C2F] text-white"
+                      : "border-black bg-white text-black hover:border-[#BA0C2F] dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                  }`}
+                  title={example.description}
+                >
+                  {key.replace(/_/g, " ")}
+                </button>
+              ))}
+            </div>
+            {selectedExample && examples[selectedExample] && (
+              <div className="mt-2 flex items-center gap-2">
+                <p className="text-xs text-gray-600 dark:text-gray-400">
+                  {examples[selectedExample].description}
+                </p>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(examples[selectedExample].curl);
+                  }}
+                  className="shrink-0 border border-gray-300 bg-gray-100 px-2 py-0.5 text-xs text-gray-600 hover:bg-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                >
+                  Copy curl
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Query Parameters (for GET requests) */}
         {request.method === "GET" && (
           <div>
@@ -307,14 +412,15 @@ export function APITester({
             <input
               type="text"
               value={request.queryParams}
-              onChange={(e) =>
-                setRequest((prev) => ({ ...prev, queryParams: e.target.value }))
-              }
+              onChange={(e) => {
+                setSelectedExample(null); // Clear example selection when manually editing
+                setRequest((prev) => ({ ...prev, queryParams: e.target.value }));
+              }}
               className="w-full border-2 border-black bg-white px-3 py-2 font-mono text-sm focus:border-[#BA0C2F] focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-white"
               placeholder="key1=value1&key2=value2"
             />
             <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
-              Add query string parameters (without the ?)
+              Add query string parameters (without the ?) - or select an example above
             </p>
           </div>
         )}
@@ -347,10 +453,11 @@ export function APITester({
         )}
 
         {/* Parameter Documentation */}
-        {schema && (schema.request?.length || schema.queryParams?.length) ? (
+        {(schema && (schema.request?.length || schema.queryParams?.length)) ||
+        endpointParams?.length ? (
           <ParameterDocs
-            requestParams={schema.request}
-            queryParams={schema.queryParams}
+            requestParams={schema?.request}
+            queryParams={schema?.queryParams || endpointParams}
             isGetRequest={request.method === "GET"}
           />
         ) : null}
@@ -376,41 +483,6 @@ export function APITester({
             API keys loaded from .env automatically
           </p>
         </div>
-
-        {/* Submit Button */}
-        <button
-          onClick={handleSubmit}
-          disabled={isLoading}
-          className="w-full border-2 border-black bg-[#BA0C2F] py-3 font-bold text-white transition-colors hover:bg-[#8a0923] disabled:opacity-50"
-        >
-          {isLoading ? (
-            <span className="flex items-center justify-center gap-2">
-              <svg
-                className="h-4 w-4 animate-spin"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                />
-              </svg>
-              Sending...
-            </span>
-          ) : (
-            `Send ${request.method} Request`
-          )}
-        </button>
       </div>
 
       {/* Response Panel */}
@@ -572,6 +644,21 @@ function ParameterDocs({
                   <code className="text-gray-700 dark:text-gray-300">
                     {String(param.default)}
                   </code>
+                </p>
+              )}
+              {param.example && (
+                <p className="mt-1 text-xs text-gray-500">
+                  Example:{" "}
+                  <code className="text-gray-700 dark:text-gray-300">
+                    {param.example}
+                  </code>
+                </p>
+              )}
+              {(param.min !== undefined || param.max !== undefined) && (
+                <p className="mt-1 text-xs text-gray-500">
+                  {param.min !== undefined && `Min: ${param.min}`}
+                  {param.min !== undefined && param.max !== undefined && " · "}
+                  {param.max !== undefined && `Max: ${param.max}`}
                 </p>
               )}
             </div>

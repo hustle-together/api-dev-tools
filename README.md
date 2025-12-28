@@ -1,4 +1,4 @@
-# API Development Tools v1.0.0
+# API Development Tools v3.12.10
 
 ```
     ╔═══════════════════════════════════════════════════════════════╗
@@ -180,6 +180,63 @@ Notifications include:
 - ○ Input needed (interview questions)
 - ● Phase completions with token usage
 - ◆ Workflow blocked (missing requirements)
+
+---
+
+## API Showcase
+
+Interactive documentation and testing UI for all your APIs:
+
+```bash
+# Access at: http://localhost:3000/api-showcase
+```
+
+**Features:**
+- Grid view of all registered APIs with search and filtering
+- Click any API to open interactive testing modal
+- **Example Requests** - Pre-built, runnable examples that auto-fill query params
+- **Try It** - Live API testing with real responses
+- **Curl Examples** - Copy working curl commands
+- **Documentation** - File locations, schemas, parameters
+
+### How Examples Work
+
+Examples are generated from your Zod schema parameters during Phase 13 (Documentation):
+
+```json
+// In registry.json - auto-generated from schema
+"endpoints": {
+  "search": {
+    "params": [...],
+    "examples": {
+      "basic": {
+        "description": "Basic search request",
+        "query": "action=search&query=nature",
+        "curl": "curl -X GET 'http://localhost:3000/api/v2/unsplash?action=search&query=nature'"
+      }
+    }
+  }
+}
+```
+
+The showcase reads examples from `registry.json` and displays clickable buttons that auto-fill the request.
+
+---
+
+## TypeDoc Integration
+
+Generate API documentation from TSDoc comments:
+
+```bash
+pnpm typedoc           # Generate docs to docs/api/
+pnpm typedoc:watch     # Watch mode for development
+```
+
+TypeDoc runs during **Phase 13 (Documentation)** and generates Markdown documentation from:
+- `src/lib/schemas/*.ts` - Zod schemas with TSDoc comments
+- `src/app/api/**/*.ts` - API route handlers
+
+Configuration: `typedoc.json` (installed by the CLI)
 
 ---
 

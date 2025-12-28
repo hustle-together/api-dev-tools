@@ -3,10 +3,29 @@
 import { useEffect, useCallback, useState } from "react";
 import { APITester } from "./APITester";
 
+interface EndpointParam {
+  name: string;
+  type: string;
+  description?: string;
+  required?: boolean;
+  default?: string | number | boolean;
+  enum?: string[];
+  example?: string;
+  min?: number;
+  max?: number;
+}
+
+interface EndpointExample {
+  description: string;
+  query: string;
+  curl: string;
+}
+
 interface RegistryAPI {
   name: string;
   description?: string;
   route: string;
+  routeFile?: string;
   schemas?: string;
   tests?: string;
   methods?: string[];
@@ -17,8 +36,11 @@ interface RegistryAPI {
   endpoints?: Record<
     string,
     {
-      methods: string[];
+      methods?: string[];
+      method?: string;
       description?: string;
+      params?: EndpointParam[];
+      examples?: Record<string, EndpointExample>;
     }
   >;
 }
@@ -41,13 +63,15 @@ interface APIModalProps {
  * - Request/response display
  * - Curl example generation
  *
- * Created with Hustle API Dev Tools (v3.9.2)
+ * Created with Hustle API Dev Tools (v3.12.10)
  */
 export function APIModal({ id, type, data, onClose }: APIModalProps) {
   const [activeTab, setActiveTab] = useState<"try-it" | "docs" | "curl">(
     "try-it",
   );
   const [selectedEndpoint, setSelectedEndpoint] = useState<string | null>(null);
+  const [submitRequest, setSubmitRequest] = useState<(() => Promise<void>) | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Close on Escape key
   const handleKeyDown = useCallback(
@@ -86,14 +110,26 @@ export function APIModal({ id, type, data, onClose }: APIModalProps) {
   const currentEndpoint = selectedEndpoint
     ? endpoints[selectedEndpoint]
     : endpoints[endpointKeys[0]];
-  const methods = currentEndpoint?.methods || data.methods || ["POST"];
+  // Handle both methods array and single method string
+  const methods = currentEndpoint?.methods ||
+    (currentEndpoint?.method ? [currentEndpoint.method] : null) ||
+    data.methods ||
+    ["POST"];
   const baseUrl =
     typeof window !== "undefined"
       ? window.location.origin
       : "http://localhost:3000";
 
-  // Build endpoint path
+  // Build endpoint path - always use base path for action-based APIs
+  // Actions are passed as query parameters, not sub-paths
   const getEndpointPath = () => {
+    // Check if this API uses action-based routing (has params with action)
+    const hasActionParam = currentEndpoint?.params?.some(p => p.name === "action");
+    if (hasActionParam) {
+      // Action-based APIs use query params, not path segments
+      return `/api/v2/${id}`;
+    }
+    // For true sub-endpoint APIs, include the path
     if (selectedEndpoint && selectedEndpoint !== "default") {
       return `/api/v2/${id}/${selectedEndpoint}`;
     }
@@ -102,10 +138,26 @@ export function APIModal({ id, type, data, onClose }: APIModalProps) {
 
   const endpoint = getEndpointPath();
 
-  // Generate curl example
+  // Generate curl example with proper query params
   const generateCurl = (method: string) => {
+    // Build example query string from params
+    const params = currentEndpoint?.params || [];
+    const queryParts: string[] = [];
+
+    for (const param of params) {
+      if (param.name === "action" && selectedEndpoint) {
+        queryParts.push(`action=${selectedEndpoint}`);
+      } else if (param.required && param.example) {
+        queryParts.push(`${param.name}=${encodeURIComponent(param.example)}`);
+      } else if (param.example) {
+        queryParts.push(`${param.name}=${encodeURIComponent(param.example)}`);
+      }
+    }
+
+    const queryString = queryParts.length > 0 ? `?${queryParts.join("&")}` : "";
+
     if (method === "GET") {
-      return `curl -X GET "${baseUrl}${endpoint}"`;
+      return `curl -X GET "${baseUrl}${endpoint}${queryString}"`;
     }
     return `curl -X ${method} "${baseUrl}${endpoint}" \\
   -H "Content-Type: application/json" \\
@@ -129,7 +181,7 @@ export function APIModal({ id, type, data, onClose }: APIModalProps) {
       />
 
       {/* Modal Content */}
-      <div className="relative z-10 flex max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden border-2 border-black bg-white shadow-xl dark:border-gray-600 dark:bg-gray-900">
+      <div className="relative z-10 flex max-h-[90vh] w-full max-w-7xl flex-col overflow-hidden border-2 border-black bg-white shadow-xl dark:border-gray-600 dark:bg-gray-900">
         {/* Header */}
         <header className="flex items-center justify-between border-b-2 border-black px-6 py-4 dark:border-gray-600">
           <div className="flex items-center gap-4">
@@ -271,6 +323,11 @@ export function APIModal({ id, type, data, onClose }: APIModalProps) {
               methods={methods}
               selectedEndpoint={selectedEndpoint}
               schemaPath={data.schemas}
+              endpointParams={data.endpoints?.[selectedEndpoint || "default"]?.params || data.endpoints?.[Object.keys(data.endpoints || {})[0]]?.params}
+              apiRoute={data.routeFile || data.route}
+              examples={data.endpoints?.[selectedEndpoint || "default"]?.examples || data.endpoints?.[Object.keys(data.endpoints || {})[0]]?.examples}
+              onSubmitRef={(fn) => setSubmitRequest(() => fn)}
+              onLoadingChange={setIsLoading}
             />
           )}
 
@@ -408,10 +465,45 @@ export function APIModal({ id, type, data, onClose }: APIModalProps) {
                     );
                   }
                 }}
-                className="border-2 border-black bg-[#BA0C2F] px-3 py-1.5 text-sm font-medium text-white hover:bg-[#8a0923]"
+                className="border-2 border-black px-3 py-1.5 text-sm font-medium hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-800"
               >
                 Copy Schema Import
               </button>
+              {activeTab === "try-it" && submitRequest && (
+                <button
+                  onClick={() => submitRequest()}
+                  disabled={isLoading}
+                  className="border-2 border-black bg-[#BA0C2F] px-4 py-1.5 text-sm font-bold text-white transition-colors hover:bg-[#8a0923] disabled:opacity-50"
+                >
+                  {isLoading ? (
+                    <span className="flex items-center gap-2">
+                      <svg
+                        className="h-4 w-4 animate-spin"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                        />
+                      </svg>
+                      Sending...
+                    </span>
+                  ) : (
+                    "Send Request"
+                  )}
+                </button>
+              )}
             </div>
           </div>
         </footer>

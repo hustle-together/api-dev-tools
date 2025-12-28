@@ -8,22 +8,51 @@ import { APIModal } from "./APIModal";
 import registryData from "@/../.claude/registry.json";
 
 /**
+ * Parameter documentation from registry.json
+ */
+interface EndpointParam {
+  name: string;
+  type: string;
+  description?: string;
+  required?: boolean;
+  default?: string | number | boolean;
+  enum?: string[];
+  example?: string;
+  min?: number;
+  max?: number;
+}
+
+/**
+ * Example request from registry.json
+ */
+interface EndpointExample {
+  description: string;
+  query: string;
+  curl: string;
+}
+
+/**
  * Registry structure from .claude/registry.json
  */
 interface RegistryAPI {
   name: string;
   description?: string;
   route: string;
+  routeFile?: string;
   schemas?: string;
   tests?: string;
   methods?: string[];
   created_at?: string;
   status?: string;
+  actions?: string[];
   endpoints?: Record<
     string,
     {
-      methods: string[];
+      methods?: string[];
+      method?: string;
       description?: string;
+      params?: EndpointParam[];
+      examples?: Record<string, EndpointExample>;
     }
   >;
 }
@@ -49,7 +78,7 @@ interface APIShowcaseProps {
  *
  * Data source: .claude/registry.json (apis + combined sections)
  *
- * Created with Hustle API Dev Tools (v3.9.2)
+ * Created with Hustle API Dev Tools (v3.12.10)
  */
 export function APIShowcase({ registry: propRegistry }: APIShowcaseProps) {
   const [selectedAPI, setSelectedAPI] = useState<{

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src/lib/schemas/*.ts", "src/app/api/**/*.ts"],
+  "out": "docs/api",
+  "plugin": ["typedoc-plugin-markdown"],
+  "exclude": ["**/*.test.ts", "**/__tests__/**", "**/node_modules/**"],
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "readme": "none",
+  "name": "API Documentation",
+  "includeVersion": true,
+  "categorizeByGroup": true,
+  "sort": ["alphabetical"],
+  "validation": {
+    "notExported": false,
+    "invalidLink": false,
+    "notDocumented": false
+  }
+}

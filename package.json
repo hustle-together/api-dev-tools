@@ -1,6 +1,6 @@
 {
   "name": "@hustle-together/api-dev-tools",
-  "version": "3.12.9",
+  "version": "3.12.10",
   "description": "Interview-driven, research-first API development toolkit with 14-phase TDD workflow, enforcement hooks, and 23 Agent Skills for cross-platform AI agents",
   "main": "bin/cli.js",
   "bin": {
@@ -23,11 +23,15 @@
     "test": "node bin/cli.js --scope=project",
     "usage": "ccusage",
     "format": "prettier --write .",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+    "typedoc": "typedoc",
+    "typedoc:watch": "typedoc --watch"
   },
   "devDependencies": {
     "prettier": "^3.0.0",
-    "eslint": "^8.0.0"
+    "eslint": "^8.0.0",
+    "typedoc": "^0.27.0",
+    "typedoc-plugin-markdown": "^4.4.0"
   },
   "optionalDependencies": {
     "ccusage": "^1.0.0"

@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.12.10] - 2025-12-28
+
+### Added
+
+- **TypeDoc Integration** - Generate API documentation from TSDoc comments
+  - `pnpm typedoc` script to generate Markdown docs
+  - `pnpm typedoc:watch` for development mode
+  - `templates/typedoc.json` configuration template
+  - Runs during Phase 13 (Documentation)
+
+- **API Showcase Example Requests** - Pre-built, runnable examples in the testing UI
+  - Example selector UI with clickable buttons
+  - Auto-fills query parameters when clicked
+  - "Copy curl" button for each example
+  - Examples auto-generated from Zod schema parameters
+
+- **Enhanced extract-schema-docs.cjs** - Generates working examples from schemas
+  - Detects required params, enums, and defaults
+  - Builds query strings and curl commands
+  - Outputs `examples` section for registry.json
+
+### Fixed
+
+- **APIModal 404 errors** - Fixed endpoint path building for action-based APIs
+  - Action-based APIs now use query params (`/api/v2/unsplash?action=search`)
+  - No longer incorrectly builds sub-paths (`/api/v2/unsplash/search`)
+
+---
+
 ## [1.0.1] - 2025-12-28
 
 ### Fixed
