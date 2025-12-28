@@ -17,11 +17,11 @@ Interview-driven, research-first API development toolkit with 13-phase TDD workf
 - `/hustle-ui-create-page [name]` - Page development with Playwright E2E
 - `/hustle-combine [type]` - Orchestrate multiple existing APIs
 
-**13-Phase Workflow:**
+**14-Phase Workflow:**
 
 1. Disambiguation - Clarify ambiguous terms
 2. Scope - Confirm understanding
-3. Initial Research - Context7 + WebSearch
+3. Initial Research - Context7 + WebSearch (with async parallel subagents)
 4. Interview - Questions FROM research findings
 5. Deep Research - Adaptive searches based on answers
 6. Schema - Zod schema from research + interview
@@ -32,14 +32,30 @@ Interview-driven, research-first API development toolkit with 13-phase TDD workf
 11. TDD Refactor - Clean up while tests pass
 12. Documentation - Update manifests, cache research
 13. Completion - Final verification
+14. Code Review - Greptile AI-powered code review
 
-**22 Enforcement Hooks:**
+**23 Enforcement Hooks:**
 
 - SessionStart: State context injection
 - UserPromptSubmit: Research requirement detection
 - PreToolUse: Block writes until phases complete
-- PostToolUse: Auto-format, token tracking, notifications
+- PostToolUse: Auto-format, token tracking, notifications, code review
 - Stop: Block if workflow incomplete
+
+**Greptile AI Code Review (Phase 14):**
+
+- Automatic code review after PR creation
+- Bug detection with full codebase context
+- Security vulnerability scanning (OWASP top 10)
+- Performance issue identification
+- Requires: GREPTILE_API_KEY + GITHUB_TOKEN
+
+**Async Parallel Research:**
+
+- Spawn multiple research subagents in parallel
+- Use Ctrl+B to background agents
+- Use /tasks to monitor progress
+- 3x faster research with parallel Context7 + WebSearch
 
 **7 Subagents:**
 

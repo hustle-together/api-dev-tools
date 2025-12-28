@@ -129,7 +129,8 @@ TodoWrite([
   {"content": "Phase 10: Verify", "status": "pending", "activeForm": "Verifying against docs"},
   {"content": "Phase 11: Refactor", "status": "pending", "activeForm": "Cleaning up code"},
   {"content": "Phase 12: Documentation", "status": "pending", "activeForm": "Updating documentation"},
-  {"content": "Phase 13: Completion", "status": "pending", "activeForm": "Final verification"}
+  {"content": "Phase 13: Completion", "status": "pending", "activeForm": "Final verification"},
+  {"content": "Phase 14: Code Review", "status": "pending", "activeForm": "Running AI code review"}
 ])
 ```
 
@@ -208,9 +209,34 @@ TodoWrite([
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 3: INITIAL RESEARCH ───────────────────────────────┐
+┌─ PHASE 3: INITIAL RESEARCH (Parallel Subagents) ──────────┐
 │                                                           │
-│ Execute 2-3 initial searches:                             │
+│ Execute 2-3 initial searches using PARALLEL SUBAGENTS:    │
+│                                                           │
+│ ** ASYNC PARALLEL RESEARCH **                             │
+│ For faster research, spawn multiple subagents in parallel │
+│ using the Task tool with different research strategies:   │
+│                                                           │
+│   // Spawn 3 parallel research agents                     │
+│   Task({                                                  │
+│     subagent_type: "parallel-researcher",                 │
+│     prompt: "Research [API] via Context7 - find all       │
+│              endpoints, parameters, webhooks",            │
+│     model: "haiku"                                        │
+│   })                                                      │
+│   // Press Ctrl+B to background this agent                │
+│                                                           │
+│   Task({                                                  │
+│     subagent_type: "parallel-researcher",                 │
+│     prompt: "WebSearch [API] official docs and guides",   │
+│     model: "haiku"                                        │
+│   })                                                      │
+│   // Press Ctrl+B to background this agent                │
+│                                                           │
+│   // Use /tasks to monitor progress of background agents  │
+│                                                           │
+│ ** ALTERNATIVE: Sequential Research **                    │
+│ If not using parallel agents, execute sequentially:       │
 │   • Context7: "[library/api name]"                        │
 │   • WebSearch: "[name] official documentation"            │
 │   • WebSearch: "site:[domain] api reference"              │
@@ -477,6 +503,35 @@ TodoWrite([
 │                                                           │
 │ Run /commit to create semantic commit.                    │
 └───────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌─ PHASE 14: AI CODE REVIEW (Greptile) ────────────────────┐
+│                                                           │
+│ After PR is created, Greptile runs automatic code review: │
+│   • Bug detection with full codebase context              │
+│   • Security vulnerability scanning (OWASP top 10)        │
+│   • Performance issue identification                      │
+│   • Code quality and maintainability checks               │
+│                                                           │
+│ ⚠️ REQUIRED: Use AskUserQuestion tool:                    │
+│                                                           │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "Greptile review complete. Score: [N]/10  │
+│                  Issues: [list]. How to proceed?",        │
+│       header: "Review",                                   │
+│       options: [                                          │
+│         "Fix issues - return to implementation",          │
+│         "Accept and merge PR",                            │
+│         "Skip issues (document reason)"                   │
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│                                                           │
+│ WAIT for user response. Do NOT auto-merge.                │
+│ REQUIRES: GREPTILE_API_KEY + GITHUB_TOKEN in .env         │
+│ ──── Loop back to Phase 9 if fixing issues ────           │
+└───────────────────────────────────────────────────────────┘
 ```
 
 ## State File Tracking
@@ -499,7 +554,8 @@ All phases are tracked in `.claude/api-dev-state.json`:
     "tdd_green": { "status": "complete" },
     "verify": { "status": "complete", "gaps_found": 2, "gaps_fixed": 2 },
     "tdd_refactor": { "status": "complete" },
-    "documentation": { "status": "complete" }
+    "documentation": { "status": "complete" },
+    "code_review": { "status": "complete", "score": 9, "issues_found": 1 }
   }
 }
 ```
@@ -529,6 +585,7 @@ This command creates:
 | 9     | `verify-after-green.py`        | Triggers verification after tests pass     |
 | All   | `periodic-reground.py`         | Re-grounds every 7 turns                   |
 | 11    | `api-workflow-check.py`        | Blocks completion if docs incomplete       |
+| 14    | `run-code-review.py`           | Triggers Greptile AI code review after PR  |
 
 <claude-commands-template>
 ## Project-Specific Rules

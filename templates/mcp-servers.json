@@ -17,6 +17,15 @@
       "command": "npx",
       "args": ["-y", "@anthropics/mcp-playwright"],
       "description": "Browser automation for visual testing and screenshot capture"
+    },
+    "greptile": {
+      "command": "npx",
+      "args": ["-y", "@anthropics/mcp-greptile"],
+      "env": {
+        "GREPTILE_API_KEY": "",
+        "GITHUB_TOKEN": ""
+      },
+      "description": "AI-powered code review with full codebase context (Phase 14)"
     }
   },
   "_readme": {

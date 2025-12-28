@@ -21,26 +21,32 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
 - **Greptile/CodeRabbit/Graphite Integration** (v3.12.0)
 - **Stats & Rename Commands** (v3.11.1)
 
-### Current State (v3.11.0 Phase 1 Complete)
+### Current State (v1.0.0)
 
 - ✅ Skills Migration complete (23 skills in SKILL.md format)
 - ✅ marketplace.json for plugin distribution
-- ✅ 18 hooks packaged in `.skills/_shared/hooks/`
-- ❌ No TodoWrite integration
-- ❌ No async parallelization
-- ❌ No multi-strategy research
-- ❌ No Phase 14 (code review)
+- ✅ 22 hooks packaged in `hooks/`
+- ✅ TodoWrite integration in all 4 workflows
+- ✅ Async parallel research with subagents (Ctrl+B)
+- ✅ Phase 14: Greptile AI code review
+- ✅ NTFY push notifications
+- ✅ Token usage tracking
 
-### Proposed State (After Full Implementation)
+### Implemented Features (v1.0.0)
 
 - ✅ Real-time TodoWrite visual progress
 - ✅ Async background agents with Ctrl+B
-- ✅ 95% research coverage (vs 60% current)
-- ✅ Skill-discovery meta-skill
-- ✅ Per-API research folders
-- ✅ Comprehensive cost/time tracking
-- ✅ Phase 14: AI code review with Greptile/CodeRabbit/Graphite
-- ✅ Stats and session management commands
+- ✅ Phase 14: AI code review with Greptile
+- ✅ NTFY push notifications
+- ✅ Token usage tracking per phase
+
+### Future Enhancements
+
+- ⏳ 95% research coverage (vs 60% current)
+- ⏳ Skill-discovery meta-skill
+- ⏳ Per-API research folders
+- ⏳ Comprehensive cost/time tracking
+- ⏳ Stats and session management commands
 
 ---
 
@@ -59,11 +65,11 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
 
 ---
 
-### Phase 2: TodoWrite Integration (v3.11.0)
+### Phase 2: TodoWrite Integration (v1.0.0) ✅ COMPLETE
 
 **Goal:** Add real-time visual task tracking to all 4 workflow modes
 
-**Estimated Effort:** 6-8 hours
+**Status:** Implemented
 
 #### Implementation Strategy: Hybrid Approach (Recommended)
 
@@ -106,11 +112,11 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
 
 ---
 
-### Phase 3: Async Parallel Research (v3.11.0)
+### Phase 3: Async Parallel Research (v1.0.0) ✅ COMPLETE
 
 **Goal:** 3x faster research using background agents
 
-**Estimated Effort:** 8-10 hours
+**Status:** Implemented - Use Ctrl+B to background agents, /tasks to monitor
 
 **Benefits:**
 
@@ -387,11 +393,11 @@ This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 th
 
 ---
 
-### Phase 8: Phase 14 - AI Code Review (v3.12.0)
+### Phase 8: Phase 14 - AI Code Review (v1.0.0) ✅ COMPLETE
 
-**Goal:** Automated code quality checks with 3 industry-leading tools
+**Goal:** Automated code quality checks with Greptile AI
 
-**Estimated Effort:** 10-12 hours
+**Status:** Implemented - Greptile integration with run-code-review.py hook
 
 **Phase 14 Workflow:**
 

@@ -424,6 +424,11 @@ async function main() {
   const mcpServers = [
     { name: "context7", cmd: "npx -y @upstash/context7-mcp" },
     { name: "github", cmd: "npx -y @modelcontextprotocol/server-github" },
+    {
+      name: "greptile",
+      cmd: "npx -y @anthropics/mcp-greptile",
+      optional: true,
+    },
   ];
 
   for (const server of mcpServers) {
@@ -441,10 +446,18 @@ async function main() {
         });
         logSuccess(`Added ${server.name}`);
       } catch (addErr) {
-        logWarn(`Could not add ${server.name} - add manually`);
+        if (server.optional) {
+          logInfo(
+            `${server.name} (optional) - configure with GREPTILE_API_KEY`,
+          );
+        } else {
+          logWarn(`Could not add ${server.name} - add manually`);
+        }
       }
     }
   }
+
+  logInfo("Greptile requires GREPTILE_API_KEY + GITHUB_TOKEN for Phase 14");
 
   // ─────────────────────────────────────────────────────────────────────────
   // Step 8: Optional Tools
@@ -534,8 +547,9 @@ ${c.bold}Quick Start:${c.reset}
 ${c.bold}Next Steps:${c.reset}
   1. ${c.white}cp templates/.env.example .env${c.reset}
   2. ${c.white}Configure your API keys in .env${c.reset}
-  3. ${c.white}/ntfy-setup${c.reset} for push notifications (optional)
-  4. ${c.white}Restart Claude Code${c.reset} for MCP tools
+  3. ${c.white}Add GREPTILE_API_KEY + GITHUB_TOKEN${c.reset} for Phase 14 code review
+  4. ${c.white}/ntfy-setup${c.reset} for push notifications (optional)
+  5. ${c.white}Restart Claude Code${c.reset} for MCP tools
 
 ${c.dim}Documentation: https://github.com/hustle-together/api-dev-tools${c.reset}
 `);
