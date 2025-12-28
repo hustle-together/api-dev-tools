@@ -1114,6 +1114,21 @@ async function main() {
     logInfo("Copy to .env and configure your API keys");
   }
 
+  // Copy showcase template directories (for update-api-showcase.py and update-ui-showcase.py hooks)
+  const showcaseDirs = ["api-showcase", "ui-showcase", "shared"];
+  for (const dir of showcaseDirs) {
+    const srcDir = path.join(sourceTemplatesDir, dir);
+    const destDir = path.join(templatesDestDir, dir);
+    if (fs.existsSync(srcDir)) {
+      const result = copyDir(srcDir, destDir);
+      if (result.copied > 0) {
+        logSuccess(`Copied ${dir} templates (${result.copied} files)`);
+      } else if (result.skipped > 0) {
+        logInfo(`${dir} templates already exist (${result.skipped} files preserved)`);
+      }
+    }
+  }
+
   // ─────────────────────────────────────────────────────────────────────────
   // Step 7: Configure MCP Servers
   // ─────────────────────────────────────────────────────────────────────────
