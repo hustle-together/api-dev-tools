@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.12.11] - 2025-12-28
+
+### Added
+
+- **Hustle Dev Dashboard** (`/hustle-dev-dashboard`) - Central hub page template
+  - Links to API Showcase, UI Showcase, Storybook, TypeDoc, Test Results
+  - Shows registry stats (APIs, Combined, Components, Pages)
+  - Quick Commands section with common pnpm commands
+  - Brand-themed design matching Hustle Together style
+
+- **End-of-Workflow Summaries** - All 4 main commands now show completion summaries
+  - `/hustle-api-create` - Shows API quick links and next steps
+  - `/hustle-combine` - Shows combined API info and dashboard link
+  - `/hustle-ui-create` - Shows component preview links and Storybook
+  - `/hustle-ui-create-page` - Shows page URL and E2E test commands
+
+### Changed
+
+- **API Modal UX Improvements** - Better testing experience
+  - Modal widened from `max-w-5xl` to `max-w-7xl` for more content space
+  - "Send Request" button moved to footer (alongside View Tests/Copy Schema)
+  - Reduces scrolling when testing APIs
+
+---
+
 ## [3.12.10] - 2025-12-28
 
 ### Added

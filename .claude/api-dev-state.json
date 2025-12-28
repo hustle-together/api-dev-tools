@@ -353,6 +353,89 @@
         "confidence": "critical"
       },
       "injected": true
+    },
+    {
+      "timestamp": "2025-12-28T11:32:10.080875",
+      "prompt_preview": "So, is it if I reran this all, how would the docs be and where would they go? Would they be linked i...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "how would",
+          "does it work, basically, with the do",
+          "api",
+          "docs"
+        ],
+        "patterns_matched": [
+          "technical_term",
+          "always_research",
+          "question_pattern"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-28T11:34:50.829524",
+      "prompt_preview": "Yeah, that could be ideal. Also, for the UI one, we're using Storybook and Playwright, correct? This...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "how should",
+          "should be linked to those as well.what do you thin",
+          "api",
+          "docs",
+          "hook"
+        ],
+        "patterns_matched": [
+          "always_research",
+          "question_pattern",
+          "technical_term"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-28T11:36:38.531240",
+      "prompt_preview": "That sounds good, but we also probably need it for API Combine since that's doing similar things, ri...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "api"
+        ],
+        "patterns_matched": [
+          "technical_term",
+          "question_pattern",
+          "always_research"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-28T11:37:22.487174",
+      "prompt_preview": "If that's the case, go for it. You don't need my permission. Just do this all.Also, if we update the...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "will all this just work there, or will we need to ",
+          "generate the typedoc and install the new package s",
+          "update the test project we were working on, will a",
+          "install the new package so it has the updated temp",
+          "package",
+          "test",
+          "install",
+          "view",
+          "hook"
+        ],
+        "patterns_matched": [
+          "always_research",
+          "technical_term",
+          "question_pattern"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
     }
   ],
   "phases": {

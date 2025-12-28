@@ -911,6 +911,28 @@ Run `pnpm dev` and navigate to /ui-showcase to see it.
 
 Update state: `phases.completion.status = "complete"`
 
+### End-of-Workflow Summary
+
+After successful page creation, display:
+
+```
+═══════════════════════════════════════════════════════════════
+✅ PAGE CREATED: [PageName]
+
+📍 Quick Links:
+  • View page:    /[page-name]
+  • UI Showcase:  /ui-showcase
+  • Run E2E:      pnpm playwright test src/app/[page-name]
+
+📊 Dashboard:    /hustle-dev-dashboard
+
+Next Steps:
+  • /hustle-ui-create - Create components for this page
+  • /hustle-api-create - Create APIs this page needs
+  • /commit - Commit your changes
+═══════════════════════════════════════════════════════════════
+```
+
 ---
 
 # State File Structure

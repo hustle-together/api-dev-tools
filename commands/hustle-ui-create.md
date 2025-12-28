@@ -901,6 +901,28 @@ For Sandpack live editing, install: `pnpm add @codesandbox/sandpack-react`
 
 Update state: `phases.completion.status = "complete"`
 
+### End-of-Workflow Summary
+
+After successful component creation, display:
+
+```
+═══════════════════════════════════════════════════════════════
+✅ COMPONENT CREATED: [ComponentName]
+
+📍 Quick Links:
+  • Preview it:   /ui-showcase
+  • Storybook:    http://localhost:6006
+  • Run tests:    pnpm test src/components/[ComponentName]
+  • Visual tests: pnpm playwright test --grep "[ComponentName]"
+
+📊 Dashboard:    /hustle-dev-dashboard
+
+Next Steps:
+  • /hustle-ui-create-page - Create a page using this component
+  • /commit - Commit your changes
+═══════════════════════════════════════════════════════════════
+```
+
 ---
 
 # Page Mode (14 Phases)

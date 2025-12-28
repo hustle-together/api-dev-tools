@@ -542,6 +542,18 @@ TodoWrite([
 │                                                           │
 │ Run /commit to create semantic commit.                    │
 │ Run /pr to create pull request.                           │
+│                                                           │
+│ ═══════════════════════════════════════════════════════  │
+│ ✅ API CREATED: [endpoint-name]                           │
+│                                                           │
+│ 📍 Quick Links:                                           │
+│   • Test it:     /api-showcase                            │
+│   • API Docs:    /docs/api/[endpoint-name]                │
+│   • Run tests:   pnpm test:api [endpoint-name]            │
+│   • TypeDoc:     pnpm typedoc                             │
+│                                                           │
+│ 📊 Dashboard:    /hustle-dev-dashboard                    │
+│ ═══════════════════════════════════════════════════════  │
 └───────────────────────────────────────────────────────────┘
 ```
 

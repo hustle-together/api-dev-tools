@@ -837,6 +837,29 @@ Update registry.json with the new combined API:
 }
 ```
 
+### End-of-Workflow Summary
+
+After successful combination, display:
+
+```
+═══════════════════════════════════════════════════════════════
+✅ COMBINED API CREATED: [combined-name]
+
+📍 Quick Links:
+  • Test it:     /api-showcase
+  • API Docs:    /docs/api/[combined-name]
+  • Run tests:   pnpm test src/app/api/v2/[combined-name]
+  • TypeDoc:     pnpm typedoc
+
+📦 Combined:     [api1] + [api2]
+📊 Dashboard:    /hustle-dev-dashboard
+
+Next Steps:
+  • /commit - Commit your changes
+  • /hustle-api-create - Create another API
+═══════════════════════════════════════════════════════════════
+```
+
 ---
 
 ## Mode B: Combine UI (Coming Soon)

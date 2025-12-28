@@ -468,6 +468,28 @@ Both conditions must be true for the flag to be set.
 └───────────────────────────────────────────────────────────┘
 ```
 
+### End-of-Workflow Summary
+
+After successful API creation, display:
+
+```
+═══════════════════════════════════════════════════════════════
+✅ API CREATED: [endpoint-name]
+
+📍 Quick Links:
+  • Test it:     /api-showcase
+  • API Docs:    /docs/api/[endpoint-name]
+  • Run tests:   pnpm test src/app/api/v2/[endpoint-name]
+  • TypeDoc:     pnpm typedoc
+
+📊 Dashboard:    /hustle-dev-dashboard
+
+Next Steps:
+  • /hustle-combine - Combine with other APIs
+  • /commit - Commit your changes
+═══════════════════════════════════════════════════════════════
+```
+
 ### Showcase Redirect
 
 After successful API creation, output:
