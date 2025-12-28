@@ -84,7 +84,27 @@
           "does sequential thinking come in here? i don't get",
           "change a bunch of things. i just wanted you to do "
         ],
-        "patterns_matched": ["question_pattern", "always_research"],
+        "patterns_matched": [
+          "question_pattern",
+          "always_research"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-28T00:24:55.189747",
+      "prompt_preview": "ok now what should we do?",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "what should",
+          "should we do"
+        ],
+        "patterns_matched": [
+          "question_pattern",
+          "always_research"
+        ],
         "confidence": "critical"
       },
       "injected": true
