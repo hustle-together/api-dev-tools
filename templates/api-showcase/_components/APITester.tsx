@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 interface ParameterDoc {
   name: string;
@@ -25,6 +25,12 @@ interface EndpointExample {
   description: string;
   query: string;
   curl: string;
+}
+
+/** State for each parameter in the interactive builder */
+interface ParamState {
+  enabled: boolean;
+  value: string;
 }
 
 interface APITesterProps {
@@ -100,7 +106,7 @@ const DEFAULT_QUERY_PARAMS: Record<string, Record<string, string>> = {
  * - Response display with timing
  * - Audio playback for binary responses
  *
- * Created with Hustle API Dev Tools (v3.12.10)
+ * Created with Hustle API Dev Tools (v3.12.12)
  */
 export function APITester({
   id,
@@ -116,6 +122,56 @@ export function APITester({
   onLoadingChange,
 }: APITesterProps) {
   const [selectedExample, setSelectedExample] = useState<string | null>(null);
+
+  // Interactive parameter builder state
+  const [paramStates, setParamStates] = useState<Record<string, ParamState>>({});
+
+  // Initialize param states from endpointParams
+  const initializeParamStates = useCallback((params: ParameterDoc[] | undefined) => {
+    if (!params) return {};
+    const states: Record<string, ParamState> = {};
+    for (const param of params) {
+      // Default value: example > default > empty
+      const defaultValue = param.example ||
+        (param.default !== undefined ? String(param.default) : "") ||
+        (param.enum?.[0] || "");
+
+      // Required params are enabled by default
+      states[param.name] = {
+        enabled: param.required || false,
+        value: defaultValue,
+      };
+    }
+    return states;
+  }, []);
+
+  // Build query string from param states
+  const buildQueryFromStates = useCallback((states: Record<string, ParamState>) => {
+    const parts: string[] = [];
+    for (const [name, state] of Object.entries(states)) {
+      if (state.enabled && state.value) {
+        parts.push(`${name}=${encodeURIComponent(state.value)}`);
+      }
+    }
+    return parts.join("&");
+  }, []);
+
+  // Update param states from query string (for example buttons)
+  const updateStatesFromQuery = useCallback((query: string, params: ParameterDoc[] | undefined) => {
+    if (!params) return;
+    const searchParams = new URLSearchParams(query);
+    const newStates: Record<string, ParamState> = {};
+
+    for (const param of params) {
+      const value = searchParams.get(param.name);
+      newStates[param.name] = {
+        enabled: value !== null,
+        value: value || param.example || (param.default !== undefined ? String(param.default) : "") || (param.enum?.[0] || ""),
+      };
+    }
+    setParamStates(newStates);
+  }, []);
+
   // Get default body for this API/endpoint
   const getDefaultBody = () => {
     const apiDefaults = DEFAULT_BODIES[id];
@@ -195,11 +251,15 @@ export function APITester({
 
   // Update defaults when endpoint changes
   useEffect(() => {
+    const queryParams = endpointParams || schema?.queryParams;
+    const initialStates = initializeParamStates(queryParams);
+    setParamStates(initialStates);
+
     setRequest((prev) => ({
       ...prev,
       method: methods[0] || "POST",
       body: getDefaultBody(),
-      queryParams: getDefaultQueryParams(),
+      queryParams: buildQueryFromStates(initialStates),
     }));
     // Clear previous response and example selection
     setResponse({
@@ -213,7 +273,15 @@ export function APITester({
     setAudioUrl(null);
     setSelectedExample(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedEndpoint, id, endpointParams, examples]);
+  }, [selectedEndpoint, id, endpointParams, examples, schema]);
+
+  // Auto-update query string when param states change
+  useEffect(() => {
+    if (Object.keys(paramStates).length > 0) {
+      const newQuery = buildQueryFromStates(paramStates);
+      setRequest((prev) => ({ ...prev, queryParams: newQuery }));
+    }
+  }, [paramStates, buildQueryFromStates]);
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -372,7 +440,7 @@ export function APITester({
                   key={key}
                   onClick={() => {
                     setSelectedExample(key);
-                    setRequest((prev) => ({ ...prev, queryParams: example.query }));
+                    updateStatesFromQuery(example.query, endpointParams || schema?.queryParams);
                   }}
                   className={`border-2 px-3 py-1.5 text-xs font-medium transition-colors ${
                     selectedExample === key
@@ -452,15 +520,22 @@ export function APITester({
           </div>
         )}
 
-        {/* Parameter Documentation */}
-        {(schema && (schema.request?.length || schema.queryParams?.length)) ||
-        endpointParams?.length ? (
-          <ParameterDocs
-            requestParams={schema?.request}
-            queryParams={schema?.queryParams || endpointParams}
-            isGetRequest={request.method === "GET"}
+        {/* Interactive Parameter Builder (for GET requests with params) */}
+        {request.method === "GET" && (endpointParams?.length || schema?.queryParams?.length) ? (
+          <InteractiveParamBuilder
+            params={endpointParams || schema?.queryParams || []}
+            paramStates={paramStates}
+            setParamStates={setParamStates}
           />
-        ) : null}
+        ) : (
+          /* Static Parameter Documentation (for non-GET requests) */
+          (schema && schema.request?.length) ? (
+            <ParameterDocs
+              requestParams={schema?.request}
+              isGetRequest={false}
+            />
+          ) : null
+        )}
 
         {/* Headers */}
         <div>
@@ -561,22 +636,42 @@ export function APITester({
 }
 
 /**
- * Parameter Documentation Component
- * Displays request body and query parameter documentation in a collapsible panel.
+ * Interactive Parameter Builder Component
+ * Allows users to check/uncheck params and edit values to build query strings.
  */
-function ParameterDocs({
-  requestParams,
-  queryParams,
-  isGetRequest,
+function InteractiveParamBuilder({
+  params,
+  paramStates,
+  setParamStates,
 }: {
-  requestParams?: ParameterDoc[];
-  queryParams?: ParameterDoc[];
-  isGetRequest: boolean;
+  params: ParameterDoc[];
+  paramStates: Record<string, ParamState>;
+  setParamStates: React.Dispatch<React.SetStateAction<Record<string, ParamState>>>;
 }) {
   const [isExpanded, setIsExpanded] = useState(true);
 
-  const paramsToShow = isGetRequest ? queryParams : requestParams;
-  if (!paramsToShow?.length) return null;
+  if (!params.length) return null;
+
+  const handleToggle = (name: string) => {
+    setParamStates((prev) => ({
+      ...prev,
+      [name]: {
+        ...prev[name],
+        enabled: !prev[name]?.enabled,
+      },
+    }));
+  };
+
+  const handleValueChange = (name: string, value: string) => {
+    setParamStates((prev) => ({
+      ...prev,
+      [name]: {
+        ...prev[name],
+        value,
+        enabled: true, // Auto-enable when value is changed
+      },
+    }));
+  };
 
   return (
     <div className="border-2 border-black dark:border-gray-600">
@@ -585,7 +680,7 @@ function ParameterDocs({
         className="flex w-full items-center justify-between bg-gray-50 px-3 py-2 text-left dark:bg-gray-800"
       >
         <span className="text-sm font-bold text-black dark:text-white">
-          {isGetRequest ? "Query Parameters" : "Request Body"} Documentation
+          Query Parameters Builder
         </span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -605,7 +700,134 @@ function ParameterDocs({
 
       {isExpanded && (
         <div className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
-          {paramsToShow.map((param) => (
+          {params.map((param) => {
+            const state = paramStates[param.name] || { enabled: false, value: "" };
+
+            return (
+              <div key={param.name} className="flex items-start gap-3 px-3 py-2">
+                {/* Checkbox */}
+                <label className="flex h-8 cursor-pointer items-center">
+                  <input
+                    type="checkbox"
+                    checked={state.enabled}
+                    onChange={() => handleToggle(param.name)}
+                    disabled={param.required}
+                    className="h-4 w-4 cursor-pointer accent-[#BA0C2F] disabled:cursor-not-allowed disabled:opacity-50"
+                  />
+                </label>
+
+                {/* Parameter Info */}
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <code className="text-sm font-bold text-[#BA0C2F]">
+                      {param.name}
+                    </code>
+                    <span className="border border-gray-300 bg-gray-100 px-1.5 py-0.5 text-xs text-gray-600 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400">
+                      {param.type}
+                    </span>
+                    {param.required && (
+                      <span className="border border-red-300 bg-red-50 px-1.5 py-0.5 text-xs text-red-600 dark:border-red-800 dark:bg-red-900/30 dark:text-red-400">
+                        required
+                      </span>
+                    )}
+                  </div>
+                  {param.description && (
+                    <p className="mt-0.5 text-xs text-gray-600 dark:text-gray-400">
+                      {param.description}
+                    </p>
+                  )}
+                </div>
+
+                {/* Input Control */}
+                <div className="w-36 shrink-0">
+                  {param.enum ? (
+                    /* Dropdown for enum types */
+                    <select
+                      value={state.value}
+                      onChange={(e) => handleValueChange(param.name, e.target.value)}
+                      className="w-full border border-gray-300 bg-white px-2 py-1.5 text-sm focus:border-[#BA0C2F] focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                    >
+                      <option value="">-- none --</option>
+                      {param.enum.map((val) => (
+                        <option key={val} value={val}>
+                          {val}
+                        </option>
+                      ))}
+                    </select>
+                  ) : param.type === "number" || param.type === "integer" ? (
+                    /* Number input for numeric types */
+                    <input
+                      type="number"
+                      value={state.value}
+                      onChange={(e) => handleValueChange(param.name, e.target.value)}
+                      min={param.min}
+                      max={param.max}
+                      placeholder={param.example || (param.default !== undefined ? String(param.default) : "")}
+                      className="w-full border border-gray-300 bg-white px-2 py-1.5 text-sm focus:border-[#BA0C2F] focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                    />
+                  ) : (
+                    /* Text input for string types */
+                    <input
+                      type="text"
+                      value={state.value}
+                      onChange={(e) => handleValueChange(param.name, e.target.value)}
+                      placeholder={param.example || (param.default !== undefined ? String(param.default) : "")}
+                      className="w-full border border-gray-300 bg-white px-2 py-1.5 text-sm focus:border-[#BA0C2F] focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                    />
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
+ * Parameter Documentation Component
+ * Displays request body documentation in a collapsible panel (for non-GET requests).
+ */
+function ParameterDocs({
+  requestParams,
+  isGetRequest,
+}: {
+  requestParams?: ParameterDoc[];
+  isGetRequest: boolean;
+}) {
+  const [isExpanded, setIsExpanded] = useState(true);
+
+  if (!requestParams?.length) return null;
+
+  return (
+    <div className="border-2 border-black dark:border-gray-600">
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="flex w-full items-center justify-between bg-gray-50 px-3 py-2 text-left dark:bg-gray-800"
+      >
+        <span className="text-sm font-bold text-black dark:text-white">
+          Request Body Documentation
+        </span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={`text-gray-500 transition-transform ${isExpanded ? "rotate-180" : ""}`}
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </button>
+
+      {isExpanded && (
+        <div className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
+          {requestParams.map((param) => (
             <div key={param.name} className="px-3 py-2">
               <div className="flex items-center gap-2">
                 <code className="text-sm font-bold text-[#BA0C2F]">

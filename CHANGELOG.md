@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.12.12] - 2025-12-28
+
+### Added
+
+- **Dashboard Page Templates** - All dashboard links now work (no more 404s)
+  - `/docs` - TypeDoc documentation viewer with generation instructions
+  - `/test-results` - Vitest results page with test commands reference
+  - `/playwright-report` - E2E test report viewer with Playwright commands
+
+- **Interactive Query Parameter Builder** - Enhanced API testing UX
+  - Checkbox toggle to include/exclude each parameter in query string
+  - Type-aware inline editors:
+    - Dropdown `<select>` for enum types (order_by, color, orientation)
+    - Number inputs with min/max validation for numeric types
+    - Text inputs with placeholder examples for strings
+  - Auto-updates query string as you check params and edit values
+  - Required params locked on (can't uncheck)
+  - Example preset buttons still work as quick templates
+
+### Changed
+
+- **ParameterDocs component** renamed to `InteractiveParamBuilder` for GET requests
+- Query params now sync bidirectionally between builder and input field
+
+---
+
 ## [3.12.11] - 2025-12-28
 
 ### Added
