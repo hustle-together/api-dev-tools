@@ -10,7 +10,7 @@
 
 This document provides a comprehensive analysis of the API Dev Tools repository comparing it against Claude Code best practices from December 2025. The analysis covers all 4 main workflows, 22 enforcement hooks, 7 subagents, 23 skills, and identifies optimization opportunities.
 
-**Overall Assessment:** The repository implements **advanced patterns** that exceed many standard Claude Code implementations. The 13-phase enforcement system with loop-back architecture is particularly sophisticated.
+**Overall Assessment:** The repository implements **advanced patterns** that exceed many standard Claude Code implementations. The 14-phase enforcement system with loop-back architecture is particularly sophisticated.
 
 **v3.12.0 Updates:** Many previously identified gaps have been addressed:
 
@@ -36,7 +36,7 @@ This document provides a comprehensive analysis of the API Dev Tools repository 
 
 ### Workflow 1: `/hustle-api-create` (API Development)
 
-**13 Phases - Full TDD with Research Verification**
+**14 Phases - Full TDD with Research Verification + AI Code Review**
 
 | Phase | Name                 | Purpose                                              | Hooks Involved                                   | Loop-Back Condition           |
 | ----- | -------------------- | ---------------------------------------------------- | ------------------------------------------------ | ----------------------------- |
@@ -50,9 +50,10 @@ This document provides a comprehensive analysis of the API Dev Tools repository 
 | 8     | **TDD Red**          | Write failing tests from schema                      | `enforce-tdd-red.py`, `verify-implementation.py` | User modifies test plan       |
 | 9     | **TDD Green**        | Minimal implementation to pass tests                 | `verify-after-green.py`                          | Tests fail                    |
 | 10    | **Verify**           | Re-research docs, compare to implementation          | `enforce-verify.py`                              | Gaps found → back to Phase 8  |
-| 11    | **Refactor**         | Clean up code while tests pass                       | `enforce-refactor.py`                            | Tests fail after refactor     |
-| 12    | **Documentation**    | Update manifests, cache research                     | `enforce-documentation.py`                       | Docs incomplete               |
-| 13    | **Completion**       | Final verification, commit                           | `api-workflow-check.py`                          | Any phase incomplete          |
+| 11    | **Code Review**      | Greptile AI review (bugs, security, performance)     | `run-code-review.py`                             | Issues found to fix           |
+| 12    | **Refactor**         | Fix review issues + clean up code                    | `enforce-refactor.py`                            | Tests fail after refactor     |
+| 13    | **Documentation**    | Update manifests, cache research                     | `enforce-documentation.py`                       | Docs incomplete               |
+| 14    | **Completion**       | Final verification, commit                           | `api-workflow-check.py`                          | Any phase incomplete          |
 
 **Output Artifacts:**
 
@@ -67,11 +68,11 @@ This document provides a comprehensive analysis of the API Dev Tools repository 
 
 ### Workflow 2: `/hustle-ui-create` (Component Mode)
 
-**13 Phases - Component Development with Storybook**
+**14 Phases - Component Development with Storybook + AI Code Review**
 
 | Phase | Name                   | Purpose                                          | Testing Method             | Loop-Back Condition      |
 | ----- | ---------------------- | ------------------------------------------------ | -------------------------- | ------------------------ |
-| 1     | **Disambiguation**     | Clarify component type (Atom/Molecule/Organism)  | -                          | Type unclear             |
+| 1     | **Disambiguation**     | Clarify component type (Basic/Complex)           | -                          | Type unclear             |
 | 2     | **Scope**              | Confirm component purpose                        | -                          | Purpose unclear          |
 | 3     | **Design Research**    | Check brand guide + research patterns            | Context7/WebSearch         | More research needed     |
 | 4     | **Interview**          | Props, variants, accessibility level             | -                          | Change answers           |
@@ -81,9 +82,10 @@ This document provides a comprehensive analysis of the API Dev Tools repository 
 | 8     | **TDD Red**            | Write failing tests + Storybook stories          | Vitest + Storybook         | Add scenarios            |
 | 9     | **TDD Green**          | Implement component to pass tests                | Vitest                     | Tests fail               |
 | 10    | **Verify**             | 4-Step: Responsive + Brand + Tests + Performance | Playwright viewports       | Issues found             |
-| 11    | **Refactor**           | Clean up, extract patterns                       | Vitest                     | Tests fail               |
-| 12    | **Documentation**      | Storybook autodocs + registry                    | -                          | Docs incomplete          |
-| 13    | **Completion**         | Final output + showcase link                     | -                          | Any phase incomplete     |
+| 11    | **Code Review**        | Greptile AI review (bugs, security, a11y)        | `run-code-review.py`       | Issues found to fix      |
+| 12    | **Refactor**           | Fix review issues + clean up                     | Vitest                     | Tests fail               |
+| 13    | **Documentation**      | Storybook autodocs + registry                    | -                          | Docs incomplete          |
+| 14    | **Completion**         | Final output + showcase link                     | -                          | Any phase incomplete     |
 
 **4-Step Verification (Phase 10):**
 
@@ -104,7 +106,7 @@ This document provides a comprehensive analysis of the API Dev Tools repository 
 
 ### Workflow 3: `/hustle-ui-create-page` (Page Mode)
 
-**13 Phases - Next.js App Router Pages with Playwright E2E**
+**14 Phases - Next.js App Router Pages with Playwright E2E + AI Code Review**
 
 | Phase | Name                | Purpose                                             | Testing Method          | Loop-Back Condition  |
 | ----- | ------------------- | --------------------------------------------------- | ----------------------- | -------------------- |
@@ -118,9 +120,10 @@ This document provides a comprehensive analysis of the API Dev Tools repository 
 | 8     | **TDD Red**         | Write failing Playwright E2E tests                  | Playwright              | Add scenarios        |
 | 9     | **TDD Green**       | Implement page to pass tests                        | Playwright              | Tests fail           |
 | 10    | **Verify**          | 4-Step: Responsive + Data + Tests + Performance     | Playwright + Lighthouse | Issues found         |
-| 11    | **Refactor**        | Extract components, optimize                        | Playwright              | Tests fail           |
-| 12    | **Documentation**   | Route docs + registry                               | -                       | Docs incomplete      |
-| 13    | **Completion**      | Final output + showcase link                        | -                       | Any phase incomplete |
+| 11    | **Code Review**     | Greptile AI review (bugs, security, performance)    | `run-code-review.py`    | Issues found to fix  |
+| 12    | **Refactor**        | Fix review issues + extract components              | Playwright              | Tests fail           |
+| 13    | **Documentation**   | Route docs + registry                               | -                       | Docs incomplete      |
+| 14    | **Completion**      | Final output + showcase link                        | -                       | Any phase incomplete |
 
 **Playwright E2E Test Categories:**
 
@@ -145,7 +148,7 @@ This document provides a comprehensive analysis of the API Dev Tools repository 
 
 ### Workflow 4: `/hustle-combine` (API Orchestration)
 
-**13 Phases - Combine Existing APIs into Orchestration Endpoints**
+**14 Phases - Combine Existing APIs into Orchestration Endpoints + AI Code Review**
 
 | Phase | Name                 | Purpose                              | Special Considerations          | Loop-Back Condition  |
 | ----- | -------------------- | ------------------------------------ | ------------------------------- | -------------------- |
@@ -159,9 +162,10 @@ This document provides a comprehensive analysis of the API Dev Tools repository 
 | 8     | **TDD Red**          | Integration tests for combined flow  | Tests API interaction           | Add scenarios        |
 | 9     | **TDD Green**        | Orchestration route implementation   | Sequential/Parallel/Conditional | Tests fail           |
 | 10    | **Verify**           | Full flow end-to-end                 | Real API calls optional         | Issues found         |
-| 11    | **Refactor**         | Optimize, add logging                | -                               | Tests fail           |
-| 12    | **Documentation**    | Update manifest + registry           | Adds to `combined` section      | Docs incomplete      |
-| 13    | **Completion**       | Update registry with combined API    | -                               | Any phase incomplete |
+| 11    | **Code Review**      | Greptile AI review for combined flow | `run-code-review.py`            | Issues found to fix  |
+| 12    | **Refactor**         | Fix review issues + optimize         | -                               | Tests fail           |
+| 13    | **Documentation**    | Update manifest + registry           | Adds to `combined` section      | Docs incomplete      |
+| 14    | **Completion**       | Update registry with combined API    | -                               | Any phase incomplete |
 
 **Flow Types Supported:**
 
@@ -562,7 +566,7 @@ Session Summary:
 
 ## Summary: What You're Doing Better Than Best Practices
 
-1. **13-phase enforcement** - More granular than typical stop hooks
+1. **14-phase enforcement** - More granular than typical stop hooks
 2. **Loop-back architecture** - Verification failures return to earlier phases
 3. **Interview-from-research** - Questions generated from findings, not templates
 4. **7-turn re-grounding** - Matches exactly

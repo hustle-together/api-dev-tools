@@ -1,9 +1,9 @@
-# Comprehensive Enhancement Plan - v3.11.0 + v3.12.0
+# API Dev Tools - Roadmap
 
-**Version:** 2.0.0 (Expanded from TodoWrite Integration Plan)
+**Current Version:** 1.0.1 (Shipped 2025-12-28)
 **Created:** 2025-12-24
-**Status:** Ready for Implementation
-**Scope:** ALL roadmap features from ENHANCEMENT_ROADMAP_v3.11.0.md
+**Status:** v1.0.0 Released - Future enhancements planned
+**Scope:** All implemented features + planned enhancements
 
 ---
 

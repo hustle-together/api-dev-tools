@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.1] - 2025-12-28
+
+### Fixed
+
+- **Stop hook false positive blocking**: Fixed bug where `api-workflow-check.py` incorrectly blocked Q&A sessions when no workflow was active. The hook now correctly checks for both `None` and `"not_started"` phase statuses.
+
+---
+
 ## [1.0.0] - 2025-12-28
 
 ### Initial Release

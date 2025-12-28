@@ -34,12 +34,12 @@ npx @hustle-together/api-dev-tools --scope=project
 
 | Skill             | Usage                       | Description                                                                |
 | ----------------- | --------------------------- | -------------------------------------------------------------------------- |
-| **api-create**    | `/api-create [endpoint]`    | Complete 13-phase API workflow with interview, research, TDD, verification |
+| **api-create**    | `/api-create [endpoint]`    | Complete 14-phase API workflow with interview, research, TDD, verification |
 | **api-interview** | `/api-interview [endpoint]` | Structured requirements gathering with questions FROM research findings    |
 | **api-research**  | `/api-research [library]`   | Adaptive documentation research with 7-day caching                         |
 | **api-verify**    | `/api-verify [endpoint]`    | Re-research after tests pass to catch implementation gaps                  |
 | **api-env**       | `/api-env [endpoint]`       | Check API keys and environment variables                                   |
-| **api-status**    | `/api-status [endpoint]`    | Track progress through 13 phases                                           |
+| **api-status**    | `/api-status [endpoint]`    | Track progress through 14 phases                                           |
 
 ### TDD Workflow (4 skills)
 
@@ -80,7 +80,7 @@ npx @hustle-together/api-dev-tools --scope=project
 
 ## 🏗️ Architecture
 
-### 13-Phase Workflow
+### 14-Phase Workflow
 
 ```
 Phase 1:  DISAMBIGUATION     - Clarify ambiguous terms before research
@@ -93,9 +93,10 @@ Phase 7:  ENVIRONMENT        - Verify API keys exist
 Phase 8:  TDD RED            - Write failing tests from schema
 Phase 9:  TDD GREEN          - Minimal implementation to pass
 Phase 10: VERIFY             - Re-research docs, compare to implementation
-Phase 11: TDD REFACTOR       - Clean up code while tests pass
-Phase 12: DOCUMENTATION      - Update manifests, cache research
-Phase 13: COMPLETION         - Final verification, commit
+Phase 11: CODE REVIEW        - Greptile AI review (bugs, security, performance)
+Phase 12: TDD REFACTOR       - Fix review issues, clean up code
+Phase 13: DOCUMENTATION      - Update manifests, cache research
+Phase 14: COMPLETION         - Final verification, commit
 ```
 
 ### Loop-Back Architecture
@@ -108,7 +109,8 @@ Every verification phase can loop back if not successful:
 - Phase 6: Loop if schema incorrect
 - Phase 8: Loop if test plan needs changes
 - Phase 10: Loop if gaps found in implementation
-- Phase 12: Loop if documentation incomplete
+- Phase 11: Loop if code review finds issues to fix
+- Phase 13: Loop if documentation incomplete
 
 ### State Tracking
 
@@ -195,7 +197,7 @@ For full workflow enforcement, install hooks to `hooks/`:
 # Fully automated workflow
 /api-create my-endpoint
 
-# Follows all 13 phases automatically
+# Follows all 14 phases automatically
 # Asks for user input at each checkpoint
 # Loops back if verification fails
 # Creates tests, implementation, docs

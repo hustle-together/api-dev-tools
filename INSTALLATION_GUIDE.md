@@ -369,7 +369,7 @@ your-project/
 ## Next Steps
 
 1. **Read the README** - Quick reference for all commands
-2. **Try `/api-create test`** - Experience the full 13-phase workflow
+2. **Try `/api-create test`** - Experience the full 14-phase workflow
 3. **Check BEST_PRACTICES_ANALYSIS.md** - Detailed phase documentation
 4. **Configure your CLAUDE.md** - Add project-specific instructions
 
