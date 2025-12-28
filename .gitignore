@@ -26,3 +26,4 @@ coverage/
 .env
 .env.local
 api-dev-state.json
+.claude/api-dev-state.json
