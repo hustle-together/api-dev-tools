@@ -615,9 +615,11 @@ def main():
     design_research = phases.get("design_research", {})  # For UI workflows
     selection = phases.get("selection", {})  # For combine workflows
 
-    if (research.get("status") == "not_started" and
-        design_research.get("status") == "not_started" and
-        selection.get("status") == "not_started"):
+    # Check if workflow was NOT started (status is None or "not_started")
+    not_started_statuses = [None, "not_started"]
+    if (research.get("status") in not_started_statuses and
+        design_research.get("status") in not_started_statuses and
+        selection.get("status") in not_started_statuses):
         # Workflow not started, allow stop
         print(json.dumps({"decision": "approve"}))
         sys.exit(0)
