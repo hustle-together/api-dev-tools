@@ -84,7 +84,10 @@
           "does sequential thinking come in here? i don't get",
           "change a bunch of things. i just wanted you to do "
         ],
-        "patterns_matched": ["question_pattern", "always_research"],
+        "patterns_matched": [
+          "question_pattern",
+          "always_research"
+        ],
         "confidence": "critical"
       },
       "injected": true
@@ -94,8 +97,14 @@
       "prompt_preview": "ok now what should we do?",
       "detection": {
         "detected": true,
-        "terms": ["what should", "should we do"],
-        "patterns_matched": ["question_pattern", "always_research"],
+        "terms": [
+          "what should",
+          "should we do"
+        ],
+        "patterns_matched": [
+          "question_pattern",
+          "always_research"
+        ],
         "confidence": "critical"
       },
       "injected": true
@@ -105,7 +114,30 @@
       "prompt_preview": "how can we test this? why isnt playwright and story book and e2e on both ui and page commands/",
       "detection": {
         "detected": true,
-        "terms": ["how can", "test"],
+        "terms": [
+          "how can",
+          "test"
+        ],
+        "patterns_matched": [
+          "question_pattern",
+          "technical_term",
+          "always_research"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-28T00:42:27.191414",
+      "prompt_preview": "What do you mean? I wasn't really asking you to code anything. I was just asking for the differences...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "what are",
+          "create and ui create page not both use playwright ",
+          "test",
+          "template"
+        ],
         "patterns_matched": [
           "question_pattern",
           "technical_term",
