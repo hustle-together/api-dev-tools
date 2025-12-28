@@ -13,10 +13,12 @@
       "Bash(npm test:*)",
       "Bash(pnpm lint:*)",
       "Bash(pnpm format:*)",
+      "Bash(pnpm typedoc:*)",
       "Bash(git status:*)",
       "Bash(git diff:*)",
       "Bash(git log:*)",
-      "Bash(ccusage:*)"
+      "Bash(ccusage:*)",
+      "Bash(curl:*)"
     ],
     "deny": ["Read(./.env*)", "Bash(rm -rf:*)"]
   },
@@ -26,7 +28,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-startup.py"
+            "command": "$CLAUDE_PROJECT_DIR/hooks/session-startup.py"
           }
         ]
       }
@@ -36,7 +38,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/enforce-external-research.py"
+            "command": "$CLAUDE_PROJECT_DIR/hooks/enforce-external-research.py"
           }
         ]
       }
@@ -47,15 +49,28 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/enforce-research.py"
+            "command": "$CLAUDE_PROJECT_DIR/hooks/enforce-research.py"
           },
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/enforce-interview.py"
+            "command": "$CLAUDE_PROJECT_DIR/hooks/enforce-interview.py"
           },
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/verify-implementation.py"
+            "command": "$CLAUDE_PROJECT_DIR/hooks/verify-implementation.py"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/hooks/enforce-component-type-confirm.py"
+          }
+        ]
+      },
+      {
+        "matcher": "AskUserQuestion",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/hooks/notify-input-needed.py"
           }
         ]
       }
@@ -71,6 +86,14 @@
           {
             "type": "command",
             "command": "eslint --fix \"$CLAUDE_FILE_PATHS\" 2>/dev/null || true"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/hooks/notify-phase-complete.py"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/hooks/track-token-usage.py"
           }
         ]
       },
@@ -79,11 +102,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/track-tool-use.py"
+            "command": "$CLAUDE_PROJECT_DIR/hooks/track-tool-use.py"
           },
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/periodic-reground.py"
+            "command": "$CLAUDE_PROJECT_DIR/hooks/periodic-reground.py"
           }
         ]
       },
@@ -92,7 +115,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/verify-after-green.py"
+            "command": "$CLAUDE_PROJECT_DIR/hooks/verify-after-green.py"
           }
         ]
       }
@@ -112,7 +135,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/api-workflow-check.py"
+            "command": "$CLAUDE_PROJECT_DIR/hooks/api-workflow-check.py"
           }
         ]
       }

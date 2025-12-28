@@ -48,23 +48,41 @@ Set `mode` based on response: "component" or "page"
 
 ## Phase 1: DISAMBIGUATION
 
-**Goal:** Clarify component type and scope
+**Goal:** AI analyzes component, suggests type, user confirms
 
-Ask the user:
+### Step 1: AI Analysis
+
+Analyze the component name and description to determine complexity:
+
+**Basic components** (single-purpose, few props):
+
+- Button, Input, Icon, Badge, Label, Avatar, Spinner
+
+**Complex components** (multi-part, many states, user flows):
+
+- ChatWindow, DataTable, Modal, Sidebar, Header, Form, Dashboard
+
+### Step 2: Present Suggestion
 
 ```
 Phase 1: DISAMBIGUATION
 
-What type of component is this?
+Based on "[component-name]", I believe this is a:
 
-  A) Atom - Basic building block (Button, Input, Icon, Badge)
-  B) Molecule - Simple group of atoms (FormField, Card, SearchBar)
-  C) Organism - Complex section (Header, Sidebar, DataTable, Modal)
+  ➤ [BASIC/COMPLEX] component
 
-Please select A, B, or C:
+Reasoning: [Why you classified it this way]
+
+Is this correct?
+  A) Yes, proceed with [Basic/Complex]
+  B) No, it's actually [the other type]
+
+Please confirm:
 ```
 
 **Wait for user response.**
+
+**HOOK: `enforce-component-type-confirm.py` blocks if user doesn't confirm.**
 
 Update state:
 
@@ -74,7 +92,9 @@ Update state:
   "element_name": "[component-name]",
   "element_type": "component",
   "ui_config": {
-    "component_type": "[atom|molecule|organism]"
+    "component_type": "[basic|complex]",
+    "ai_suggested": "[basic|complex]",
+    "user_confirmed": true
   },
   "phases": {
     "disambiguation": {
@@ -84,6 +104,8 @@ Update state:
   }
 }
 ```
+
+**Note:** Complex components will include Playwright E2E tests in addition to Storybook.
 
 ---
 
@@ -99,7 +121,7 @@ Phase 2: SCOPE CONFIRMATION
 Based on your input, here's my understanding:
 
 Component: [Name]
-Type: [Atom/Molecule/Organism]
+Type: [Basic/Complex]
 Purpose: [Your understanding of what this component does]
 
 Expected Features:

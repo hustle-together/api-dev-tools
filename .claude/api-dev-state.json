@@ -84,10 +84,7 @@
           "does sequential thinking come in here? i don't get",
           "change a bunch of things. i just wanted you to do "
         ],
-        "patterns_matched": [
-          "question_pattern",
-          "always_research"
-        ],
+        "patterns_matched": ["question_pattern", "always_research"],
         "confidence": "critical"
       },
       "injected": true
@@ -97,14 +94,8 @@
       "prompt_preview": "ok now what should we do?",
       "detection": {
         "detected": true,
-        "terms": [
-          "what should",
-          "should we do"
-        ],
-        "patterns_matched": [
-          "question_pattern",
-          "always_research"
-        ],
+        "terms": ["what should", "should we do"],
+        "patterns_matched": ["question_pattern", "always_research"],
         "confidence": "critical"
       },
       "injected": true
@@ -114,10 +105,7 @@
       "prompt_preview": "how can we test this? why isnt playwright and story book and e2e on both ui and page commands/",
       "detection": {
         "detected": true,
-        "terms": [
-          "how can",
-          "test"
-        ],
+        "terms": ["how can", "test"],
         "patterns_matched": [
           "question_pattern",
           "technical_term",
@@ -202,6 +190,32 @@
           "type",
           "config",
           "table"
+        ],
+        "patterns_matched": [
+          "technical_term",
+          "always_research",
+          "question_pattern"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-28T01:23:33.553410",
+      "prompt_preview": "Yeah, we'll skip that in NTFY. Instead, I can just notify the user. I agree, variable names and APIs...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "how do",
+          "what does",
+          "can just notify the user. i agree, variable names ",
+          "show all",
+          "add it to npm and get going. so i can test this ou",
+          "api",
+          "documentation",
+          "model",
+          "config",
+          "test"
         ],
         "patterns_matched": [
           "technical_term",

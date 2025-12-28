@@ -1,6 +1,6 @@
 # API Dev Tools - Installation Guide
 
-Complete setup instructions for @hustle-together/api-dev-tools v3.11.0
+Complete setup instructions for @hustle-together/api-dev-tools v3.12.0
 
 ---
 
@@ -25,10 +25,11 @@ npx @hustle-together/api-dev-tools --scope=project
 This installs:
 
 - 23 Agent Skills in `.skills/`
-- 18 Enforcement Hooks in `.claude/hooks/`
-- 3 Subagents in `.claude/agents/`
+- 22 Enforcement Hooks in `hooks/`
+- 7 Subagents in `.claude/agents/`
 - State tracking in `.claude/api-dev-state.json`
 - Settings in `.claude/settings.json`
+- Environment template in `templates/.env.example`
 
 ---
 
@@ -140,6 +141,41 @@ claude mcp list
 # Or in Claude Code:
 /mcp
 ```
+
+---
+
+## Environment Configuration
+
+### Step 1: Copy Environment Template
+
+```bash
+cp templates/.env.example .env
+```
+
+### Step 2: Configure Required Variables
+
+Edit `.env` with your values:
+
+```env
+# GitHub (Required for MCP)
+GITHUB_PERSONAL_ACCESS_TOKEN=ghp_your_token
+
+# API Keys (as needed)
+OPENAI_API_KEY=sk-...
+ANTHROPIC_API_KEY=sk-ant-...
+```
+
+### Step 3: Optional NTFY Notifications
+
+To receive push notifications on your phone:
+
+```env
+NTFY_ENABLED=true
+NTFY_SERVER=https://ntfy.sh
+NTFY_TOPIC=your-unique-topic-name
+```
+
+Then run `/ntfy-setup` in Claude Code for full instructions.
 
 ---
 
@@ -290,58 +326,42 @@ which python3
 ```
 your-project/
 ├── .claude/
-│   ├── agents/
+│   ├── agents/                    # AI Subagents
 │   │   ├── code-reviewer.md
+│   │   ├── docs-generator.md
 │   │   ├── implementation-reviewer.md
-│   │   └── research-validator.md
-│   ├── hooks/
-│   │   ├── api-workflow-check.py
-│   │   ├── enforce-disambiguation.py
-│   │   ├── enforce-documentation.py
-│   │   ├── enforce-environment.py
-│   │   ├── enforce-external-research.py
-│   │   ├── enforce-interview.py
-│   │   ├── enforce-research.py
-│   │   ├── enforce-schema.py
-│   │   ├── enforce-scope.py
-│   │   ├── enforce-tdd-red.py
-│   │   ├── enforce-verify.py
-│   │   ├── periodic-reground.py
-│   │   ├── session-startup.py
-│   │   ├── track-tool-use.py
-│   │   ├── verify-after-green.py
-│   │   └── verify-implementation.py
-│   ├── research/
+│   │   ├── parallel-researcher.md
+│   │   ├── research-validator.md
+│   │   ├── schema-generator.md
+│   │   └── test-writer.md
+│   ├── commands/                  # Slash commands
+│   │   ├── ntfy-setup.md
+│   │   └── ntfy-test.md
+│   ├── research/                  # Cached research
 │   │   └── index.json
-│   ├── api-dev-state.json
-│   ├── registry.json
-│   └── settings.json
-├── .skills/
+│   ├── api-dev-state.json        # Workflow state
+│   ├── registry.json             # Component/API registry
+│   └── settings.json             # Permissions & hooks config
+├── hooks/                         # Enforcement hooks
+│   ├── lib/
+│   │   ├── __init__.py
+│   │   └── ntfy.py               # NTFY notification helper
+│   ├── api-workflow-check.py
+│   ├── enforce-component-type-confirm.py
+│   ├── enforce-research.py
+│   ├── notify-input-needed.py
+│   ├── notify-phase-complete.py
+│   ├── track-token-usage.py
+│   └── ... (22 hooks total)
+├── .skills/                       # Agent skills
 │   ├── api-create/
-│   ├── api-env/
-│   ├── api-interview/
-│   ├── api-research/
-│   ├── api-status/
-│   ├── api-verify/
-│   ├── beepboop/
-│   ├── busycommit/
-│   ├── commit/
-│   ├── cycle/
-│   ├── gap/
-│   ├── green/
-│   ├── issue/
-│   ├── plan/
-│   ├── pr/
-│   ├── red/
-│   ├── refactor/
-│   ├── spike/
-│   ├── summarize/
-│   ├── tdd/
-│   ├── update-todos/
-│   ├── worktree-add/
-│   └── worktree-cleanup/
-├── .mcp.json (optional, for team MCP config)
-└── CLAUDE.md (project instructions)
+│   ├── ui-create/
+│   └── ... (23 skills total)
+├── templates/
+│   ├── .env.example              # Environment template
+│   └── mcp-servers.json          # MCP config template
+├── .mcp.json (optional)
+└── CLAUDE.md
 ```
 
 ---

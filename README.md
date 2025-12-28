@@ -1,4 +1,4 @@
-# API Development Tools v3.11.0
+# API Development Tools v3.12.0
 
 **Interview-driven, research-first API development with 13-phase TDD workflow**
 
@@ -54,11 +54,13 @@ Add to your Claude Code MCP configuration:
 | Component                | Location                     | Purpose                              |
 | ------------------------ | ---------------------------- | ------------------------------------ |
 | **23 Agent Skills**      | `.skills/`                   | Cross-platform workflow commands     |
-| **18 Enforcement Hooks** | `.claude/hooks/`             | Block progress until phases complete |
-| **3 Subagents**          | `.claude/agents/`            | Parallel research & code review      |
+| **22 Enforcement Hooks** | `hooks/`                     | Block progress until phases complete |
+| **7 Subagents**          | `.claude/agents/`            | Parallel research, schemas, tests    |
 | **State Tracking**       | `.claude/api-dev-state.json` | Track progress across sessions       |
 | **Research Cache**       | `.claude/research/`          | 7-day freshness documentation cache  |
-| **MCP Templates**        | `templates/mcp-servers.json` | Pre-configured MCP servers           |
+| **NTFY Notifications**   | `hooks/lib/ntfy.py`          | Push notifications to your phone     |
+| **Token Tracking**       | `hooks/track-token-usage.py` | Per-phase token usage reporting      |
+| **ENV Template**         | `templates/.env.example`     | All configuration variables          |
 
 ---
 
@@ -122,13 +124,34 @@ Add to your Claude Code MCP configuration:
 
 ## Subagents (Parallel Processing)
 
-Three specialized agents run in parallel for faster research:
+Seven specialized agents for faster workflows:
 
-| Agent                     | Model  | Purpose                        |
-| ------------------------- | ------ | ------------------------------ |
-| `research-validator`      | Haiku  | Scrape ToC, find all endpoints |
-| `implementation-reviewer` | Sonnet | Compare code to docs           |
-| `code-reviewer`           | Sonnet | Security & performance review  |
+| Agent                     | Model  | Purpose                            |
+| ------------------------- | ------ | ---------------------------------- |
+| `parallel-researcher`     | Haiku  | Scrape docs in parallel            |
+| `research-validator`      | Haiku  | Find all endpoints, webhooks       |
+| `schema-generator`        | Sonnet | Generate Zod schemas from research |
+| `test-writer`             | Sonnet | Write comprehensive tests          |
+| `docs-generator`          | Haiku  | TypeDoc documentation generation   |
+| `implementation-reviewer` | Sonnet | Compare code to docs               |
+| `code-reviewer`           | Sonnet | Security & performance review      |
+
+---
+
+## Push Notifications (NTFY)
+
+Get phone notifications when input is needed:
+
+```bash
+/ntfy-setup           # Configure NTFY
+/ntfy-test            # Send test notification
+```
+
+Notifications include:
+
+- ⏳ Input needed (interview questions)
+- ✅ Phase completions
+- 📊 Token usage per phase
 
 ---
 
