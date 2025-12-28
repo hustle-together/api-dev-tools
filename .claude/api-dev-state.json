@@ -84,7 +84,10 @@
           "does sequential thinking come in here? i don't get",
           "change a bunch of things. i just wanted you to do "
         ],
-        "patterns_matched": ["question_pattern", "always_research"],
+        "patterns_matched": [
+          "question_pattern",
+          "always_research"
+        ],
         "confidence": "critical"
       },
       "injected": true
@@ -94,8 +97,14 @@
       "prompt_preview": "ok now what should we do?",
       "detection": {
         "detected": true,
-        "terms": ["what should", "should we do"],
-        "patterns_matched": ["question_pattern", "always_research"],
+        "terms": [
+          "what should",
+          "should we do"
+        ],
+        "patterns_matched": [
+          "question_pattern",
+          "always_research"
+        ],
         "confidence": "critical"
       },
       "injected": true
@@ -105,7 +114,10 @@
       "prompt_preview": "how can we test this? why isnt playwright and story book and e2e on both ui and page commands/",
       "detection": {
         "detected": true,
-        "terms": ["how can", "test"],
+        "terms": [
+          "how can",
+          "test"
+        ],
         "patterns_matched": [
           "question_pattern",
           "technical_term",
@@ -220,6 +232,25 @@
         "patterns_matched": [
           "technical_term",
           "always_research",
+          "question_pattern"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-28T01:39:36.816100",
+      "prompt_preview": "I wasn't necessarily talking about the Install Guide. I was talking about when we install it using t...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "install guide. i was talking about when we install",
+          "guide",
+          "install"
+        ],
+        "patterns_matched": [
+          "always_research",
+          "technical_term",
           "question_pattern"
         ],
         "confidence": "critical"
