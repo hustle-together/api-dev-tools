@@ -1,12 +1,12 @@
 ---
-description: Create UI components or pages with 13-phase interview-driven workflow
+description: Create UI components or pages with 14-phase interview-driven workflow
 argument-hint: [component-name]
 ---
 
 # Hustle UI Create
 
-**Version:** 3.9.0
-**13-phase workflow for creating UI components and pages**
+**Version:** 3.11.0
+**14-phase workflow for creating UI components and pages**
 
 You are creating a UI element using the Hustle Together interview-driven workflow.
 
@@ -44,7 +44,7 @@ Set `mode` based on response: "component" or "page"
 
 ---
 
-# Component Mode (13 Phases)
+# Component Mode (14 Phases)
 
 ## Phase 1: DISAMBIGUATION
 
@@ -731,12 +731,46 @@ Any issues to fix?
 
 ---
 
-## Phase 11: TDD REFACTOR
+## Phase 11: CODE REVIEW (Greptile)
 
-**Goal:** Clean up code while tests pass
+**Goal:** AI-powered code review before refactoring
+
+Run Greptile code review to catch issues early:
+
+- Bug detection with full codebase context
+- Security vulnerability scanning (OWASP top 10)
+- Performance issue identification
+- Accessibility concerns
+
+**Requires:** GREPTILE_API_KEY + GITHUB_TOKEN
+
+Present results:
+
+```
+Phase 11: CODE REVIEW
+
+Greptile found [N] issue(s):
+
+  1. [file:line] - [severity] [issue description]
+  2. [file:line] - [severity] [issue description]
+
+How should I proceed?
+  A) Fix all issues in refactor phase
+  B) Fix critical only, defer others
+  C) Skip - no issues to fix
+```
+
+**Wait for user response.**
+
+---
+
+## Phase 12: TDD REFACTOR
+
+**Goal:** Fix code review issues + clean up code while tests pass
 
 Refactoring checklist:
 
+- [ ] Address Greptile issues (bugs, security, performance)
 - [ ] Extract repeated logic to custom hooks
 - [ ] Optimize re-renders with useMemo/useCallback if needed
 - [ ] Clean up unused imports
@@ -751,7 +785,7 @@ pnpm test src/components/[Name]
 
 ---
 
-## Phase 12: DOCUMENTATION
+## Phase 13: DOCUMENTATION
 
 **Goal:** Complete all documentation
 
@@ -817,7 +851,7 @@ Documentation complete?
 
 ---
 
-## Phase 13: COMPLETION
+## Phase 14: COMPLETION
 
 **Goal:** Final output and continuation prompt
 
@@ -869,7 +903,7 @@ Update state: `phases.completion.status = "complete"`
 
 ---
 
-# Page Mode (13 Phases)
+# Page Mode (14 Phases)
 
 Similar flow with these differences:
 
@@ -940,5 +974,5 @@ See full page mode documentation in `/hustle-ui-create-page.md` (if implementing
 
 ---
 
-**Version:** 3.9.0
-**Last Updated:** 2025-12-12
+**Version:** 3.11.0
+**Last Updated:** 2025-12-28

@@ -15,7 +15,7 @@
     ╚═══════════════════════════════════════════════════════════════╝
 ```
 
-**Interview-driven, research-first API development with 13-phase TDD workflow**
+**Interview-driven, research-first API development with 14-phase TDD workflow**
 
 [![Agent Skills](https://img.shields.io/badge/Agent_Skills-Compatible-BA0C2F)](https://agentskills.io)
 [![Cross-Platform](https://img.shields.io/badge/Cross--Platform-Claude%20%7C%20VS%20Code%20%7C%20Cursor-000000)](https://github.com/hustle-together/api-dev-tools)
@@ -53,7 +53,7 @@ The installer walks you through:
 
 ## Four Main Workflows
 
-All four workflows share the same **13-phase structure** ensuring consistency across API, component, page, and orchestration development.
+All four workflows share the same **14-phase structure** ensuring consistency across API, component, page, and orchestration development.
 
 ### 1. `/api-create [endpoint]` — Build API Endpoints
 
@@ -87,7 +87,7 @@ Creates Next.js pages with Playwright E2E testing:
 /hustle-ui-create-page Dashboard
 ```
 
-**Flow:** Same 13 phases but focused on page routing, data fetching, and E2E user flows instead of component isolation.
+**Flow:** Same 14 phases but focused on page routing, data fetching, and E2E user flows instead of component isolation.
 
 ---
 
@@ -124,13 +124,14 @@ Combines multiple existing APIs into orchestrated endpoints:
 │  ├─ Red: Write failing tests that define expected behavior          │
 │  └─ Green: Minimal implementation to pass tests                     │
 ├─────────────────────────────────────────────────────────────────────┤
-│  PHASE 10-11: VERIFY                                                │
+│  PHASE 10-12: VERIFY & REVIEW                                       │
 │  ├─ Verify: Re-research docs, compare to implementation             │
-│  └─ Refactor: Clean up code while tests stay green                  │
+│  ├─ Code Review: Greptile AI review (catches issues early)          │
+│  └─ Refactor: Fix issues + clean up while tests stay green          │
 ├─────────────────────────────────────────────────────────────────────┤
-│  PHASE 12-13: COMPLETE                                              │
-│  ├─ Documentation: Update registry, cache research                  │
-│  └─ Completion: Final verification, commit                          │
+│  PHASE 13-14: COMPLETE                                              │
+│  ├─ Documentation: Update registry, cache research, TypeDoc         │
+│  └─ Completion: Final verification, commit, PR                      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -159,9 +160,9 @@ Seven specialized agents run in parallel to speed up workflows:
 | research-validator      | Haiku  | Phase 3/5 - Find endpoints, webhooks |
 | schema-generator        | Sonnet | Phase 6 - Generate Zod schemas       |
 | test-writer             | Sonnet | Phase 8 - Write comprehensive tests  |
-| docs-generator          | Haiku  | Phase 12 - TypeDoc generation        |
 | implementation-reviewer | Sonnet | Phase 10 - Compare code to docs      |
-| code-reviewer           | Sonnet | Phase 11 - Security + performance    |
+| code-reviewer           | Sonnet | Phase 11 - Greptile AI code review   |
+| docs-generator          | Haiku  | Phase 13 - TypeDoc generation        |
 
 ---
 

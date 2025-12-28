@@ -1,6 +1,6 @@
 ---
 name: docs-generator
-description: Documentation generator using TypeDoc. Use during Phase 12 to auto-generate API documentation from code comments and TypeScript types.
+description: Documentation generator using TypeDoc. Use during Phase 13 to auto-generate API documentation from code comments and TypeScript types.
 tools: Read, Write, Bash, Grep, Glob
 model: haiku
 ---

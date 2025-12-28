@@ -6,13 +6,13 @@ All notable changes to this project will be documented in this file.
 
 ### Initial Release
 
-Interview-driven, research-first API development toolkit with 13-phase TDD workflow.
+Interview-driven, research-first API development toolkit with 14-phase TDD workflow.
 
 ### Core Features
 
 **Four Main Workflows:**
 
-- `/api-create [endpoint]` - Complete 13-phase API endpoint development
+- `/api-create [endpoint]` - Complete 14-phase API endpoint development
 - `/hustle-ui-create [name]` - Component development with Storybook
 - `/hustle-ui-create-page [name]` - Page development with Playwright E2E
 - `/hustle-combine [type]` - Orchestrate multiple existing APIs

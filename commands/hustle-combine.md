@@ -1,4 +1,4 @@
-# Hustle Combine - API and UI Orchestration Workflow v3.8.0
+# Hustle Combine - API and UI Orchestration Workflow v3.11.0
 
 **Usage:** `/hustle-combine [api|ui]`
 
@@ -112,7 +112,7 @@ Use AskUserQuestion:
 
 ## Mode A: Combine APIs
 
-### 13 Phases for API Combination
+### 14 Phases for API Combination
 
 ```
 Phase 1:  SELECTION          - Present checkboxes from registry, user selects 2+ APIs
@@ -125,9 +125,10 @@ Phase 7:  ENVIRONMENT        - Verify all required API keys exist
 Phase 8:  TDD RED            - Integration tests for combined flow
 Phase 9:  TDD GREEN          - Orchestration route implementation
 Phase 10: VERIFY             - Full flow works end-to-end
-Phase 11: REFACTOR           - Clean up, optimize
-Phase 12: DOCUMENTATION      - Update manifest, document combined endpoint
-Phase 13: COMPLETE           - Update registry with new combined API
+Phase 11: CODE REVIEW        - Greptile AI review for bugs, security, performance
+Phase 12: REFACTOR           - Fix review issues + clean up, optimize
+Phase 13: DOCUMENTATION      - Update manifest, document combined endpoint
+Phase 14: COMPLETE           - Update registry with new combined API
 ```
 
 ---
@@ -693,10 +694,43 @@ If verifying, make actual requests and report results.
 
 ---
 
-### Phase 11: REFACTOR
+### Phase 11: CODE REVIEW (Greptile)
 
-Clean up the orchestration code:
+Run Greptile AI code review before refactoring:
 
+- Bug detection with full codebase context
+- Security vulnerability scanning (OWASP top 10)
+- Performance issue identification
+
+**Requires:** GREPTILE_API_KEY + GITHUB_TOKEN
+
+```json
+{
+  "questions": [
+    {
+      "question": "Code review found [N] issue(s). How should I proceed?",
+      "header": "Review",
+      "multiSelect": false,
+      "options": [
+        { "label": "Fix all", "description": "Address all issues in refactor" },
+        {
+          "label": "Critical only",
+          "description": "Fix critical, defer others"
+        },
+        { "label": "Skip", "description": "No issues to fix" }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+### Phase 12: REFACTOR
+
+Fix review issues + clean up the orchestration code:
+
+- Address Greptile issues (bugs, security, performance)
 - Extract reusable patterns
 - Add error logging
 - Optimize parallel calls if applicable
@@ -730,7 +764,7 @@ Run tests after each change to ensure they still pass.
 
 ---
 
-### Phase 12: DOCUMENTATION
+### Phase 13: DOCUMENTATION
 
 Update:
 
@@ -759,7 +793,7 @@ Update:
 
 ---
 
-### Phase 13: COMPLETION
+### Phase 14: COMPLETION
 
 Update registry.json with the new combined API:
 
@@ -821,7 +855,7 @@ Three sub-modes planned:
 
 ```json
 {
-  "version": "3.8.0",
+  "version": "3.11.0",
   "workflow": "combine-api",
   "element_name": "brand-voice",
   "element_type": "combined",
@@ -886,6 +920,11 @@ Three sub-modes planned:
       "phase_exit_confirmed": true
     },
     "verify": {
+      "status": "complete",
+      "user_question_asked": true,
+      "phase_exit_confirmed": true
+    },
+    "code_review": {
       "status": "complete",
       "user_question_asked": true,
       "phase_exit_confirmed": true
@@ -962,7 +1001,8 @@ Creates:
 - Phase 1 (Selection) - Must read from registry
 - Phase 4 (Interview) - All orchestration decisions from user
 - Phase 8 (TDD Red) - Integration tests first
-- Phase 13 (Complete) - Registry update required
+- Phase 11 (Code Review) - Greptile review before refactoring
+- Phase 14 (Complete) - Registry update required
 
 ## User Interaction Required
 

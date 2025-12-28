@@ -385,9 +385,39 @@ Both conditions must be true for the flag to be set.
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 11: TDD REFACTOR ──────────────────────────────────┐
+┌─ PHASE 11: CODE REVIEW (Greptile) ────────────────────────┐
 │                                                           │
-│ Clean up code while tests stay green:                     │
+│ Run Greptile AI code review BEFORE refactoring:           │
+│   • Bug detection with full codebase context              │
+│   • Security vulnerability scanning (OWASP top 10)        │
+│   • Performance issue identification                      │
+│                                                           │
+│ Review returns actionable issues with file:line refs.     │
+│ Requires: GREPTILE_API_KEY + GITHUB_TOKEN                 │
+│                                                           │
+│ ⚠️ REQUIRED: Use AskUserQuestion tool:                    │
+│                                                           │
+│   AskUserQuestion({                                       │
+│     questions: [{                                         │
+│       question: "Code review found [N] issue(s): [list].  │
+│                  How should I proceed?",                  │
+│       header: "Review",                                   │
+│       options: [                                          │
+│         "Fix all issues in refactor phase",               │
+│         "Fix critical only, defer others",                │
+│         "Skip - no issues to fix"                         │
+│       ]                                                   │
+│     }]                                                    │
+│   })                                                      │
+│                                                           │
+│ WAIT for user response. Do NOT auto-proceed.              │
+└───────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌─ PHASE 12: TDD REFACTOR ──────────────────────────────────┐
+│                                                           │
+│ Fix code review issues + clean up while tests stay green: │
+│   • Address Greptile issues (bugs, security, performance) │
 │   • Extract reusable patterns                             │
 │   • Improve error messages                                │
 │   • Add JSDoc comments                                    │
@@ -397,7 +427,7 @@ Both conditions must be true for the flag to be set.
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 12: DOCUMENTATION ─────────────────────────────────┐
+┌─ PHASE 13: DOCUMENTATION ─────────────────────────────────┐
 │                                                           │
 │ Update documentation files, then:                         │
 │                                                           │
@@ -422,7 +452,7 @@ Both conditions must be true for the flag to be set.
 └───────────────────────────────────────────────────────────┘
         │
         ▼
-┌─ PHASE 13: COMPLETION ────────────────────────────────────┐
+┌─ PHASE 14: COMPLETION ────────────────────────────────────┐
 │                                                           │
 │ Final verification:                                       │
 │   • All tests passing                                     │

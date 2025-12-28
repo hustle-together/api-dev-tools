@@ -8,14 +8,14 @@ This project uses **@hustle-together/api-dev-tools** for interview-driven, resea
 
 | Command                     | Purpose                               |
 | --------------------------- | ------------------------------------- |
-| `/api-create [endpoint]`    | Complete 13-phase workflow            |
+| `/api-create [endpoint]`    | Complete 14-phase workflow            |
 | `/api-interview [endpoint]` | Questions FROM research findings      |
 | `/api-research [library]`   | Adaptive propose-approve research     |
 | `/api-verify [endpoint]`    | Re-research and verify implementation |
 | `/api-env [endpoint]`       | Check API keys                        |
 | `/api-status [endpoint]`    | Track progress                        |
 
-### 13-Phase Flow
+### 14-Phase Flow
 
 ```
 Phase 1:  DISAMBIGUATION     - Clarify ambiguous terms before research
@@ -28,9 +28,10 @@ Phase 7:  ENVIRONMENT        - Verify API keys exist
 Phase 8:  TDD RED            - Write failing tests from schema
 Phase 9:  TDD GREEN          - Minimal implementation to pass tests
 Phase 10: VERIFY             - Re-research docs, compare to implementation
-Phase 11: TDD REFACTOR       - Clean up code while tests pass
-Phase 12: DOCUMENTATION      - Update manifests, cache research
-Phase 13: COMPLETION         - Final verification, commit
+Phase 11: CODE REVIEW        - Greptile AI review (bugs, security, performance)
+Phase 12: TDD REFACTOR       - Fix review issues + clean up code
+Phase 13: DOCUMENTATION      - Update manifests, cache research
+Phase 14: COMPLETION         - Final verification, commit
 ```
 
 ### Key Principles
@@ -66,7 +67,8 @@ Research is cached in `.claude/research/` with 7-day freshness:
 | `enforce-external-research.py` | API questions | Require research first     |
 | `enforce-research.py`          | Write/Edit    | Block without research     |
 | `enforce-interview.py`         | Write/Edit    | Inject interview decisions |
-| `verify-after-green.py`        | Tests pass    | Trigger Phase 9            |
+| `verify-after-green.py`        | Tests pass    | Trigger Phase 10           |
+| `run-code-review.py`           | After verify  | Run Greptile review        |
 | `periodic-reground.py`         | Every 7 turns | Re-inject context          |
 | `api-workflow-check.py`        | Stop          | Block if incomplete        |
 
