@@ -24,10 +24,12 @@ Publish the npm package with safe, incremental versioning. Defaults to patch bum
 
 ## Arguments
 
-- `patch` (default) - Bug fixes, small changes (1.0.0 → 1.0.1)
-- `minor` - New features, backwards compatible (1.0.0 → 1.1.0)
-- `major` - Breaking changes (1.0.0 → 2.0.0)
-- `X.Y.Z` - Specific version number
+- `patch` (default) - Always use 0.0.1 increments (3.12.0 → 3.12.1)
+- `minor` - New features, backwards compatible (3.12.0 → 3.13.0) - requires confirmation
+- `major` - Breaking changes (3.12.0 → 4.0.0) - requires confirmation
+- `X.Y.Z` - Specific version - requires confirmation if jump > 0.0.1
+
+**Default behavior:** Always increment by 0.0.1 (patch) unless explicitly specified otherwise.
 
 Include any of the following info if specified: $ARGUMENTS
 
@@ -132,7 +134,8 @@ Include any of the following info if specified: $ARGUMENTS
 2. **Never force publish** - If version exists, bump first
 3. **Always commit before publish** - Version bump must be in git
 4. **Always push before publish** - Remote should match local
-5. **Incremental only** - Don't allow jumps like 1.0.0 → 5.0.0 without confirmation
+5. **0.0.1 increments only** - Default to patch bumps; require confirmation for minor/major
+6. **No big jumps** - Any jump > 0.0.1 requires explicit user confirmation
 
 ## Error Handling
 

@@ -7,20 +7,240 @@
   "turn_count": 0,
   "last_turn_timestamp": null,
   "research_queries": [],
-  "prompt_detections": [],
+  "prompt_detections": [
+    {
+      "timestamp": "2025-12-27T15:58:25.936482",
+      "prompt_preview": "can you push 3.2.0 to npm please",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "3.2.0"
+        ],
+        "patterns_matched": [
+          "technical_term"
+        ],
+        "confidence": "high"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-27T16:07:06.370872",
+      "prompt_preview": "3.11.1",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "3.11.1"
+        ],
+        "patterns_matched": [
+          "technical_term"
+        ],
+        "confidence": "high"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-27T17:51:34.506745",
+      "prompt_preview": "npm notice 10.7kB templates/ui-showcase/_components/PreviewCard.tsx\nnpm notice 23.3kB templates/ui-s...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "install from a",
+          "error",
+          "api",
+          "package",
+          "url",
+          "token",
+          "install",
+          "@hustle-together/api-dev-tools",
+          "hustle-together-api",
+          "3.11.1"
+        ],
+        "patterns_matched": [
+          "always_research",
+          "technical_term",
+          "question_pattern"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-27T22:31:26.336088",
+      "prompt_preview": "1. CREATE PR\n   - Go to GitHub: https://github.com/hustle-together/api-dev-tools\n   - Create PR from...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "create pr",
+          "update version (i can do this for you now)",
+          "api",
+          "package",
+          "test",
+          "publish",
+          "@hustle-together/api-dev-tools",
+          "1.0.0",
+          "3.12.0",
+          "package.json"
+        ],
+        "patterns_matched": [
+          "always_research",
+          "question_pattern",
+          "technical_term"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-27T22:32:03.480897",
+      "prompt_preview": "File    Purpose\nworkflow-demo.html (247KB)    Main interactive workflow demo\nexecution-trace-COMPREH...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "write integration demo",
+          "api",
+          "interview-driven-api"
+        ],
+        "patterns_matched": [
+          "question_pattern",
+          "always_research",
+          "technical_term"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-27T22:35:36.217406",
+      "prompt_preview": "> File    Purpose\nworkflow-demo.html (247KB)    Main interactive workflow demo\nexecution-trace-COMPR...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "write integration demo",
+          "api",
+          "view",
+          "interview-driven-api"
+        ],
+        "patterns_matched": [
+          "technical_term",
+          "question_pattern",
+          "always_research"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-27T22:36:41.163781",
+      "prompt_preview": "how do i merge it i am on the comment page ",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "how do"
+        ],
+        "patterns_matched": [
+          "always_research",
+          "question_pattern"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-27T22:40:21.674198",
+      "prompt_preview": "ok i did it check the main now please",
+      "detection": {
+        "detected": false,
+        "terms": [],
+        "patterns_matched": [],
+        "confidence": "none"
+      },
+      "injected": false
+    },
+    {
+      "timestamp": "2025-12-27T22:43:21.172124",
+      "prompt_preview": "wait was the github master updated witht he most current push?",
+      "detection": {
+        "detected": true,
+        "terms": [],
+        "patterns_matched": [],
+        "confidence": "low"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-27T22:45:59.739199",
+      "prompt_preview": "ok now update the npm package, make a skill for this as well based on my api-dev-tools and mcp if th...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "update the npm package, make a skill for this as w",
+          "package",
+          "api"
+        ],
+        "patterns_matched": [
+          "always_research",
+          "technical_term",
+          "question_pattern"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-27T22:49:36.519292",
+      "prompt_preview": "/Users/alfonso/Documents/GitHub/api-dev-tools/demo/hustle-together/workflow-demo-backup-20251212-134...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "api",
+          "0.0.1"
+        ],
+        "patterns_matched": [
+          "always_research",
+          "technical_term"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
+    }
+  ],
   "phases": {
-    "disambiguation": { "status": "not_started" },
-    "scope": { "status": "not_started" },
-    "research_initial": { "status": "not_started" },
-    "interview": { "status": "not_started" },
-    "research_deep": { "status": "not_started" },
-    "schema_creation": { "status": "not_started" },
-    "environment_check": { "status": "not_started" },
-    "tdd_red": { "status": "not_started" },
-    "tdd_green": { "status": "not_started" },
-    "verify": { "status": "not_started" },
-    "tdd_refactor": { "status": "not_started" },
-    "documentation": { "status": "not_started" }
+    "disambiguation": {
+      "status": "not_started"
+    },
+    "scope": {
+      "status": "not_started"
+    },
+    "research_initial": {
+      "status": "not_started"
+    },
+    "interview": {
+      "status": "not_started"
+    },
+    "research_deep": {
+      "status": "not_started"
+    },
+    "schema_creation": {
+      "status": "not_started"
+    },
+    "environment_check": {
+      "status": "not_started"
+    },
+    "tdd_red": {
+      "status": "not_started"
+    },
+    "tdd_green": {
+      "status": "not_started"
+    },
+    "verify": {
+      "status": "not_started"
+    },
+    "tdd_refactor": {
+      "status": "not_started"
+    },
+    "documentation": {
+      "status": "not_started"
+    }
   },
   "verification": {
     "all_sources_fetched": false,
