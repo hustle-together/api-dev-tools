@@ -146,6 +146,24 @@
         "confidence": "critical"
       },
       "injected": true
+    },
+    {
+      "timestamp": "2025-12-28T00:46:54.927751",
+      "prompt_preview": "But what about when a component is very complex, like let's say I asked you to create a chat window ...",
+      "detection": {
+        "detected": true,
+        "terms": [
+          "create a chat window that has multiple states and ",
+          "component"
+        ],
+        "patterns_matched": [
+          "technical_term",
+          "question_pattern",
+          "always_research"
+        ],
+        "confidence": "critical"
+      },
+      "injected": true
     }
   ],
   "phases": {
