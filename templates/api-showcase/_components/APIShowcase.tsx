@@ -4,6 +4,9 @@ import { useState, useMemo } from "react";
 import { APICard } from "./APICard";
 import { APIModal } from "./APIModal";
 
+// Import registry - this will be updated by the CLI when APIs are created
+import registryData from "@/../.claude/registry.json";
+
 /**
  * Registry structure from .claude/registry.json
  */
@@ -57,8 +60,8 @@ export function APIShowcase({ registry: propRegistry }: APIShowcaseProps) {
   const [filter, setFilter] = useState<"all" | "api" | "combined">("all");
   const [search, setSearch] = useState("");
 
-  // Use prop registry or default empty structure
-  const registry: Registry = propRegistry || {
+  // Use prop registry, imported registry, or default empty structure
+  const registry: Registry = propRegistry || registryData || {
     version: "1.0.0",
     apis: {},
     combined: {},
