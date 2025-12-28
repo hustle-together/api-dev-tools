@@ -120,6 +120,7 @@ If MCP validation fails: - Show clear error message - Provide setup instructions
 </user_confirmation>
 <examples>
 <input>https://github.com/owner/project/issues/456</input>
+
 <title>"Fix duplicate items in list view"</title>
 <generated>fix/issue-456-duplicate-items-in-list-view</generated>
 </examples>
@@ -176,6 +177,7 @@ If MCP validation fails: - Show clear error message - Provide setup instructions
 
 <step_8>
 <description>Copy Claude settings to new worktree</description>
+
 <source>.claude/settings.local.json</source>
 <destination>${parent_path}/${branch_name}/.claude/settings.local.json</destination>
 <command>cp -r .claude/settings.local.json ${parent_path}/${branch_name}/.claude/settings.local.json</command>

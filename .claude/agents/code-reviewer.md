@@ -127,6 +127,7 @@ Check for:
 ### Medium Priority (Consider)
 
 1. **Missing Error Type** (line 52)
+
    ```typescript
    } catch (error) {
      return NextResponse.json({ error: error.message });
@@ -134,6 +135,7 @@ Check for:
 
    - Current: Assumes error has .message
    - Better: Type-safe error handling
+
    ```typescript
    } catch (error) {
      const message = error instanceof Error ? error.message : 'Unknown error';

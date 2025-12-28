@@ -84,10 +84,7 @@
           "does sequential thinking come in here? i don't get",
           "change a bunch of things. i just wanted you to do "
         ],
-        "patterns_matched": [
-          "question_pattern",
-          "always_research"
-        ],
+        "patterns_matched": ["question_pattern", "always_research"],
         "confidence": "critical"
       },
       "injected": true
@@ -97,12 +94,21 @@
       "prompt_preview": "ok now what should we do?",
       "detection": {
         "detected": true,
-        "terms": [
-          "what should",
-          "should we do"
-        ],
+        "terms": ["what should", "should we do"],
+        "patterns_matched": ["question_pattern", "always_research"],
+        "confidence": "critical"
+      },
+      "injected": true
+    },
+    {
+      "timestamp": "2025-12-28T00:27:02.802410",
+      "prompt_preview": "how can we test this? why isnt playwright and story book and e2e on both ui and page commands/",
+      "detection": {
+        "detected": true,
+        "terms": ["how can", "test"],
         "patterns_matched": [
           "question_pattern",
+          "technical_term",
           "always_research"
         ],
         "confidence": "critical"

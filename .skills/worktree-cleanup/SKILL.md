@@ -193,6 +193,7 @@ If MCP validation fails: - Show clear error message - Provide setup instructions
 
 <step_8>
 <description>Final cleanup confirmation</description>
+
 <summary>
 <display_worktree>Show worktree path and branch name</display_worktree>
 <show_pr_status>Show merged PR details if found</show_pr_status>

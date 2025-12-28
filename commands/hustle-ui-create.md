@@ -447,6 +447,49 @@ export const Disabled: Story = {
 };
 ```
 
+### Create Visual Regression Test (Playwright)
+
+```typescript
+// src/components/[Name]/__tests__/[Name].visual.spec.ts
+
+import { test, expect } from "@playwright/test";
+
+const STORYBOOK_URL = process.env.STORYBOOK_URL || "http://localhost:6006";
+
+test.describe("[Name] Visual Regression", () => {
+  test("Primary variant matches baseline", async ({ page }) => {
+    await page.goto(
+      `${STORYBOOK_URL}/iframe.html?id=components-[name]--primary`,
+    );
+    await page.waitForLoadState("networkidle");
+    await expect(page.locator("#storybook-root")).toHaveScreenshot(
+      "[Name]-primary.png",
+    );
+  });
+
+  test("renders correctly on mobile", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 667 });
+    await page.goto(
+      `${STORYBOOK_URL}/iframe.html?id=components-[name]--primary`,
+    );
+    await expect(page.locator("#storybook-root")).toHaveScreenshot(
+      "[Name]-mobile.png",
+    );
+  });
+
+  test("hover state matches baseline", async ({ page }) => {
+    await page.goto(
+      `${STORYBOOK_URL}/iframe.html?id=components-[name]--primary`,
+    );
+    await page.locator("#storybook-root > *").first().hover();
+    await page.waitForTimeout(300);
+    await expect(page.locator("#storybook-root")).toHaveScreenshot(
+      "[Name]-hover.png",
+    );
+  });
+});
+```
+
 ### Run Tests (Expect Failure)
 
 ```bash
@@ -600,10 +643,35 @@ Step 4: Performance Metrics
   Bundle size impact:     [+X KB]
 ```
 
-**Present 4-step results:**
+### Step 5: Visual Regression (Playwright)
+
+Run visual regression tests to capture baseline screenshots:
+
+```bash
+pnpm playwright test src/components/[Name]/[Name].visual.spec.ts --update-snapshots
+```
+
+This creates baseline screenshots in Storybook for:
+
+- All variants (primary, secondary, disabled, loading)
+- All sizes (sm, md, lg)
+- All viewports (mobile, tablet, desktop)
+- Interaction states (hover, focus)
+- Dark mode (if supported)
 
 ```
-Phase 10: VERIFICATION (4-Step)
+Step 5: Visual Regression
+
+  Variant screenshots:    [X/X captured]
+  Responsive viewports:   [3/3 captured]
+  Interaction states:     [Hover, Focus captured]
+  Dark mode:              [Captured if supported]
+```
+
+**Present 5-step results:**
+
+```
+Phase 10: VERIFICATION (5-Step)
 
 Step 1: Responsive Check
   Desktop (1920px)  - Renders correctly
@@ -626,7 +694,11 @@ Step 4: Performance Metrics
   Re-renders on mount: 1 (optimal)
   Re-renders on prop change: 1 (optimal)
 
-All 4 checks passed!
+Step 5: Visual Regression
+  Playwright screenshots: 12/12 captured
+  Baseline images saved to: __snapshots__/
+
+All 5 checks passed!
 
 Any issues to fix?
   A) No, all good - proceed
@@ -741,9 +813,11 @@ Created Files:
   - src/components/[Name]/[Name].types.ts
   - src/components/[Name]/[Name].stories.tsx
   - src/components/[Name]/__tests__/[Name].test.tsx
+  - src/components/[Name]/__tests__/[Name].visual.spec.ts
   - src/components/[Name]/index.ts
 
 Tests: All passed (ran during Phase 8-9)
+Visual: Playwright screenshots captured (Phase 10)
 A11y: WCAG 2.1 AA compliant
 Brand: Matches .claude/BRAND_GUIDE.md
 
