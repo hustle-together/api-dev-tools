@@ -2,7 +2,7 @@
 
 **Generated:** 2025-12-28
 **Compared Against:** Claude Code Best Practices (December 2025)
-**Repository:** @hustle-together/api-dev-tools v3.12.0
+**Repository:** @hustle-together/api-dev-tools v1.0.0
 
 ---
 

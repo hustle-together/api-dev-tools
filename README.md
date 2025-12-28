@@ -1,4 +1,4 @@
-# API Development Tools v3.12.0
+# API Development Tools v1.0.0
 
 ```
     ╔═══════════════════════════════════════════════════════════════╗
@@ -218,7 +218,8 @@ Notifications include:
 | **[BEST_PRACTICES_ANALYSIS.md](./BEST_PRACTICES_ANALYSIS.md)** | Complete phase documentation with hook details, enforcement logic, and workflow diagrams. The authoritative reference for understanding how each phase works. |
 | **[INSTALLATION_GUIDE.md](./INSTALLATION_GUIDE.md)**           | Step-by-step setup instructions including manual installation, MCP configuration, environment variables, and troubleshooting.                                 |
 | **[.skills/README.md](./.skills/README.md)**                   | All 23 agent skills with usage examples, parameters, and cross-platform compatibility notes.                                                                  |
-| **[CHANGELOG.md](./CHANGELOG.md)**                             | Version history with breaking changes, new features, and migration guides.                                                                                    |
+| **[CHANGELOG.md](./CHANGELOG.md)**                             | Version history with features and release notes.                                                                                                              |
+| **[ROADMAP.md](./ROADMAP.md)**                                 | Future features and enhancement plans including Phase 14 code review, async research, and more.                                                               |
 
 ---
 

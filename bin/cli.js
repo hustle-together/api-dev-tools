@@ -6,7 +6,7 @@ const { execSync } = require("child_process");
 const readline = require("readline");
 
 /**
- * API Development Tools Installer v3.12.0
+ * API Development Tools Installer v1.0.0
  *
  * Interactive CLI installer with:
  * - ASCII art branding
@@ -53,7 +53,7 @@ ${c.red}    ╔═════════════════════�
 
 ${c.bold}              API Development Tools for Claude Code${c.reset}
 ${c.dim}        Interview-driven, research-first API development${c.reset}
-                        ${c.gray}v3.12.0${c.reset}
+                        ${c.gray}v1.0.0${c.reset}
 `;
 
 // ═══════════════════════════════════════════════════════════════════════════

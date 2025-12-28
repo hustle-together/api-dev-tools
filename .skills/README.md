@@ -1,6 +1,6 @@
 # API Development Tools - Agent Skills
 
-**Version:** 3.12.0
+**Version:** 1.0.0
 **Standard:** [Agent Skills Open Format](https://agentskills.io)
 **Platform:** Cross-platform (Claude Code, VS Code, Cursor, ChatGPT, GitHub Copilot)
 
@@ -283,8 +283,7 @@ See [CONTRIBUTING.md](../../CONTRIBUTING.md) for guidelines
 
 - [Agent Skills Specification](https://agentskills.io/specification)
 - [Claude Code Documentation](https://code.claude.com/docs)
-- [Enhancement Roadmap](../../ENHANCEMENT_ROADMAP_v3.11.0.md)
-- [Skills Migration Checklist](../../SKILLS_MIGRATION_CHECKLIST.md)
+- [Future Roadmap](../../ROADMAP.md)
 
 ---
 

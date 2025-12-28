@@ -1,6 +1,6 @@
 # API Dev Tools - Installation Guide
 
-Complete setup instructions for @hustle-together/api-dev-tools v3.12.0
+Complete setup instructions for @hustle-together/api-dev-tools v1.0.0
 
 ---
 
