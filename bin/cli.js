@@ -54,7 +54,7 @@ ${c.red}    ╔═════════════════════�
 ${c.red}${c.bold}                        HUSTLE${c.reset}
 ${c.bold}                    API Dev Tools${c.reset}
 ${c.dim}        Interview-driven, research-first API development${c.reset}
-                        ${c.gray}v3.12.4${c.reset}
+                        ${c.gray}v3.12.5${c.reset}
 `;
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -424,15 +424,19 @@ async function main() {
   let config = {
     withStorybook: true,
     withPlaywright: true,
-    withSandpack: false,
+    withSandpack: true,
     githubToken: "",
     greptileApiKey: "",
     ntfyEnabled: false,
     ntfyTopic: "",
     ntfyServer: "ntfy.sh",
     createBrandGuide: true,
+    brandName: path.basename(targetDir),
     primaryColor: "#E11D48",
+    secondaryColor: "#1E40AF",
     fontFamily: "Inter",
+    borderRadius: "8px",
+    darkMode: true,
   };
 
   if (!silent && !quickMode) {
@@ -447,7 +451,12 @@ async function main() {
       // ─────────────────────────────────────────────────────────────────────
 
       log(`\n${c.red}━━━ API Keys ━━━${c.reset}`);
-      log(`${c.dim}Required for Phase 11 Code Review${c.reset}\n`);
+      log(`${c.dim}Required for Phase 11 Code Review (Greptile integration)${c.reset}\n`);
+      log(`${c.bold}Get your keys:${c.reset}`);
+      log(`  ${c.white}GITHUB_TOKEN${c.reset}     → https://github.com/settings/tokens`);
+      log(`                    ${c.dim}(needs 'repo' scope for private repos)${c.reset}`);
+      log(`  ${c.white}GREPTILE_API_KEY${c.reset} → https://app.greptile.com/settings/api`);
+      log(`                    ${c.dim}(free tier available)${c.reset}\n`);
 
       const configureKeys = await selectOne("Configure API keys now?", [
         { label: "Yes, enter them now", value: true },
@@ -468,12 +477,16 @@ async function main() {
       // ─────────────────────────────────────────────────────────────────────
 
       log(`\n${c.red}━━━ Testing Tools ━━━${c.reset}`);
-      log(`${c.dim}For component and E2E testing${c.reset}\n`);
+      log(`${c.dim}Required for component development and E2E testing${c.reset}\n`);
+      log(`${c.bold}What each tool does:${c.reset}`);
+      log(`  ${c.white}Playwright${c.reset}  → E2E browser testing (required for /hustle-ui-create-page)`);
+      log(`  ${c.white}Storybook${c.reset}   → Component development & visual testing (required for /hustle-ui-create)`);
+      log(`  ${c.white}Sandpack${c.reset}    → Live code preview in browser (optional)\n`);
 
       const selectedTools = await selectMany("Select testing tools to install", [
         { label: "Playwright (E2E testing)", value: "playwright", checked: true },
         { label: "Storybook (component development)", value: "storybook", checked: true },
-        { label: "Sandpack (live code preview)", value: "sandpack", checked: false },
+        { label: "Sandpack (live code preview)", value: "sandpack", checked: true },
       ]);
 
       config.withPlaywright = selectedTools.includes("playwright");
@@ -484,15 +497,22 @@ async function main() {
       // WIZARD STEP 4: NTFY Notifications
       // ─────────────────────────────────────────────────────────────────────
 
-      log(`\n${c.red}━━━ Notifications ━━━${c.reset}`);
-      log(`${c.dim}Get notified when tasks complete${c.reset}\n`);
+      log(`\n${c.red}━━━ Push Notifications (NTFY) ━━━${c.reset}`);
+      log(`${c.dim}Get notified on your phone when long tasks complete${c.reset}\n`);
+      log(`${c.bold}How it works:${c.reset}`);
+      log(`  1. Install NTFY app: ${c.white}iOS${c.reset} App Store / ${c.white}Android${c.reset} Play Store`);
+      log(`  2. Subscribe to your topic in the app`);
+      log(`  3. Receive push notifications when builds/tests finish\n`);
+      log(`${c.dim}Free service, no account required. Learn more: https://ntfy.sh${c.reset}\n`);
 
       config.ntfyEnabled = await confirm("Enable NTFY push notifications?", false);
 
       if (config.ntfyEnabled) {
+        log(`\n${c.dim}Topic name = channel for your notifications (must match the app)${c.reset}`);
         config.ntfyTopic = await textInput("NTFY Topic name", {
           default: path.basename(targetDir) + "-alerts",
         });
+        log(`${c.dim}Server URL = ntfy.sh (public) or your self-hosted server${c.reset}`);
         config.ntfyServer = await textInput("NTFY Server URL", {
           default: "ntfy.sh",
         });
@@ -503,17 +523,43 @@ async function main() {
       // ─────────────────────────────────────────────────────────────────────
 
       log(`\n${c.red}━━━ Brand Guide ━━━${c.reset}`);
-      log(`${c.dim}Design system for UI components${c.reset}\n`);
+      log(`${c.dim}Design system that enforces consistent UI across all components${c.reset}\n`);
+      log(`${c.bold}The brand guide defines:${c.reset}`);
+      log(`  • Color palette (primary, secondary, semantic colors)`);
+      log(`  • Typography (fonts, sizes, weights)`);
+      log(`  • Spacing and layout rules`);
+      log(`  • Component patterns (buttons, cards, forms)`);
+      log(`  • Accessibility standards\n`);
 
       config.createBrandGuide = await confirm("Create brand guide template?", true);
 
       if (config.createBrandGuide) {
-        config.primaryColor = await textInput("Primary color (hex)", {
+        log(`\n${c.bold}Let's set up your brand basics:${c.reset}\n`);
+
+        config.brandName = await textInput("Brand/Project name", {
+          default: path.basename(targetDir),
+        });
+
+        config.primaryColor = await textInput("Primary brand color (hex)", {
           default: "#E11D48",
         });
-        config.fontFamily = await textInput("Font family", {
+
+        config.secondaryColor = await textInput("Secondary color (hex)", {
+          default: "#1E40AF",
+        });
+
+        config.fontFamily = await textInput("Primary font family", {
           default: "Inter",
         });
+
+        config.borderRadius = await selectOne("Border radius style", [
+          { label: "Sharp (0px) - Modern, minimal", value: "0" },
+          { label: "Subtle (4px) - Slightly rounded", value: "4px" },
+          { label: "Rounded (8px) - Friendly, approachable", value: "8px" },
+          { label: "Pill (9999px) - Fully rounded buttons", value: "9999px" },
+        ]);
+
+        config.darkMode = await confirm("Include dark mode support?", true);
       }
     }
 
@@ -528,6 +574,7 @@ async function main() {
   // ─────────────────────────────────────────────────────────────────────────
 
   logStep(++currentStep, totalSteps, "Checking prerequisites");
+  log(`  ${c.dim}Verifying Node.js 18+ and Python 3 are installed${c.reset}`);
 
   const node = checkNode();
   if (node.ok) {
@@ -550,6 +597,7 @@ async function main() {
   // ─────────────────────────────────────────────────────────────────────────
 
   logStep(++currentStep, totalSteps, "Installing slash commands");
+  log(`  ${c.dim}Copying 29 commands including /hustle-api-create, /hustle-ui-create${c.reset}`);
 
   const commandsDir = path.join(claudeDir, "commands");
   const sourceCommandsDir = path.join(packageDir, "commands");
@@ -569,6 +617,7 @@ async function main() {
   // ─────────────────────────────────────────────────────────────────────────
 
   logStep(++currentStep, totalSteps, "Installing enforcement hooks");
+  log(`  ${c.dim}Python hooks that enforce TDD workflow and prevent skipping phases${c.reset}`);
 
   const sourceHooksDir = path.join(packageDir, "hooks");
 
@@ -614,6 +663,7 @@ async function main() {
   // ─────────────────────────────────────────────────────────────────────────
 
   logStep(++currentStep, totalSteps, "Installing subagents");
+  log(`  ${c.dim}AI agents for parallel research, schema generation, code review${c.reset}`);
 
   const agentsDir = path.join(claudeDir, "agents");
   const sourceAgentsDir = path.join(packageDir, ".claude", "agents");
@@ -637,6 +687,7 @@ async function main() {
   // ─────────────────────────────────────────────────────────────────────────
 
   logStep(++currentStep, totalSteps, "Setting up configuration");
+  log(`  ${c.dim}Creating settings.json, state tracking, and research cache${c.reset}`);
 
   const sourceTemplatesDir = path.join(packageDir, "templates");
 
@@ -698,6 +749,7 @@ async function main() {
   // ─────────────────────────────────────────────────────────────────────────
 
   logStep(++currentStep, totalSteps, "Setting up environment");
+  log(`  ${c.dim}Creating .env.example template for API keys${c.reset}`);
 
   const templatesDestDir = path.join(targetDir, "templates");
   if (!fs.existsSync(templatesDestDir)) {
@@ -718,6 +770,7 @@ async function main() {
   // ─────────────────────────────────────────────────────────────────────────
 
   logStep(++currentStep, totalSteps, "Configuring MCP servers");
+  log(`  ${c.dim}Setting up Context7, GitHub, and Greptile integrations${c.reset}`);
 
   const mcpServers = [
     { name: "context7", cmd: "npx -y @upstash/context7-mcp" },
@@ -762,6 +815,7 @@ async function main() {
   // ─────────────────────────────────────────────────────────────────────────
 
   logStep(++currentStep, totalSteps, "Configuring environment");
+  log(`  ${c.dim}Writing API keys and notification settings to .env${c.reset}`);
 
   const envPath = path.join(targetDir, ".env");
   let envContent = "";
@@ -805,88 +859,341 @@ async function main() {
   // ─────────────────────────────────────────────────────────────────────────
 
   logStep(++currentStep, totalSteps, "Brand guide");
+  log(`  ${c.dim}Creating comprehensive design system documentation${c.reset}`);
 
   const brandGuidePath = path.join(claudeDir, "BRAND_GUIDE.md");
 
   if (config.createBrandGuide && !fs.existsSync(brandGuidePath)) {
-    const brandGuideContent = `# Brand Guide
+    const darkModeSection = config.darkMode
+      ? `
 
-## Colors
+## Dark Mode
 
-### Primary
-- **Main**: ${config.primaryColor}
-- **Light**: ${config.primaryColor}20
-- **Dark**: ${config.primaryColor}
+### Dark Theme Colors
+- **Background**: #0F172A
+- **Surface**: #1E293B
+- **Border**: #334155
+- **Text**: #F8FAFC
+- **Muted**: #94A3B8
 
-### Neutral
-- **Background**: #FFFFFF
-- **Surface**: #F9FAFB
-- **Border**: #E5E7EB
-- **Text**: #111827
-- **Muted**: #6B7280
+### Implementation
+\`\`\`css
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0F172A;
+    --surface: #1E293B;
+    --border: #334155;
+    --text: #F8FAFC;
+    --muted: #94A3B8;
+  }
+}
+\`\`\`
+`
+      : "";
 
-### Semantic
-- **Success**: #10B981
-- **Warning**: #F59E0B
-- **Error**: #EF4444
-- **Info**: #3B82F6
+    const brandGuideContent = `# ${config.brandName} Brand Guide
+
+> Auto-generated by HUSTLE API Dev Tools v3.12.5
+> This guide ensures consistent UI across all components and pages.
+
+---
+
+## Brand Identity
+
+### Brand Name
+**${config.brandName}**
+
+### Brand Colors
+| Role | Color | Hex | Usage |
+|------|-------|-----|-------|
+| Primary | 🔴 | \`${config.primaryColor}\` | CTAs, links, focus states |
+| Secondary | 🔵 | \`${config.secondaryColor}\` | Secondary actions, accents |
+| Success | 🟢 | \`#10B981\` | Success states, confirmations |
+| Warning | 🟡 | \`#F59E0B\` | Warnings, pending states |
+| Error | 🔴 | \`#EF4444\` | Errors, destructive actions |
+| Info | 🔵 | \`#3B82F6\` | Information, tips |
+
+---
+
+## Color Palette
+
+### Primary Colors
+\`\`\`css
+--primary: ${config.primaryColor};
+--primary-light: ${config.primaryColor}20;  /* 20% opacity */
+--primary-dark: ${config.primaryColor};
+\`\`\`
+
+### Secondary Colors
+\`\`\`css
+--secondary: ${config.secondaryColor};
+--secondary-light: ${config.secondaryColor}20;
+--secondary-dark: ${config.secondaryColor};
+\`\`\`
+
+### Neutral Colors (Light Theme)
+\`\`\`css
+--background: #FFFFFF;
+--surface: #F9FAFB;
+--border: #E5E7EB;
+--text: #111827;
+--text-muted: #6B7280;
+--text-light: #9CA3AF;
+\`\`\`
+
+### Semantic Colors
+\`\`\`css
+--success: #10B981;
+--success-light: #D1FAE5;
+--warning: #F59E0B;
+--warning-light: #FEF3C7;
+--error: #EF4444;
+--error-light: #FEE2E2;
+--info: #3B82F6;
+--info-light: #DBEAFE;
+\`\`\`
+${darkModeSection}
+---
 
 ## Typography
 
-### Font Family
-- **Primary**: "${config.fontFamily}", system-ui, sans-serif
-- **Mono**: "JetBrains Mono", monospace
+### Font Families
+\`\`\`css
+--font-primary: "${config.fontFamily}", system-ui, -apple-system, sans-serif;
+--font-mono: "JetBrains Mono", "Fira Code", monospace;
+\`\`\`
 
-### Font Sizes
-- **xs**: 0.75rem (12px)
-- **sm**: 0.875rem (14px)
-- **base**: 1rem (16px)
-- **lg**: 1.125rem (18px)
-- **xl**: 1.25rem (20px)
-- **2xl**: 1.5rem (24px)
-- **3xl**: 1.875rem (30px)
+### Font Scale
+| Name | Size | Line Height | Usage |
+|------|------|-------------|-------|
+| xs | 0.75rem (12px) | 1rem | Labels, captions |
+| sm | 0.875rem (14px) | 1.25rem | Secondary text |
+| base | 1rem (16px) | 1.5rem | Body text |
+| lg | 1.125rem (18px) | 1.75rem | Lead paragraphs |
+| xl | 1.25rem (20px) | 1.75rem | H4 |
+| 2xl | 1.5rem (24px) | 2rem | H3 |
+| 3xl | 1.875rem (30px) | 2.25rem | H2 |
+| 4xl | 2.25rem (36px) | 2.5rem | H1 |
+
+### Font Weights
+- **Regular**: 400 - Body text
+- **Medium**: 500 - Emphasis
+- **Semibold**: 600 - Headings
+- **Bold**: 700 - Strong emphasis
+
+---
 
 ## Spacing
 
-Use Tailwind's default spacing scale:
-- **1**: 0.25rem (4px)
-- **2**: 0.5rem (8px)
-- **4**: 1rem (16px)
-- **6**: 1.5rem (24px)
-- **8**: 2rem (32px)
+### Spacing Scale (Tailwind-compatible)
+| Token | Value | Pixels | Usage |
+|-------|-------|--------|-------|
+| 1 | 0.25rem | 4px | Tight spacing |
+| 2 | 0.5rem | 8px | Default gap |
+| 3 | 0.75rem | 12px | - |
+| 4 | 1rem | 16px | Section padding |
+| 6 | 1.5rem | 24px | Card padding |
+| 8 | 2rem | 32px | Section gaps |
+| 12 | 3rem | 48px | Large sections |
+| 16 | 4rem | 64px | Page sections |
+
+---
 
 ## Border Radius
 
-- **sm**: 0.125rem (2px)
-- **DEFAULT**: 0.25rem (4px)
-- **md**: 0.375rem (6px)
-- **lg**: 0.5rem (8px)
-- **xl**: 0.75rem (12px)
-- **full**: 9999px
+### Radius Scale
+\`\`\`css
+--radius-none: 0;
+--radius-sm: 2px;
+--radius-default: ${config.borderRadius};
+--radius-md: 6px;
+--radius-lg: 8px;
+--radius-xl: 12px;
+--radius-2xl: 16px;
+--radius-full: 9999px;
+\`\`\`
+
+### Usage Guidelines
+- **Buttons**: Use \`--radius-default\` (${config.borderRadius})
+- **Cards**: Use \`--radius-lg\` or \`--radius-xl\`
+- **Inputs**: Use \`--radius-default\`
+- **Avatars**: Use \`--radius-full\`
+- **Modals**: Use \`--radius-xl\`
+
+---
 
 ## Shadows
 
-- **sm**: 0 1px 2px rgba(0, 0, 0, 0.05)
-- **DEFAULT**: 0 1px 3px rgba(0, 0, 0, 0.1)
-- **md**: 0 4px 6px rgba(0, 0, 0, 0.1)
-- **lg**: 0 10px 15px rgba(0, 0, 0, 0.1)
+### Shadow Scale
+\`\`\`css
+--shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+--shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+--shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+--shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+--shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
+\`\`\`
+
+---
 
 ## Component Patterns
 
 ### Buttons
-- Primary: bg-primary text-white rounded-lg px-4 py-2
-- Secondary: bg-surface border text-text rounded-lg px-4 py-2
-- Ghost: hover:bg-surface text-text rounded-lg px-4 py-2
+
+#### Primary Button
+\`\`\`jsx
+<button className="bg-primary text-white px-4 py-2 rounded-[${config.borderRadius}] font-medium
+  hover:opacity-90 focus:ring-2 focus:ring-primary focus:ring-offset-2
+  disabled:opacity-50 disabled:cursor-not-allowed">
+  Primary Action
+</button>
+\`\`\`
+
+#### Secondary Button
+\`\`\`jsx
+<button className="bg-surface border border-border text-text px-4 py-2 rounded-[${config.borderRadius}]
+  hover:bg-gray-100 focus:ring-2 focus:ring-gray-200">
+  Secondary
+</button>
+\`\`\`
+
+#### Ghost Button
+\`\`\`jsx
+<button className="text-text px-4 py-2 rounded-[${config.borderRadius}]
+  hover:bg-surface focus:ring-2 focus:ring-gray-200">
+  Ghost
+</button>
+\`\`\`
+
+#### Destructive Button
+\`\`\`jsx
+<button className="bg-error text-white px-4 py-2 rounded-[${config.borderRadius}]
+  hover:bg-red-600 focus:ring-2 focus:ring-error">
+  Delete
+</button>
+\`\`\`
 
 ### Cards
-- Container: bg-white border rounded-xl p-6 shadow-sm
-- Header: text-lg font-semibold text-text
-- Content: text-muted text-sm
 
-### Forms
-- Input: border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary
-- Label: text-sm font-medium text-text mb-1
-- Error: text-error text-sm mt-1
+\`\`\`jsx
+<div className="bg-white border border-border rounded-xl p-6 shadow-sm">
+  <h3 className="text-lg font-semibold text-text">Card Title</h3>
+  <p className="text-muted text-sm mt-2">Card description text.</p>
+</div>
+\`\`\`
+
+### Form Inputs
+
+\`\`\`jsx
+<div>
+  <label className="text-sm font-medium text-text mb-1 block">
+    Label
+  </label>
+  <input
+    type="text"
+    className="w-full border border-border rounded-[${config.borderRadius}] px-3 py-2
+      focus:ring-2 focus:ring-primary focus:border-primary
+      placeholder:text-muted"
+    placeholder="Enter value..."
+  />
+  <p className="text-error text-sm mt-1">Error message</p>
+</div>
+\`\`\`
+
+### Badges
+
+\`\`\`jsx
+<span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+  bg-primary-light text-primary">
+  Badge
+</span>
+\`\`\`
+
+---
+
+## Accessibility
+
+### Color Contrast
+- Text on background: minimum 4.5:1 ratio
+- Large text (18px+): minimum 3:1 ratio
+- Interactive elements: minimum 3:1 ratio
+
+### Focus States
+All interactive elements must have visible focus states:
+\`\`\`css
+:focus-visible {
+  outline: 2px solid ${config.primaryColor};
+  outline-offset: 2px;
+}
+\`\`\`
+
+### Touch Targets
+- Minimum size: 44x44 pixels
+- Minimum spacing: 8px between targets
+
+---
+
+## Icons
+
+### Recommended Icon Libraries
+- **Lucide React** - Consistent, customizable
+- **Heroicons** - Tailwind-compatible
+- **Phosphor Icons** - Flexible weights
+
+### Icon Sizes
+| Size | Pixels | Usage |
+|------|--------|-------|
+| xs | 12px | Inline with small text |
+| sm | 16px | Buttons, inline |
+| md | 20px | Default |
+| lg | 24px | Headers, standalone |
+| xl | 32px | Hero sections |
+
+---
+
+## Animation
+
+### Timing
+\`\`\`css
+--duration-fast: 150ms;
+--duration-normal: 200ms;
+--duration-slow: 300ms;
+--easing: cubic-bezier(0.4, 0, 0.2, 1);
+\`\`\`
+
+### Common Animations
+\`\`\`css
+.fade-in { animation: fadeIn var(--duration-normal) var(--easing); }
+.slide-up { animation: slideUp var(--duration-normal) var(--easing); }
+.scale-in { animation: scaleIn var(--duration-fast) var(--easing); }
+\`\`\`
+
+---
+
+## Tailwind Config
+
+\`\`\`js
+// tailwind.config.js
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        primary: '${config.primaryColor}',
+        secondary: '${config.secondaryColor}',
+      },
+      fontFamily: {
+        sans: ['${config.fontFamily}', 'system-ui', 'sans-serif'],
+      },
+      borderRadius: {
+        DEFAULT: '${config.borderRadius}',
+      },
+    },
+  },
+}
+\`\`\`
+
+---
+
+*Last updated: ${new Date().toISOString().split("T")[0]}*
 `;
     fs.writeFileSync(brandGuidePath, brandGuideContent);
     logSuccess("Created .claude/BRAND_GUIDE.md");
@@ -901,6 +1208,7 @@ Use Tailwind's default spacing scale:
   // ─────────────────────────────────────────────────────────────────────────
 
   logStep(++currentStep, totalSteps, "Testing tools");
+  log(`  ${c.dim}Installing Playwright, Storybook, and Sandpack (this may take a few minutes)${c.reset}`);
 
   if (config.withStorybook || config.withPlaywright || config.withSandpack) {
     if (config.withSandpack) {
