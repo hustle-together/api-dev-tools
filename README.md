@@ -1,4 +1,4 @@
-# API Development Tools v3.12.10
+# API Development Tools v3.12.12
 
 ```
     ╔═══════════════════════════════════════════════════════════════╗
@@ -271,13 +271,29 @@ Configuration: `typedoc.json` (installed by the CLI)
 
 ## Documentation
 
-| Document                                                       | Purpose                                                                                                                                                       |
-| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **[BEST_PRACTICES_ANALYSIS.md](./BEST_PRACTICES_ANALYSIS.md)** | Complete phase documentation with hook details, enforcement logic, and workflow diagrams. The authoritative reference for understanding how each phase works. |
-| **[INSTALLATION_GUIDE.md](./INSTALLATION_GUIDE.md)**           | Step-by-step setup instructions including manual installation, MCP configuration, environment variables, and troubleshooting.                                 |
-| **[.skills/README.md](./.skills/README.md)**                   | All 23 agent skills with usage examples, parameters, and cross-platform compatibility notes.                                                                  |
-| **[CHANGELOG.md](./CHANGELOG.md)**                             | Version history with features and release notes.                                                                                                              |
-| **[ROADMAP.md](./ROADMAP.md)**                                 | Future features and enhancement plans including Phase 14 code review, async research, and more.                                                               |
+### Core Reference
+
+| Document | Purpose |
+| -------- | ------- |
+| **[docs/SKILLS.md](./docs/SKILLS.md)** | Complete slash command reference - all 23+ skills with usage and examples |
+| **[docs/HOOKS.md](./docs/HOOKS.md)** | All 45+ enforcement hooks - what they do and when they run |
+| **[docs/AGENTS.md](./docs/AGENTS.md)** | Specialized subagents - parallel-researcher, schema-generator, etc. |
+| **[docs/PLUGIN_ARCHITECTURE.md](./docs/PLUGIN_ARCHITECTURE.md)** | How the plugin system works - installation, state, lifecycle |
+
+### Guides
+
+| Document | Purpose |
+| -------- | ------- |
+| **[INSTALLATION_GUIDE.md](./INSTALLATION_GUIDE.md)** | Step-by-step setup including MCP config, environment variables, troubleshooting |
+| **[BEST_PRACTICES_ANALYSIS.md](./BEST_PRACTICES_ANALYSIS.md)** | Phase documentation with workflow diagrams and enforcement logic |
+| **[.skills/README.md](./.skills/README.md)** | Agent Skills format compatibility and cross-platform notes |
+
+### Project Info
+
+| Document | Purpose |
+| -------- | ------- |
+| **[CHANGELOG.md](./CHANGELOG.md)** | Version history with features and release notes |
+| **[ROADMAP.md](./ROADMAP.md)** | Future features and enhancement plans |
 
 ---
 

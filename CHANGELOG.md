@@ -26,6 +26,13 @@ All notable changes to this project will be documented in this file.
 - **ParameterDocs component** renamed to `InteractiveParamBuilder` for GET requests
 - Query params now sync bidirectionally between builder and input field
 
+### Documentation
+
+- **[docs/HOOKS.md](./docs/HOOKS.md)** - Complete hook reference (45+ hooks)
+- **[docs/SKILLS.md](./docs/SKILLS.md)** - All slash commands with usage examples
+- **[docs/AGENTS.md](./docs/AGENTS.md)** - Specialized subagent reference
+- **[docs/PLUGIN_ARCHITECTURE.md](./docs/PLUGIN_ARCHITECTURE.md)** - How the plugin system works
+
 ---
 
 ## [3.12.11] - 2025-12-28
