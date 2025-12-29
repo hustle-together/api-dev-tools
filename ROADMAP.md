@@ -1,785 +1,496 @@
-# API Dev Tools - Roadmap
+# API Dev Tools - Comprehensive Roadmap & Gap Analysis
 
-**Current Version:** 1.0.1 (Shipped 2025-12-28)
-**Created:** 2025-12-24
-**Status:** v1.0.0 Released - Future enhancements planned
-**Scope:** All implemented features + planned enhancements
-
----
-
-## 📋 Executive Summary
-
-This document consolidates ALL planned enhancements for API Dev Tools v3.11.0 through v3.12.0, including:
-
-- **TodoWrite Integration** (v3.11.0)
-- **Async Parallel Research** (v3.11.0)
-- **Multi-Strategy Research** (v3.11.0)
-- **Skill-Discovery Meta-Skill** (v3.11.0)
-- **Per-API Research Folders** (v3.11.0)
-- **Cost/Time Tracking** (v3.10.2)
-- **Phase 14: Code Review** (v3.12.0)
-- **Greptile/CodeRabbit/Graphite Integration** (v3.12.0)
-- **Stats & Rename Commands** (v3.11.1)
-
-### Current State (v1.0.0)
-
-- ✅ Skills Migration complete (23 skills in SKILL.md format)
-- ✅ marketplace.json for plugin distribution
-- ✅ 22 hooks packaged in `hooks/`
-- ✅ TodoWrite integration in all 4 workflows
-- ✅ Async parallel research with subagents (Ctrl+B)
-- ✅ Phase 14: Greptile AI code review
-- ✅ NTFY push notifications
-- ✅ Token usage tracking
-
-### Implemented Features (v1.0.0)
-
-- ✅ Real-time TodoWrite visual progress
-- ✅ Async background agents with Ctrl+B
-- ✅ Phase 14: AI code review with Greptile
-- ✅ NTFY push notifications
-- ✅ Token usage tracking per phase
-
-### Future Enhancements
-
-- ⏳ 95% research coverage (vs 60% current)
-- ⏳ Skill-discovery meta-skill
-- ⏳ Per-API research folders
-- ⏳ Comprehensive cost/time tracking
-- ⏳ Stats and session management commands
+**Current Version:** 4.0.0
+**Last Updated:** 2025-12-29
+**Status:** Active Development
 
 ---
 
-## 🎯 Implementation Roadmap
+## Executive Summary
 
-### Phase 1: ✅ COMPLETE - Skills Migration (v3.11.0)
+This document consolidates the **roadmap** and **gap analysis** for API Dev Tools, providing a single source of truth for all planned enhancements, identified gaps, and implementation priorities.
 
-**Status:** Shipped 2025-12-24
+### Current Coverage: 84%
 
-**Deliverables:**
+| Category | Solved | Partial | Gap | Coverage |
+|----------|--------|---------|-----|----------|
+| Context Engineering | 6 | 1 | 0 | 93% |
+| Hooks | 6 | 1 | 0 | 93% |
+| Autonomous Loops | 1 | 2 | 2 | 40% |
+| Subagents | 5 | 1 | 1 | 79% |
+| Skills | 4 | 1 | 0 | 90% |
+| MCPs | 2 | 1 | 1 | 63% |
+| CLAUDE.md | 5 | 0 | 0 | 100% |
+| Agentic Patterns | 3 | 2 | 0 | 80% |
+| Security | 3 | 0 | 1 | 75% |
+| **Visual Testing** | 0 | 1 | 3 | **25%** |
+| **Test Skills** | 0 | 0 | 7 | **0%** |
+| **Token Tracking** | 0 | 1 | 1 | **50%** |
 
-- ✅ 23 Agent Skills in SKILL.md format
-- ✅ marketplace.json for distribution
-- ✅ Cross-platform compatibility (Claude Code, VS Code, Cursor, ChatGPT)
-- ✅ 18 enforcement hooks packaged
+### Priority Gaps to Address
 
----
-
-### Phase 2: TodoWrite Integration (v1.0.0) ✅ COMPLETE
-
-**Goal:** Add real-time visual task tracking to all 4 workflow modes
-
-**Status:** Implemented
-
-#### Implementation Strategy: Hybrid Approach (Recommended)
-
-**Create helper skill:** `/update-todos [workflow] [current-phase]`
-
-**Location:** `.skills/update-todos/SKILL.md` ✅ CREATED
-
-**Integration Points:**
-
-1. **API Create Workflow** (.skills/api-create/SKILL.md)
-   - Add `/update-todos api-create 0` at workflow start
-   - Add `/update-todos api-create [N]` after each of 13 phases
-
-2. **UI Create Component** (.skills/hustle-ui-create/SKILL.md)
-   - Add `/update-todos ui-create-component [N]` calls
-   - 13 phases with component-specific names
-
-3. **UI Create Page** (.skills/hustle-ui-create-page/SKILL.md)
-   - Add `/update-todos ui-create-page [N]` calls
-   - 13 phases with page-specific names
-
-4. **Combine APIs** (.skills/hustle-combine/SKILL.md)
-   - Add `/update-todos combine [N]` calls
-   - 12 phases (one less than others)
-
-**Files to Modify:**
-
-- `.skills/api-create/SKILL.md` - Add TodoWrite calls
-- `.skills/hustle-ui-create/SKILL.md` - Add TodoWrite calls
-- `.skills/hustle-ui-create-page/SKILL.md` - Add TodoWrite calls
-- `.skills/hustle-combine/SKILL.md` - Add TodoWrite calls
-- `.claude/api-dev-state.json` (template) - Add `current_phase` field
-
-**Testing Checklist:**
-
-- [ ] All 4 workflows show proper phase progression
-- [ ] Todos update in real-time as phases complete
-- [ ] Loop-back scenarios work (e.g., Phase 10 verify fails → back to Phase 8)
-- [ ] Multiple concurrent workflows don't conflict
+| Gap | Priority | Effort | Impact |
+|-----|----------|--------|--------|
+| **7 Missing Test Skills** | HIGH | 6-8 hrs | Enable test automation |
+| **Multi-Viewport Testing (7 viewports)** | HIGH | 4-6 hrs | Real-world responsive coverage |
+| **Haiku Visual Analyzer Subagent** | HIGH | 2-3 hrs | AI-powered screenshot analysis |
+| **Token Tracking Per Phase** | MEDIUM | 2-3 hrs | Cost visibility and optimization |
+| **Security Deny Rules** | HIGH | 1 hr | Safety critical |
+| **Context Capacity Warning** | MEDIUM | 1 hr | Prevents context degradation |
 
 ---
 
-### Phase 3: Async Parallel Research (v1.0.0) ✅ COMPLETE
+## Roadmap Phases
 
-**Goal:** 3x faster research using background agents
+### Phase 1: Foundation (Current Sprint)
 
-**Status:** Implemented - Use Ctrl+B to background agents, /tasks to monitor
+**Status:** In Progress
 
-**Benefits:**
+| Item | Status | Notes |
+|------|--------|-------|
+| 7 Test Skills | GAP | test-unit, test-e2e, test-visual, test-all, test-review, test-builds, test-debug |
+| TodoWrite Integration | PARTIAL | Add to all workflow skills |
+| Security Deny Rules | GAP | Add to settings.json template |
 
-- Research time: 20-30 min → 8-10 min (parallelized)
-- Coverage: 60% → 95%
-- Cost: Same (agents run in parallel, not sequentially)
+**Test Skills to Create:**
 
-#### Implementation
+| Skill | Purpose | Commands |
+|-------|---------|----------|
+| `/test-unit` | Run Vitest unit tests | `pnpm test` or `npm test` |
+| `/test-e2e` | Run Playwright E2E tests | `npx playwright test` |
+| `/test-visual` | Run visual regression tests | Storybook + Playwright screenshots |
+| `/test-all` | Run all test suites | unit → e2e → visual in sequence |
+| `/test-review` | Analyze test coverage | Coverage reports + suggestions |
+| `/test-builds` | Test across 5 platforms | Web, macOS, Windows, iOS, Android |
+| `/test-debug` | Diagnose test failures | Parse reports, DOM snapshots, root cause |
 
-**Phase 3 Enhancement in api-create workflow:**
+---
 
-```markdown
-# Current (Sequential)
+### Phase 2: Visual Testing (Next Sprint)
 
-1. Context7 query → results
-2. WebSearch query → results
-3. Process and save
+**Status:** Planned
 
-# NEW (Parallel with background agents)
+#### Multi-Viewport Testing
 
-1. Spawn Agent-1: Context7 deep dive [Ctrl+B]
-2. Spawn Agent-2: WebSearch multiple queries [Ctrl+B]
-3. Spawn Agent-3: Skills marketplace search [Ctrl+B]
-4. Main agent continues to Phase 4 (Interview)
-5. Agents surface results → comprehensive research ready
+**Current State:** 3 viewports (mobile 375, tablet 768, desktop 1920)
+**Target State:** 7 viewports with safe area support
 
-# User monitors with:
+| Viewport | Dimensions | Notes |
+|----------|------------|-------|
+| Mobile Portrait | 375×667 | iPhone SE baseline |
+| Mobile Notch | 393×852 | iPhone 14 Pro with safe areas |
+| Mobile Landscape | 667×375 | Rotated view |
+| Tablet Portrait | 768×1024 | iPad Mini baseline |
+| Tablet Landscape | 1024×768 | Rotated tablet |
+| Small Desktop | 1280×720 | Laptop screens |
+| Desktop | 1920×1080 | Standard desktop |
 
-/tasks → Shows all background agents and progress
-```
-
-**Files to Modify:**
-
-- `.skills/api-create/SKILL.md` - Add async agent spawning logic in Phase 3
-- Add instructions for:
-  - `Ctrl+B` to background agents
-  - `/tasks` to monitor progress
-  - Agent result aggregation
-
-**New State Fields:**
-
+**Safe Area Insets (iOS notch devices):**
 ```json
 {
-  "async_agents_used": 3,
-  "async_agents_status": {
-    "agent-1": "completed",
-    "agent-2": "completed",
-    "agent-3": "in_progress"
-  }
+  "top": 47,
+  "bottom": 34,
+  "left": 0,
+  "right": 0
 }
 ```
 
----
+**Files to Update:**
+- `templates/performance-budgets.json` - Add 7 viewports
+- `templates/component/Component.visual.spec.ts` - Iterate all viewports
+- `templates/page/page.e2e.test.ts` - Update responsive tests
 
-### Phase 4: Multi-Strategy Research (v3.11.0)
+#### Haiku Visual Analyzer Subagent
 
-**Goal:** 95% coverage using 3 complementary research strategies
+**Purpose:** AI-powered screenshot analysis using Claude Haiku within Claude Code (no external APIs needed).
 
-**Estimated Effort:** 6-8 hours
-
-#### The 3 Strategies
-
-**Strategy 1: Context7 MCP (Official Docs)**
-
-- resolve-library-id → get-library-docs
-- Multiple topics: "api-endpoints", "webhooks", "rate-limits", "error-handling"
-- Coverage: 70% (official documentation)
-- Cost: Free
-
-**Strategy 2: WebSearch (Targeted Queries)**
-
-- 6+ specific searches:
-  - "[Library] official API documentation"
-  - "[Library] webhooks setup guide"
-  - "[Library] batch processing endpoints"
-  - "[Library] rate limits pricing"
-  - "[Library] error codes reference"
-  - "[Library] advanced parameters GitHub"
-- Coverage: 85% (community + undocumented features)
-- Cost: Free
-
-**Strategy 3: Skills Marketplace (Specialized Research)**
-
-- `/skill-finder api-research` to discover tools
-- Install: api-documentation-scraper, openapi-parameter-discoverer
-- Automated comprehensive discovery
-- Coverage: 95% (exhaustive parameter extraction)
-- Cost: Free
-
-**Files to Modify:**
-
-- `.skills/api-create/SKILL.md` - Expand Phase 3 with 3 strategies
-- Add explicit Context7 multi-topic queries
-- Add 6+ WebSearch queries
-- Integrate skill-finder invocation
-
-**Success Metrics:**
-
-- Parameter discovery: 60% → 95%
-- Undocumented features found: 0 → 10-15
-- Research time (with async): 20 min → 8 min
-
----
-
-### Phase 5: Skill-Discovery Meta-Skill (v3.11.0)
-
-**Goal:** A skill that discovers other skills to enhance workflows
-
-**Estimated Effort:** 4-6 hours
-
-**New Skill:** `.skills/skill-finder/SKILL.md`
-
-**Capabilities:**
-
-- Search SkillsMP.com (25,000+ skills)
-- Filter by category, author, popularity
-- Install recommended skills
-- Suggest skills based on current task
-
-**Usage:**
-
-```bash
-/skill-finder [category]
-/skill-finder api-development
-/skill-finder testing
-```
-
-**Integration:**
-
-- Called from Phase 3 of api-create workflow
-- Searches for "api-research" category
-- Presents top 3 results with star ratings
-- Asks user to install and use
-
-**Files to Create:**
-
-- `.skills/skill-finder/SKILL.md`
-
-**Files to Modify:**
-
-- `.skills/api-create/SKILL.md` - Add skill-finder invocation in Phase 3
-
----
-
-### Phase 6: Per-API Research Folders (v3.11.0)
-
-**Goal:** Replace flat file structure with organized per-API folders
-
-**Estimated Effort:** 4-5 hours
-
-**Current Structure:**
-
-```
-.claude/research/
-├── index.json
-├── brandfetch-research.md          # Flat file
-├── button-component-research.md    # Flat file
-└── wordpress-ai-research.md        # Flat file
-```
-
-**NEW Structure:**
-
-```
-.claude/research/
-├── index.json                      # Freshness tracking only
-├── brandfetch/
-│   ├── CURRENT.md                 # Latest research findings
-│   ├── sources.json               # URLs + timestamps
-│   ├── interview.json             # User decisions from Phase 4
-│   ├── schema.json                # Final Zod schema
-│   └── skills-cache.json          # Discovered skills for this API
-├── button-component/
-│   ├── CURRENT.md
-│   ├── brand-analysis.json
-│   ├── variants.json
-│   └── storybook-config.json
-```
-
-**Benefits:**
-
-- No file name collisions
-- Easy to share research (entire folder)
-- Supports concurrent workflows
-- Related files grouped together
-
-**Files to Modify:**
-
-- `.skills/api-create/SKILL.md` - Update Phase 3 to create folders
-- Update all Write calls to use new folder structure
-- Hooks that read research files need updates
-
-**Migration Script:**
-
-```python
-# .skills/_shared/migrate-research-folders.py
-# Converts existing flat files to folder structure
-```
-
----
-
-### Phase 7: Cost/Time Tracking (v3.10.2 - Backlog)
-
-**Goal:** Comprehensive session metrics displayed at Phase 13
-
-**Estimated Effort:** 6-8 hours
-
-**Tracked Metrics:**
-
-```json
-{
-  "session_metrics": {
-    "session_id": "stripe-payment-2025-12-24-1234",
-    "started_at": "2025-12-18T10:00:00Z",
-    "ended_at": "2025-12-18T10:35:24Z",
-    "duration_minutes": 35.4,
-    "total_turns": 52,
-    "phases_completed": 13,
-    "async_agents_used": 3
-  },
-  "cost_breakdown": {
-    "research_phase": {
-      "context7_calls": 5,
-      "websearch_calls": 8,
-      "skills_used": ["api-documentation-scraper"],
-      "tokens_input": 95000,
-      "tokens_output": 28000,
-      "cost_usd": 0.32
-    },
-    "implementation_phase": {
-      "model": "claude-sonnet-4.5",
-      "tokens_input": 72000,
-      "tokens_output": 12000,
-      "cost_usd": 0.95
-    },
-    "total_cost_usd": 1.27
-  }
-}
-```
-
-**Display at Phase 13:**
-
-```
-═══════════════════════════════════════════════════
-🎉 API Development Complete: stripe-payment
-═══════════════════════════════════════════════════
-
-📊 Session Metrics:
-   Duration:      35 minutes 24 seconds
-   Turns:         52
-   Phases:        13/13 ✓
-   Async agents:  3
-
-💰 Cost Breakdown:
-   Research:      $0.32
-   Implementation: $0.95
-   Code Review:   $0.00 (CodeRabbit - open source)
-   ─────────────────────────────
-   TOTAL:         $1.27
-
-⚡ Efficiency:
-   Cost/endpoint: $1.27 (25% less than v3.10)
-   Time/phase:    2.7 min average
-   Coverage:      95% (vs 60% before)
-```
-
-**Files to Create:**
-
-- `.skills/_shared/hooks/track-session-metrics.py` (PostToolUse)
-- `.claude/hustle-api-sessions/[endpoint]/session.json` (per session)
-
-**Files to Modify:**
-
-- `.skills/api-create/SKILL.md` - Display metrics at Phase 13
-
----
-
-### Phase 8: Phase 14 - AI Code Review (v1.0.0) ✅ COMPLETE
-
-**Goal:** Automated code quality checks with Greptile AI
-
-**Status:** Implemented - Greptile integration with run-code-review.py hook
-
-**Phase 14 Workflow:**
-
-```
-Phase 13: Completion (tests pass, docs written)
-  └─> Create PR
-
-Phase 14: Automated Code Review [NEW]
-  ├─> Greptile: Review for bugs, antipatterns, security
-  ├─> CodeRabbit: Run 40+ linters, suggest fixes
-  └─> Graphite: Stack PRs for dependent changes
-
-User reviews AI feedback → Fix issues → Merge
-```
-
-#### Tool 1: Greptile Integration
-
-**Purpose:** AI-powered PR code review with full codebase context
-
-**API Integration:**
-
-```typescript
-// POST https://api.greptile.com/v1/review
-{
-  "repo": "user/repo",
-  "pr_number": 123,
-  "codebase_context": true
-}
-```
-
-**Response:**
-
-```json
-{
-  "overall_score": 9.2,
-  "bugs_caught": 1,
-  "security_issues": 0,
-  "suggestions": [
-    {
-      "file": "route.ts",
-      "line": 45,
-      "type": "optimization",
-      "message": "Consider caching Stripe client instance"
-    }
-  ]
-}
-```
-
-**Cost:** $30/dev/month (82% bug catch rate)
-
-#### Tool 2: CodeRabbit Integration
-
-**Purpose:** 40+ industry linters with one-click auto-fix
-
-**Webhook Setup:**
+**New Agent:** `.claude/agents/visual-analyzer.md`
 
 ```yaml
-# .github/workflows/coderabbit.yml
-on: [pull_request]
-jobs:
-  coderabbit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: coderabbit-ai/coderabbit-action@v1
+---
+name: visual-analyzer
+description: AI-powered screenshot analysis for UI verification
+tools: Read, Glob
+model: haiku  # Multimodal - can analyze images natively!
+---
+
+# Visual Analyzer Agent
+
+You are analyzing UI screenshots for quality issues.
+
+For each screenshot, check:
+1. Layout - Are elements properly aligned? Any overlapping?
+2. Typography - Is text readable? Proper contrast?
+3. Touch targets - Are buttons at least 44x44px?
+4. Responsiveness - Does layout adapt to viewport?
+5. Brand compliance - Colors/fonts match brand guide?
+
+Output JSON: {issues: [{type, severity, element, detail}]}
 ```
 
-**Auto-Fixes:**
+**Visual Analysis Flow (Opus → Haiku → Opus):**
+```
+1. Opus Agent: Runs Playwright headless → captures screenshots at 7 viewports
+2. Opus Agent: Spawns parallel Haiku subagents (one per viewport)
+3. Haiku Agents: Analyze screenshots for visual issues
+4. Haiku Agents: Report back JSON with issues
+5. Opus Agent: Receives all reports, aggregates issues
+6. Opus Agent: IF issues found → Fix code → Re-run screenshots → Loop
+7. Opus Agent: IF clean → Proceed to Phase 11 (Code Review)
+```
 
-- ESLint errors
-- TypeScript type issues
-- Prettier formatting
-- Security vulnerabilities (Snyk)
-- Code complexity warnings
+**Example Haiku Task Call:**
+```javascript
+Task({
+  subagent_type: "visual-analyzer",
+  model: "haiku",
+  prompt: `Analyze __snapshots__/Button-mobile-notch.png for:
+    1. Touch targets (min 44x44px)
+    2. Text contrast (min 4.5:1)
+    3. Safe area violations
+    Return JSON: {issues: [{type, severity, element, detail}]}`
+})
+```
 
-**Cost:** Free for open source, $12/dev/month Pro
+**Benefits of Haiku over External APIs:**
+- No external API keys needed
+- Stays within Claude Code ecosystem
+- Works with existing subagent infrastructure
+- Cost already included in Claude Code usage
 
-#### Tool 3: Graphite Integration
+---
 
-**Purpose:** Stacked PRs for distributed team collaboration
+### Phase 3: Token Tracking (Future Sprint)
 
-**CLI Commands:**
+**Status:** Planned
 
+#### Per-Phase Token Tracking with ccusage
+
+**Tool:** [ccusage](https://github.com/ryoppippi/ccusage) - 4.8k GitHub stars
+
+**Commands:**
 ```bash
-gt create --stack stripe-payment
-gt stack submit
-gt stack status
+npx ccusage              # Daily report
+npx ccusage session      # Per-session breakdown
+npx ccusage blocks --live  # Real-time dashboard
 ```
 
-**Benefits:**
+**Implementation:**
 
-- Parallel development across timezones
-- Incremental reviews without blocking
-- Dependency management between PRs
-
-**Cost:** Free (Hobby), $20/month (Starter)
-
-**Files to Create:**
-
-- `.skills/api-create/SKILL.md` - Add Phase 14 after Phase 13
-- `.skills/_shared/hooks/run-code-review.py` (optional, user-configured)
-- `.claude/settings.json` - Add preferred tool selection
-
-**User Configuration:**
-
+1. **Add phase timestamps to `api-dev-state.json`:**
 ```json
 {
-  "code_review": {
-    "enabled": true,
-    "tools": ["coderabbit", "greptile"], // User selects
-    "auto_fix": true,
-    "require_approval": false
+  "phases": {
+    "research_initial": {
+      "status": "complete",
+      "started_at": "2025-12-29T10:00:00Z",
+      "completed_at": "2025-12-29T10:05:00Z"
+    }
   }
 }
 ```
 
----
-
-### Phase 9: Stats & Rename Commands (v3.11.1)
-
-**Goal:** Better session management and visibility
-
-**Estimated Effort:** 3-4 hours
-
-#### /stats Command
-
-**Usage:**
-
+2. **Create `/token-report` skill:**
 ```bash
-/stats
-/stats [session-name]
+# Correlates ccusage session data with phase timestamps
+npx ccusage session --json | python hooks/correlate-phase-tokens.py
 ```
 
-**Output:**
-
+3. **Output:**
 ```
-╔═══════════════════════════════════════════════════
-║ 📊 SESSION STATISTICS - /stats
-╠═══════════════════════════════════════════════════
-║ Session: stripe-payment
-║ Duration: 42 minutes 18 seconds
-║ Total Cost: $1.42
-║
-║ PHASE BREAKDOWN:
-║ ✓ Phase 1-2:  Disambiguation & Scope    $0.05
-║ ✓ Phase 3:    Multi-Strategy Research   $0.32
-║ ✓ Phase 8-9:  TDD Red & Green           $0.45
-║ ✓ Phase 14:   AI Code Review            $0.15
-║
-║ TOOLS USED:
-║ - Context7 MCP:    5 calls
-║ - WebSearch:       8 queries
-║ - Greptile:        1 review
-╚═══════════════════════════════════════════════════
+Token Usage by Phase:
+─────────────────────────────────
+Phase 1 (Disambiguation):     1,200 tokens
+Phase 2 (Scope):              2,500 tokens
+Phase 3 (Initial Research):   8,400 tokens
+Phase 4 (Interview):          3,100 tokens
+...
+─────────────────────────────────
+Total:                       45,000 tokens
+Estimated Cost:              $0.45
 ```
 
-#### /rename Command
+**Benefits:**
+- Identify expensive phases (optimize prompts)
+- Budget prediction for similar endpoints
+- Cost transparency for teams
 
-**Usage:**
+---
 
-```bash
-/rename stripe-payment stripe-checkout
+## Gap Analysis Details
+
+### 1. Context Engineering (93% Coverage)
+
+| Best Practice | Status | Implementation | Notes |
+|--------------|--------|----------------|-------|
+| Token accumulation awareness | **Solved** | 7-turn re-grounding via `periodic-reground.py` | Injects context every 7 turns |
+| Context rot mitigation | **Solved** | `periodic-reground.py` + todo list refresh | Re-injects objectives |
+| `/clear` between tasks | **Partial** | No automatic clearing | User must manually clear |
+| System reminders for attention | **Solved** | Hooks inject `<system-reminder>` tags | Multiple hooks do this |
+| Handoff documents | **Solved** | `/summarize` skill creates handoffs | Saves context for next session |
+| Registry awareness | **Solved** | Re-grounding includes existing APIs/components/pages | Prevents recreating elements |
+| Deferred features tracking | **Solved** | Re-grounding shows deferred features | Prevents re-suggesting declined items |
+
+---
+
+### 2. Hooks (93% Coverage)
+
+| Best Practice | Status | Implementation | Notes |
+|--------------|--------|----------------|-------|
+| PreToolUse validation | **Solved** | `enforce-research.py`, `enforce-interview.py` | Block without research |
+| PostToolUse auto-formatting | **Partial** | No auto-prettier/eslint | Could add formatting hook |
+| Stop hook for continuous operation | **Solved** | `verify-after-green.py`, `run-code-review.py` | Continue until tests pass |
+| SubagentStop validation | **Solved** | `research-validator` agent validates findings | Quality checks on research |
+| Notification hooks | **Solved** | `ntfy-on-question.py`, `ntfy-on-stop.py` | Push notifications |
+| SessionStart context injection | **Solved** | `session-startup.py` | Full state injection |
+| UserPromptSubmit validation | **Solved** | `enforce-external-research.py` | Require research for API questions |
+
+---
+
+### 3. Autonomous Loops (40% Coverage)
+
+| Best Practice | Status | Implementation | Gap/Notes |
+|--------------|--------|----------------|-----------|
+| Continuous iteration loops | **Partial** | `/hustle-build --auto` mode | Works but less mature |
+| Completion promise detection | **Gap** | Not implemented | Could add completion markers |
+| Max iterations safety | **Partial** | No configurable max iterations | Need `--max-iterations` flag |
+| Prompt tuning methodology | **Solved** | Interview-driven prompts from research | Questions generated from findings |
+| Git worktree parallelism | **Gap** | `/worktree-add` exists | Need multi-worktree orchestration |
+
+**Gaps to Fix:**
+- Add `--max-iterations` flag to `/hustle-build`
+- Add completion detection for autonomous loops
+
+---
+
+### 4. Subagents (79% Coverage)
+
+| Best Practice | Status | Implementation | Notes |
+|--------------|--------|----------------|-------|
+| Isolated context windows | **Solved** | 7 specialized agents in `.claude/agents/` | Each has own context |
+| Specialized tool access | **Solved** | Each agent has restricted tools | Research: read-only, Writer: full |
+| Model selection per agent | **Solved** | Haiku for speed, Sonnet for quality | Configured per agent |
+| Multi-pass review pattern | **Partial** | `code-reviewer` agent exists | Only one pass, not multi-pass |
+| Background agents | **Solved** | `run_in_background` parameter supported | Async operations |
+| Custom agent creation | **Solved** | Agents in `.claude/agents/` directory | Template provided |
+| Explore thoroughness levels | **Gap** | Not exposing thoroughness parameter | Should pass "quick"/"thorough" |
+
+**Current Agents:**
+
+| Agent | Model | Purpose |
+|-------|-------|---------|
+| parallel-researcher | Haiku | Fast parallel documentation scraping |
+| research-validator | Haiku | Deep documentation validation |
+| schema-generator | Sonnet | Generate Zod schemas from research |
+| test-writer | Sonnet | Create comprehensive tests (TDD Red) |
+| implementation-reviewer | Sonnet | Compare code to docs (Phase 10) |
+| code-reviewer | Sonnet | Security/performance review (Phase 11) |
+| docs-generator | Haiku | TypeDoc generation |
+| **visual-analyzer** | **Haiku** | **NEW: AI screenshot analysis** |
+
+---
+
+### 5. Skills (90% Coverage)
+
+| Best Practice | Status | Implementation | Notes |
+|--------------|--------|----------------|-------|
+| On-demand domain loading | **Solved** | 24+ skills in `.skills/` | Loaded when invoked |
+| SKILL.md format | **Solved** | All skills follow format | Metadata + instructions |
+| Under 500 lines per skill | **Solved** | Average 100-200 lines | Concise by design |
+| Model-invoked skills | **Partial** | Currently user-invoked | Could add model-invocable hints |
+| Plugin bundling | **Solved** | npm package bundles all | Single install |
+
+---
+
+### 6. MCPs (63% Coverage)
+
+| Best Practice | Status | Implementation | Notes |
+|--------------|--------|----------------|-------|
+| Context7 for documentation | **Solved** | Pre-configured | Real-time library docs |
+| GitHub MCP for PR management | **Solved** | Pre-configured | Full GitHub integration |
+| Puppeteer/Playwright for visual | **Partial** | Optional `--with-playwright` | Not included by default |
+| MCP scope management | **Solved** | Project `.mcp.json` + user config | Team + personal configs |
+| Limit to 2-3 MCPs | **Gap** | No enforcement | Could get bloated |
+
+---
+
+### 7. CLAUDE.md (100% Coverage)
+
+| Best Practice | Status | Implementation |
+|--------------|--------|----------------|
+| Concise project context | **Solved** | Template in `templates/CLAUDE-SECTION.md` |
+| Key directories documented | **Solved** | Generated by `/init` or installer |
+| Commands documented | **Solved** | All commands in CLAUDE.md template |
+| Project-specific context | **Solved** | Placeholders for tech stack, UI library |
+| Registry reference | **Solved** | Template references `.claude/registry.json` |
+
+---
+
+### 8. Security (75% Coverage)
+
+| Best Practice | Status | Implementation | Notes |
+|--------------|--------|----------------|-------|
+| Read-only by default | **Solved** | Research phases are read-only | Write only in Phase 9 |
+| Deny dangerous operations | **Solved** | Settings template includes deny rules | rm -rf, sudo blocked |
+| Environment variable protection | **Solved** | `/api-env` checks without exposing | Safe key verification |
+| Sandbox mode | **Gap** | Not using `/sandbox` integration | Could reduce prompts |
+
+**Security Deny Rules (templates/settings.json):**
+```json
+"deny": [
+  "Read(.env*)", "Read(**/.env*)", "Read(**/secrets/**)",
+  "Bash(rm -rf *)", "Bash(sudo *)",
+  "Bash(git push --force *)", "Bash(git reset --hard *)",
+  "Bash(curl * | bash)", "Bash(wget * | bash)"
+]
 ```
 
-**Actions:**
+---
 
-- Renames session folder
-- Updates state file
-- Updates research folder
-- Updates session.json
+### 9. Visual Testing (25% Coverage) - NEW CATEGORY
 
-**Files to Create:**
-
-- `.skills/stats/SKILL.md`
-- `.skills/rename/SKILL.md`
+| Best Practice | Status | Implementation | Notes |
+|--------------|--------|----------------|-------|
+| Multi-viewport testing | **Partial** | 3 viewports | Need 7 viewports |
+| Safe area insets | **Gap** | Not implemented | iOS notch support |
+| AI screenshot analysis | **Gap** | Not implemented | Haiku visual-analyzer agent |
+| Pixel-diff comparison | **Solved** | Playwright screenshots | jest-image-snapshot |
 
 ---
 
-## 📁 Complete File Manifest
+### 10. Test Automation Skills (0% Coverage) - NEW CATEGORY
 
-### New Files to Create
-
-1. `.skills/update-todos/SKILL.md` ✅ CREATED
-2. `.skills/skill-finder/SKILL.md`
-3. `.skills/stats/SKILL.md`
-4. `.skills/rename/SKILL.md`
-5. `.skills/_shared/hooks/track-session-metrics.py`
-6. `.skills/_shared/hooks/run-code-review.py` (optional)
-7. `.skills/_shared/migrate-research-folders.py`
-8. `demo/execution-trace-COMPREHENSIVE.html` ✅ CREATED
-9. `COMPREHENSIVE_ENHANCEMENT_PLAN.md` ✅ THIS FILE
-
-### Files to Modify
-
-1. `.skills/api-create/SKILL.md`
-   - Add `/update-todos` calls (Phase 2)
-   - Add async agent spawning (Phase 3)
-   - Add multi-strategy research (Phase 3)
-   - Add skill-finder invocation (Phase 3)
-   - Add per-API folder creation (Phase 3)
-   - Add cost/time display (Phase 13)
-   - Add Phase 14: Code Review
-
-2. `.skills/hustle-ui-create/SKILL.md`
-   - Add `/update-todos` calls
-   - Add research enhancements
-
-3. `.skills/hustle-ui-create-page/SKILL.md`
-   - Add `/update-todos` calls
-   - Add research enhancements
-
-4. `.skills/hustle-combine/SKILL.md`
-   - Add `/update-todos` calls (12 phases)
-   - Add research enhancements
-
-5. `.claude/api-dev-state.json` (template)
-   - Add `current_phase` field
-   - Add `async_agents_used` field
-   - Add `cost_breakdown` object
-
-6. `.claude/settings.json`
-   - Add `code_review` configuration
-   - Add `todowrite_enabled` toggle
-
-7. All hooks that read research files:
-   - Update to use new folder structure
+| Skill | Status | Purpose |
+|-------|--------|---------|
+| `/test-unit` | **GAP** | Run Vitest unit tests |
+| `/test-e2e` | **GAP** | Run Playwright E2E tests |
+| `/test-visual` | **GAP** | Run visual regression tests |
+| `/test-all` | **GAP** | Run all test suites |
+| `/test-review` | **GAP** | Analyze test coverage |
+| `/test-builds` | **GAP** | Test across 5 platforms |
+| `/test-debug` | **GAP** | Diagnose test failures |
 
 ---
 
-## 🧪 Testing Strategy
+### 11. Token Tracking (50% Coverage) - NEW CATEGORY
 
-### Unit Tests
-
-- [ ] TodoWrite updates correctly for all 4 workflows
-- [ ] Async agents spawn and report correctly
-- [ ] Research folder creation works
-- [ ] Cost tracking calculates accurately
-- [ ] Stats command aggregates data properly
-
-### Integration Tests
-
-- [ ] End-to-end api-create with ALL features
-- [ ] End-to-end ui-create-component with ALL features
-- [ ] End-to-end ui-create-page with ALL features
-- [ ] End-to-end combine with ALL features
-
-### Performance Tests
-
-- [ ] Async research is 2-3x faster than sequential
-- [ ] TodoWrite doesn't slow down execution
-- [ ] Per-API folders don't impact I/O performance
-
-### Cross-Platform Tests
-
-- [ ] Works in Claude Code
-- [ ] Works in VS Code with Claude extension
-- [ ] Works in Cursor
-- [ ] Works on Claude.ai web (with limitations)
+| Best Practice | Status | Implementation | Notes |
+|--------------|--------|----------------|-------|
+| Session-level tracking | **Partial** | ccusage available | Not integrated |
+| Per-phase tracking | **Gap** | Not implemented | Need phase correlation |
+| Cost transparency | **Gap** | Not implemented | `/token-report` skill |
 
 ---
 
-## 📊 Success Metrics
+## What We Do Better
 
-### Quantitative
+Areas where api-dev-tools exceeds best practices:
 
-- **Research Coverage:** 60% → 95% (+58%)
-- **Research Time:** 20-30 min → 8-10 min (-60%)
-- **Cost Per Endpoint:** $1.89 → $1.42 (-25%)
-- **User Abandonment:** Reduce by 40% (with TodoWrite visibility)
-- **Bug Detection:** 82% catch rate (with Greptile)
+### 1. Research-First Enforcement
+- `enforce-research.py` - Blocks writes without research
+- `enforce-external-research.py` - Requires web/Context7 lookups
+- Phase 10 verification - Re-researches after implementation
 
-### Qualitative
+### 2. Interview-Driven Development
+- Questions generated FROM research findings
+- Shared decisions across orchestrated workflows
+- Interview decisions injected during implementation
 
-- Users see real-time progress (TodoWrite)
-- Users understand what's happening (cost tracking)
-- Users trust the results (95% coverage)
-- Users get high-quality code (Phase 14 review)
+### 3. State Persistence Across Sessions
+- Full state tracking in `api-dev-state.json`
+- 7-day research cache with freshness tracking
+- Registry of all created elements
+- Resume capability for interrupted builds
 
----
+### 4. 14-Phase Structured Workflow
+- 14 explicit phases with hooks at each
+- Phase gates that block progress
+- Status tracking per phase
+- Loop-back on verification failures
 
-## 🚀 Implementation Timeline
-
-### Sprint 1 (Week 1): Core TodoWrite + Research
-
-- Phase 2: TodoWrite Integration
-- Phase 3: Async Parallel Research
-- Phase 4: Multi-Strategy Research
-- **Deliverable:** Real-time progress + 95% coverage
-
-### Sprint 2 (Week 2): Organization + Discovery
-
-- Phase 5: Skill-Discovery Meta-Skill
-- Phase 6: Per-API Research Folders
-- Phase 7: Cost/Time Tracking
-- **Deliverable:** Better organization + visibility
-
-### Sprint 3 (Week 3): Code Quality + Polish
-
-- Phase 8: Phase 14 - AI Code Review
-- Phase 9: Stats & Rename Commands
-- **Deliverable:** Production-ready v3.12.0
-
-### Sprint 4 (Week 4): Testing + Documentation
-
-- Complete testing checklist
-- Update all documentation
-- Create demo videos
-- **Deliverable:** Public release
+### 5. Orchestration Layer
+- `/hustle-build` master orchestrator
+- Dependency-aware execution order
+- Shared decisions across sub-workflows
+- Automatic wiring of completed elements
 
 ---
 
-## 📚 Documentation Updates Required
+## Files to Create
 
-1. **README.md**
-   - Add TodoWrite section
-   - Add async parallelization explanation
-   - Add Phase 14 description
-   - Update efficiency metrics
+### Test Skills (7 files)
+- `.skills/test-unit/SKILL.md`
+- `.skills/test-e2e/SKILL.md`
+- `.skills/test-visual/SKILL.md`
+- `.skills/test-all/SKILL.md`
+- `.skills/test-review/SKILL.md`
+- `.skills/test-builds/SKILL.md`
+- `.skills/test-debug/SKILL.md`
 
-2. **.skills/README.md**
-   - Document all new skills
-   - Update workflow diagrams to show 14 phases
-   - Add research strategy explanation
+### Visual Analyzer Agent
+- `.claude/agents/visual-analyzer.md`
 
-3. **CHANGELOG.md**
-   - v3.11.0 release notes
-   - v3.11.1 release notes
-   - v3.12.0 release notes
-
-4. **Demo Files**
-   - ✅ execution-trace-COMPREHENSIVE.html created
-   - Update full-workflow-simulation.html with Phase 14
+### Token Tracking
+- `hooks/correlate-phase-tokens.py`
+- `.skills/token-report/SKILL.md`
 
 ---
 
-## ✅ Pre-Implementation Checklist
+## Files to Modify
 
-**Before Starting:**
+### Visual Testing Templates
+- `templates/performance-budgets.json` - Add 7 viewports with safe areas
+- `templates/component/Component.visual.spec.ts` - Iterate all viewports
+- `templates/page/page.e2e.test.ts` - Update responsive tests
 
-- [x] Enhancement roadmap reviewed (ENHANCEMENT_ROADMAP_v3.11.0.md)
-- [x] Comprehensive plan created (this document)
-- [x] Demo created showing all features
-- [ ] User approval on approach
-- [ ] Backup current codebase
-
-**During Implementation:**
-
-- [ ] Test each phase independently before moving to next
-- [ ] Update documentation as features are added
-- [ ] Keep demos in sync with implementation
-- [ ] Track actual time vs estimates
-
-**After Implementation:**
-
-- [ ] All tests passing
-- [ ] Documentation complete
-- [ ] Demos accurate
-- [ ] Performance benchmarks met
-- [ ] Ready for public release
+### Settings
+- `templates/settings.json` - Ensure security deny rules
 
 ---
 
-**Status:** Ready for Sprint 1 - User Approval Required
-**Next Step:** User reviews this plan and approves implementation start
-**Estimated Total Effort:** 6-8 weeks (3 sprints of implementation + 1 sprint polish)
+## Implementation Timeline
+
+### Sprint 1: Foundation (~8 hours)
+1. Create 7 test skills
+2. Add TodoWrite calls to workflow skills
+3. Add security deny rules
+
+### Sprint 2: Visual Testing (~10 hours)
+1. Update performance-budgets.json with 7 viewports + safe areas
+2. Update visual test templates
+3. Create visual-analyzer Haiku subagent
+4. Add token tracking per phase
+5. Create /token-report skill
+
+### Sprint 3: Polish (~8 hours)
+1. Add context capacity warning hook
+2. Add multi-pass code review agent
+3. Optimize interactive flow
 
 ---
 
-## 🎯 Open Questions for User
+## Model Reference (December 2025)
 
-1. **Priority:** Should we ship v3.11.0 (TodoWrite + Research) before v3.12.0 (Code Review)?
-2. **Code Review Tools:** Which tools to support? Greptile ($30/mo) vs CodeRabbit (free OSS)?
-3. **Stats Storage:** Store session stats in JSON or SQLite database?
-4. **Demo Hosting:** Host comprehensive demo on GitHub Pages or keep local?
-5. **Breaking Changes:** OK to change research folder structure (requires migration)?
+| Provider | Model | Model ID | Pricing |
+|----------|-------|----------|---------|
+| Google | Gemini 3 Flash | `gemini-3-flash-preview` | $0.50/1M in, $3/1M out |
+| Anthropic | Claude Haiku 3.5 | `claude-3-5-haiku-latest` | Fast, cheap |
+| Anthropic | Claude Sonnet 4 | `claude-sonnet-4-latest` | Balanced |
+| Anthropic | Claude Opus 4.5 | `claude-opus-4-5-20251101` | Full capability |
 
 ---
 
-**Document Version:** 2.0.0
-**Last Updated:** 2025-12-24
-**Author:** Claude Sonnet 4.5
-**Related Files:**
+## See Also
 
-- [ENHANCEMENT_ROADMAP_v3.11.0.md](./ENHANCEMENT_ROADMAP_v3.11.0.md)
-- [demo/execution-trace-COMPREHENSIVE.html](./demo/execution-trace-COMPREHENSIVE.html)
-- [.skills/update-todos/SKILL.md](./.skills/update-todos/SKILL.md)
+- [HOOKS.md](./docs/HOOKS.md) - All 45+ enforcement hooks
+- [SKILLS.md](./docs/SKILLS.md) - All 24+ skills reference
+- [AGENTS.md](./docs/AGENTS.md) - Specialized subagents
+- [ORCHESTRATOR.md](./docs/ORCHESTRATOR.md) - Orchestration system
+- [REGROUNDING.md](./docs/REGROUNDING.md) - 7-turn context refresh
+- [CLAUDE_CODE_BEST_PRACTICES.md](./docs/CLAUDE_CODE_BEST_PRACTICES.md) - Source best practices
+
+---
+
+**Document Version:** 4.0.0
+**Last Updated:** 2025-12-29
+**Author:** Claude Opus 4.5
