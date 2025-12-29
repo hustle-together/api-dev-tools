@@ -38,19 +38,24 @@ Include any of the following info if specified: $ARGUMENTS
 ### Phase 1: Pre-flight Checks
 
 1. **Verify clean working directory**
+
    ```bash
    git status --porcelain
    ```
+
    - If dirty, ask user to commit or stash changes first
    - Exception: allow `.claude/` runtime files
 
 2. **Check npm login**
+
    ```bash
    npm whoami
    ```
+
    - If not logged in, prompt user to run `npm login`
 
 3. **Check current versions**
+
    ```bash
    # Local version
    node -p "require('./package.json').version"
@@ -83,6 +88,7 @@ Include any of the following info if specified: $ARGUMENTS
 ### Phase 3: Commit and Push
 
 1. **Commit the version bump**
+
    ```bash
    git add package.json
    git commit -m "chore: bump version to X.Y.Z"
@@ -96,6 +102,7 @@ Include any of the following info if specified: $ARGUMENTS
 ### Phase 4: Publish
 
 1. **Attempt publish**
+
    ```bash
    npm publish --access public
    ```
@@ -139,17 +146,18 @@ Include any of the following info if specified: $ARGUMENTS
 
 ## Error Handling
 
-| Error | Action |
-|-------|--------|
-| Dirty git status | Ask user to commit/stash |
-| Not logged in | Prompt `npm login` |
-| Version exists | Bump version first |
-| OTP required | Show command with --otp flag |
-| Push failed | Check remote access |
+| Error            | Action                       |
+| ---------------- | ---------------------------- |
+| Dirty git status | Ask user to commit/stash     |
+| Not logged in    | Prompt `npm login`           |
+| Version exists   | Bump version first           |
+| OTP required     | Show command with --otp flag |
+| Push failed      | Check remote access          |
 
 ## TodoWrite Integration
 
 Initialize with:
+
 ```
 1. Pre-flight checks (git, npm, versions)
 2. Calculate version bump

@@ -133,7 +133,9 @@ async function selectOne(question, options) {
       options.forEach((opt, i) => {
         const prefix = i === selected ? `${c.red}❯${c.reset}` : " ";
         const label =
-          i === selected ? `${c.bold}${opt.label}${c.reset}` : `${c.dim}${opt.label}${c.reset}`;
+          i === selected
+            ? `${c.bold}${opt.label}${c.reset}`
+            : `${c.dim}${opt.label}${c.reset}`;
         console.log(`  ${prefix} ${label}`);
       });
     };
@@ -198,11 +200,16 @@ async function selectMany(question, options) {
 
     const renderOptions = () => {
       process.stdout.write("\x1B[?25l");
-      console.log(`\n${c.bold}${question}${c.reset} ${c.dim}(space to toggle, enter to confirm)${c.reset}`);
+      console.log(
+        `\n${c.bold}${question}${c.reset} ${c.dim}(space to toggle, enter to confirm)${c.reset}`,
+      );
       options.forEach((opt, i) => {
         const pointer = i === cursor ? `${c.red}❯${c.reset}` : " ";
-        const checkbox = checked[i] ? `${c.white}◉${c.reset}` : `${c.dim}○${c.reset}`;
-        const label = i === cursor ? `${c.bold}${opt.label}${c.reset}` : opt.label;
+        const checkbox = checked[i]
+          ? `${c.white}◉${c.reset}`
+          : `${c.dim}○${c.reset}`;
+        const label =
+          i === cursor ? `${c.bold}${opt.label}${c.reset}` : opt.label;
         console.log(`  ${pointer} ${checkbox} ${label}`);
       });
     };
@@ -244,7 +251,9 @@ async function selectMany(question, options) {
           .filter((_, i) => checked[i])
           .map((o) => o.label)
           .join(", ");
-        console.log(`\n${c.bold}${question}${c.reset} ${c.white}${selectedLabels || "None"}${c.reset}`);
+        console.log(
+          `\n${c.bold}${question}${c.reset} ${c.white}${selectedLabels || "None"}${c.reset}`,
+        );
         resolve(options.filter((_, i) => checked[i]).map((o) => o.value));
       } else if (key === "\u0003") {
         process.stdout.write("\x1B[?25h");
@@ -276,19 +285,24 @@ async function textInput(question, options = {}) {
       ? ` ${c.dim}(${options.mask ? maskSecret(options.default) : options.default})${c.reset}`
       : "";
     const extraHint = options.hint ? ` ${c.dim}${options.hint}${c.reset}` : "";
-    rl.question(`${c.bold}${question}${c.reset}${defaultHint}${extraHint}: `, (answer) => {
-      rl.close();
-      const result = answer.trim() || options.default || "";
+    rl.question(
+      `${c.bold}${question}${c.reset}${defaultHint}${extraHint}: `,
+      (answer) => {
+        rl.close();
+        const result = answer.trim() || options.default || "";
 
-      // If masked, show confirmation with masked value
-      if (options.mask && result) {
-        // Move cursor up and rewrite line with masked value
-        process.stdout.write(`\x1B[1A\x1B[2K`);
-        console.log(`${c.bold}${question}${c.reset}: ${c.dim}${maskSecret(result)}${c.reset}`);
-      }
+        // If masked, show confirmation with masked value
+        if (options.mask && result) {
+          // Move cursor up and rewrite line with masked value
+          process.stdout.write(`\x1B[1A\x1B[2K`);
+          console.log(
+            `${c.bold}${question}${c.reset}: ${c.dim}${maskSecret(result)}${c.reset}`,
+          );
+        }
 
-      resolve(result);
-    });
+        resolve(result);
+      },
+    );
   });
 }
 
@@ -299,7 +313,9 @@ async function textInput(question, options = {}) {
  * @returns {Promise<boolean>}
  */
 async function confirm(question, defaultYes = true) {
-  const hint = defaultYes ? `${c.dim}(Y/n)${c.reset}` : `${c.dim}(y/N)${c.reset}`;
+  const hint = defaultYes
+    ? `${c.dim}(Y/n)${c.reset}`
+    : `${c.dim}(y/N)${c.reset}`;
   const answer = await textInput(`${question} ${hint}`, {});
   if (!answer) return defaultYes;
   return answer.toLowerCase().startsWith("y");
@@ -409,22 +425,50 @@ const FONT_PRESETS = {
   // Sans-serif
   inter: { name: "Inter", type: "sans-serif", desc: "Clean, modern" },
   geist: { name: "Geist", type: "sans-serif", desc: "GitHub/Vercel style" },
-  "plus jakarta sans": { name: "Plus Jakarta Sans", type: "sans-serif", desc: "Friendly" },
+  "plus jakarta sans": {
+    name: "Plus Jakarta Sans",
+    type: "sans-serif",
+    desc: "Friendly",
+  },
   "dm sans": { name: "DM Sans", type: "sans-serif", desc: "Geometric" },
-  "ibm plex sans": { name: "IBM Plex Sans", type: "sans-serif", desc: "Technical" },
+  "ibm plex sans": {
+    name: "IBM Plex Sans",
+    type: "sans-serif",
+    desc: "Technical",
+  },
   poppins: { name: "Poppins", type: "sans-serif", desc: "Geometric, modern" },
-  montserrat: { name: "Montserrat", type: "sans-serif", desc: "Clean, elegant" },
+  montserrat: {
+    name: "Montserrat",
+    type: "sans-serif",
+    desc: "Clean, elegant",
+  },
   // Serif
-  playfair: { name: "Playfair Display", type: "serif", desc: "Elegant, sophisticated" },
+  playfair: {
+    name: "Playfair Display",
+    type: "serif",
+    desc: "Elegant, sophisticated",
+  },
   lora: { name: "Lora", type: "serif", desc: "Well-balanced" },
   merriweather: { name: "Merriweather", type: "serif", desc: "Readable, warm" },
   georgia: { name: "Georgia", type: "serif", desc: "Classic web serif" },
-  "source serif": { name: "Source Serif Pro", type: "serif", desc: "Modern serif" },
+  "source serif": {
+    name: "Source Serif Pro",
+    type: "serif",
+    desc: "Modern serif",
+  },
   crimson: { name: "Crimson Text", type: "serif", desc: "Book-style elegance" },
   // Monospace
-  "jetbrains mono": { name: "JetBrains Mono", type: "mono", desc: "Developer favorite" },
+  "jetbrains mono": {
+    name: "JetBrains Mono",
+    type: "mono",
+    desc: "Developer favorite",
+  },
   "fira code": { name: "Fira Code", type: "mono", desc: "Ligatures, readable" },
-  "source code": { name: "Source Code Pro", type: "mono", desc: "Adobe, clean" },
+  "source code": {
+    name: "Source Code Pro",
+    type: "mono",
+    desc: "Adobe, clean",
+  },
 };
 
 /**
@@ -448,7 +492,11 @@ function parseFont(input, defaultFont) {
     return "Crimson Text";
   }
 
-  if (trimmed.includes("sans") || trimmed.includes("clean") || trimmed.includes("modern")) {
+  if (
+    trimmed.includes("sans") ||
+    trimmed.includes("clean") ||
+    trimmed.includes("modern")
+  ) {
     return "Inter";
   }
 
@@ -628,7 +676,9 @@ async function main() {
       // ─────────────────────────────────────────────────────────────────────
 
       log(`\n${c.red}━━━ API Keys ━━━${c.reset}`);
-      log(`${c.dim}These keys enable advanced features like code review and brand fetching${c.reset}\n`);
+      log(
+        `${c.dim}These keys enable advanced features like code review and brand fetching${c.reset}\n`,
+      );
       log(`${c.bold}Get your keys (all have free tiers):${c.reset}\n`);
       log(`  ${c.white}GITHUB_TOKEN${c.reset}`);
       log(`    ${c.dim}→${c.reset} https://github.com/settings/tokens`);
@@ -640,8 +690,12 @@ async function main() {
       log(`    ${c.dim}Free tier: 100 reviews/month${c.reset}\n`);
       log(`  ${c.white}BRANDFETCH_API_KEY${c.reset}`);
       log(`    ${c.dim}→${c.reset} https://brandfetch.com/developers`);
-      log(`    ${c.dim}Purpose: Auto-fetch logos, colors, fonts from domains${c.reset}`);
-      log(`    ${c.dim}Free tier: 50 requests/month (basic assets)${c.reset}\n`);
+      log(
+        `    ${c.dim}Purpose: Auto-fetch logos, colors, fonts from domains${c.reset}`,
+      );
+      log(
+        `    ${c.dim}Free tier: 50 requests/month (basic assets)${c.reset}\n`,
+      );
 
       const configureKeys = await selectOne("Configure API keys now?", [
         { label: "Yes, enter them now", value: true },
@@ -657,10 +711,13 @@ async function main() {
           default: process.env.GREPTILE_API_KEY || "",
           mask: true,
         });
-        config.brandfetchApiKey = await textInput("BRANDFETCH_API_KEY (optional)", {
-          default: process.env.BRANDFETCH_API_KEY || "",
-          mask: true,
-        });
+        config.brandfetchApiKey = await textInput(
+          "BRANDFETCH_API_KEY (optional)",
+          {
+            default: process.env.BRANDFETCH_API_KEY || "",
+            mask: true,
+          },
+        );
       }
 
       // ─────────────────────────────────────────────────────────────────────
@@ -668,17 +725,40 @@ async function main() {
       // ─────────────────────────────────────────────────────────────────────
 
       log(`\n${c.red}━━━ Testing Tools ━━━${c.reset}`);
-      log(`${c.dim}Required for component development and E2E testing${c.reset}\n`);
+      log(
+        `${c.dim}Required for component development and E2E testing${c.reset}\n`,
+      );
       log(`${c.bold}What each tool does:${c.reset}`);
-      log(`  ${c.white}Playwright${c.reset}  → E2E browser testing (required for /hustle-ui-create-page)`);
-      log(`  ${c.white}Storybook${c.reset}   → Component development & visual testing (required for /hustle-ui-create)`);
-      log(`  ${c.white}Sandpack${c.reset}    → Live code preview in browser (optional)\n`);
+      log(
+        `  ${c.white}Playwright${c.reset}  → E2E browser testing (required for /hustle-ui-create-page)`,
+      );
+      log(
+        `  ${c.white}Storybook${c.reset}   → Component development & visual testing (required for /hustle-ui-create)`,
+      );
+      log(
+        `  ${c.white}Sandpack${c.reset}    → Live code preview in browser (optional)\n`,
+      );
 
-      const selectedTools = await selectMany("Select testing tools to install", [
-        { label: "Playwright (E2E testing)", value: "playwright", checked: true },
-        { label: "Storybook (component development)", value: "storybook", checked: true },
-        { label: "Sandpack (live code preview)", value: "sandpack", checked: true },
-      ]);
+      const selectedTools = await selectMany(
+        "Select testing tools to install",
+        [
+          {
+            label: "Playwright (E2E testing)",
+            value: "playwright",
+            checked: true,
+          },
+          {
+            label: "Storybook (component development)",
+            value: "storybook",
+            checked: true,
+          },
+          {
+            label: "Sandpack (live code preview)",
+            value: "sandpack",
+            checked: true,
+          },
+        ],
+      );
 
       config.withPlaywright = selectedTools.includes("playwright");
       config.withStorybook = selectedTools.includes("storybook");
@@ -689,21 +769,34 @@ async function main() {
       // ─────────────────────────────────────────────────────────────────────
 
       log(`\n${c.red}━━━ Push Notifications (NTFY) ━━━${c.reset}`);
-      log(`${c.dim}Get notified on your phone when long tasks complete${c.reset}\n`);
+      log(
+        `${c.dim}Get notified on your phone when long tasks complete${c.reset}\n`,
+      );
       log(`${c.bold}How it works:${c.reset}`);
-      log(`  1. Install NTFY app: ${c.white}iOS${c.reset} App Store / ${c.white}Android${c.reset} Play Store`);
+      log(
+        `  1. Install NTFY app: ${c.white}iOS${c.reset} App Store / ${c.white}Android${c.reset} Play Store`,
+      );
       log(`  2. Subscribe to your topic in the app`);
       log(`  3. Receive push notifications when builds/tests finish\n`);
-      log(`${c.dim}Free service, no account required. Learn more: https://ntfy.sh${c.reset}\n`);
+      log(
+        `${c.dim}Free service, no account required. Learn more: https://ntfy.sh${c.reset}\n`,
+      );
 
-      config.ntfyEnabled = await confirm("Enable NTFY push notifications?", false);
+      config.ntfyEnabled = await confirm(
+        "Enable NTFY push notifications?",
+        false,
+      );
 
       if (config.ntfyEnabled) {
-        log(`\n${c.dim}Topic name = channel for your notifications (must match the app)${c.reset}`);
+        log(
+          `\n${c.dim}Topic name = channel for your notifications (must match the app)${c.reset}`,
+        );
         config.ntfyTopic = await textInput("NTFY Topic name", {
           default: path.basename(targetDir) + "-alerts",
         });
-        log(`${c.dim}Server URL = ntfy.sh (public) or your self-hosted server${c.reset}`);
+        log(
+          `${c.dim}Server URL = ntfy.sh (public) or your self-hosted server${c.reset}`,
+        );
         config.ntfyServer = await textInput("NTFY Server URL", {
           default: "ntfy.sh",
         });
@@ -714,7 +807,9 @@ async function main() {
       // ─────────────────────────────────────────────────────────────────────
 
       log(`\n${c.red}━━━ Brand Guide ━━━${c.reset}`);
-      log(`${c.dim}Design system that enforces consistent UI across all components${c.reset}\n`);
+      log(
+        `${c.dim}Design system that enforces consistent UI across all components${c.reset}\n`,
+      );
       log(`${c.bold}Why you need a brand guide:${c.reset}`);
       log(`  • Consistent look across all pages and components`);
       log(`  • Faster development (no color/font decisions each time)`);
@@ -725,32 +820,53 @@ async function main() {
 
       if (config.createBrandGuide) {
         // Brand source selection
-        log(`\n${c.bold}How would you like to create your brand guide?${c.reset}\n`);
+        log(
+          `\n${c.bold}How would you like to create your brand guide?${c.reset}\n`,
+        );
 
         config.brandSource = await selectOne("Brand guide source", [
-          { label: "Manual Interview - Answer questions about your brand preferences", value: "manual" },
-          { label: "Brandfetch - Auto-fetch from company domain (requires API key)", value: "brandfetch" },
+          {
+            label:
+              "Manual Interview - Answer questions about your brand preferences",
+            value: "manual",
+          },
+          {
+            label:
+              "Brandfetch - Auto-fetch from company domain (requires API key)",
+            value: "brandfetch",
+          },
         ]);
 
         if (config.brandSource === "brandfetch") {
           log(`\n${c.bold}Brandfetch Integration${c.reset}`);
-          log(`${c.dim}Automatically pulls logos, colors, and fonts from any company domain${c.reset}\n`);
+          log(
+            `${c.dim}Automatically pulls logos, colors, and fonts from any company domain${c.reset}\n`,
+          );
 
           if (!config.brandfetchApiKey) {
-            log(`${c.white}Get your free API key:${c.reset} https://brandfetch.com/developers`);
-            log(`${c.dim}Free tier includes: 50 requests/month, basic brand assets${c.reset}\n`);
+            log(
+              `${c.white}Get your free API key:${c.reset} https://brandfetch.com/developers`,
+            );
+            log(
+              `${c.dim}Free tier includes: 50 requests/month, basic brand assets${c.reset}\n`,
+            );
             config.brandfetchApiKey = await textInput("BRANDFETCH_API_KEY", {
               default: process.env.BRANDFETCH_API_KEY || "",
               mask: true,
             });
           }
 
-          config.brandDomain = await textInput("Company domain to fetch brand from (e.g., stripe.com)", {
-            default: "",
-          });
+          config.brandDomain = await textInput(
+            "Company domain to fetch brand from (e.g., stripe.com)",
+            {
+              default: "",
+            },
+          );
 
           if (!config.brandDomain) {
-            log(`\n${c.dim}No domain provided - falling back to manual interview${c.reset}`);
+            log(
+              `\n${c.dim}No domain provided - falling back to manual interview${c.reset}`,
+            );
             config.brandSource = "manual";
           }
         }
@@ -767,12 +883,17 @@ async function main() {
           // Color palette
           log(`\n${c.bold}Color Palette${c.reset}`);
           log(`${c.dim}Define colors that represent your brand${c.reset}`);
-          log(`${c.dim}Enter hex (#E11D48) or color name (red, blue, coral, navy, etc.)${c.reset}\n`);
+          log(
+            `${c.dim}Enter hex (#E11D48) or color name (red, blue, coral, navy, etc.)${c.reset}\n`,
+          );
 
-          let primaryInput = await textInput("Primary color (main CTAs, links)", {
-            default: "#E11D48",
-            hint: "hex or name",
-          });
+          let primaryInput = await textInput(
+            "Primary color (main CTAs, links)",
+            {
+              default: "#E11D48",
+              hint: "hex or name",
+            },
+          );
           config.primaryColor = parseColor(primaryInput, "#E11D48");
           if (primaryInput && primaryInput !== config.primaryColor) {
             log(`  ${c.dim}→ Resolved to ${config.primaryColor}${c.reset}`);
@@ -787,10 +908,13 @@ async function main() {
             log(`  ${c.dim}→ Resolved to ${config.secondaryColor}${c.reset}`);
           }
 
-          let accentInput = await textInput("Accent color (highlights, badges)", {
-            default: "#8B5CF6",
-            hint: "hex or name",
-          });
+          let accentInput = await textInput(
+            "Accent color (highlights, badges)",
+            {
+              default: "#8B5CF6",
+              hint: "hex or name",
+            },
+          );
           config.accentColor = parseColor(accentInput, "#8B5CF6");
           if (accentInput && accentInput !== config.accentColor) {
             log(`  ${c.dim}→ Resolved to ${config.accentColor}${c.reset}`);
@@ -799,14 +923,22 @@ async function main() {
           // Typography
           log(`\n${c.bold}Typography${c.reset}`);
           log(`${c.dim}Fonts define your brand's personality${c.reset}`);
-          log(`${c.dim}Select from presets or describe what you want (e.g., "elegant serif", "modern sans")${c.reset}\n`);
+          log(
+            `${c.dim}Select from presets or describe what you want (e.g., "elegant serif", "modern sans")${c.reset}\n`,
+          );
 
           config.fontFamily = await selectOne("Primary body font", [
             { label: "Inter - Clean, modern, highly readable", value: "Inter" },
             { label: "Geist - GitHub/Vercel aesthetic", value: "Geist" },
-            { label: "Plus Jakarta Sans - Friendly, approachable", value: "Plus Jakarta Sans" },
+            {
+              label: "Plus Jakarta Sans - Friendly, approachable",
+              value: "Plus Jakarta Sans",
+            },
             { label: "DM Sans - Geometric, professional", value: "DM Sans" },
-            { label: "IBM Plex Sans - Technical, serious", value: "IBM Plex Sans" },
+            {
+              label: "IBM Plex Sans - Technical, serious",
+              value: "IBM Plex Sans",
+            },
             { label: "Other - Describe or enter font name", value: "custom" },
           ]);
 
@@ -821,17 +953,26 @@ async function main() {
 
           config.headingFont = await selectOne("Heading font", [
             { label: "Same as body font", value: config.fontFamily },
-            { label: "Playfair Display - Elegant, sophisticated", value: "Playfair Display" },
+            {
+              label: "Playfair Display - Elegant, sophisticated",
+              value: "Playfair Display",
+            },
             { label: "Cal Sans - Bold, impactful", value: "Cal Sans" },
-            { label: "Clash Display - Modern, striking", value: "Clash Display" },
+            {
+              label: "Clash Display - Modern, striking",
+              value: "Clash Display",
+            },
             { label: "Other - Describe or enter font name", value: "custom" },
           ]);
 
           if (config.headingFont === "custom") {
-            let headingInput = await textInput("Heading font name or description", {
-              default: config.fontFamily,
-              hint: 'e.g., "sans-serif that pairs nicely"',
-            });
+            let headingInput = await textInput(
+              "Heading font name or description",
+              {
+                default: config.fontFamily,
+                hint: 'e.g., "sans-serif that pairs nicely"',
+              },
+            );
             config.headingFont = parseFont(headingInput, config.fontFamily);
             log(`  ${c.dim}→ Using: ${config.headingFont}${c.reset}`);
           }
@@ -841,19 +982,36 @@ async function main() {
           log(`${c.dim}Define the overall look and feel${c.reset}\n`);
 
           config.buttonStyle = await selectOne("Button style", [
-            { label: "Sharp (0px) - Modern, minimal tech aesthetic", value: "sharp" },
-            { label: "Subtle (4px) - Professional, slightly softened", value: "subtle" },
-            { label: "Rounded (8px) - Friendly, approachable", value: "rounded" },
+            {
+              label: "Sharp (0px) - Modern, minimal tech aesthetic",
+              value: "sharp",
+            },
+            {
+              label: "Subtle (4px) - Professional, slightly softened",
+              value: "subtle",
+            },
+            {
+              label: "Rounded (8px) - Friendly, approachable",
+              value: "rounded",
+            },
             { label: "Pill (9999px) - Playful, fully rounded", value: "pill" },
           ]);
 
           // Map button style to border radius
-          const radiusMap = { sharp: "0", subtle: "4px", rounded: "8px", pill: "9999px" };
+          const radiusMap = {
+            sharp: "0",
+            subtle: "4px",
+            rounded: "8px",
+            pill: "9999px",
+          };
           config.borderRadius = radiusMap[config.buttonStyle];
 
           config.cardStyle = await selectOne("Card style", [
             { label: "Flat - Minimal, no depth", value: "flat" },
-            { label: "Bordered - Subtle outline separation", value: "bordered" },
+            {
+              label: "Bordered - Subtle outline separation",
+              value: "bordered",
+            },
             { label: "Elevated - Shadow for depth", value: "elevated" },
           ]);
 
@@ -862,15 +1020,30 @@ async function main() {
           log(`${c.dim}Preferences for images and icons${c.reset}\n`);
 
           config.imageStyle = await selectOne("Preferred image style", [
-            { label: "Photography - Real photos, authentic feel", value: "photography" },
-            { label: "Illustrations - Custom drawn, unique personality", value: "illustration" },
-            { label: "Abstract - Shapes, gradients, patterns", value: "abstract" },
+            {
+              label: "Photography - Real photos, authentic feel",
+              value: "photography",
+            },
+            {
+              label: "Illustrations - Custom drawn, unique personality",
+              value: "illustration",
+            },
+            {
+              label: "Abstract - Shapes, gradients, patterns",
+              value: "abstract",
+            },
             { label: "Minimal - Clean, simple graphics", value: "minimal" },
           ]);
 
           config.iconStyle = await selectOne("Icon style", [
-            { label: "Outline - Light, modern (Lucide, Heroicons)", value: "outline" },
-            { label: "Solid - Bold, impactful (Phosphor filled)", value: "solid" },
+            {
+              label: "Outline - Light, modern (Lucide, Heroicons)",
+              value: "outline",
+            },
+            {
+              label: "Solid - Bold, impactful (Phosphor filled)",
+              value: "solid",
+            },
             { label: "Duotone - Two-tone, distinctive", value: "duotone" },
           ]);
 
@@ -879,7 +1052,10 @@ async function main() {
             { label: "None - Static UI, pure function", value: "none" },
             { label: "Subtle - Micro-interactions, fade-ins", value: "subtle" },
             { label: "Moderate - Page transitions, hovers", value: "moderate" },
-            { label: "Expressive - Bold animations, personality", value: "expressive" },
+            {
+              label: "Expressive - Bold animations, personality",
+              value: "expressive",
+            },
           ]);
 
           // Dark mode
@@ -922,7 +1098,9 @@ async function main() {
   // ─────────────────────────────────────────────────────────────────────────
 
   logStep(++currentStep, totalSteps, "Installing slash commands");
-  log(`  ${c.dim}Copying 29 commands including /hustle-api-create, /hustle-ui-create${c.reset}`);
+  log(
+    `  ${c.dim}Copying 29 commands including /hustle-api-create, /hustle-ui-create${c.reset}`,
+  );
 
   const commandsDir = path.join(claudeDir, "commands");
   const sourceCommandsDir = path.join(packageDir, "commands");
@@ -936,7 +1114,9 @@ async function main() {
   });
 
   if (commandsResult.copied > 0) {
-    logSuccess(`${commandsResult.copied} new commands installed to .claude/commands/`);
+    logSuccess(
+      `${commandsResult.copied} new commands installed to .claude/commands/`,
+    );
   }
   if (commandsResult.skipped > 0) {
     logInfo(`${commandsResult.skipped} commands already exist (preserved)`);
@@ -950,7 +1130,9 @@ async function main() {
   // ─────────────────────────────────────────────────────────────────────────
 
   logStep(++currentStep, totalSteps, "Installing enforcement hooks");
-  log(`  ${c.dim}Python hooks that enforce TDD workflow and prevent skipping phases${c.reset}`);
+  log(
+    `  ${c.dim}Python hooks that enforce TDD workflow and prevent skipping phases${c.reset}`,
+  );
 
   const sourceHooksDir = path.join(packageDir, "hooks");
 
@@ -1007,7 +1189,9 @@ async function main() {
   // ─────────────────────────────────────────────────────────────────────────
 
   logStep(++currentStep, totalSteps, "Installing subagents");
-  log(`  ${c.dim}AI agents for parallel research, schema generation, code review${c.reset}`);
+  log(
+    `  ${c.dim}AI agents for parallel research, schema generation, code review${c.reset}`,
+  );
 
   const agentsDir = path.join(claudeDir, "agents");
   const sourceAgentsDir = path.join(packageDir, ".claude", "agents");
@@ -1021,7 +1205,9 @@ async function main() {
   });
 
   if (agentsResult.copied > 0) {
-    logSuccess(`${agentsResult.copied} new subagents installed to .claude/agents/`);
+    logSuccess(
+      `${agentsResult.copied} new subagents installed to .claude/agents/`,
+    );
   }
   if (agentsResult.skipped > 0) {
     logInfo(`${agentsResult.skipped} subagents already exist (preserved)`);
@@ -1036,7 +1222,9 @@ async function main() {
   // ─────────────────────────────────────────────────────────────────────────
 
   logStep(++currentStep, totalSteps, "Setting up configuration");
-  log(`  ${c.dim}Creating settings.json, state tracking, and research cache${c.reset}`);
+  log(
+    `  ${c.dim}Creating settings.json, state tracking, and research cache${c.reset}`,
+  );
 
   const sourceTemplatesDir = path.join(packageDir, "templates");
 
@@ -1124,7 +1312,9 @@ async function main() {
       if (result.copied > 0) {
         logSuccess(`Copied ${dir} templates (${result.copied} files)`);
       } else if (result.skipped > 0) {
-        logInfo(`${dir} templates already exist (${result.skipped} files preserved)`);
+        logInfo(
+          `${dir} templates already exist (${result.skipped} files preserved)`,
+        );
       }
     }
   }
@@ -1134,7 +1324,9 @@ async function main() {
   // ─────────────────────────────────────────────────────────────────────────
 
   logStep(++currentStep, totalSteps, "Configuring MCP servers");
-  log(`  ${c.dim}Setting up AI-powered integrations for research and code review${c.reset}`);
+  log(
+    `  ${c.dim}Setting up AI-powered integrations for research and code review${c.reset}`,
+  );
 
   const mcpServers = [
     {
@@ -1193,10 +1385,16 @@ async function main() {
   }
 
   log(`\n  ${c.bold}MCP Server Benefits:${c.reset}`);
-  log(`  ${c.dim}• Context7: Always get latest docs, no hallucinated APIs${c.reset}`);
+  log(
+    `  ${c.dim}• Context7: Always get latest docs, no hallucinated APIs${c.reset}`,
+  );
   log(`  ${c.dim}• GitHub: Create issues/PRs directly from Claude${c.reset}`);
-  log(`  ${c.dim}• Greptile: AI-powered code review catches bugs before merge${c.reset}`);
-  log(`  ${c.dim}• Brandfetch: Auto-generate brand guide from company domain${c.reset}`);
+  log(
+    `  ${c.dim}• Greptile: AI-powered code review catches bugs before merge${c.reset}`,
+  );
+  log(
+    `  ${c.dim}• Brandfetch: Auto-generate brand guide from company domain${c.reset}`,
+  );
 
   // ─────────────────────────────────────────────────────────────────────────
   // Step 8: Create .env file with API keys (if provided)
@@ -1285,9 +1483,10 @@ async function main() {
       : "";
 
     // Build brandfetch note if using domain
-    const brandfetchNote = config.brandSource === "brandfetch" && config.brandDomain
-      ? `\n> **Source**: Auto-fetched from ${config.brandDomain} via Brandfetch API\n> Run \`/hustle-brand-refresh\` to update from latest brand assets`
-      : "";
+    const brandfetchNote =
+      config.brandSource === "brandfetch" && config.brandDomain
+        ? `\n> **Source**: Auto-fetched from ${config.brandDomain} via Brandfetch API\n> Run \`/hustle-brand-refresh\` to update from latest brand assets`
+        : "";
 
     const brandGuideContent = `# ${config.brandName} Brand Guide
 
@@ -1586,12 +1785,16 @@ ${config.animationLevel === "none" ? "No animations. Static UI focused purely on
 --easing: cubic-bezier(0.4, 0, 0.2, 1);
 \`\`\`
 
-${config.animationLevel !== "none" ? `### Common Animations
+${
+  config.animationLevel !== "none"
+    ? `### Common Animations
 \`\`\`css
 .fade-in { animation: fadeIn var(--duration-normal) var(--easing); }
 .slide-up { animation: slideUp var(--duration-normal) var(--easing); }
 .scale-in { animation: scaleIn var(--duration-fast) var(--easing); }
-\`\`\`` : "### No Animations\nAll animations are disabled. Use CSS \\`transition: none\\` globally."}
+\`\`\``
+    : "### No Animations\nAll animations are disabled. Use CSS \\`transition: none\\` globally."
+}
 
 ---
 
@@ -1653,8 +1856,12 @@ module.exports = {
   })();
 
   if (!hasPackageJson) {
-    log(`  ${c.dim}No package.json found - skipping npm package installations${c.reset}`);
-    logInfo("Run 'pnpm init' first, then re-run installer to add testing tools");
+    log(
+      `  ${c.dim}No package.json found - skipping npm package installations${c.reset}`,
+    );
+    logInfo(
+      "Run 'pnpm init' first, then re-run installer to add testing tools",
+    );
   } else if (!hasPnpm) {
     log(`  ${c.dim}pnpm not found - skipping installations${c.reset}`);
     logInfo("Install pnpm: npm install -g pnpm");
@@ -1689,7 +1896,10 @@ module.exports = {
               stdio: ["pipe", "pipe", "pipe"],
               timeout: 300000,
             });
-            stopSpinner(true, "Storybook initialized - run 'pnpm storybook' to start");
+            stopSpinner(
+              true,
+              "Storybook initialized - run 'pnpm storybook' to start",
+            );
           } catch (e) {
             stopSpinner(false, "Storybook failed");
             logInfo("  Run manually: pnpm dlx storybook@latest init");
@@ -1700,8 +1910,9 @@ module.exports = {
 
       if (config.withPlaywright) {
         // Check if Playwright is already initialized
-        const hasPlaywright = fs.existsSync(path.join(targetDir, "playwright.config.ts")) ||
-                              fs.existsSync(path.join(targetDir, "playwright.config.js"));
+        const hasPlaywright =
+          fs.existsSync(path.join(targetDir, "playwright.config.ts")) ||
+          fs.existsSync(path.join(targetDir, "playwright.config.js"));
         if (hasPlaywright) {
           logInfo("Playwright already configured");
         } else {
@@ -1712,7 +1923,10 @@ module.exports = {
               stdio: ["pipe", "pipe", "pipe"],
               timeout: 300000,
             });
-            stopSpinner(true, "Playwright initialized - run 'pnpm exec playwright test' to start");
+            stopSpinner(
+              true,
+              "Playwright initialized - run 'pnpm exec playwright test' to start",
+            );
           } catch (e) {
             stopSpinner(false, "Playwright failed");
             logInfo("  Run manually: pnpm create playwright");

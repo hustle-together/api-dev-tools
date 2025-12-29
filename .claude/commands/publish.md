@@ -6,6 +6,7 @@ argument-hint: [patch|minor|major|X.Y.Z]
 Publish the npm package with safe, incremental versioning.
 
 ## Arguments
+
 - `patch` (default) - Bug fixes (1.0.0 → 1.0.1)
 - `minor` - New features (1.0.0 → 1.1.0)
 - `major` - Breaking changes (1.0.0 → 2.0.0)
@@ -34,6 +35,7 @@ $ARGUMENTS
    - Confirm new version on npm registry
 
 ## Safety Rules
+
 - Always commit before publish
 - Always push before publish
 - Never skip version comparison

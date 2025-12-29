@@ -61,11 +61,12 @@ export function APIShowcase({ registry: propRegistry }: APIShowcaseProps) {
   const [search, setSearch] = useState("");
 
   // Use prop registry, imported registry, or default empty structure
-  const registry: Registry = propRegistry || registryData || {
-    version: "1.0.0",
-    apis: {},
-    combined: {},
-  };
+  const registry: Registry = propRegistry ||
+    registryData || {
+      version: "1.0.0",
+      apis: {},
+      combined: {},
+    };
 
   // Combine APIs and combined endpoints into single list
   const allAPIs = useMemo(() => {
