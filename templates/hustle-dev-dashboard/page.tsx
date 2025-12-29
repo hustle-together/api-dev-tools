@@ -150,17 +150,40 @@ export default function HustleDevDashboard() {
           </DashboardSection>
         </div>
 
-        {/* Quick Commands */}
+        {/* Workflow Status */}
         <div className="mt-8 border-2 border-black bg-gray-50 p-6 dark:border-gray-600 dark:bg-gray-900">
           <h2 className="mb-4 text-lg font-bold text-black dark:text-white">
-            Quick Commands
+            Workflow Status
           </h2>
-          <div className="grid gap-2 font-mono text-sm sm:grid-cols-2">
-            <CommandItem command="pnpm typedoc" description="Generate API docs" />
-            <CommandItem command="pnpm test" description="Run all tests" />
-            <CommandItem command="pnpm storybook" description="Start Storybook" />
-            <CommandItem command="pnpm test:e2e" description="Run Playwright tests" />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <StatusItem
+              label="TypeDoc"
+              status="ready"
+              command="pnpm typedoc"
+              description="Auto-generated on build"
+            />
+            <StatusItem
+              label="Unit Tests"
+              status="ready"
+              command="pnpm test"
+              description="Run during TDD phases"
+            />
+            <StatusItem
+              label="Storybook"
+              status="manual"
+              command="pnpm storybook"
+              description="Start server manually"
+            />
+            <StatusItem
+              label="E2E Tests"
+              status="ready"
+              command="pnpm test:e2e"
+              description="Run during verification"
+            />
           </div>
+          <p className="mt-4 text-xs text-gray-500 dark:text-gray-400">
+            Most commands run automatically during workflows. Manual items require server startup.
+          </p>
         </div>
       </main>
 
@@ -283,17 +306,60 @@ function DashboardLink({
   );
 }
 
-function CommandItem({
+function StatusItem({
+  label,
+  status,
   command,
   description,
 }: {
+  label: string;
+  status: "ready" | "manual" | "running" | "error";
   command: string;
   description: string;
 }) {
+  const statusConfig = {
+    ready: {
+      bg: "bg-green-100 dark:bg-green-900/30",
+      text: "text-green-700 dark:text-green-400",
+      label: "Auto",
+      icon: "✓",
+    },
+    manual: {
+      bg: "bg-yellow-100 dark:bg-yellow-900/30",
+      text: "text-yellow-700 dark:text-yellow-400",
+      label: "Manual",
+      icon: "⚡",
+    },
+    running: {
+      bg: "bg-blue-100 dark:bg-blue-900/30",
+      text: "text-blue-700 dark:text-blue-400",
+      label: "Running",
+      icon: "◐",
+    },
+    error: {
+      bg: "bg-red-100 dark:bg-red-900/30",
+      text: "text-red-700 dark:text-red-400",
+      label: "Error",
+      icon: "✗",
+    },
+  };
+
+  const config = statusConfig[status];
+
   return (
-    <div className="flex items-center justify-between rounded bg-white px-3 py-2 dark:bg-gray-800">
-      <code className="text-[#BA0C2F]">{command}</code>
-      <span className="text-xs text-gray-500">{description}</span>
+    <div className="rounded border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-800">
+      <div className="flex items-center justify-between">
+        <span className="font-medium text-black dark:text-white">{label}</span>
+        <span
+          className={`rounded px-2 py-0.5 text-xs font-medium ${config.bg} ${config.text}`}
+        >
+          {config.icon} {config.label}
+        </span>
+      </div>
+      <code className="mt-1 block text-xs text-[#BA0C2F]">{command}</code>
+      <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+        {description}
+      </p>
     </div>
   );
 }
