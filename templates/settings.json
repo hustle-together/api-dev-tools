@@ -1,18 +1,60 @@
 {
   "permissions": {
     "allow": [
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "Glob(*)",
+      "Grep(*)",
+      "LSP(*)",
+      "NotebookEdit(*)",
       "WebSearch",
       "WebFetch",
-      "mcp__context7",
-      "mcp__context7__resolve-library-id",
-      "mcp__context7__get-library-docs",
-      "mcp__github",
+      "Task",
+      "TodoWrite",
+      "AskUserQuestion",
+      "Skill",
+      "mcp__context7__*",
+      "mcp__github__*",
+      "mcp__linear__*",
+      "mcp__supabase__*",
+      "mcp__playwright__*",
       "Bash(claude mcp:*)",
-      "Bash(pnpm test:*)",
-      "Bash(npm test:*)",
+      "Bash(pnpm *)",
+      "Bash(npm *)",
+      "Bash(npx *)",
       "Bash(git status:*)",
       "Bash(git diff:*)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git branch:*)",
+      "Bash(git checkout:*)",
+      "Bash(curl:*)",
+      "Bash(tree:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(echo:*)",
+      "Bash(mkdir:*)",
+      "Bash(touch:*)",
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Bash(chmod:*)"
+    ],
+    "deny": [
+      "Read(.env*)",
+      "Read(**/.env*)",
+      "Read(**/secrets/**)",
+      "Read(**/credentials*)",
+      "Write(.env*)",
+      "Edit(.env*)",
+      "Bash(rm -rf *)",
+      "Bash(sudo *)",
+      "Bash(git push --force *)",
+      "Bash(git reset --hard *)",
+      "Bash(> /dev/*)",
+      "Bash(curl * | bash)",
+      "Bash(wget * | bash)"
     ]
   },
   "hooks": {
@@ -26,6 +68,14 @@
           {
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/detect-interruption.py"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-update.py"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/orchestrator-session-startup.py"
           }
         ]
       }
@@ -140,6 +190,19 @@
           {
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/enforce-questions-sourced.py"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-answer.py"
+          }
+        ]
+      },
+      {
+        "matcher": "Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/orchestrator-handoff.py"
           }
         ]
       }
@@ -159,6 +222,15 @@
           {
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/track-scope-coverage.py"
+          }
+        ]
+      },
+      {
+        "matcher": "AskUserQuestion",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/ntfy-on-question.py"
           }
         ]
       },
@@ -197,6 +269,15 @@
           {
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/enforce-a11y-audit.py"
+          }
+        ]
+      },
+      {
+        "matcher": "Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/orchestrator-completion.py"
           }
         ]
       }

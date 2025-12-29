@@ -5,10 +5,70 @@ argument-hint: [page-name]
 
 # Hustle UI Create - Page Mode
 
-**Version:** 3.11.0
+**Version:** 4.0.0
 **14-phase workflow for creating Next.js App Router pages**
 
+**Usage:** `/hustle-ui-create-page [page-name] [--auto] [--resume [workflow-id]]`
+
 You are creating a page using the Hustle Together interview-driven workflow.
+
+## Arguments
+
+- `[page-name]` - Name of the page to create
+- `--auto` - Fully autonomous mode, auto-answers all questions with comprehensive defaults
+- `--resume [workflow-id]` - Resume an interrupted workflow from its last phase
+
+---
+
+## Auto Mode (`--auto`)
+
+When `--auto` flag is used:
+
+1. **No Interactive Questions:**
+   - All questions auto-answered with comprehensive defaults
+   - Uses `.claude/hustle-build-defaults.json` for configured answers
+   - Falls back to "most comprehensive" option when no default exists
+
+2. **Comprehensive Selection Logic:**
+   - Uses responsive-grid layout
+   - Enables full SEO (Open Graph, Twitter cards, JSON-LD)
+   - Creates loading states and error boundaries
+   - Enables prefetching and Suspense
+   - Uses all available components from registry
+
+3. **Error Handling:**
+   - E2E test failures: Retry 3x, then log and continue
+   - Missing API routes: Log warning, create stubs
+   - Performance budget exceeded: Log warning, continue
+
+4. **Logging:**
+   - All decisions logged to `.claude/workflow-logs/ui-create-page/[workflow-id].json`
+   - Review with `/hustle-ui-create-page-review [workflow-id]`
+
+---
+
+## Resume Mode (`--resume`)
+
+When `--resume [workflow-id]` is used:
+
+1. Load state from `.claude/api-dev-state.json`
+2. Find the last incomplete phase
+3. Continue from that point
+4. Preserve all previous decisions
+
+---
+
+## Orchestrated Mode
+
+When running as part of `/hustle-build`:
+
+1. `orchestrated: true` flag is set in state
+2. `shared_decisions` are pre-filled from orchestrator interview
+3. Questions covered by shared_decisions are SKIPPED (e.g., auth, brand guide, testing level)
+4. Components to use are pre-selected based on orchestrator decomposition
+5. Only page-specific questions are asked (layout, SEO details)
+
+---
 
 ## Pre-Flight Check
 
@@ -1014,5 +1074,5 @@ Next Steps:
 
 ---
 
-**Version:** 3.11.0
+**Version:** 4.0.0
 **Last Updated:** 2025-12-28

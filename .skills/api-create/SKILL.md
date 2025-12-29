@@ -4,18 +4,91 @@ description: Complete API development workflow using interview-driven, research-
 license: MIT
 compatibility: Requires Claude Code with MCP servers (Context7 for docs, GitHub for PRs), Python 3.9+ for enforcement hooks, pnpm 10.11.0+ for package management, Vitest for testing
 metadata:
-  version: "3.0.0"
+  version: "4.0.0"
   category: "development"
   tags: ["api", "tdd", "workflow", "research", "interview", "verification", "testing"]
   author: "Hustle Together"
 allowed-tools: WebSearch WebFetch mcp__context7 mcp__github AskUserQuestion Read Write Edit Bash TodoWrite
 ---
 
-# API Create - Comprehensive API Development Workflow v3.0
+# API Create - Comprehensive API Development Workflow v4.0
 
-**Usage:** `/api-create [endpoint-name]`
+**Usage:** `/api-create [endpoint-name] [--auto] [--resume [workflow-id]]`
 
 **Purpose:** Orchestrates the complete API development workflow using interview-driven, research-first, test-first methodology with continuous verification loops.
+
+## Arguments
+
+- `[endpoint-name]` - Name of the API endpoint to create
+- `--auto` - Fully autonomous mode, auto-answers all questions with comprehensive defaults
+- `--resume [workflow-id]` - Resume an interrupted workflow from its last phase
+
+---
+
+## Auto Mode (`--auto`)
+
+When `--auto` flag is used:
+
+1. **No Interactive Questions:**
+   - All questions auto-answered with comprehensive defaults
+   - Uses `.claude/hustle-build-defaults.json` for configured answers
+   - Falls back to "most comprehensive" option when no default exists
+
+2. **Comprehensive Selection Logic:**
+   - Always selects options that include ALL available features
+   - Always enables ALL testing levels
+   - Always generates ALL documentation
+   - Prefers "Yes" over "No" for optional features
+
+3. **Error Handling:**
+   - Test failures: Retry 3x, then log and continue
+   - Verification gaps: Log gap, continue (will review later)
+   - Missing API keys: Log warning, continue if possible
+
+4. **Logging:**
+   - All decisions logged to `.claude/workflow-logs/api-create/[workflow-id].json`
+   - Review with `/api-create-review [workflow-id]`
+
+**Example:**
+```bash
+/api-create brandfetch --auto
+```
+
+---
+
+## Resume Mode (`--resume`)
+
+When `--resume [workflow-id]` is used:
+
+1. Load state from `.claude/api-dev-state.json`
+2. Find the last incomplete phase
+3. Continue from that point
+4. Preserve all previous decisions
+
+**Example:**
+```bash
+/api-create --resume wf-brandfetch-2025-12-28
+```
+
+---
+
+## Orchestrated Mode
+
+When running as part of `/hustle-build`:
+
+1. `orchestrated: true` flag is set in state
+2. `shared_decisions` are pre-filled from orchestrator interview
+3. Questions covered by shared_decisions are SKIPPED
+4. Only workflow-specific questions are asked
+
+Check for orchestration at startup:
+```python
+if state.get("orchestrated"):
+    # Skip questions in shared_decisions_applied
+    skip_questions = state.get("shared_decisions_applied", [])
+```
+
+---
 
 ## ⚠️ CRITICAL: MANDATORY USER INTERACTION
 

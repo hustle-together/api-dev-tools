@@ -1,8 +1,64 @@
-# Hustle Combine - API and UI Orchestration Workflow v3.11.0
+# Hustle Combine - API and UI Orchestration Workflow v4.0.0
 
-**Usage:** `/hustle-combine [api|ui]`
+**Usage:** `/hustle-combine [api|ui] [--auto] [--resume [workflow-id]]`
 
 **Purpose:** Combines existing APIs or UI elements from the registry into new orchestration endpoints or composed components.
+
+## Arguments
+
+- `[api|ui]` - Mode: combine APIs or UI elements
+- `--auto` - Fully autonomous mode, auto-answers all questions with comprehensive defaults
+- `--resume [workflow-id]` - Resume an interrupted workflow from its last phase
+
+---
+
+## Auto Mode (`--auto`)
+
+When `--auto` flag is used:
+
+1. **No Interactive Questions:**
+   - All questions auto-answered with comprehensive defaults
+   - Uses `.claude/hustle-build-defaults.json` for configured answers
+   - Falls back to "most comprehensive" option when no default exists
+
+2. **Comprehensive Selection Logic:**
+   - Selects parallel execution (when APIs are independent)
+   - Uses partial-success error handling
+   - Enables unified caching strategy
+   - Uses exponential retry with 30s timeout
+
+3. **API Selection in Orchestrated Mode:**
+   - When `orchestrated: true`, APIs are pre-selected by orchestrator
+   - Selection phase is skipped, proceeds directly to Scope
+
+4. **Logging:**
+   - All decisions logged to `.claude/workflow-logs/hustle-combine/[workflow-id].json`
+   - Review with `/hustle-combine-review [workflow-id]`
+
+---
+
+## Resume Mode (`--resume`)
+
+When `--resume [workflow-id]` is used:
+
+1. Load state from `.claude/api-dev-state.json`
+2. Find the last incomplete phase
+3. Continue from that point
+4. Preserve all previous decisions and API selections
+
+---
+
+## Orchestrated Mode
+
+When running as part of `/hustle-build`:
+
+1. `orchestrated: true` flag is set in state
+2. `shared_decisions` are pre-filled from orchestrator interview
+3. Source APIs are pre-selected based on orchestrator decomposition
+4. Questions covered by shared_decisions are SKIPPED
+5. Only combination-specific questions are asked (execution order, caching)
+
+---
 
 ## Overview
 

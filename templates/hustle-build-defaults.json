@@ -1,0 +1,84 @@
+{
+  "$schema": "hustle-build-defaults",
+  "description": "Pre-configured default answers for --auto mode. These are used when no explicit answer is provided.",
+
+  "orchestrator": {
+    "auth_required": true,
+    "error_handling": "partial-success",
+    "brand_guide": true,
+    "testing_level": "full",
+    "caching_strategy": "individual",
+    "documentation_level": "comprehensive"
+  },
+
+  "api": {
+    "include_all_params": true,
+    "rate_limiting": true,
+    "caching": "individual",
+    "error_format": "detailed",
+    "validation": "strict",
+    "logging": true,
+    "metrics": true
+  },
+
+  "component": {
+    "all_variants": true,
+    "accessibility": "wcag-aa",
+    "animations": true,
+    "responsive": true,
+    "dark_mode": true,
+    "loading_states": true,
+    "error_states": true,
+    "storybook": true
+  },
+
+  "page": {
+    "layout": "responsive-grid",
+    "seo": true,
+    "loading_states": true,
+    "error_boundary": true,
+    "suspense": true,
+    "prefetch": true,
+    "meta_tags": true
+  },
+
+  "combined": {
+    "execution_order": "parallel",
+    "caching": "unified",
+    "error_handling": "partial-success",
+    "retry_strategy": "exponential",
+    "timeout": 30000
+  },
+
+  "testing": {
+    "unit_tests": true,
+    "integration_tests": true,
+    "e2e_tests": true,
+    "visual_tests": true,
+    "coverage_threshold": 80,
+    "snapshot_tests": true
+  },
+
+  "documentation": {
+    "tsdoc": true,
+    "readme": true,
+    "changelog": true,
+    "storybook_docs": true,
+    "api_reference": true
+  },
+
+  "question_mappings": {
+    "auth": "auth_required",
+    "authentication": "auth_required",
+    "error": "error_handling",
+    "brand": "brand_guide",
+    "styling": "brand_guide",
+    "testing": "testing_level",
+    "cache": "caching_strategy",
+    "variant": "all_variants",
+    "a11y": "accessibility",
+    "accessibility": "accessibility",
+    "layout": "layout",
+    "seo": "seo"
+  }
+}

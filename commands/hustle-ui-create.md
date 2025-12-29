@@ -5,10 +5,68 @@ argument-hint: [component-name]
 
 # Hustle UI Create
 
-**Version:** 3.11.0
+**Version:** 4.0.0
 **14-phase workflow for creating UI components and pages**
 
+**Usage:** `/hustle-ui-create [component-name] [--auto] [--resume [workflow-id]]`
+
 You are creating a UI element using the Hustle Together interview-driven workflow.
+
+## Arguments
+
+- `[component-name]` - Name of the component to create
+- `--auto` - Fully autonomous mode, auto-answers all questions with comprehensive defaults
+- `--resume [workflow-id]` - Resume an interrupted workflow from its last phase
+
+---
+
+## Auto Mode (`--auto`)
+
+When `--auto` flag is used:
+
+1. **No Interactive Questions:**
+   - All questions auto-answered with comprehensive defaults
+   - Uses `.claude/hustle-build-defaults.json` for configured answers
+   - Falls back to "most comprehensive" option when no default exists
+
+2. **Comprehensive Selection Logic:**
+   - Selects ALL variants (size, color, state)
+   - Enables full accessibility (WCAG 2.1 AA)
+   - Enables animations and responsive design
+   - Creates all Storybook stories
+
+3. **Error Handling:**
+   - Test failures: Retry 3x, then log and continue
+   - Visual regression: Update baselines automatically
+   - Missing packages: Install automatically
+
+4. **Logging:**
+   - All decisions logged to `.claude/workflow-logs/ui-create/[workflow-id].json`
+   - Review with `/hustle-ui-create-review [workflow-id]`
+
+---
+
+## Resume Mode (`--resume`)
+
+When `--resume [workflow-id]` is used:
+
+1. Load state from `.claude/api-dev-state.json`
+2. Find the last incomplete phase
+3. Continue from that point
+4. Preserve all previous decisions
+
+---
+
+## Orchestrated Mode
+
+When running as part of `/hustle-build`:
+
+1. `orchestrated: true` flag is set in state
+2. `shared_decisions` are pre-filled from orchestrator interview
+3. Questions covered by shared_decisions are SKIPPED (e.g., brand guide, testing level)
+4. Only component-specific questions are asked (variants, props)
+
+---
 
 ## Pre-Flight Check
 
@@ -996,5 +1054,5 @@ See full page mode documentation in `/hustle-ui-create-page.md` (if implementing
 
 ---
 
-**Version:** 3.11.0
+**Version:** 4.0.0
 **Last Updated:** 2025-12-28
