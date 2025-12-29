@@ -141,7 +141,7 @@ Combines multiple existing APIs into orchestrated endpoints:
 
 | Component         | Count | Purpose                                 |
 | ----------------- | ----- | --------------------------------------- |
-| Agent Skills      | 23    | Cross-platform workflow commands        |
+| Agent Skills      | 24    | Cross-platform workflow commands        |
 | Enforcement Hooks | 22    | Block progress until phases complete    |
 | Subagents         | 7     | Parallel research, schemas, tests, docs |
 | State Tracking    | 1     | Track progress across sessions          |
@@ -275,10 +275,14 @@ Configuration: `typedoc.json` (installed by the CLI)
 
 | Document | Purpose |
 | -------- | ------- |
-| **[docs/SKILLS.md](./docs/SKILLS.md)** | Complete slash command reference - all 23+ skills with usage and examples |
+| **[docs/SKILLS.md](./docs/SKILLS.md)** | Complete slash command reference - all 24+ skills with usage and examples |
 | **[docs/HOOKS.md](./docs/HOOKS.md)** | All 45+ enforcement hooks - what they do and when they run |
 | **[docs/AGENTS.md](./docs/AGENTS.md)** | Specialized subagents - parallel-researcher, schema-generator, etc. |
+| **[docs/ORCHESTRATOR.md](./docs/ORCHESTRATOR.md)** | Master workflow controller - /hustle-build, decomposition, shared decisions |
+| **[docs/REGROUNDING.md](./docs/REGROUNDING.md)** | 7-turn context refresh system - prevents "lost in the middle" problem |
 | **[docs/PLUGIN_ARCHITECTURE.md](./docs/PLUGIN_ARCHITECTURE.md)** | How the plugin system works - installation, state, lifecycle |
+| **[docs/CLAUDE_CODE_BEST_PRACTICES.md](./docs/CLAUDE_CODE_BEST_PRACTICES.md)** | Industry best practices for Claude Code - hooks, subagents, context engineering |
+| **[docs/GAP_ANALYSIS.md](./docs/GAP_ANALYSIS.md)** | How api-dev-tools implements best practices and what gaps remain |
 
 ### Guides
 

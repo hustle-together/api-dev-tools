@@ -1,9 +1,15 @@
 # Hooks Reference
 
-**Version:** 3.12.12
-**Last Updated:** 2025-12-28
+**Version:** 4.0.0
+**Last Updated:** 2025-12-29
 
-Hooks are Python scripts that enforce workflow rules at various lifecycle events. They ensure developers follow the research-first, interview-driven methodology.
+> **The Problem**
+>
+> Without enforcement, developers (and AI assistants) skip important steps. Research gets forgotten, tests aren't written first, code reviews are bypassed. There's no guardrail preventing a "just code it" approach that leads to bugs and technical debt.
+
+> **The Solution**
+>
+> Hooks are automatic enforcement scripts that run at lifecycle events. They block writes until research is complete, inject interview decisions during implementation, verify tests pass before proceeding, and trigger re-grounding to combat context dilution. No skipping steps.
 
 ---
 

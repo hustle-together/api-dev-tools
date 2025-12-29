@@ -1,9 +1,15 @@
 # Agents Reference
 
-**Version:** 3.12.12
-**Last Updated:** 2025-12-28
+**Version:** 4.0.0
+**Last Updated:** 2025-12-29
 
-Agents are specialized sub-processes that handle specific tasks. They run in parallel with the main conversation and return structured results.
+> **The Problem**
+>
+> Long-running tasks in a single conversation consume context rapidly and slow down responses. Researching multiple documentation sources sequentially wastes time, and using a powerful model for simple tasks wastes resources.
+
+> **The Solution**
+>
+> Agents are specialized sub-processes that run in parallel with isolated context windows. Each agent has restricted tools for its specific task, uses the appropriate model (Haiku for speed, Sonnet for quality), and returns structured results without bloating the main conversation.
 
 ---
 

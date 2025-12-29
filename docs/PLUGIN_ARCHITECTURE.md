@@ -1,9 +1,15 @@
 # Plugin Architecture
 
-**Version:** 3.12.12
-**Last Updated:** 2025-12-28
+**Version:** 4.0.0
+**Last Updated:** 2025-12-29
 
-This document explains how Hustle API Dev Tools works as a plugin for Claude Code and other AI-assisted development environments.
+> **The Problem**
+>
+> Setting up a comprehensive AI-assisted development workflow requires configuring many pieces: skills, hooks, agents, templates, state management. Doing this manually for each project is error-prone and time-consuming.
+
+> **The Solution**
+>
+> The plugin bundles all components into a single npm package. One `npx` command installs skills, hooks, agents, templates, and state tracking into your project. The modular architecture ensures cross-platform compatibility with Claude Code, VS Code, and Cursor.
 
 ---
 

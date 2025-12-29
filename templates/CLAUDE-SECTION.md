@@ -1,21 +1,37 @@
-## Hustle API Development Workflow (v3.7.0)
+## Hustle API Development Workflow (v4.0.0)
 
-This project uses **@hustle-together/api-dev-tools** for interview-driven, research-first API development.
+This project uses **@hustle-together/api-dev-tools** for interview-driven, research-first development.
+
+### Project Context
+
+<!-- INSTALLER: Replace these with actual project values -->
+**Tech Stack:** [Framework] + [Language] + [Database]
+**UI Library:** [UI framework or component library]
+**Testing:** [Test framework] + [E2E framework]
+
+### Existing Elements
+
+<!-- AUTO-POPULATED: Updated by registry hooks -->
+**APIs:** (check `.claude/registry.json`)
+**Components:** (check `.claude/registry.json`)
+**Pages:** (check `.claude/registry.json`)
 
 ### Available Commands
 
 | Command                            | Purpose                               |
 | ---------------------------------- | ------------------------------------- |
-| `/hustle-api-create [endpoint]`    | Complete 13-phase workflow            |
-| `/hustle-api-interview [endpoint]` | Questions FROM research findings      |
-| `/hustle-api-research [library]`   | Adaptive propose-approve research     |
-| `/hustle-api-verify [endpoint]`    | Re-research and verify implementation |
-| `/hustle-api-env [endpoint]`       | Check API keys                        |
-| `/hustle-api-status [endpoint]`    | Track progress                        |
-| `/hustle-api-continue [endpoint]`  | Resume interrupted workflow           |
-| `/hustle-api-sessions`             | Browse saved session logs             |
+| `/hustle-build [description]`      | Orchestrated multi-workflow build     |
+| `/api-create [endpoint]`           | Complete 14-phase API workflow        |
+| `/hustle-ui-create [component]`    | Component with Storybook              |
+| `/hustle-ui-create-page [page]`    | Page with Playwright E2E             |
+| `/hustle-combine [name]`           | Combine multiple APIs                 |
+| `/api-research [library]`          | Adaptive propose-approve research     |
+| `/api-interview [endpoint]`        | Questions FROM research findings      |
+| `/api-verify [endpoint]`           | Re-research and verify implementation |
+| `/api-env [endpoint]`              | Check API keys                        |
+| `/api-status [endpoint]`           | Track progress                        |
 
-### 13-Phase Flow
+### 14-Phase Flow
 
 ```
 Phase 1:  DISAMBIGUATION     - Clarify ambiguous terms before research
@@ -28,18 +44,20 @@ Phase 7:  ENVIRONMENT        - Verify API keys exist
 Phase 8:  TDD RED            - Write failing tests from schema
 Phase 9:  TDD GREEN          - Minimal implementation to pass tests
 Phase 10: VERIFY             - Re-research docs, compare to implementation
-Phase 11: TDD REFACTOR       - Clean up code while tests pass
-Phase 12: DOCUMENTATION      - Update manifests, cache research
-Phase 13: COMPLETION         - Final verification, commit
+Phase 11: CODE REVIEW        - AI review (bugs, security, performance)
+Phase 12: TDD REFACTOR       - Fix review issues + clean up code
+Phase 13: DOCUMENTATION      - Update manifests, cache research
+Phase 14: COMPLETION         - Final verification, commit
 ```
 
 ### Key Principles
 
-1. **Loop Until Green** - Every verification phase loops back if not successful
+1. **Research-First** - Never write code from memory, always verify docs
 2. **Questions FROM Research** - Never use generic template questions
-3. **Adaptive Research** - Propose searches based on context, not shotgun
+3. **Loop Until Green** - Every verification phase loops back if not successful
 4. **7-Turn Re-grounding** - Context injected every 7 turns to prevent dilution
 5. **Verify After Green** - Re-research to catch memory-based implementation errors
+6. **Registry Awareness** - Don't recreate existing elements
 
 ### State Tracking
 
@@ -49,7 +67,17 @@ All progress is tracked in `.claude/api-dev-state.json`:
 - Interview decisions (injected during implementation)
 - Research sources with freshness tracking
 - Turn count for re-grounding
-- Multi-API support with active endpoint pointer
+- Deferred features list
+- Test run history
+
+### Registry
+
+`.claude/registry.json` tracks all created elements:
+
+- APIs with endpoints, schemas, and examples
+- Components with props and variants
+- Pages with routes and data requirements
+- Combined APIs with orchestration patterns
 
 ### Research Cache
 
@@ -59,61 +87,58 @@ Research is cached in `.claude/research/` with 7-day freshness:
 - `[api-name]/CURRENT.md` - Latest research
 - `[api-name]/sources.json` - Research sources
 - `[api-name]/interview.json` - Interview decisions
-- `[api-name]/schema.json` - Schema snapshot
 - Stale research (>7 days) triggers re-research prompt
 
-### Hooks (25 Total - Automatic Enforcement)
+### Re-grounding System
 
-| Hook                               | Event            | Action                               |
-| ---------------------------------- | ---------------- | ------------------------------------ |
-| `session-startup.py`               | SessionStart     | Inject state context                 |
-| `detect-interruption.py`           | SessionStart     | Detect interrupted workflows         |
-| `enforce-external-research.py`     | UserPromptSubmit | Require research first               |
-| `enforce-disambiguation.py`        | PreToolUse       | Phase 1 enforcement                  |
-| `enforce-scope.py`                 | PreToolUse       | Phase 2 enforcement                  |
-| `enforce-research.py`              | PreToolUse       | Phase 3 enforcement                  |
-| `enforce-interview.py`             | PreToolUse       | Phase 4 - inject decisions           |
-| `enforce-deep-research.py`         | PreToolUse       | Phase 5 enforcement                  |
-| `enforce-schema.py`                | PreToolUse       | Phase 6 enforcement                  |
-| `enforce-environment.py`           | PreToolUse       | Phase 7 enforcement                  |
-| `enforce-tdd-red.py`               | PreToolUse       | Phase 8 enforcement                  |
-| `verify-implementation.py`         | PreToolUse       | Phase 9 helper                       |
-| `enforce-verify.py`                | PreToolUse       | Phase 10 enforcement                 |
-| `enforce-refactor.py`              | PreToolUse       | Phase 11 enforcement                 |
-| `enforce-documentation.py`         | PreToolUse       | Phase 12 enforcement                 |
-| `enforce-questions-sourced.py`     | PreToolUse       | Validate questions from research     |
-| `enforce-schema-from-interview.py` | PreToolUse       | Validate schema from interview       |
-| `track-tool-use.py`                | PostToolUse      | Log research, count turns            |
-| `periodic-reground.py`             | PostToolUse      | Re-inject context every 7 turns      |
-| `track-scope-coverage.py`          | PostToolUse      | Track implemented vs deferred        |
-| `verify-after-green.py`            | PostToolUse      | Trigger Phase 10 after tests pass    |
-| `cache-research.py`                | PostToolUse      | Create research cache files          |
-| `generate-manifest-entry.py`       | PostToolUse      | Auto-generate API documentation      |
-| `api-workflow-check.py`            | Stop             | Block if incomplete, generate output |
-| `session-logger.py`                | Stop             | Save session to api-sessions         |
+Every 7 turns, the system injects a reminder with:
 
-### Auto-Generated Documentation
+- Current endpoint and phase progress
+- Key interview decisions
+- Existing registry elements (don't recreate)
+- Deferred features (don't re-suggest)
+- Last test status (GREEN/RED)
+- Brand guide status
+- Research freshness warnings
+- Orchestrator progress (if in /hustle-build)
 
-When Phase 12 completes, `generate-manifest-entry.py` automatically creates:
+See: [docs/REGROUNDING.md](./docs/REGROUNDING.md)
 
-- **Comprehensive curl examples** (minimal, full, auth, enum variations, boundary values)
-- **Complete test cases** (success, validation, required fields, types, boundaries, arrays)
-- **Parameter documentation** with all possible values
-- **Ready-to-use entries** for `api-tests-manifest.json`
+### Brand Guide
+
+If `.claude/BRAND_GUIDE.md` exists:
+
+- All UI components use brand colors/fonts
+- Enforce hook checks before component creation
+- Re-grounding reminds about brand guide
+
+### Hooks (45+ Automatic Enforcement)
+
+| Category | Hooks | Purpose |
+| -------- | ----- | ------- |
+| SessionStart | 4 | Inject state, detect interruptions, check updates |
+| UserPromptSubmit | 1 | Require research before API questions |
+| PreToolUse | 22 | Phase enforcement, schema validation |
+| PostToolUse | 12 | Tracking, re-grounding, registry updates |
+| Stop | 2 | Workflow completion, session logging |
 
 ### Usage
 
 ```bash
-# Full automated workflow
-/hustle-api-create my-endpoint
+# Orchestrated build (recommended for features)
+/hustle-build dashboard with user stats and activity charts
 
-# Manual step-by-step
-/hustle-api-research [library]
-/hustle-api-interview [endpoint]
-/hustle-api-env [endpoint]
+# Individual workflows
+/api-create stripe-checkout
+/hustle-ui-create StatCard
+/hustle-ui-create-page Dashboard
+
+# TDD cycle
 /red
 /green
-/hustle-api-verify [endpoint]
 /refactor
+
+# Git
 /commit
+/pr
 ```

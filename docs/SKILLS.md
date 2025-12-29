@@ -1,9 +1,15 @@
 # Skills Reference (Slash Commands)
 
-**Version:** 3.12.12
-**Last Updated:** 2025-12-28
+**Version:** 4.0.0
+**Last Updated:** 2025-12-29
 
-Skills are slash commands that trigger specific workflows. They're defined in `.skills/` or `commands/` directories and invoked with `/skill-name`.
+> **The Problem**
+>
+> AI assistants require detailed prompts for every task. Without structured workflows, developers must manually craft prompts, remember complex sequences, and ensure nothing is skipped. This leads to inconsistent results and forgotten steps.
+
+> **The Solution**
+>
+> Skills are pre-defined slash commands that encapsulate entire workflows. One command like `/api-create` triggers a complete 14-phase process with research, interview, TDD, verification, and documentation - ensuring consistent, thorough execution every time.
 
 ---
 
@@ -520,6 +526,38 @@ Provides template and instructions for creating new slash commands.
 /add-command
 # Shows skill creation template
 ```
+
+---
+
+### /docs-sync
+
+**Usage:** `/docs-sync [feature-name]` or `/docs-sync --check`
+**Purpose:** Synchronize documentation after code changes
+
+Ensures docs stay in sync with implementation:
+1. Analyze recent changes (git diff or file modifications)
+2. Update relevant docs (HOOKS.md, SKILLS.md, AGENTS.md, etc.)
+3. Create new docs for new features
+4. Ensure Problem/Solution headers on all docs
+5. Update README links
+
+**Example:**
+```bash
+/docs-sync                    # Analyze and sync all docs
+/docs-sync stripe-checkout    # Sync docs for specific feature
+/docs-sync --check            # Check what needs updating (no writes)
+```
+
+**Doc Updates by Change Type:**
+
+| Change Type | Doc to Update |
+|-------------|---------------|
+| New hook | `docs/HOOKS.md` |
+| New skill | `docs/SKILLS.md` |
+| New agent | `docs/AGENTS.md` |
+| Orchestrator change | `docs/ORCHESTRATOR.md` |
+| Re-grounding change | `docs/REGROUNDING.md` |
+| Gap fixed | `docs/GAP_ANALYSIS.md` |
 
 ---
 
