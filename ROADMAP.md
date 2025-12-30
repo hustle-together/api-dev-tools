@@ -10,7 +10,7 @@
 
 This document consolidates the **roadmap** and **gap analysis** for API Dev Tools, providing a single source of truth for all planned enhancements, identified gaps, and implementation priorities.
 
-### Current Coverage: 84%
+### Current Coverage: 77%
 
 | Category | Solved | Partial | Gap | Coverage |
 |----------|--------|---------|-----|----------|
@@ -26,17 +26,35 @@ This document consolidates the **roadmap** and **gap analysis** for API Dev Tool
 | **Visual Testing** | 0 | 1 | 3 | **25%** |
 | **Test Skills** | 0 | 0 | 7 | **0%** |
 | **Token Tracking** | 0 | 1 | 1 | **50%** |
+| **Code Quality & CI/CD** | 0 | 2 | 6 | **25%** |
 
 ### Priority Gaps to Address
 
-| Gap | Priority | Effort | Impact |
-|-----|----------|--------|--------|
-| **7 Missing Test Skills** | HIGH | 6-8 hrs | Enable test automation |
-| **Multi-Viewport Testing (7 viewports)** | HIGH | 4-6 hrs | Real-world responsive coverage |
-| **Haiku Visual Analyzer Subagent** | HIGH | 2-3 hrs | AI-powered screenshot analysis |
-| **Token Tracking Per Phase** | MEDIUM | 2-3 hrs | Cost visibility and optimization |
-| **Security Deny Rules** | HIGH | 1 hr | Safety critical |
-| **Context Capacity Warning** | MEDIUM | 1 hr | Prevents context degradation |
+| # | Gap | Priority | Effort | Impact |
+|---|-----|----------|--------|--------|
+| 1 | **7 Missing Test Skills** | HIGH | 6-8 hrs | Enable test automation |
+| 2 | **Multi-Viewport Testing (7 viewports)** | HIGH | 4-6 hrs | Real-world responsive coverage |
+| 3 | **Haiku Visual Analyzer Subagent** | HIGH | 2-3 hrs | AI-powered screenshot analysis |
+| 4 | **Security Deny Rules** | HIGH | 1 hr | Safety critical |
+| 5 | **Pre-commit Hooks** (lint-staged) | HIGH | 2 hrs | Fast local quality gates |
+| 6 | **Type-Aware ESLint** | HIGH | 1 hr | Catch type errors before runtime |
+| 7 | **Token Tracking Per Phase** | MEDIUM | 2-3 hrs | Cost visibility |
+| 8 | **Context Capacity Warning** | MEDIUM | 1 hr | Prevents context degradation |
+| 9 | **Schema Lint** (Zod conventions) | MEDIUM | 2 hrs | API consistency |
+| 10 | **Dependency Audit** (npm audit) | MEDIUM | 1 hr | Security baseline |
+
+### Deferred Gaps (Implement Later)
+
+| # | Gap | Priority | Effort | Reason to Defer |
+|---|-----|----------|--------|-----------------|
+| 11 | API Contract Tests (OpenAPI) | LOW | 4 hrs | Need OpenAPI spec first |
+| 12 | Bundle Size Budget | LOW | 2 hrs | Optimization, not blocking |
+| 13 | Dead Code Detection | LOW | 1 hr | Nice to have |
+| 14 | API Security Scan (OWASP) | LOW | 4 hrs | Advanced security |
+| 15 | Multi-Pass Code Review | LOW | 4-6 hrs | Current review sufficient |
+| 16 | Parallel Worktree Orchestration | LOW | 6-8 hrs | Complex, rare use case |
+| 17 | Sandbox Mode Integration | LOW | 2 hrs | Minor UX improvement |
+| 18 | claude-mem Integration | FUTURE | 4 hrs | Evaluate after v4.1 |
 
 ---
 
@@ -379,6 +397,46 @@ Estimated Cost:              $0.45
 | Session-level tracking | **Partial** | ccusage available | Not integrated |
 | Per-phase tracking | **Gap** | Not implemented | Need phase correlation |
 | Cost transparency | **Gap** | Not implemented | `/token-report` skill |
+
+---
+
+### 12. Code Quality & CI/CD (25% Coverage) - NEW CATEGORY
+
+| Practice | Status | Implementation | Notes |
+|----------|--------|----------------|-------|
+| ESLint configured | **Partial** | Basic config | Need type-aware rules |
+| TypeScript strict mode | **Partial** | Enabled | Not enforced in CI |
+| Pre-commit hooks | **Gap** | Not implemented | lint-staged recommended |
+| Schema linting | **Gap** | Not implemented | Zod convention checks |
+| API contract tests | **Gap** | Not implemented | OpenAPI validation |
+| Bundle size budget | **Gap** | Not implemented | Prevent bloat |
+| Dead code detection | **Gap** | Not implemented | Unused exports |
+| Dependency audit | **Gap** | Not implemented | npm audit in CI |
+
+**Recommended CI Pipeline:**
+```yaml
+# .github/workflows/ci.yml
+jobs:
+  quality:
+    steps:
+      - pnpm lint              # ESLint with type info
+      - pnpm typecheck         # tsc --noEmit
+      - pnpm test              # Vitest unit tests
+      - pnpm test:e2e          # Playwright (optional)
+      - npm audit --audit-level=high
+      - pnpm build             # Verify builds
+```
+
+**Pre-commit Hook Setup (lint-staged):**
+```json
+// package.json
+{
+  "lint-staged": {
+    "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
+    "*.{json,md}": ["prettier --write"]
+  }
+}
+```
 
 ---
 
