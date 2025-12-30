@@ -48,11 +48,69 @@
   },
 
   "responsive": {
-    "description": "Responsive breakpoints to test",
+    "description": "Responsive breakpoints to test (7 comprehensive viewports)",
     "breakpoints": [
-      { "name": "mobile", "width": 375, "height": 667 },
-      { "name": "tablet", "width": 768, "height": 1024 },
-      { "name": "desktop", "width": 1920, "height": 1080 }
-    ]
+      {
+        "name": "mobile-portrait",
+        "width": 375,
+        "height": 667,
+        "description": "iPhone SE baseline",
+        "safeArea": null
+      },
+      {
+        "name": "mobile-notch",
+        "width": 393,
+        "height": 852,
+        "description": "iPhone 14 Pro with notch and home indicator",
+        "safeArea": {
+          "top": 47,
+          "bottom": 34,
+          "left": 0,
+          "right": 0
+        }
+      },
+      {
+        "name": "mobile-landscape",
+        "width": 667,
+        "height": 375,
+        "description": "iPhone rotated landscape",
+        "safeArea": null
+      },
+      {
+        "name": "tablet-portrait",
+        "width": 768,
+        "height": 1024,
+        "description": "iPad Mini baseline",
+        "safeArea": null
+      },
+      {
+        "name": "tablet-landscape",
+        "width": 1024,
+        "height": 768,
+        "description": "iPad Mini rotated",
+        "safeArea": null
+      },
+      {
+        "name": "small-desktop",
+        "width": 1280,
+        "height": 720,
+        "description": "Laptop screens, 720p displays",
+        "safeArea": null
+      },
+      {
+        "name": "desktop",
+        "width": 1920,
+        "height": 1080,
+        "description": "Standard desktop 1080p",
+        "safeArea": null
+      }
+    ],
+    "safeAreaCSS": {
+      "description": "CSS environment variables for safe area insets",
+      "top": "env(safe-area-inset-top, 0px)",
+      "bottom": "env(safe-area-inset-bottom, 0px)",
+      "left": "env(safe-area-inset-left, 0px)",
+      "right": "env(safe-area-inset-right, 0px)"
+    }
   }
 }

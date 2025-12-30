@@ -139,30 +139,32 @@ Combines multiple existing APIs into orchestrated endpoints:
 
 ## What Gets Installed
 
-| Component         | Count | Purpose                                 |
-| ----------------- | ----- | --------------------------------------- |
-| Agent Skills      | 24    | Cross-platform workflow commands        |
-| Enforcement Hooks | 22    | Block progress until phases complete    |
-| Subagents         | 7     | Parallel research, schemas, tests, docs |
-| State Tracking    | 1     | Track progress across sessions          |
-| Research Cache    | 1     | 7-day freshness documentation cache     |
-| Templates         | 4     | Component, page, env, MCP configs       |
+| Component         | Count | Purpose                                      |
+| ----------------- | ----- | -------------------------------------------- |
+| Agent Skills      | 32+   | Cross-platform workflow commands             |
+| Enforcement Hooks | 22    | Block progress until phases complete         |
+| Subagents         | 8     | Research, schemas, tests, docs, visual       |
+| Test Skills       | 8     | Unit, E2E, visual, builds, review, debug     |
+| State Tracking    | 1     | Track progress across sessions               |
+| Research Cache    | 1     | 7-day freshness documentation cache          |
+| Templates         | 4     | Component, page, env, MCP configs            |
 
 ---
 
 ## Subagents
 
-Seven specialized agents run in parallel to speed up workflows:
+Eight specialized agents run in parallel to speed up workflows:
 
-| Agent                   | Model  | When Used                            |
-| ----------------------- | ------ | ------------------------------------ |
-| parallel-researcher     | Haiku  | Phase 3/5 - Scrape docs in parallel  |
-| research-validator      | Haiku  | Phase 3/5 - Find endpoints, webhooks |
-| schema-generator        | Sonnet | Phase 6 - Generate Zod schemas       |
-| test-writer             | Sonnet | Phase 8 - Write comprehensive tests  |
-| implementation-reviewer | Sonnet | Phase 10 - Compare code to docs      |
-| code-reviewer           | Sonnet | Phase 11 - Greptile AI code review   |
-| docs-generator          | Haiku  | Phase 13 - TypeDoc generation        |
+| Agent                   | Model  | When Used                               |
+| ----------------------- | ------ | --------------------------------------- |
+| parallel-researcher     | Haiku  | Phase 3/5 - Scrape docs in parallel     |
+| research-validator      | Haiku  | Phase 3/5 - Find endpoints, webhooks    |
+| schema-generator        | Sonnet | Phase 6 - Generate Zod schemas          |
+| test-writer             | Sonnet | Phase 8 - Write comprehensive tests     |
+| implementation-reviewer | Sonnet | Phase 10 - Compare code to docs         |
+| code-reviewer           | Sonnet | Phase 11 - AI code review               |
+| docs-generator          | Haiku  | Phase 13 - TypeDoc generation           |
+| visual-analyzer         | Haiku  | Visual testing - Screenshot AI analysis |
 
 ---
 
@@ -251,6 +253,19 @@ Configuration: `typedoc.json` (installed by the CLI)
 /cycle [desc]     # Complete Red → Green → Refactor
 ```
 
+### Testing
+
+```bash
+/test-unit        # Run Vitest unit tests with coverage
+/test-e2e         # Run Playwright E2E across browsers
+/test-visual      # Visual regression + AI screenshot analysis
+/test-all         # Complete test suite (unit → e2e → visual → builds → review)
+/test-builds      # Verify builds across 5 platforms
+/test-review      # AI code review for security/performance
+/test-debug       # Diagnose test failures with traces
+/token-report     # Token usage by workflow phase
+```
+
 ### Git Operations
 
 ```bash
@@ -277,12 +292,30 @@ Configuration: `typedoc.json` (installed by the CLI)
 | -------- | ------- |
 | **[docs/SKILLS.md](./docs/SKILLS.md)** | Complete slash command reference - all 24+ skills with usage and examples |
 | **[docs/HOOKS.md](./docs/HOOKS.md)** | All 45+ enforcement hooks - what they do and when they run |
-| **[docs/AGENTS.md](./docs/AGENTS.md)** | Specialized subagents - parallel-researcher, schema-generator, etc. |
+| **[docs/AGENTS.md](./docs/AGENTS.md)** | Specialized subagents - parallel-researcher, schema-generator, visual-analyzer |
 | **[docs/ORCHESTRATOR.md](./docs/ORCHESTRATOR.md)** | Master workflow controller - /hustle-build, decomposition, shared decisions |
 | **[docs/REGROUNDING.md](./docs/REGROUNDING.md)** | 7-turn context refresh system - prevents "lost in the middle" problem |
 | **[docs/PLUGIN_ARCHITECTURE.md](./docs/PLUGIN_ARCHITECTURE.md)** | How the plugin system works - installation, state, lifecycle |
 | **[docs/CLAUDE_CODE_BEST_PRACTICES.md](./docs/CLAUDE_CODE_BEST_PRACTICES.md)** | Industry best practices for Claude Code - hooks, subagents, context engineering |
 | **[docs/GAP_ANALYSIS.md](./docs/GAP_ANALYSIS.md)** | How api-dev-tools implements best practices and what gaps remain |
+
+### Workflow Guides
+
+| Document | Purpose |
+| -------- | ------- |
+| **[docs/API-CREATE.md](./docs/API-CREATE.md)** | Complete 14-phase API workflow reference with examples |
+| **[docs/HUSTLE-UI-CREATE.md](./docs/HUSTLE-UI-CREATE.md)** | UI component workflow with Storybook integration |
+| **[docs/HUSTLE-UI-CREATE-PAGE.md](./docs/HUSTLE-UI-CREATE-PAGE.md)** | Page workflow with Playwright E2E tests |
+| **[docs/HUSTLE-COMBINE.md](./docs/HUSTLE-COMBINE.md)** | API orchestration patterns (sequential, parallel, conditional) |
+
+### Quality & Testing
+
+| Document | Purpose |
+| -------- | ------- |
+| **[docs/PRE-COMMIT-SETUP.md](./docs/PRE-COMMIT-SETUP.md)** | Husky + lint-staged configuration for automated checks |
+| **[docs/ESLINT-CONFIG.md](./docs/ESLINT-CONFIG.md)** | Type-aware ESLint with TypeScript integration |
+| **[docs/SCHEMA-LINT.md](./docs/SCHEMA-LINT.md)** | Zod schema validation and linting rules |
+| **[docs/SECURITY-AUDIT.md](./docs/SECURITY-AUDIT.md)** | Dependency audit, license check, secret scanning |
 
 ### Guides
 

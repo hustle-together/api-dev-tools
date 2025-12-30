@@ -46,15 +46,42 @@
       "Read(**/.env*)",
       "Read(**/secrets/**)",
       "Read(**/credentials*)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/.ssh/**)",
+      "Read(**/.aws/**)",
+      "Read(**/.gcloud/**)",
       "Write(.env*)",
+      "Write(**/.env*)",
+      "Write(**/secrets/**)",
       "Edit(.env*)",
-      "Bash(rm -rf *)",
-      "Bash(sudo *)",
-      "Bash(git push --force *)",
-      "Bash(git reset --hard *)",
-      "Bash(> /dev/*)",
-      "Bash(curl * | bash)",
-      "Bash(wget * | bash)"
+      "Edit(**/.env*)",
+      "Edit(**/secrets/**)",
+      "Bash(rm -rf:*)",
+      "Bash(sudo:*)",
+      "Bash(chmod 777:*)",
+      "Bash(chown -R:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean -fd:*)",
+      "Bash(git stash drop:*)",
+      "Bash(git branch -D main)",
+      "Bash(git branch -D master)",
+      "Bash(eval:*)",
+      "Write(/etc/**)",
+      "Write(/var/**)",
+      "Write(/usr/**)",
+      "Write(/bin/**)",
+      "Write(/sbin/**)",
+      "Read(/etc/passwd)",
+      "Read(/etc/shadow)",
+      "Bash(nmap:*)",
+      "Bash(nikto:*)",
+      "Bash(sqlmap:*)",
+      "Bash(hydra:*)",
+      "Bash(metasploit:*)",
+      "Bash(msfconsole:*)"
     ]
   },
   "hooks": {
@@ -222,6 +249,10 @@
           {
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/track-scope-coverage.py"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/context-capacity-warning.py"
           }
         ]
       },

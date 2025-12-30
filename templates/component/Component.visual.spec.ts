@@ -91,32 +91,38 @@ test.describe("__COMPONENT_NAME__ Visual Regression", () => {
   });
 
   // ===================================
-  // Responsive Viewport Tests
+  // Responsive Viewport Tests (7 Viewports)
   // ===================================
 
-  test("renders correctly on mobile viewport", async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto(
-      `${STORYBOOK_URL}/iframe.html?id=components-__component_name__--primary&viewMode=story`,
-    );
-    await page.waitForLoadState("networkidle");
+  // All 7 viewports from performance-budgets.json
+  const viewports = [
+    { name: "mobile-portrait", width: 375, height: 667 },
+    { name: "mobile-notch", width: 393, height: 852 },
+    { name: "mobile-landscape", width: 667, height: 375 },
+    { name: "tablet-portrait", width: 768, height: 1024 },
+    { name: "tablet-landscape", width: 1024, height: 768 },
+    { name: "small-desktop", width: 1280, height: 720 },
+    { name: "desktop", width: 1920, height: 1080 },
+  ];
 
-    await expect(page.locator("#storybook-root")).toHaveScreenshot(
-      "__COMPONENT_NAME__-mobile.png",
-    );
-  });
+  for (const viewport of viewports) {
+    test(`renders correctly on ${viewport.name} (${viewport.width}x${viewport.height})`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({
+        width: viewport.width,
+        height: viewport.height,
+      });
+      await page.goto(
+        `${STORYBOOK_URL}/iframe.html?id=components-__component_name__--primary&viewMode=story`,
+      );
+      await page.waitForLoadState("networkidle");
 
-  test("renders correctly on tablet viewport", async ({ page }) => {
-    await page.setViewportSize({ width: 768, height: 1024 });
-    await page.goto(
-      `${STORYBOOK_URL}/iframe.html?id=components-__component_name__--primary&viewMode=story`,
-    );
-    await page.waitForLoadState("networkidle");
-
-    await expect(page.locator("#storybook-root")).toHaveScreenshot(
-      "__COMPONENT_NAME__-tablet.png",
-    );
-  });
+      await expect(page.locator("#storybook-root")).toHaveScreenshot(
+        `__COMPONENT_NAME__-${viewport.name}.png`,
+      );
+    });
+  }
 
   // ===================================
   // Interaction State Tests

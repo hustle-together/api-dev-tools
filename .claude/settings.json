@@ -20,7 +20,21 @@
       "Bash(ccusage:*)",
       "Bash(curl:*)"
     ],
-    "deny": ["Read(./.env*)", "Bash(rm -rf:*)"]
+    "deny": [
+      "Read(./.env*)",
+      "Read(**/.env*)",
+      "Read(**/secrets/**)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/.ssh/**)",
+      "Read(**/.aws/**)",
+      "Bash(rm -rf:*)",
+      "Bash(sudo:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(eval:*)"
+    ]
   },
   "hooks": {
     "SessionStart": [

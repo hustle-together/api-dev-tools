@@ -16,6 +16,7 @@
 ## Table of Contents
 
 - [What Is the Orchestrator?](#what-is-the-orchestrator)
+- [The Four Core Commands](#the-four-core-commands)
 - [The /hustle-build Skill](#the-hustle-build-skill)
 - [How Decomposition Works](#how-decomposition-works)
 - [Shared Decisions](#shared-decisions)
@@ -23,6 +24,38 @@
 - [Orchestrator Hooks](#orchestrator-hooks)
 - [State Management](#state-management)
 - [Error Recovery](#error-recovery)
+
+---
+
+## The Four Core Commands
+
+The Orchestrator coordinates four specialized commands, each handling one type of development:
+
+| Command | Purpose | Documentation |
+|---------|---------|---------------|
+| [`/api-create`](./API-CREATE.md) | Build API endpoints with 14-phase TDD workflow | Complete API reference |
+| [`/hustle-ui-create`](./HUSTLE-UI-CREATE.md) | Build UI components with Storybook + visual testing | Component workflow |
+| [`/hustle-ui-create-page`](./HUSTLE-UI-CREATE-PAGE.md) | Build pages with routing, data fetching, E2E tests | Page workflow |
+| [`/hustle-combine`](./HUSTLE-COMBINE.md) | Combine 2+ APIs into orchestrated endpoints | Orchestration patterns |
+
+### Workflow Hierarchy
+
+```
+                     /hustle-build
+                          │
+         ┌────────────────┼────────────────┐
+         │                │                │
+         ▼                ▼                ▼
+    /api-create    /hustle-ui-create  /hustle-combine
+                          │
+                          ▼
+              /hustle-ui-create-page
+```
+
+Each command follows the same **14-phase structure**:
+1. Disambiguation → 2. Scope → 3. Research → 4. Interview → 5. Deep Research
+6. Schema → 7. Environment → 8. TDD Red → 9. TDD Green → 10. Verify
+11. Code Review → 12. Refactor → 13. Documentation → 14. Completion
 
 ---
 

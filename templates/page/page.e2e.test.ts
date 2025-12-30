@@ -37,36 +37,40 @@ test.describe("__PAGE_NAME__ Page", () => {
   });
 
   // ===================================
-  // Responsive Tests
+  // Responsive Tests (7 Viewports)
   // ===================================
 
-  test("should be responsive on mobile", async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto("/__PAGE_ROUTE__");
+  // All 7 viewports from performance-budgets.json
+  const viewports = [
+    { name: "mobile-portrait", width: 375, height: 667 },
+    { name: "mobile-notch", width: 393, height: 852 },
+    { name: "mobile-landscape", width: 667, height: 375 },
+    { name: "tablet-portrait", width: 768, height: 1024 },
+    { name: "tablet-landscape", width: 1024, height: 768 },
+    { name: "small-desktop", width: 1280, height: 720 },
+    { name: "desktop", width: 1920, height: 1080 },
+  ];
 
-    // Verify main content is visible
-    await expect(page.getByRole("main")).toBeVisible();
+  for (const viewport of viewports) {
+    test(`should be responsive on ${viewport.name} (${viewport.width}x${viewport.height})`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({
+        width: viewport.width,
+        height: viewport.height,
+      });
+      await page.goto("/__PAGE_ROUTE__");
 
-    // Verify no horizontal scroll
-    const body = await page.locator("body");
-    const scrollWidth = await body.evaluate((el) => el.scrollWidth);
-    const clientWidth = await body.evaluate((el) => el.clientWidth);
-    expect(scrollWidth).toBeLessThanOrEqual(clientWidth + 1); // +1 for rounding
-  });
+      // Verify main content is visible
+      await expect(page.getByRole("main")).toBeVisible();
 
-  test("should be responsive on tablet", async ({ page }) => {
-    await page.setViewportSize({ width: 768, height: 1024 });
-    await page.goto("/__PAGE_ROUTE__");
-
-    await expect(page.getByRole("main")).toBeVisible();
-  });
-
-  test("should be responsive on desktop", async ({ page }) => {
-    await page.setViewportSize({ width: 1920, height: 1080 });
-    await page.goto("/__PAGE_ROUTE__");
-
-    await expect(page.getByRole("main")).toBeVisible();
-  });
+      // Verify no horizontal scroll
+      const body = await page.locator("body");
+      const scrollWidth = await body.evaluate((el) => el.scrollWidth);
+      const clientWidth = await body.evaluate((el) => el.clientWidth);
+      expect(scrollWidth).toBeLessThanOrEqual(clientWidth + 1);
+    });
+  }
 
   // ===================================
   // Accessibility Tests
