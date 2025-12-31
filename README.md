@@ -398,7 +398,24 @@ Configuration: `typedoc.json` (installed by the CLI)
 | **[docs/HUSTLE-UI-CREATE-PAGE.md](./docs/HUSTLE-UI-CREATE-PAGE.md)** | Page workflow with Playwright E2E tests |
 | **[docs/HUSTLE-COMBINE.md](./docs/HUSTLE-COMBINE.md)** | API orchestration patterns (sequential, parallel, conditional) |
 
-### Quality & Testing
+### Testing & Quality Assurance
+
+Comprehensive testing documentation for verifying all 75 skills, 64 hooks, and 9 agents:
+
+| Document | Purpose |
+| -------- | ------- |
+| **[TESTING_CHECKLIST.md](./TESTING_CHECKLIST.md)** | Complete checklist of 150+ behaviors to verify |
+| **[AUTONOMOUS_TESTING.md](./AUTONOMOUS_TESTING.md)** | Self-healing test runner for overnight execution |
+
+Quick verification after installation:
+```bash
+ls .claude/commands/ | wc -l          # Should be 30
+find .skills -name "SKILL.md" | wc -l  # Should be 44
+find .claude/hooks -name "*.py" | wc -l # Should be 64
+ls .claude/agents/ | wc -l             # Should be 9
+```
+
+### Code Quality
 
 | Document | Purpose |
 | -------- | ------- |
