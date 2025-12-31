@@ -7,7 +7,11 @@ model: haiku
 
 # Token Report Skill
 
-Generate a comprehensive token usage report showing costs by workflow phase.
+Generate an **estimated** token usage report showing approximate costs by workflow phase.
+
+> **Note:** Token counts are estimated based on ccusage session data correlated with
+> phase timestamps. Actual usage may vary by ±10%. For precise billing, check your
+> Anthropic dashboard.
 
 ## When to Use
 
@@ -45,7 +49,7 @@ npx ccusage session --json
 
 ```
 ═══════════════════════════════════════════════════════
-                 TOKEN USAGE REPORT
+           TOKEN USAGE REPORT (ESTIMATED)
 ═══════════════════════════════════════════════════════
 
 Session Started: 2025-12-29 10:00:00

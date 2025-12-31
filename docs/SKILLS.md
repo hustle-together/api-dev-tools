@@ -1,7 +1,7 @@
 # Skills Reference (Slash Commands)
 
-**Version:** 4.0.0
-**Last Updated:** 2025-12-29
+**Version:** 4.6.0
+**Last Updated:** 2025-12-30
 
 > **The Problem**
 >
@@ -18,8 +18,10 @@
 - [API Development Skills](#api-development-skills)
 - [UI Development Skills](#ui-development-skills)
 - [TDD Skills](#tdd-skills)
+- [Testing Skills](#testing-skills)
 - [Git Skills](#git-skills)
 - [Planning Skills](#planning-skills)
+- [Autonomous Mode Skills](#autonomous-mode-skills)
 - [Utility Skills](#utility-skills)
 - [Hustle-Specific Skills](#hustle-specific-skills)
 
@@ -295,6 +297,139 @@ For when you need to understand the problem first:
 
 ---
 
+## Testing Skills
+
+### /test-unit
+
+**Usage:** `/test-unit`
+**Purpose:** Run Vitest unit tests with coverage
+
+Executes unit test suite:
+1. Runs Vitest with coverage
+2. Reports pass/fail counts
+3. Shows coverage percentage
+4. Highlights uncovered lines
+
+**Example:**
+```bash
+/test-unit
+# Output: 47 passed, 2 failed (98% coverage)
+```
+
+---
+
+### /test-e2e
+
+**Usage:** `/test-e2e`
+**Purpose:** Run Playwright E2E tests across browsers
+
+Executes end-to-end tests:
+1. Runs Playwright tests
+2. Tests Chromium, Firefox, WebKit
+3. Reports cross-browser results
+4. Captures traces for failures
+
+**Example:**
+```bash
+/test-e2e
+# Output: 23 passed across 3 browsers
+```
+
+---
+
+### /test-visual
+
+**Usage:** `/test-visual`
+**Purpose:** Visual regression with AI screenshot analysis
+
+Captures and analyzes screenshots:
+1. Screenshots across 7 viewports
+2. Compares to baseline images
+3. AI analysis of differences
+4. Reports visual regressions
+
+**Example:**
+```bash
+/test-visual
+```
+
+---
+
+### /test-all
+
+**Usage:** `/test-all`
+**Purpose:** Complete test suite
+
+Runs all tests in sequence:
+1. Unit tests (Vitest)
+2. E2E tests (Playwright)
+3. Visual tests
+4. Build verification
+5. AI code review
+
+**Example:**
+```bash
+/test-all
+# Runs complete suite
+```
+
+---
+
+### /test-builds
+
+**Usage:** `/test-builds`
+**Purpose:** Verify builds across 5 platforms
+
+Validates build outputs:
+1. Web (Next.js build)
+2. macOS (Tauri)
+3. Windows (Tauri)
+4. iOS (Capacitor)
+5. Android (Capacitor)
+
+**Example:**
+```bash
+/test-builds
+```
+
+---
+
+### /test-review
+
+**Usage:** `/test-review`
+**Purpose:** AI-powered code review
+
+Security and performance analysis:
+1. ESLint security rules
+2. AI security checklist
+3. Performance patterns
+4. OWASP Top 10 check
+
+**Example:**
+```bash
+/test-review
+```
+
+---
+
+### /test-debug
+
+**Usage:** `/test-debug`
+**Purpose:** Diagnose test failures
+
+Analyzes failures with context:
+1. Reads failure traces
+2. Analyzes screenshots
+3. Examines DOM snapshots
+4. Suggests root causes
+
+**Example:**
+```bash
+/test-debug
+```
+
+---
+
 ## Git Skills
 
 ### /commit
@@ -457,6 +592,89 @@ Reviews conversation history:
 
 ---
 
+## Autonomous Mode Skills
+
+### /ralph-loop
+
+**Usage:** `/ralph-loop [task]`
+**Purpose:** Start autonomous loop with self-termination
+
+Runs a task in autonomous mode:
+1. Starts continuous execution
+2. Emits promises at phase boundaries
+3. Self-terminates when complete
+4. Logs all decisions to workflow-logs
+
+**Example:**
+```bash
+/ralph-loop build payment API with Stripe
+```
+
+---
+
+### /ralph-status
+
+**Usage:** `/ralph-status`
+**Purpose:** Check current loop status
+
+Shows autonomous loop state:
+- Current phase and iteration
+- Time elapsed
+- Phases completed
+- Active promises
+
+**Example:**
+```bash
+/ralph-status
+# Output: Phase 8 (TDD Red), Iteration 3/25, 47m elapsed
+```
+
+---
+
+### /ralph-continue
+
+**Usage:** `/ralph-continue [workflow-id]`
+**Purpose:** Resume interrupted loop
+
+Continues from where loop stopped:
+1. Loads workflow state
+2. Finds last incomplete phase
+3. Clears active promises
+4. Resumes execution
+
+**Example:**
+```bash
+/ralph-continue
+/ralph-continue wf-2025-12-30-payment
+```
+
+---
+
+### /parallel-spawn
+
+**Usage:** `/parallel-spawn [type:name ...]`
+**Purpose:** Spawn parallel agents in git worktrees
+
+Coordinates parallel execution:
+1. Parses workflow list (api:users, component:chart)
+2. Conducts shared interview once
+3. Creates git worktrees per workflow
+4. Spawns Task agents in parallel
+5. Monitors completion
+6. Merges results back
+
+**Example:**
+```bash
+/parallel-spawn api:users api:products component:UserCard
+```
+
+**Related:**
+- `/parallel-status` - Check parallel execution progress
+- `/parallel-merge` - Merge completed worktrees
+- `/parallel-abort` - Cancel and cleanup
+
+---
+
 ## Utility Skills
 
 ### /summarize
@@ -562,6 +780,52 @@ Ensures docs stay in sync with implementation:
 ---
 
 ## Hustle-Specific Skills
+
+### /hustle-build
+
+**Usage:** `/hustle-build [description]`
+**Purpose:** Master orchestrator for complete features
+
+Builds complete features from natural language:
+1. **Phase 0:** Project Document Intake (prompts for PRD/spec)
+2. **Phase 0.5:** Document Parsing (AI extracts pages, components, APIs)
+3. Parses request to identify elements
+4. Decomposes into APIs, components, pages
+5. Conducts orchestrator interview (shared decisions)
+6. Executes workflows in dependency order
+7. Wires elements together
+8. Generates unified documentation
+
+**Flags:**
+- `--auto` — Fully autonomous, auto-answers questions
+- `--parallel` — Run up to 5 Opus agents in git worktrees
+- `--resume [id]` — Resume interrupted build
+- `--dry-run` — Show plan without executing
+- `--max-iterations [N]` — Per-phase retry limit
+- `--skip-document` — Skip project document prompt (v4.6.0)
+- `--from-document [path]` — Load spec from file (v4.6.0)
+
+**Project Document Support (v4.6.0):**
+
+When invoked, `/hustle-build` prompts for a comprehensive project document (PRD, spec, deep research output). This enables:
+
+- **Complete extraction** - Identifies ALL pages, components, APIs upfront
+- **Dependency graphs** - Builds accurate dependency trees (APIs → Components → Pages)
+- **Context preservation** - Sub-workflows receive relevant spec sections
+- **Provenance tracking** - Elements marked with `from_project_spec: true`
+
+Supported formats: Markdown (`.md`), JSON (`.json`), Plain text (`.txt`)
+
+**Example:**
+```bash
+/hustle-build dashboard with user stats and activity charts
+/hustle-build --auto --parallel e-commerce checkout flow
+/hustle-build --resume build-2025-12-30-dashboard
+/hustle-build --from-document ./docs/prd.md e-commerce app
+/hustle-build --skip-document quick feature
+```
+
+---
 
 ### /hustle-api-create
 

@@ -1,0 +1,26 @@
+{
+  "name": "eslint-plugin-zod-schema",
+  "version": "1.0.0",
+  "description": "ESLint plugin for Zod schema best practices",
+  "main": "index.js",
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin",
+    "zod",
+    "schema",
+    "validation"
+  ],
+  "author": "Hustle Together",
+  "license": "MIT",
+  "peerDependencies": {
+    "eslint": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hustle-together/api-dev-tools"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

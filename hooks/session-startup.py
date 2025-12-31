@@ -18,12 +18,32 @@ Updated in v3.6.7:
   - Support multi-API state structure (endpoints object)
   - Read research index from .claude/research/index.json file
   - Calculate freshness from timestamps
+
+Updated in v4.5.0:
+  - Ensure .claude/ directories exist on session start
+  - Create registry.json from template if not exists
+  - Log session_start event to workflow logs
+  - Detect --dry-run and --resume flags
 """
 import json
 import sys
 import os
 from datetime import datetime
 from pathlib import Path
+
+# Import shared utilities
+try:
+    from hook_utils import (
+        ensure_directories,
+        ensure_registry,
+        log_workflow_event,
+        load_state as utils_load_state,
+        save_state as utils_save_state,
+        get_project_dir
+    )
+    UTILS_AVAILABLE = True
+except ImportError:
+    UTILS_AVAILABLE = False
 
 # State file is in .claude/ directory (sibling to hooks/)
 STATE_FILE = Path(__file__).parent.parent / "api-dev-state.json"
@@ -99,6 +119,93 @@ def calculate_days_old(timestamp_str):
         return 0
 
 
+def setup_session():
+    """
+    Initialize session: create directories, registry, log session start.
+    Called at the beginning of every session (v4.5.0).
+
+    Returns:
+        dict: Setup results with directories created, registry status
+    """
+    results = {
+        "directories_created": [],
+        "registry_created": False,
+        "session_logged": False
+    }
+
+    if not UTILS_AVAILABLE:
+        return results
+
+    # Ensure directories exist
+    try:
+        results["directories_created"] = ensure_directories()
+    except Exception:
+        pass
+
+    # Ensure registry exists
+    try:
+        success, created = ensure_registry()
+        results["registry_created"] = created
+    except Exception:
+        pass
+
+    # Log session start event
+    try:
+        log_workflow_event("session_start", {
+            "directories_created": results["directories_created"],
+            "registry_created": results["registry_created"]
+        })
+        results["session_logged"] = True
+    except Exception:
+        pass
+
+    return results
+
+
+def detect_flags(input_data):
+    """
+    Detect --dry-run, --resume, and other flags from conversation context.
+    Sets flags in state for other hooks to use (v4.5.0).
+
+    Args:
+        input_data: Hook input from stdin
+
+    Returns:
+        dict: Detected flags
+    """
+    flags = {
+        "dry_run": False,
+        "resume": None,
+        "parallel": False
+    }
+
+    if not UTILS_AVAILABLE:
+        return flags
+
+    # The conversation context might contain flags
+    # Note: In SessionStart, we have limited context - flags are typically
+    # detected by skills reading the user's initial message
+    # This function prepares the state structure for flag detection
+
+    try:
+        state = utils_load_state()
+
+        # Initialize flags structure if not present
+        if "flags" not in state:
+            state["flags"] = {
+                "dry_run": False,
+                "resume": None,
+                "parallel": False
+            }
+            utils_save_state(state)
+
+        flags = state.get("flags", flags)
+    except Exception:
+        pass
+
+    return flags
+
+
 def main():
     # Read hook input from stdin
     try:
@@ -107,6 +214,12 @@ def main():
         input_data = {}
 
     cwd = input_data.get("cwd", os.getcwd())
+
+    # v4.5.0: Initialize session (directories, registry, logging)
+    setup_results = setup_session()
+
+    # v4.5.0: Detect and store flags
+    flags = detect_flags(input_data)
 
     # Check if state file exists
     if not STATE_FILE.exists():

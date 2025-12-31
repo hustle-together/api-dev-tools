@@ -162,8 +162,8 @@ def main():
     except Exception:
         pass
 
-    # Inject context about orchestration
-    context = f"""
+    # Build context about orchestration
+    context_parts = [f"""
 ## Orchestrated Workflow
 
 This workflow is part of a larger build: **{build_state.get('build_id')}**
@@ -175,7 +175,85 @@ These decisions are already applied. **Do not re-ask** questions about:
 {', '.join(shared_decisions.keys())}
 
 Only ask workflow-specific questions not covered above.
-"""
+"""]
+
+    # Check for project_spec and inject relevant portion
+    project_spec = build_state.get("project_spec", {})
+    extracted = project_spec.get("extracted", {})
+
+    if extracted:
+        # Try to find the relevant spec for this workflow
+        relevant_spec = None
+        spec_type = None
+
+        # Get the element name from tool input
+        try:
+            data = json.loads(tool_input)
+            args = data.get("args", "")
+            element_name = args.split()[0] if args else ""
+        except Exception:
+            element_name = ""
+
+        # Search in extracted elements
+        for api in extracted.get("apis", []):
+            if api.get("name", "").lower() == element_name.lower():
+                relevant_spec = api
+                spec_type = "API"
+                break
+
+        if not relevant_spec:
+            for comp in extracted.get("components", []):
+                if comp.get("name", "").lower() == element_name.lower():
+                    relevant_spec = comp
+                    spec_type = "Component"
+                    break
+
+        if not relevant_spec:
+            for page in extracted.get("pages", []):
+                if page.get("name", "").lower() == element_name.lower():
+                    relevant_spec = page
+                    spec_type = "Page"
+                    break
+
+        # Inject relevant spec if found
+        if relevant_spec:
+            context_parts.append(f"""
+### Project Spec ({spec_type})
+
+This element was extracted from the project document. Use this as the primary source of truth:
+
+```json
+{json.dumps(relevant_spec, indent=2)}
+```
+
+**Important:** Implement according to this specification. If you need to deviate, ask the user first.
+""")
+
+        # Also inject high-level summary if available
+        summary = extracted.get("summary", "")
+        if summary:
+            context_parts.append(f"""
+### Project Summary
+
+{summary}
+""")
+
+        # Inject related elements for context
+        uses_apis = relevant_spec.get("uses_apis", []) if relevant_spec else []
+        uses_components = relevant_spec.get("uses_components", []) if relevant_spec else []
+
+        if uses_apis or uses_components:
+            context_parts.append(f"""
+### Related Elements
+
+This element depends on:
+- APIs: {', '.join(uses_apis) if uses_apis else 'none'}
+- Components: {', '.join(uses_components) if uses_components else 'none'}
+
+Ensure types and interfaces align with these dependencies.
+""")
+
+    context = "\n".join(context_parts)
 
     result = {
         "continue": True,

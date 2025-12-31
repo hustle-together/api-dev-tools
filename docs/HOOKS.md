@@ -1,7 +1,7 @@
 # Hooks Reference
 
-**Version:** 4.0.0
-**Last Updated:** 2025-12-29
+**Version:** 4.5.0
+**Last Updated:** 2025-12-30
 
 > **The Problem**
 >
@@ -346,6 +346,60 @@ Injects:
 - Analyzes code for bugs, security, performance
 - Returns structured feedback
 - Blocks if critical issues
+
+### Autonomous Mode Hooks (v4.5.0)
+
+#### auto-answer.py
+**Event:** PreToolUse (AskUserQuestion)
+**Purpose:** Auto-answers interview questions in autonomous mode
+
+- Reads defaults from `hustle-build-defaults.json`
+- Selects "(Recommended)" options
+- Logs all auto-answers to workflow-logs
+- Used when `autonomous.skip_interviews: true`
+
+#### completion-promise-detector.py
+**Event:** PostToolUse (Bash, Write|Edit)
+**Purpose:** Detects Ralph Wiggum loop promises
+
+- Scans output for `<promise>` tags
+- Tracks iteration counts per phase
+- Enforces max iterations limit
+- Triggers phase transitions
+- Logs promises to workflow-logs
+
+#### enforce-dry-run.py
+**Event:** PreToolUse (Write|Edit)
+**Purpose:** Blocks writes in dry-run mode
+
+- Checks `dry_run_mode` in state
+- Blocks all Write/Edit operations
+- Shows what WOULD be written
+- Used with `--dry-run` flag
+
+### Parallel Execution Hooks (v4.5.0)
+
+#### parallel-orchestrator.py
+**Event:** SessionStart, UserPromptSubmit
+**Purpose:** Coordinates parallel agent execution
+
+- Parses `/parallel-spawn` commands
+- Creates git worktrees per workflow
+- Injects shared decisions
+- Monitors agent completion via TaskOutput
+- Merges results back to main branch
+
+### Shared Utilities (v4.5.0)
+
+#### hook_utils.py
+**Type:** Shared Python module (not a hook)
+**Purpose:** Common utilities for all hooks
+
+- `log_workflow_event()` - Log events to workflow-logs
+- `ensure_directories()` - Create .claude subdirectories
+- `ensure_registry()` - Create registry.json from template
+- `handle_resume()` - Resume workflow from logs
+- `increment_phase_iteration()` - Track per-phase iterations
 
 ---
 

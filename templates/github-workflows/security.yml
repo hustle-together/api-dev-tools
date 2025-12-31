@@ -1,0 +1,274 @@
+# Security Audit Workflow
+# Copy to: .github/workflows/security.yml
+#
+# Features:
+# - Dependency vulnerability scanning (npm/pnpm audit)
+# - License compliance checking
+# - Secret detection (gitleaks)
+# - Static analysis (Semgrep)
+#
+# See: docs/SECURITY-AUDIT.md
+
+name: Security Audit
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  schedule:
+    # Run weekly on Sundays at midnight
+    - cron: '0 0 * * 0'
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  dependency-audit:
+    name: Dependency Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Detect package manager
+        id: detect-pm
+        run: |
+          if [ -f "pnpm-lock.yaml" ]; then
+            echo "manager=pnpm" >> $GITHUB_OUTPUT
+          elif [ -f "yarn.lock" ]; then
+            echo "manager=yarn" >> $GITHUB_OUTPUT
+          else
+            echo "manager=npm" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup pnpm
+        if: steps.detect-pm.outputs.manager == 'pnpm'
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: |
+          if [ "${{ steps.detect-pm.outputs.manager }}" == "pnpm" ]; then
+            pnpm install --frozen-lockfile
+          elif [ "${{ steps.detect-pm.outputs.manager }}" == "yarn" ]; then
+            yarn install --frozen-lockfile
+          else
+            npm ci
+          fi
+
+      - name: Run dependency audit
+        id: audit
+        continue-on-error: true
+        run: |
+          if [ "${{ steps.detect-pm.outputs.manager }}" == "pnpm" ]; then
+            pnpm audit --audit-level=moderate > audit-results.txt 2>&1 || true
+            pnpm audit --json > audit-results.json 2>&1 || true
+          elif [ "${{ steps.detect-pm.outputs.manager }}" == "yarn" ]; then
+            yarn audit --level moderate > audit-results.txt 2>&1 || true
+            yarn audit --json > audit-results.json 2>&1 || true
+          else
+            npm audit --audit-level=moderate > audit-results.txt 2>&1 || true
+            npm audit --json > audit-results.json 2>&1 || true
+          fi
+
+      - name: Parse audit results
+        id: parse
+        run: |
+          if [ -f audit-results.json ]; then
+            # Extract vulnerability counts (handles both npm and pnpm formats)
+            CRITICAL=$(cat audit-results.json | jq '.metadata.vulnerabilities.critical // .vulnerabilities.critical // 0' 2>/dev/null || echo "0")
+            HIGH=$(cat audit-results.json | jq '.metadata.vulnerabilities.high // .vulnerabilities.high // 0' 2>/dev/null || echo "0")
+            MODERATE=$(cat audit-results.json | jq '.metadata.vulnerabilities.moderate // .vulnerabilities.moderate // 0' 2>/dev/null || echo "0")
+
+            echo "critical=$CRITICAL" >> $GITHUB_OUTPUT
+            echo "high=$HIGH" >> $GITHUB_OUTPUT
+            echo "moderate=$MODERATE" >> $GITHUB_OUTPUT
+
+            # Fail on critical or high
+            if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
+              echo "status=failed" >> $GITHUB_OUTPUT
+            else
+              echo "status=passed" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "status=unknown" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload audit results
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-audit
+          path: |
+            audit-results.txt
+            audit-results.json
+
+      - name: Create summary
+        run: |
+          echo "## Dependency Audit Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Severity | Count |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Critical | ${{ steps.parse.outputs.critical || 'N/A' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| High | ${{ steps.parse.outputs.high || 'N/A' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Moderate | ${{ steps.parse.outputs.moderate || 'N/A' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.parse.outputs.status }}" == "failed" ]; then
+            echo "**Status: FAILED** - Critical or high vulnerabilities found" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "**Status: PASSED**" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Fail on critical/high vulnerabilities
+        if: steps.parse.outputs.status == 'failed'
+        run: |
+          echo "::error::Found ${{ steps.parse.outputs.critical }} critical and ${{ steps.parse.outputs.high }} high vulnerabilities"
+          exit 1
+
+  license-check:
+    name: License Compliance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Detect package manager
+        id: detect-pm
+        run: |
+          if [ -f "pnpm-lock.yaml" ]; then
+            echo "manager=pnpm" >> $GITHUB_OUTPUT
+          elif [ -f "yarn.lock" ]; then
+            echo "manager=yarn" >> $GITHUB_OUTPUT
+          else
+            echo "manager=npm" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup pnpm
+        if: steps.detect-pm.outputs.manager == 'pnpm'
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: |
+          if [ "${{ steps.detect-pm.outputs.manager }}" == "pnpm" ]; then
+            pnpm install --frozen-lockfile
+          elif [ "${{ steps.detect-pm.outputs.manager }}" == "yarn" ]; then
+            yarn install --frozen-lockfile
+          else
+            npm ci
+          fi
+
+      - name: Check licenses
+        run: |
+          npx license-checker --production --onlyAllow 'MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;CC0-1.0;Unlicense;0BSD;CC-BY-4.0;CC-BY-3.0;Python-2.0;Artistic-2.0;Zlib;WTFPL' > license-results.txt 2>&1 || true
+
+          # Check for failures
+          if grep -q "FAILED" license-results.txt; then
+            echo "::error::Non-approved licenses found"
+            cat license-results.txt
+            exit 1
+          fi
+
+      - name: Upload license results
+        uses: actions/upload-artifact@v4
+        with:
+          name: license-check
+          path: license-results.txt
+
+  secret-scan:
+    name: Secret Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Full history for secret scanning
+
+      - name: Gitleaks scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }} # Optional for enterprise
+
+  sast:
+    name: Static Analysis (SAST)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Semgrep
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: >-
+            p/security-audit
+            p/typescript
+            p/react
+            p/nodejs
+            p/jwt
+            p/sql-injection
+            p/xss
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }} # Optional for dashboard
+
+  # Summary job that depends on all checks
+  security-summary:
+    name: Security Summary
+    runs-on: ubuntu-latest
+    needs: [dependency-audit, license-check, secret-scan, sast]
+    if: always()
+    steps:
+      - name: Check all results
+        run: |
+          echo "## Security Audit Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+
+          # Dependency audit
+          if [ "${{ needs.dependency-audit.result }}" == "success" ]; then
+            echo "| Dependency Audit | :white_check_mark: Passed |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Dependency Audit | :x: Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # License check
+          if [ "${{ needs.license-check.result }}" == "success" ]; then
+            echo "| License Compliance | :white_check_mark: Passed |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| License Compliance | :x: Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Secret scan
+          if [ "${{ needs.secret-scan.result }}" == "success" ]; then
+            echo "| Secret Scanning | :white_check_mark: Passed |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Secret Scanning | :x: Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # SAST
+          if [ "${{ needs.sast.result }}" == "success" ]; then
+            echo "| Static Analysis | :white_check_mark: Passed |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Static Analysis | :x: Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Fail if any check failed
+        if: contains(needs.*.result, 'failure')
+        run: |
+          echo "::error::One or more security checks failed"
+          exit 1

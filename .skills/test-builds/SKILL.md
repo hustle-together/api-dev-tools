@@ -1,114 +1,91 @@
 ---
 name: test-builds
-description: Verify builds across all 5 platforms (Web, macOS, Windows, iOS, Android)
+description: Verify web builds and cross-browser compatibility (Chrome, Firefox, Safari/WebKit)
 tools: Bash, Read, Glob, TodoWrite
 model: sonnet
 ---
 
 # Test Builds Skill
 
-Verify that the application builds successfully across all target platforms.
+Verify that the application builds successfully and runs correctly across all major browsers.
+
+> **Note:** This skill focuses on **web builds and browser testing**. For native desktop
+> (Tauri/Electron) or mobile (Capacitor) builds, those should be tested separately
+> as they theoretically work with the same web code but require native toolchains.
+
+## Philosophy
+
+If your app works in Chrome, Firefox, and Safari (WebKit), it will work in:
+- **Tauri** - Uses system WebView (WebKit on macOS, Chromium on Windows/Linux)
+- **Capacitor** - Uses WKWebView (iOS) and Android WebView (Chromium)
+- **Electron** - Bundles Chromium
+- **PWA** - Runs in user's browser
+
+Therefore, comprehensive browser testing = comprehensive platform coverage.
 
 ## When to Use
 
 - Before releasing a new version
 - After major dependency updates
-- When adding platform-specific features
+- After CSS/layout changes
 - As part of CI/CD pipeline verification
-
-## Supported Platforms
-
-| Platform | Build Command | Output |
-|----------|---------------|--------|
-| Web | `pnpm build` | `.next/` or `dist/` |
-| macOS | `pnpm build:mac` | `.dmg` installer |
-| Windows | `pnpm build:win` | `.exe` installer |
-| iOS | `pnpm build:ios` | `.ipa` bundle |
-| Android | `pnpm build:android` | `.apk` or `.aab` |
 
 ## Execution Steps
 
-### Step 1: Detect Available Platforms
+### Step 1: Web Build Verification
 
 ```bash
-# Check package.json for build scripts
-cat package.json | grep -E '"build:|"build"'
-
-# Check for Electron (desktop apps)
-cat package.json | grep -E "electron|electron-builder"
-
-# Check for Capacitor/React Native (mobile)
-cat package.json | grep -E "capacitor|react-native"
-
-# Check for Next.js/Vite (web)
-cat package.json | grep -E "next|vite"
-```
-
-### Step 2: Run Platform Builds
-
-Execute builds in parallel where possible:
-
-```bash
-# Web build (always run first)
+# Build the Next.js/Vite application
 pnpm build
 
-# Desktop builds (if Electron detected)
-pnpm build:mac &
-pnpm build:win &
-
-# Mobile builds (if Capacitor/RN detected)
-pnpm build:ios &
-pnpm build:android &
-
-wait
-```
-
-### Step 3: Verify Build Outputs
-
-Check that expected outputs exist:
-
-```bash
-# Web
+# Verify output exists
 ls -la .next/ || ls -la dist/
 
-# Desktop
-ls -la dist/*.dmg
-ls -la dist/*.exe
-
-# Mobile
-ls -la ios/App/build/*.ipa
-ls -la android/app/build/outputs/apk/
-```
-
-### Step 4: TypeScript Check
-
-```bash
-# Ensure no type errors
+# TypeScript check
 pnpm typecheck || npx tsc --noEmit
 ```
 
-### Step 5: Bundle Analysis (Web)
+### Step 2: Cross-Browser Testing with Playwright
 
 ```bash
-# Check bundle size
-npx next build --analyze
+# Run E2E tests across all 3 browser engines
+npx playwright test --project=chromium
+npx playwright test --project=firefox
+npx playwright test --project=webkit
 
-# Or for Vite
+# Or all at once
+npx playwright test
+```
+
+**Browser Coverage:**
+
+| Browser Engine | Covers | Test Project |
+|----------------|--------|--------------|
+| **Chromium** | Chrome, Edge, Opera, Brave, Android WebView | `--project=chromium` |
+| **Firefox** | Firefox, Firefox ESR | `--project=firefox` |
+| **WebKit** | Safari, iOS Safari, WKWebView | `--project=webkit` |
+
+### Step 3: PWA Compliance Check (if applicable)
+
+```bash
+# Check if manifest.json exists and is valid
+cat public/manifest.json | jq .
+
+# Verify service worker registration
+grep -r "serviceWorker" src/
+
+# Check for required PWA assets
+ls -la public/icon-*.png
+```
+
+### Step 4: Bundle Analysis
+
+```bash
+# Next.js bundle analysis
+ANALYZE=true pnpm build
+
+# Or Vite bundle visualizer
 npx vite-bundle-visualizer
-```
-
-## Progress Tracking
-
-```
-Build Progress:
-───────────────────────────────────────
-[✅] Web Build          (12.3s)
-[✅] TypeScript Check   (3.2s)
-[⏳] macOS Build        (running...)
-[⏳] Windows Build      (running...)
-[⏳] iOS Build          (queued)
-[⏳] Android Build      (queued)
-───────────────────────────────────────
 ```
 
 ## Report Format
@@ -118,87 +95,103 @@ Build Progress:
                     BUILD RESULTS
 ═══════════════════════════════════════════════════════
 
+Web Build:
 ┌─────────────┬────────┬──────────┬─────────────────────┐
-│ Platform    │ Status │ Duration │ Output              │
+│ Step        │ Status │ Duration │ Details             │
 ├─────────────┼────────┼──────────┼─────────────────────┤
-│ Web         │ ✅     │ 12.3s    │ .next/ (4.2 MB)     │
+│ Build       │ ✅     │ 12.3s    │ .next/ (4.2 MB)     │
 │ TypeScript  │ ✅     │ 3.2s     │ No errors           │
-│ macOS       │ ✅     │ 45s      │ app-1.0.0.dmg       │
-│ Windows     │ ✅     │ 52s      │ app-1.0.0.exe       │
-│ iOS         │ ✅     │ 120s     │ App.ipa             │
-│ Android     │ ✅     │ 90s      │ app-release.apk     │
+│ ESLint      │ ✅     │ 5.1s     │ No warnings         │
 └─────────────┴────────┴──────────┴─────────────────────┘
 
-Bundle Size Analysis (Web):
+Cross-Browser Testing:
+┌─────────────┬────────┬──────────┬─────────────────────┐
+│ Browser     │ Status │ Tests    │ Coverage            │
+├─────────────┼────────┼──────────┼─────────────────────┤
+│ Chromium    │ ✅     │ 45/45    │ Chrome, Edge, Brave │
+│ Firefox     │ ✅     │ 45/45    │ Firefox             │
+│ WebKit      │ ✅     │ 45/45    │ Safari, iOS Safari  │
+└─────────────┴────────┴──────────┴─────────────────────┘
+
+Bundle Size Analysis:
 ───────────────────────────────────────
 Total: 245 KB (gzipped)
   - First Load JS: 87 KB
   - Shared Chunks: 158 KB
 
-Largest Pages:
-  /dashboard   - 42 KB
-  /settings    - 28 KB
-  /profile     - 15 KB
-
-═══════════════════════════════════════════════════════
-                  ✅ ALL BUILDS PASSED
-═══════════════════════════════════════════════════════
-```
-
-## Failure Handling
-
-```
-═══════════════════════════════════════════════════════
-                    BUILD FAILED
-═══════════════════════════════════════════════════════
-
-Failed: Windows Build
-
-Error:
+Platform Compatibility:
 ───────────────────────────────────────
-Error: Cannot find module 'electron'
-  at Function.Module._resolveFilename
-  at Function.Module._load
+✅ Chromium-based apps (Tauri Win/Linux, Capacitor Android, Electron)
+✅ WebKit-based apps (Tauri macOS, Capacitor iOS)
+✅ PWA (all browsers)
 
-Suggested Fix:
-1. Run: pnpm install electron --save-dev
-2. Verify electron-builder config in package.json
-3. Check Windows-specific dependencies
-───────────────────────────────────────
-
-Successful Builds:
-✅ Web
-✅ macOS
-
-Skipped (after failure):
-⏭️ iOS
-⏭️ Android
+Note: Native builds (Tauri/Capacitor) should be tested separately
+with their respective toolchains if using native features.
 
 ═══════════════════════════════════════════════════════
+              ✅ ALL BROWSER TESTS PASSED
+═══════════════════════════════════════════════════════
 ```
+
+## Native Platform Notes
+
+### If You Use Tauri (Desktop)
+
+```bash
+# Install Tauri CLI
+pnpm add -D @tauri-apps/cli
+
+# Test desktop build (requires Rust)
+pnpm tauri build --debug
+
+# Platforms:
+# - macOS: Uses WebKit (tested via Playwright webkit)
+# - Windows/Linux: Uses WebView2/Chromium (tested via Playwright chromium)
+```
+
+### If You Use Capacitor (Mobile)
+
+```bash
+# Install Capacitor
+pnpm add @capacitor/core @capacitor/ios @capacitor/android
+
+# Sync web assets to native projects
+npx cap sync
+
+# Platforms:
+# - iOS: Uses WKWebView (tested via Playwright webkit)
+# - Android: Uses Android WebView (tested via Playwright chromium)
+```
+
+### Why We Don't Build These By Default
+
+1. **Requires native toolchains** - Xcode, Android Studio, Rust
+2. **LLM interpretation varies** - Native setup is complex, error-prone
+3. **Web testing is sufficient** - If it works in browsers, it works in webviews
+4. **Separation of concerns** - Web build vs native packaging
 
 ## Arguments
 
 | Argument | Description | Default |
 |----------|-------------|---------|
-| `--platform` | Specific platform | All detected |
+| `--browsers` | Specific browsers to test | All 3 |
 | `--analyze` | Include bundle analysis | false |
-| `--parallel` | Build platforms in parallel | true |
+| `--pwa` | Check PWA compliance | auto-detect |
 
 ## Examples
 
 ```bash
-# Build all platforms
+# Full build + all browsers
 /test-builds
 
-# Web only
-/test-builds --platform=web
+# Quick check (Chromium only)
+/test-builds --browsers=chromium
 
 # With bundle analysis
 /test-builds --analyze
 
-# Sequential builds (less resource intensive)
-/test-builds --no-parallel
+# PWA compliance check
+/test-builds --pwa
 ```
 
 ## Integration
@@ -211,5 +204,5 @@ This skill is invoked:
 ## See Also
 
 - `/test-all` - Complete test suite
-- `/test-unit` - Unit tests
-- `/test-e2e` - E2E tests
+- `/test-e2e` - E2E tests (uses same Playwright)
+- `/test-visual` - Visual regression

@@ -72,7 +72,7 @@ Check for these specific issues:
 
 ### Step 3: Output Format
 
-Return JSON with findings:
+Return JSON with findings **including your detailed reasoning**:
 
 ```json
 {
@@ -81,6 +81,8 @@ Return JSON with findings:
     "width": 393,
     "height": 852
   },
+  "screenshot_path": "__snapshots__/Button-mobile-notch.png",
+  "storybook_url": "http://localhost:6006/?path=/story/components-button--primary",
   "analysis": {
     "layout": "pass",
     "typography": "pass",
@@ -88,6 +90,7 @@ Return JSON with findings:
     "safe_areas": "pass",
     "brand": "pass"
   },
+  "overall_reasoning": "Layout is clean with proper alignment. Typography contrast measured at approximately 4.8:1 against the background, exceeding WCAG AA requirements. However, the secondary button height is below the recommended 44px minimum for touch targets.",
   "issues": [
     {
       "type": "touch_target",
@@ -95,7 +98,9 @@ Return JSON with findings:
       "element": "secondary button",
       "detail": "Button height is 36px, below 44px minimum",
       "location": "bottom right",
-      "suggestion": "Increase button height to 44px for better mobile usability"
+      "reasoning": "I measured the secondary button at approximately 36px height. Apple's HIG recommends 44×44px minimum for touch targets to ensure reliable tapping, especially on notch devices where users may be adjusting grip. The primary button meets the standard at 48px, but the secondary button falls short. This could lead to tap frustration on real devices.",
+      "suggestion": "Increase button height to 44px for better mobile usability",
+      "fix": "Add `min-h-[44px]` to secondary button variants"
     }
   ],
   "summary": {

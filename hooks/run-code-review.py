@@ -1,31 +1,35 @@
 #!/usr/bin/env python3
 """
-Phase 11: AI Code Review Hook
+Phase 11: AI Code Review Hook (Ralph Wiggum Loop Pattern)
 
-Triggers Greptile AI code review after Phase 10 (Verify) and BEFORE Phase 12 (Refactor).
-This ensures issues are caught early and can be fixed during the refactor phase,
-rather than after PR creation when it's too late.
+Triggers Greptile AI code review and LOOPS until all issues are fixed.
+This ensures code quality before proceeding to refactor phase.
 
-Hook Type: PostToolUse (triggers after tests pass in Phase 9/10)
+Hook Type: PostToolUse (triggers after tests pass)
 
-Greptile API:
-    POST https://api.greptile.com/v2/query
-    - Analyzes code changes against entire codebase context
-    - Returns issues with file:line references
-    - Provides actionable fix suggestions
+Ralph Wiggum Pattern:
+    1. Run Greptile review
+    2. If issues found → inject context for agent to fix
+    3. Agent fixes issues
+    4. Tests re-run → hook triggers again
+    5. Re-review with Greptile
+    6. Loop until clean OR max iterations
+    7. Emit <promise>REVIEW_CLEAN</promise>
 
 Environment Variables:
     GREPTILE_API_KEY: Your Greptile API key (get from https://app.greptile.com)
     GITHUB_TOKEN: GitHub Personal Access Token with repo access
     CODE_REVIEW_ENABLED: Set to 'true' to enable (default: true)
+    CODE_REVIEW_MAX_ITERATIONS: Max review cycles (default: 5)
 
-Version: 1.1.0
+Version: 2.0.0
 """
 import os
 import sys
 import json
 import subprocess
 from pathlib import Path
+from datetime import datetime
 
 # Add lib directory to path for imports
 HOOK_DIR = Path(__file__).parent
@@ -43,6 +47,10 @@ try:
     GREPTILE_AVAILABLE = True
 except ImportError:
     GREPTILE_AVAILABLE = False
+
+# State file for tracking review loops
+REVIEW_STATE_FILE = ".claude/code-review-state.json"
+MAX_ITERATIONS = int(os.environ.get("CODE_REVIEW_MAX_ITERATIONS", "5"))
 
 
 def get_git_diff() -> tuple:
@@ -98,7 +106,44 @@ def get_repo_info() -> tuple:
     return None, None
 
 
-def load_state() -> dict:
+def load_review_state() -> dict:
+    """Load code review loop state."""
+    state_file = Path.cwd() / REVIEW_STATE_FILE
+    if state_file.exists():
+        try:
+            return json.loads(state_file.read_text())
+        except (json.JSONDecodeError, IOError):
+            pass
+    return {
+        "iteration": 0,
+        "issues_found": [],
+        "status": "pending",
+        "started_at": None,
+        "last_review_at": None
+    }
+
+
+def save_review_state(state: dict):
+    """Save code review loop state."""
+    state_file = Path.cwd() / REVIEW_STATE_FILE
+    state_file.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        state_file.write_text(json.dumps(state, indent=2))
+    except IOError:
+        pass
+
+
+def clear_review_state():
+    """Clear review state after successful completion."""
+    state_file = Path.cwd() / REVIEW_STATE_FILE
+    if state_file.exists():
+        try:
+            state_file.unlink()
+        except IOError:
+            pass
+
+
+def load_workflow_state() -> dict:
     """Load current workflow state."""
     state_file = Path.cwd() / ".claude" / "api-dev-state.json"
     if state_file.exists():
@@ -109,21 +154,22 @@ def load_state() -> dict:
     return {}
 
 
-def update_state_with_review(review_summary: dict):
-    """Update state file with code review results."""
+def update_workflow_state_with_review(review_summary: dict, iteration: int):
+    """Update workflow state file with code review results."""
     state_file = Path.cwd() / ".claude" / "api-dev-state.json"
-    state = load_state()
+    state = load_workflow_state()
 
     # Add or update code_review phase
     if "phases" not in state:
         state["phases"] = {}
 
     state["phases"]["code_review"] = {
-        "status": "complete",
+        "status": "in_progress" if review_summary.get("issue_count", 0) > 0 else "complete",
+        "iteration": iteration,
         "score": review_summary.get("score", 0),
         "issues_found": review_summary.get("issue_count", 0),
         "suggestions": review_summary.get("suggestion_count", 0),
-        "reviewed_at": __import__("datetime").datetime.now().isoformat()
+        "reviewed_at": datetime.now().isoformat()
     }
 
     try:
@@ -140,7 +186,7 @@ def should_run_review(hook_input: dict) -> bool:
 
     tool_name = hook_input.get("tool_name", "")
 
-    # Run after tests pass (Phase 9/10) - triggers before refactoring
+    # Run after tests pass (Phase 9/10)
     if tool_name == "Bash":
         tool_input = hook_input.get("tool_input", {})
         command = tool_input.get("command", "")
@@ -160,8 +206,40 @@ def should_run_review(hook_input: dict) -> bool:
     return False
 
 
+def format_issues_for_context(issues: list) -> str:
+    """Format issues as context for the agent to fix."""
+    if not issues:
+        return ""
+
+    lines = [
+        "",
+        "=" * 60,
+        "CODE REVIEW ISSUES TO FIX (Ralph Wiggum Loop)",
+        "=" * 60,
+        "",
+        "The following issues were found by Greptile code review.",
+        "Please fix ALL issues, then run tests again.",
+        "The review will re-run automatically after tests pass.",
+        "",
+        "ISSUES:",
+    ]
+
+    for i, issue in enumerate(issues, 1):
+        lines.append(f"  {i}. {issue}")
+
+    lines.extend([
+        "",
+        "After fixing all issues, run: pnpm test",
+        "Review will loop until all issues are resolved.",
+        "=" * 60,
+        ""
+    ])
+
+    return "\n".join(lines)
+
+
 def main():
-    """Main hook entry point."""
+    """Main hook entry point with Ralph Wiggum loop pattern."""
     # Read hook input
     try:
         hook_input = json.loads(sys.stdin.read())
@@ -190,6 +268,28 @@ def main():
         }))
         return
 
+    # Load current review loop state
+    review_state = load_review_state()
+
+    # Increment iteration
+    review_state["iteration"] += 1
+    iteration = review_state["iteration"]
+
+    # Check max iterations
+    if iteration > MAX_ITERATIONS:
+        print(json.dumps({
+            "continue": True,
+            "message": f"Code review max iterations ({MAX_ITERATIONS}) reached. Proceeding with warnings.\n\n<promise>REVIEW_CLEAN</promise>"
+        }))
+        clear_review_state()
+        return
+
+    # Track start time on first iteration
+    if iteration == 1:
+        review_state["started_at"] = datetime.now().isoformat()
+
+    review_state["last_review_at"] = datetime.now().isoformat()
+
     # Get repository info
     repo_owner, repo_name = get_repo_info()
     if not repo_owner or not repo_name:
@@ -204,11 +304,12 @@ def main():
     if not diff_content:
         print(json.dumps({
             "continue": True,
-            "message": "No changes detected - skipping code review"
+            "message": "No changes detected - code review complete.\n\n<promise>REVIEW_CLEAN</promise>"
         }))
+        clear_review_state()
         return
 
-    # Run the review
+    # Run the Greptile review
     result = review_changes(
         repo_owner=repo_owner,
         repo_name=repo_name,
@@ -223,22 +324,68 @@ def main():
         }))
         return
 
-    # Parse and display results
+    # Parse results
     summary = get_review_summary(result)
-    update_state_with_review(summary)
+    update_workflow_state_with_review(summary, iteration)
 
     # Format for display
     display_output = format_review_for_display(summary)
 
-    # Determine if we should block based on critical issues
-    has_critical = summary.get("score", 10) < 5
+    # Check if issues found
+    issue_count = summary.get("issue_count", 0)
+    issues = summary.get("issues", [])
 
+    if issue_count == 0:
+        # All clean! Emit promise and proceed
+        review_state["status"] = "complete"
+        save_review_state(review_state)
+
+        output = f"""
+{display_output}
+
+================================================================================
+REVIEW LOOP COMPLETE (Iteration {iteration}/{MAX_ITERATIONS})
+================================================================================
+All code review checks passed!
+Proceeding to next phase.
+
+<promise>REVIEW_CLEAN</promise>
+"""
+        print(json.dumps({
+            "continue": True,
+            "message": output
+        }))
+        clear_review_state()
+        return
+
+    # Issues found - save state and block for fixes
+    review_state["status"] = "needs_fixing"
+    review_state["issues_found"] = issues
+    save_review_state(review_state)
+
+    # Format issues as context for agent
+    issues_context = format_issues_for_context(issues)
+
+    output = f"""
+{display_output}
+
+================================================================================
+REVIEW LOOP - ITERATION {iteration}/{MAX_ITERATIONS}
+================================================================================
+{issue_count} issue(s) found. Fix them and run tests again.
+Review will re-run automatically after tests pass.
+{issues_context}
+"""
+
+    # Block workflow - agent needs to fix issues
     print(json.dumps({
-        "continue": not has_critical,
-        "message": display_output,
+        "continue": False,  # Block until fixed
+        "message": output,
         "review_score": summary.get("score", 0),
-        "issues_count": summary.get("issue_count", 0),
-        "action_required": has_critical
+        "issues_count": issue_count,
+        "iteration": iteration,
+        "action_required": True,
+        "next_action": "Fix the issues above, then run tests again"
     }))
 
 

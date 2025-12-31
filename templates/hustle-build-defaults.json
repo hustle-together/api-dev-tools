@@ -1,6 +1,33 @@
 {
   "$schema": "hustle-build-defaults",
-  "description": "Pre-configured default answers for --auto mode. These are used when no explicit answer is provided.",
+  "description": "Pre-configured default answers for autonomous mode. Interviews use these defaults unless overridden.",
+  "version": "4.5.0",
+  "_usage": "Copy to .claude/hustle-build-defaults.json to customize for your project",
+
+  "adr": {
+    "enabled": true,
+    "significant_decisions": {
+      "database": ["supabase", "firebase", "postgres", "mysql", "mongodb", "sqlite", "planetscale", "neon"],
+      "auth": ["api key", "oauth", "jwt", "session", "cookie", "basic auth", "api-key", "bearer"],
+      "cache": ["redis", "memcached", "in-memory", "cdn", "edge", "vercel kv"],
+      "hosting": ["vercel", "netlify", "aws", "cloudflare", "railway", "render", "fly.io"],
+      "state": ["redux", "zustand", "jotai", "context", "mobx", "recoil", "valtio"],
+      "styling": ["tailwind", "css modules", "styled-components", "emotion", "vanilla-extract"]
+    },
+    "min_options_for_adr": 2
+  },
+
+  "autonomous": {
+    "enabled": true,
+    "skip_interviews": true,
+    "use_defaults_for_questions": true,
+    "ralph_wiggum_loops": true,
+    "max_iterations": 25,
+    "emit_promises": true,
+    "auto_fix_visual_issues": true,
+    "auto_fix_review_issues": true,
+    "auto_refactor": true
+  },
 
   "orchestrator": {
     "auth_required": true,
@@ -80,5 +107,19 @@
     "accessibility": "accessibility",
     "layout": "layout",
     "seo": "seo"
+  },
+
+  "remote_questions": {
+    "enabled": false,
+    "port": 8765,
+    "wait_mode": false,
+    "_instructions": [
+      "Set enabled=true or REMOTE_QUESTIONS_ENABLED=true to activate",
+      "Start the server: python hooks/remote-question-server.py",
+      "Access locally: http://localhost:8765",
+      "Access from phone on same network: http://YOUR_COMPUTER_IP:8765",
+      "Click 'Enable' in dashboard header for browser notifications",
+      "Set wait_mode=true to block until remote answer is received"
+    ]
   }
 }

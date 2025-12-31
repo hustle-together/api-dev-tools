@@ -16,6 +16,9 @@ The hook triggers on:
 - ANY questions about tools, services, or platforms
 - ANY request for implementation, editing, or changes
 
+v3.12.13 Fix:
+- Skip enforcement when running in source repository (developing the package)
+
 Returns:
   - Prints context to stdout (injected into conversation)
   - Exit 0 to allow the prompt to proceed
@@ -25,6 +28,28 @@ import sys
 import re
 from pathlib import Path
 from datetime import datetime
+
+# Import shared utilities
+try:
+    from hook_utils import is_source_repository
+except ImportError:
+    # Fallback if import fails
+    def is_source_repository():
+        try:
+            package_json = Path.cwd() / "package.json"
+            if package_json.exists():
+                data = json.loads(package_json.read_text())
+                if data.get("name") == "@hustle-together/api-dev-tools":
+                    return True
+            if (Path.cwd() / "templates").is_dir():
+                return True
+        except Exception:
+            pass
+        return False
+
+# Skip enforcement in source repository
+if is_source_repository():
+    sys.exit(0)
 
 # State file is in .claude/ directory (sibling to hooks/)
 STATE_FILE = Path(__file__).parent.parent / "api-dev-state.json"

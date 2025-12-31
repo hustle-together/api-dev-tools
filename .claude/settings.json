@@ -59,6 +59,15 @@
     ],
     "PreToolUse": [
       {
+        "matcher": "Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/hooks/project-document-prompt.py"
+          }
+        ]
+      },
+      {
         "matcher": "Write|Edit",
         "hooks": [
           {
@@ -82,6 +91,10 @@
       {
         "matcher": "AskUserQuestion",
         "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/hooks/remote-question-proxy.py"
+          },
           {
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/hooks/notify-input-needed.py"
@@ -130,6 +143,23 @@
           {
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/hooks/verify-after-green.py"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/hooks/run-code-review.py"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/hooks/run-visual-qa.py"
+          }
+        ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/hooks/run-visual-qa.py"
           }
         ]
       }

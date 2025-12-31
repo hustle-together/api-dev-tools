@@ -1,0 +1,10 @@
+# ADR Research Requests
+
+This directory holds pending ADR research requests created by hooks.
+
+Files:
+- pending-{category}.json - Request awaiting /adr-deep-research
+- completed-{category}.json - Request that has been processed
+
+The /adr-deep-research skill reads pending requests and spawns
+parallel agents to research each option before creating the ADR.

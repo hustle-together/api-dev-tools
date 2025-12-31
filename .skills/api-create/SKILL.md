@@ -245,7 +245,7 @@ TodoWrite([
 │       "header": "Disambig",                               │
 │       "multiSelect": false,                               │
 │       "options": [                                        │
-│         {"label": "REST API", "description": "Official API"},│
+│         {"label": "REST API (Recommended)", "description": "Official API"},│
 │         {"label": "SDK/Package", "description": "NPM wrapper"},│
 │         {"label": "Both", "description": "API + SDK"}     │
 │       ]                                                   │
@@ -270,7 +270,7 @@ TodoWrite([
 │                  Is this correct?",                       │
 │       header: "Scope",                                    │
 │       options: [                                          │
-│         "Yes, proceed",                                   │
+│         "Yes, proceed (Recommended)",                     │
 │         "I have modifications to add",                    │
 │         "No, let me clarify the purpose"                  │
 │       ]                                                   │
@@ -325,7 +325,7 @@ TodoWrite([
 │                  for more?",                              │
 │       header: "Research",                                 │
 │       options: [                                          │
-│         "Proceed to interview",                           │
+│         "Proceed to interview (Recommended)",             │
 │         "Search more - I need [specific topic]",          │
 │         "Search for something specific (I'll describe)"   │
 │       ]                                                   │
@@ -377,7 +377,7 @@ TodoWrite([
 │                  [summary]. All correct?",                │
 │       header: "Confirm",                                  │
 │       options: [                                          │
-│         "Yes, proceed to schema",                         │
+│         "Yes, proceed to schema (Recommended)",           │
 │         "Change an answer",                               │
 │         "Add another question"                            │
 │       ]                                                   │
@@ -401,7 +401,7 @@ TodoWrite([
 │                  want to research: [list]. Approve?",     │
 │       header: "Deep Research",                            │
 │       options: [                                          │
-│         "Yes, run these searches",                        │
+│         "Yes, run these searches (Recommended)",          │
 │         "Add more - I also need [topic]",                 │
 │         "Skip deep research, proceed to schema"           │
 │       ]                                                   │
@@ -427,7 +427,7 @@ TodoWrite([
 │                  requirements?",                          │
 │       header: "Schema",                                   │
 │       options: [                                          │
-│         "Yes, schema looks correct",                      │
+│         "Yes, schema looks correct (Recommended)",        │
 │         "No, I need changes (I'll describe)",             │
 │         "Let's redo the interview"                        │
 │       ]                                                   │
@@ -451,7 +451,7 @@ TodoWrite([
 │                  [M] missing. Ready to start TDD?",       │
 │       header: "Environment",                              │
 │       options: [                                          │
-│         "Yes, ready to write tests",                      │
+│         "Yes, ready to write tests (Recommended)",        │
 │         "No, need to set up API keys first",              │
 │         "No, need to fix something else"                  │
 │       ]                                                   │
@@ -476,7 +476,7 @@ TodoWrite([
 │                  Approve this test plan?",                │
 │       header: "Tests",                                    │
 │       options: [                                          │
-│         "Yes, write these tests",                         │
+│         "Yes, write these tests (Recommended)",           │
 │         "Add more scenarios (I'll describe)",             │
 │         "Change a scenario (I'll describe)"               │
 │       ]                                                   │
@@ -515,7 +515,7 @@ TodoWrite([
 │                  How should I proceed?",                  │
 │       header: "Verify",                                   │
 │       options: [                                          │
-│         "Fix gaps - loop back to Red phase",              │
+│         "Fix gaps - loop back to Red phase (Recommended)",│
 │         "Skip - these are intentional omissions",         │
 │         "Fix some, skip others (I'll specify)"            │
 │       ]                                                   │
@@ -551,7 +551,7 @@ TodoWrite([
 │       header: "Review",                                   │
 │       multiSelect: false,                                 │
 │       options: [                                          │
-│         {"label": "Fix all issues", "description": "Address each issue in Phase 12"},│
+│         {"label": "Fix all issues (Recommended)", "description": "Address each issue in Phase 12"},│
 │         {"label": "Fix critical only", "description": "Skip medium/low priority"},│
 │         {"label": "Skip review", "description": "Proceed without fixes (not recommended)"}│
 │       ]                                                   │
@@ -590,7 +590,7 @@ TodoWrite([
 │       header: "Docs",                                     │
 │       multiSelect: false,                                 │
 │       options: [                                          │
-│         {"label": "Yes, complete", "description": "All docs updated"},│
+│         {"label": "Yes, complete (Recommended)", "description": "All docs updated"},│
 │         {"label": "Need to add more", "description": "I'll describe what's missing"},│
 │         {"label": "Skip for now", "description": "Not recommended"}│
 │       ]                                                   │

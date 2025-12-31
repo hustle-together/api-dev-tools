@@ -465,6 +465,162 @@ function parseFont(input, defaultFont) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
+// Brandfetch API Integration
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Fetch brand data from Brandfetch API
+ * @param {string} domain - Company domain (e.g., "stripe.com")
+ * @param {string} apiKey - Brandfetch API key
+ * @returns {Promise<object|null>} Brand data or null on error
+ */
+async function fetchBrandData(domain, apiKey) {
+  const https = require("https");
+
+  return new Promise((resolve) => {
+    const options = {
+      hostname: "api.brandfetch.io",
+      path: `/v2/brands/${encodeURIComponent(domain)}`,
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    const req = https.request(options, (res) => {
+      let data = "";
+
+      res.on("data", (chunk) => {
+        data += chunk;
+      });
+
+      res.on("end", () => {
+        if (res.statusCode === 200) {
+          try {
+            const brand = JSON.parse(data);
+            resolve(brand);
+          } catch (e) {
+            resolve(null);
+          }
+        } else {
+          resolve(null);
+        }
+      });
+    });
+
+    req.on("error", () => {
+      resolve(null);
+    });
+
+    req.setTimeout(10000, () => {
+      req.destroy();
+      resolve(null);
+    });
+
+    req.end();
+  });
+}
+
+/**
+ * Parse Brandfetch API response into config-compatible format
+ * @param {object} brandData - Raw Brandfetch API response
+ * @returns {object} Parsed brand config
+ */
+function parseBrandData(brandData) {
+  const result = {
+    brandName: brandData.name || brandData.domain || "Brand",
+    description: brandData.description || "",
+    primaryColor: "#E11D48",
+    secondaryColor: "#1E40AF",
+    accentColor: "#8B5CF6",
+    fontFamily: "Inter",
+    headingFont: "Inter",
+    logoUrl: null,
+    logoSvg: null,
+    iconUrl: null,
+  };
+
+  // Extract colors by type
+  if (brandData.colors && brandData.colors.length > 0) {
+    // Sort by type priority: brand > accent > dark > light
+    const brandColor = brandData.colors.find(c => c.type === "brand");
+    const accentColor = brandData.colors.find(c => c.type === "accent");
+    const darkColor = brandData.colors.find(c => c.type === "dark");
+    const lightColor = brandData.colors.find(c => c.type === "light");
+
+    // Primary = brand color or first color
+    if (brandColor) {
+      result.primaryColor = brandColor.hex.toUpperCase();
+    } else if (brandData.colors[0]) {
+      result.primaryColor = brandData.colors[0].hex.toUpperCase();
+    }
+
+    // Secondary = dark color or second color
+    if (darkColor) {
+      result.secondaryColor = darkColor.hex.toUpperCase();
+    } else if (brandData.colors[1]) {
+      result.secondaryColor = brandData.colors[1].hex.toUpperCase();
+    }
+
+    // Accent = accent color or third color
+    if (accentColor) {
+      result.accentColor = accentColor.hex.toUpperCase();
+    } else if (lightColor) {
+      result.accentColor = lightColor.hex.toUpperCase();
+    } else if (brandData.colors[2]) {
+      result.accentColor = brandData.colors[2].hex.toUpperCase();
+    }
+  }
+
+  // Extract fonts
+  if (brandData.fonts && brandData.fonts.length > 0) {
+    const titleFont = brandData.fonts.find(f => f.type === "title");
+    const bodyFont = brandData.fonts.find(f => f.type === "body");
+
+    if (bodyFont && bodyFont.name) {
+      result.fontFamily = bodyFont.name;
+    } else if (brandData.fonts[0] && brandData.fonts[0].name) {
+      result.fontFamily = brandData.fonts[0].name;
+    }
+
+    if (titleFont && titleFont.name) {
+      result.headingFont = titleFont.name;
+    } else {
+      result.headingFont = result.fontFamily;
+    }
+  }
+
+  // Extract logos - prefer SVG, then PNG
+  if (brandData.logos && brandData.logos.length > 0) {
+    // Find primary logo (type: "logo")
+    const primaryLogo = brandData.logos.find(l => l.type === "logo") || brandData.logos[0];
+    const icon = brandData.logos.find(l => l.type === "icon" || l.type === "symbol");
+
+    if (primaryLogo && primaryLogo.formats) {
+      // Prefer SVG
+      const svg = primaryLogo.formats.find(f => f.format === "svg");
+      const png = primaryLogo.formats.find(f => f.format === "png");
+
+      if (svg) {
+        result.logoSvg = svg.src;
+        result.logoUrl = svg.src;
+      } else if (png) {
+        result.logoUrl = png.src;
+      }
+    }
+
+    if (icon && icon.formats) {
+      const iconSvg = icon.formats.find(f => f.format === "svg");
+      const iconPng = icon.formats.find(f => f.format === "png");
+      result.iconUrl = iconSvg?.src || iconPng?.src || null;
+    }
+  }
+
+  return result;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
 // File Copy Utilities
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -732,9 +888,21 @@ async function main() {
           { label: "Brandfetch - Auto-fetch from company domain (requires API key)", value: "brandfetch" },
         ]);
 
+        // Default values (may be overridden by Brandfetch)
+        let brandDefaults = {
+          brandName: path.basename(targetDir),
+          primaryColor: "#E11D48",
+          secondaryColor: "#1E40AF",
+          accentColor: "#8B5CF6",
+          fontFamily: "Inter",
+          headingFont: "Inter",
+          logoUrl: null,
+          iconUrl: null,
+        };
+
         if (config.brandSource === "brandfetch") {
           log(`\n${c.bold}Brandfetch Integration${c.reset}`);
-          log(`${c.dim}Automatically pulls logos, colors, and fonts from any company domain${c.reset}\n`);
+          log(`${c.dim}Fetch brand assets to pre-populate the interview${c.reset}\n`);
 
           if (!config.brandfetchApiKey) {
             log(`${c.white}Get your free API key:${c.reset} https://brandfetch.com/developers`);
@@ -749,142 +917,189 @@ async function main() {
             default: "",
           });
 
-          if (!config.brandDomain) {
-            log(`\n${c.dim}No domain provided - falling back to manual interview${c.reset}`);
-            config.brandSource = "manual";
+          if (config.brandDomain && config.brandfetchApiKey) {
+            // Actually fetch brand data!
+            startSpinner(`Fetching brand data from ${config.brandDomain}...`);
+            const brandData = await fetchBrandData(config.brandDomain, config.brandfetchApiKey);
+
+            if (brandData) {
+              const parsed = parseBrandData(brandData);
+              stopSpinner(true, `Fetched brand data from ${config.brandDomain}`);
+
+              // Update defaults with fetched data
+              brandDefaults = { ...brandDefaults, ...parsed };
+
+              log(`\n${c.bold}Brand Data Retrieved:${c.reset}`);
+              log(`  ${c.white}Name:${c.reset} ${parsed.brandName}`);
+              log(`  ${c.white}Primary:${c.reset} ${parsed.primaryColor}`);
+              log(`  ${c.white}Secondary:${c.reset} ${parsed.secondaryColor}`);
+              log(`  ${c.white}Accent:${c.reset} ${parsed.accentColor}`);
+              log(`  ${c.white}Body Font:${c.reset} ${parsed.fontFamily}`);
+              log(`  ${c.white}Heading Font:${c.reset} ${parsed.headingFont}`);
+              if (parsed.logoUrl) log(`  ${c.white}Logo:${c.reset} ${c.dim}${parsed.logoUrl.substring(0, 50)}...${c.reset}`);
+
+              // Store logo URLs for brand guide
+              config.logoUrl = parsed.logoUrl;
+              config.iconUrl = parsed.iconUrl;
+
+              log(`\n${c.dim}These values will be used as defaults in the interview below.${c.reset}`);
+              log(`${c.dim}Press Enter to accept or type a different value.${c.reset}\n`);
+            } else {
+              stopSpinner(false, `Could not fetch brand data from ${config.brandDomain}`);
+              log(`${c.dim}Continuing with manual defaults...${c.reset}\n`);
+            }
+          } else if (!config.brandDomain) {
+            log(`\n${c.dim}No domain provided - using manual defaults${c.reset}`);
           }
         }
 
-        if (config.brandSource === "manual") {
-          log(`\n${c.bold}━━━ Brand Interview ━━━${c.reset}`);
+        // Full Brand Interview (with Brandfetch data as defaults if available)
+        log(`\n${c.bold}━━━ Brand Interview ━━━${c.reset}`);
+        if (config.brandSource === "brandfetch" && config.brandDomain) {
+          log(`${c.dim}Confirm or customize the fetched brand values${c.reset}\n`);
+        } else {
           log(`${c.dim}Let's define your brand's visual identity${c.reset}\n`);
-
-          // Basic identity
-          config.brandName = await textInput("Brand/Project name", {
-            default: path.basename(targetDir),
-          });
-
-          // Color palette
-          log(`\n${c.bold}Color Palette${c.reset}`);
-          log(`${c.dim}Define colors that represent your brand${c.reset}`);
-          log(`${c.dim}Enter hex (#E11D48) or color name (red, blue, coral, navy, etc.)${c.reset}\n`);
-
-          let primaryInput = await textInput("Primary color (main CTAs, links)", {
-            default: "#E11D48",
-            hint: "hex or name",
-          });
-          config.primaryColor = parseColor(primaryInput, "#E11D48");
-          if (primaryInput && primaryInput !== config.primaryColor) {
-            log(`  ${c.dim}→ Resolved to ${config.primaryColor}${c.reset}`);
-          }
-
-          let secondaryInput = await textInput("Secondary color (accents)", {
-            default: "#1E40AF",
-            hint: "hex or name",
-          });
-          config.secondaryColor = parseColor(secondaryInput, "#1E40AF");
-          if (secondaryInput && secondaryInput !== config.secondaryColor) {
-            log(`  ${c.dim}→ Resolved to ${config.secondaryColor}${c.reset}`);
-          }
-
-          let accentInput = await textInput("Accent color (highlights, badges)", {
-            default: "#8B5CF6",
-            hint: "hex or name",
-          });
-          config.accentColor = parseColor(accentInput, "#8B5CF6");
-          if (accentInput && accentInput !== config.accentColor) {
-            log(`  ${c.dim}→ Resolved to ${config.accentColor}${c.reset}`);
-          }
-
-          // Typography
-          log(`\n${c.bold}Typography${c.reset}`);
-          log(`${c.dim}Fonts define your brand's personality${c.reset}`);
-          log(`${c.dim}Select from presets or describe what you want (e.g., "elegant serif", "modern sans")${c.reset}\n`);
-
-          config.fontFamily = await selectOne("Primary body font", [
-            { label: "Inter - Clean, modern, highly readable", value: "Inter" },
-            { label: "Geist - GitHub/Vercel aesthetic", value: "Geist" },
-            { label: "Plus Jakarta Sans - Friendly, approachable", value: "Plus Jakarta Sans" },
-            { label: "DM Sans - Geometric, professional", value: "DM Sans" },
-            { label: "IBM Plex Sans - Technical, serious", value: "IBM Plex Sans" },
-            { label: "Other - Describe or enter font name", value: "custom" },
-          ]);
-
-          if (config.fontFamily === "custom") {
-            let fontInput = await textInput("Font name or description", {
-              default: "Inter",
-              hint: 'e.g., "Playfair" or "elegant serif"',
-            });
-            config.fontFamily = parseFont(fontInput, "Inter");
-            log(`  ${c.dim}→ Using: ${config.fontFamily}${c.reset}`);
-          }
-
-          config.headingFont = await selectOne("Heading font", [
-            { label: "Same as body font", value: config.fontFamily },
-            { label: "Playfair Display - Elegant, sophisticated", value: "Playfair Display" },
-            { label: "Cal Sans - Bold, impactful", value: "Cal Sans" },
-            { label: "Clash Display - Modern, striking", value: "Clash Display" },
-            { label: "Other - Describe or enter font name", value: "custom" },
-          ]);
-
-          if (config.headingFont === "custom") {
-            let headingInput = await textInput("Heading font name or description", {
-              default: config.fontFamily,
-              hint: 'e.g., "sans-serif that pairs nicely"',
-            });
-            config.headingFont = parseFont(headingInput, config.fontFamily);
-            log(`  ${c.dim}→ Using: ${config.headingFont}${c.reset}`);
-          }
-
-          // UI Style preferences
-          log(`\n${c.bold}UI Style Preferences${c.reset}`);
-          log(`${c.dim}Define the overall look and feel${c.reset}\n`);
-
-          config.buttonStyle = await selectOne("Button style", [
-            { label: "Sharp (0px) - Modern, minimal tech aesthetic", value: "sharp" },
-            { label: "Subtle (4px) - Professional, slightly softened", value: "subtle" },
-            { label: "Rounded (8px) - Friendly, approachable", value: "rounded" },
-            { label: "Pill (9999px) - Playful, fully rounded", value: "pill" },
-          ]);
-
-          // Map button style to border radius
-          const radiusMap = { sharp: "0", subtle: "4px", rounded: "8px", pill: "9999px" };
-          config.borderRadius = radiusMap[config.buttonStyle];
-
-          config.cardStyle = await selectOne("Card style", [
-            { label: "Flat - Minimal, no depth", value: "flat" },
-            { label: "Bordered - Subtle outline separation", value: "bordered" },
-            { label: "Elevated - Shadow for depth", value: "elevated" },
-          ]);
-
-          // Visual content style
-          log(`\n${c.bold}Visual Content${c.reset}`);
-          log(`${c.dim}Preferences for images and icons${c.reset}\n`);
-
-          config.imageStyle = await selectOne("Preferred image style", [
-            { label: "Photography - Real photos, authentic feel", value: "photography" },
-            { label: "Illustrations - Custom drawn, unique personality", value: "illustration" },
-            { label: "Abstract - Shapes, gradients, patterns", value: "abstract" },
-            { label: "Minimal - Clean, simple graphics", value: "minimal" },
-          ]);
-
-          config.iconStyle = await selectOne("Icon style", [
-            { label: "Outline - Light, modern (Lucide, Heroicons)", value: "outline" },
-            { label: "Solid - Bold, impactful (Phosphor filled)", value: "solid" },
-            { label: "Duotone - Two-tone, distinctive", value: "duotone" },
-          ]);
-
-          // Animation preferences
-          config.animationLevel = await selectOne("Animation level", [
-            { label: "None - Static UI, pure function", value: "none" },
-            { label: "Subtle - Micro-interactions, fade-ins", value: "subtle" },
-            { label: "Moderate - Page transitions, hovers", value: "moderate" },
-            { label: "Expressive - Bold animations, personality", value: "expressive" },
-          ]);
-
-          // Dark mode
-          config.darkMode = await confirm("Include dark mode support?", true);
         }
+
+        // Basic identity
+        config.brandName = await textInput("Brand/Project name", {
+          default: brandDefaults.brandName,
+        });
+
+        // Color palette
+        log(`\n${c.bold}Color Palette${c.reset}`);
+        log(`${c.dim}Define colors that represent your brand${c.reset}`);
+        log(`${c.dim}Enter hex (#E11D48) or color name (red, blue, coral, navy, etc.)${c.reset}\n`);
+
+        let primaryInput = await textInput("Primary color (main CTAs, links)", {
+          default: brandDefaults.primaryColor,
+          hint: "hex or name",
+        });
+        config.primaryColor = parseColor(primaryInput, brandDefaults.primaryColor);
+        if (primaryInput && primaryInput !== config.primaryColor) {
+          log(`  ${c.dim}→ Resolved to ${config.primaryColor}${c.reset}`);
+        }
+
+        let secondaryInput = await textInput("Secondary color (accents)", {
+          default: brandDefaults.secondaryColor,
+          hint: "hex or name",
+        });
+        config.secondaryColor = parseColor(secondaryInput, brandDefaults.secondaryColor);
+        if (secondaryInput && secondaryInput !== config.secondaryColor) {
+          log(`  ${c.dim}→ Resolved to ${config.secondaryColor}${c.reset}`);
+        }
+
+        let accentInput = await textInput("Accent color (highlights, badges)", {
+          default: brandDefaults.accentColor,
+          hint: "hex or name",
+        });
+        config.accentColor = parseColor(accentInput, brandDefaults.accentColor);
+        if (accentInput && accentInput !== config.accentColor) {
+          log(`  ${c.dim}→ Resolved to ${config.accentColor}${c.reset}`);
+        }
+
+        // Typography
+        log(`\n${c.bold}Typography${c.reset}`);
+        log(`${c.dim}Fonts define your brand's personality${c.reset}`);
+        log(`${c.dim}Select from presets or describe what you want (e.g., "elegant serif", "modern sans")${c.reset}\n`);
+
+        // Build font options with fetched font as first option if available
+        const fontOptions = [];
+        if (brandDefaults.fontFamily && brandDefaults.fontFamily !== "Inter") {
+          fontOptions.push({ label: `${brandDefaults.fontFamily} - From Brandfetch (Recommended)`, value: brandDefaults.fontFamily });
+        }
+        fontOptions.push(
+          { label: "Inter - Clean, modern, highly readable", value: "Inter" },
+          { label: "Geist - GitHub/Vercel aesthetic", value: "Geist" },
+          { label: "Plus Jakarta Sans - Friendly, approachable", value: "Plus Jakarta Sans" },
+          { label: "DM Sans - Geometric, professional", value: "DM Sans" },
+          { label: "IBM Plex Sans - Technical, serious", value: "IBM Plex Sans" },
+          { label: "Other - Describe or enter font name", value: "custom" },
+        );
+
+        config.fontFamily = await selectOne("Primary body font", fontOptions);
+
+        if (config.fontFamily === "custom") {
+          let fontInput = await textInput("Font name or description", {
+            default: brandDefaults.fontFamily,
+            hint: 'e.g., "Playfair" or "elegant serif"',
+          });
+          config.fontFamily = parseFont(fontInput, brandDefaults.fontFamily);
+          log(`  ${c.dim}→ Using: ${config.fontFamily}${c.reset}`);
+        }
+
+        // Build heading font options with fetched font as first option if available
+        const headingOptions = [];
+        if (brandDefaults.headingFont && brandDefaults.headingFont !== config.fontFamily) {
+          headingOptions.push({ label: `${brandDefaults.headingFont} - From Brandfetch (Recommended)`, value: brandDefaults.headingFont });
+        }
+        headingOptions.push(
+          { label: "Same as body font", value: config.fontFamily },
+          { label: "Playfair Display - Elegant, sophisticated", value: "Playfair Display" },
+          { label: "Cal Sans - Bold, impactful", value: "Cal Sans" },
+          { label: "Clash Display - Modern, striking", value: "Clash Display" },
+          { label: "Other - Describe or enter font name", value: "custom" },
+        );
+
+        config.headingFont = await selectOne("Heading font", headingOptions);
+
+        if (config.headingFont === "custom") {
+          let headingInput = await textInput("Heading font name or description", {
+            default: brandDefaults.headingFont,
+            hint: 'e.g., "sans-serif that pairs nicely"',
+          });
+          config.headingFont = parseFont(headingInput, brandDefaults.headingFont);
+          log(`  ${c.dim}→ Using: ${config.headingFont}${c.reset}`);
+        }
+
+        // UI Style preferences
+        log(`\n${c.bold}UI Style Preferences${c.reset}`);
+        log(`${c.dim}Define the overall look and feel${c.reset}\n`);
+
+        config.buttonStyle = await selectOne("Button style", [
+          { label: "Sharp (0px) - Modern, minimal tech aesthetic", value: "sharp" },
+          { label: "Subtle (4px) - Professional, slightly softened", value: "subtle" },
+          { label: "Rounded (8px) - Friendly, approachable", value: "rounded" },
+          { label: "Pill (9999px) - Playful, fully rounded", value: "pill" },
+        ]);
+
+        // Map button style to border radius
+        const radiusMap = { sharp: "0", subtle: "4px", rounded: "8px", pill: "9999px" };
+        config.borderRadius = radiusMap[config.buttonStyle];
+
+        config.cardStyle = await selectOne("Card style", [
+          { label: "Flat - Minimal, no depth", value: "flat" },
+          { label: "Bordered - Subtle outline separation", value: "bordered" },
+          { label: "Elevated - Shadow for depth", value: "elevated" },
+        ]);
+
+        // Visual content style
+        log(`\n${c.bold}Visual Content${c.reset}`);
+        log(`${c.dim}Preferences for images and icons${c.reset}\n`);
+
+        config.imageStyle = await selectOne("Preferred image style", [
+          { label: "Photography - Real photos, authentic feel", value: "photography" },
+          { label: "Illustrations - Custom drawn, unique personality", value: "illustration" },
+          { label: "Abstract - Shapes, gradients, patterns", value: "abstract" },
+          { label: "Minimal - Clean, simple graphics", value: "minimal" },
+        ]);
+
+        config.iconStyle = await selectOne("Icon style", [
+          { label: "Outline - Light, modern (Lucide, Heroicons)", value: "outline" },
+          { label: "Solid - Bold, impactful (Phosphor filled)", value: "solid" },
+          { label: "Duotone - Two-tone, distinctive", value: "duotone" },
+        ]);
+
+        // Animation preferences
+        config.animationLevel = await selectOne("Animation level", [
+          { label: "None - Static UI, pure function", value: "none" },
+          { label: "Subtle - Micro-interactions, fade-ins", value: "subtle" },
+          { label: "Moderate - Page transitions, hovers", value: "moderate" },
+          { label: "Expressive - Bold animations, personality", value: "expressive" },
+        ]);
+
+        // Dark mode
+        config.darkMode = await confirm("Include dark mode support?", true);
       }
     }
 
@@ -1080,6 +1295,15 @@ async function main() {
   if (!fs.existsSync(registryDest) && fs.existsSync(registrySource)) {
     copyFile(registrySource, registryDest);
     logSuccess("Created registry.json");
+  }
+
+  // Hustle-build defaults (for --auto mode)
+  const defaultsSource = path.join(sourceTemplatesDir, "hustle-build-defaults.json");
+  const defaultsDest = path.join(claudeDir, "hustle-build-defaults.json");
+
+  if (fs.existsSync(defaultsSource) && !fs.existsSync(defaultsDest)) {
+    copyFile(defaultsSource, defaultsDest);
+    logSuccess("Created hustle-build-defaults.json");
   }
 
   // Research cache
@@ -1289,6 +1513,17 @@ async function main() {
       ? `\n> **Source**: Auto-fetched from ${config.brandDomain} via Brandfetch API\n> Run \`/hustle-brand-refresh\` to update from latest brand assets`
       : "";
 
+    // Build logo section if logos were fetched
+    const logoSection = config.logoUrl
+      ? `
+### Logo Assets
+${config.logoUrl ? `- **Primary Logo**: ${config.logoUrl}` : ""}
+${config.iconUrl ? `- **Icon/Symbol**: ${config.iconUrl}` : ""}
+
+> Download and place logos in \`/public/logo.svg\` and \`/public/icon.svg\`
+`
+      : "";
+
     const brandGuideContent = `# ${config.brandName} Brand Guide
 
 > Auto-generated by HUSTLE API Dev Tools v3.12.7
@@ -1300,6 +1535,7 @@ async function main() {
 
 ### Brand Name
 **${config.brandName}**
+${logoSection}
 
 ### Brand Colors
 | Role | Color | Hex | Usage |

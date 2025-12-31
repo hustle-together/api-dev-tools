@@ -83,36 +83,92 @@ Task({
 })
 ```
 
-### Step 6: Report Results
+### Step 6: Report Results (Enhanced with Haiku Reasoning + Links)
+
+The report includes **Haiku's detailed reasoning** for any issues found, plus **clickable links** to screenshots and Storybook states:
 
 ```
-Visual Test Results:
-═══════════════════════════════════════
-
-Component: Button
+═══════════════════════════════════════════════════════════════════════════════
+                         VISUAL TEST RESULTS: Button
+═══════════════════════════════════════════════════════════════════════════════
 
 Viewport Tests:
-───────────────────────────────────
-Mobile Portrait  | ✅ Pass | No issues
-Mobile Notch     | ✅ Pass | No issues
-Mobile Landscape | ✅ Pass | No issues
-Tablet Portrait  | ✅ Pass | No issues
-Tablet Landscape | ✅ Pass | No issues
-Small Desktop    | ✅ Pass | No issues
-Desktop          | ✅ Pass | No issues
-───────────────────────────────────
+┌──────────────────┬────────┬─────────────────────────────────────────────────┐
+│ Viewport         │ Status │ Details                                         │
+├──────────────────┼────────┼─────────────────────────────────────────────────┤
+│ Mobile Portrait  │ ✅ Pass │ No issues                                       │
+│ Mobile Notch     │ ⚠️ Warn │ Touch target below minimum                      │
+│ Mobile Landscape │ ✅ Pass │ No issues                                       │
+│ Tablet Portrait  │ ✅ Pass │ No issues                                       │
+│ Tablet Landscape │ ✅ Pass │ No issues                                       │
+│ Small Desktop    │ ✅ Pass │ No issues                                       │
+│ Desktop          │ ✅ Pass │ No issues                                       │
+└──────────────────┴────────┴─────────────────────────────────────────────────┘
 
-AI Analysis:
-✅ Layout: Elements properly aligned
-✅ Typography: 4.8:1 contrast ratio (passes AA)
-✅ Touch targets: All buttons 44px+ height
-✅ Safe areas: No content in notch zone
-✅ Brand: Colors match brand guide
+═══════════════════════════════════════════════════════════════════════════════
+                           HAIKU AI ANALYSIS
+═══════════════════════════════════════════════════════════════════════════════
 
-Screenshots saved to:
-  __snapshots__/Button-mobile-portrait.png
-  __snapshots__/Button-mobile-notch.png
-  ...
+📱 Mobile Notch (393×852) - ⚠️ 1 Warning
+───────────────────────────────────────────────────────────────────────────────
+📸 Screenshot: file://__snapshots__/Button-mobile-notch.png
+📖 Storybook:  http://localhost:6006/?path=/story/components-button--primary
+
+Issue #1: Touch Target Too Small
+  Type:     touch_target
+  Severity: warning
+  Element:  Secondary action button (bottom right)
+
+  🤖 Haiku's Reasoning:
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │ "I measured the secondary button at approximately 36px height. Apple's  │
+  │ HIG recommends 44×44px minimum for touch targets to ensure reliable     │
+  │ tapping, especially on notch devices where users may be adjusting grip. │
+  │ The primary button meets the standard at 48px, but the secondary button │
+  │ falls short. This could lead to tap frustration on real devices."       │
+  └─────────────────────────────────────────────────────────────────────────┘
+
+  💡 Suggestion: Increase button height to 44px minimum
+  🔧 Fix: Add `min-h-[44px]` to secondary button variants
+
+───────────────────────────────────────────────────────────────────────────────
+
+🖥️ Desktop (1920×1080) - ✅ All Checks Pass
+───────────────────────────────────────────────────────────────────────────────
+📸 Screenshot: file://__snapshots__/Button-desktop.png
+📖 Storybook:  http://localhost:6006/?path=/story/components-button--primary
+
+  🤖 Haiku's Analysis:
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │ "Layout is clean with proper alignment. Typography contrast measured    │
+  │ at approximately 4.8:1 against the background, exceeding WCAG AA        │
+  │ requirements (4.5:1). All interactive elements are appropriately sized  │
+  │ for desktop interaction. Brand colors match the guide specification."   │
+  └─────────────────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════════════════
+                              SUMMARY
+═══════════════════════════════════════════════════════════════════════════════
+
+Category Results:
+───────────────────────────────────────
+✅ Layout:        7/7 viewports pass
+✅ Typography:    7/7 viewports pass
+⚠️ Touch Targets: 6/7 viewports pass (1 warning)
+✅ Safe Areas:    7/7 viewports pass
+✅ Brand:         7/7 viewports pass
+───────────────────────────────────────
+
+Quick Links:
+───────────────────────────────────────
+📸 All Screenshots: file://__snapshots__/
+📖 Storybook:       http://localhost:6006/?path=/story/components-button
+🧪 Playwright:      file://playwright-report/index.html
+📊 Coverage:        file://coverage/index.html
+
+───────────────────────────────────────
+Result: ⚠️ PASS WITH WARNINGS (1 warning, 0 critical)
+───────────────────────────────────────
 ```
 
 ## Handling Visual Diffs
@@ -179,6 +235,57 @@ Duration:   28s
 ═══════════════════════════════════════
 ```
 
+## Autonomous Loop Completion (Ralph Wiggum Pattern)
+
+When running in autonomous mode (`--auto` flag or `/ralph-loop`), this skill supports
+self-terminating loops for iterative visual QA cycles.
+
+### Promise Signal
+
+After completing visual analysis and fixing all issues, output:
+
+```
+<promise>VISUAL_CLEAN</promise>
+```
+
+This signal is detected by the `completion-promise-detector.py` hook, which:
+1. Records the promise in `.claude/completion-promises.json`
+2. Allows graceful workflow termination
+3. Prevents infinite visual QA loops
+
+### When to Output the Promise
+
+Output `<promise>VISUAL_CLEAN</promise>` when:
+- All 7 viewports have been tested
+- All Haiku-detected issues have been fixed
+- Re-analysis confirms no remaining issues
+- Screenshots match expected baselines
+
+### Iterative Visual QA Loop
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                   VISUAL QA LOOP (Ralph Wiggum)                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  1. Capture screenshots (7 viewports)                           │
+│     └─ Spawn Haiku for AI analysis                              │
+│                                                                 │
+│  2. Issues found?                                               │
+│     └─ Fix layout, typography, touch targets, etc.              │
+│                                                                 │
+│  3. Re-capture and re-analyze                                   │
+│     └─ Still issues? → Loop back to step 2                      │
+│                                                                 │
+│  4. All viewports clean?                                        │
+│     └─ Output: <promise>VISUAL_CLEAN</promise>                  │
+│     └─ Hook detects → Workflow terminates gracefully            │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Credit:** Ralph Wiggum pattern by [Geoffrey Huntley](https://ghuntley.com/ralph/)
+
 ## Integration
 
 Invoked during:
@@ -190,3 +297,5 @@ Invoked during:
 - `/test-unit` - Unit tests
 - `/test-e2e` - E2E tests
 - `/test-debug` - Debug failures
+- `/ralph-loop` - Autonomous loop execution
+- [docs/AUTONOMOUS_LOOPS.md](../../docs/AUTONOMOUS_LOOPS.md) - Pattern documentation

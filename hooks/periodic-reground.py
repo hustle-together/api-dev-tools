@@ -70,10 +70,38 @@ def get_registry_summary(registry):
         return None
 
     summary = {}
+    # Core elements
     for category in ["apis", "components", "pages", "combined"]:
         items = registry.get(category, {})
         if items:
             summary[category] = list(items.keys())
+
+    # Infrastructure tracking (v1.3.0+)
+    routes = registry.get("routes", {})
+    if routes and not routes.get("_description"):
+        # Has actual routes, not just template
+        actual_routes = [k for k in routes.keys() if not k.startswith("_")]
+        if actual_routes:
+            summary["routes"] = actual_routes
+
+    env_vars = registry.get("env_vars", {})
+    if env_vars:
+        actual_vars = [k for k in env_vars.keys() if not k.startswith("_")]
+        if actual_vars:
+            summary["env_vars"] = actual_vars
+
+    services = registry.get("services", {})
+    if services:
+        actual_services = [k for k in services.keys() if not k.startswith("_")]
+        if actual_services:
+            summary["services"] = actual_services
+
+    webhooks = registry.get("webhooks", {})
+    if webhooks:
+        actual_webhooks = [k for k in webhooks.keys() if not k.startswith("_")]
+        if actual_webhooks:
+            summary["webhooks"] = actual_webhooks
+
     return summary if summary else None
 
 
@@ -207,6 +235,18 @@ def build_reground_context(state, turn_count):
             parts.append(f"  - Components: {format_list(registry_summary['components'])}")
         if registry_summary.get("pages"):
             parts.append(f"  - Pages: {format_list(registry_summary['pages'])}")
+        if registry_summary.get("routes"):
+            parts.append(f"  - Routes: {format_list(registry_summary['routes'])}")
+
+    # === Infrastructure Awareness ===
+    if registry_summary:
+        if registry_summary.get("services"):
+            parts.append("")
+            parts.append(f"**External Services:** {format_list(registry_summary['services'])}")
+        if registry_summary.get("webhooks"):
+            parts.append(f"**Webhooks:** {format_list(registry_summary['webhooks'])}")
+        if registry_summary.get("env_vars"):
+            parts.append(f"**Env Vars Tracked:** {len(registry_summary['env_vars'])} variables")
 
     # === Deferred Features ===
     deferred = state.get("deferred_features", [])

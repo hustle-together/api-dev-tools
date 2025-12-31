@@ -27,6 +27,13 @@ import json
 import sys
 from pathlib import Path
 
+# Import shared utilities for logging (v4.5.0)
+try:
+    from hook_utils import log_workflow_event
+    UTILS_AVAILABLE = True
+except ImportError:
+    UTILS_AVAILABLE = False
+
 # State file is in .claude/ directory (sibling to hooks/)
 STATE_FILE = Path(__file__).parent.parent / "api-dev-state.json"
 
@@ -332,6 +339,19 @@ WHY: User must approve their decisions before they drive implementation."""
     if decisions:
         # Build a reminder of what the user decided
         decision_summary = _build_decision_summary(decisions)
+
+        # Log the interview decision being applied (v4.5.0)
+        if UTILS_AVAILABLE:
+            try:
+                log_workflow_event("interview_decision", {
+                    "action": "applying_decisions",
+                    "file_path": file_path,
+                    "decision_count": len(decisions),
+                    "decisions": {k: v.get("value", v.get("response", ""))[:100]
+                                  for k, v in decisions.items()}
+                })
+            except Exception:
+                pass
 
         # Allow but inject context about user decisions
         print(json.dumps({

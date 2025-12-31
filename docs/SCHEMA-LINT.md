@@ -13,9 +13,78 @@ Schema linting catches issues like:
 
 ## Quick Setup
 
-### 1. Create Schema Lint Rules
+### 1. Copy the ESLint Plugin
 
-Create `eslint-plugin-zod-schema/index.js`:
+Copy the plugin from api-dev-tools templates:
+
+```bash
+# From your project root
+cp -r node_modules/@anthropic-ai/api-dev-tools/templates/eslint-plugin-zod-schema ./
+```
+
+Or if installed globally:
+```bash
+cp -r ~/.claude/api-dev-tools/templates/eslint-plugin-zod-schema ./
+```
+
+The plugin is located at: `templates/eslint-plugin-zod-schema/index.js`
+
+### 2. Plugin Rules
+
+The plugin provides these rules:
+
+| Rule | Description | Default |
+|------|-------------|---------|
+| `require-description` | Schemas should have `.describe()` | warn |
+| `consistent-naming` | Keys follow naming convention | error (camelCase) |
+| `no-unsafe-defaults` | Avoid empty/zero defaults | warn |
+| `require-error-message` | String validations need messages | off |
+| `prefer-strict` | Use `.strict()` on objects | off |
+
+### 3. ESLint Configuration (Flat Config)
+
+```javascript
+// eslint.config.js
+import zodSchemaPlugin from './eslint-plugin-zod-schema/index.js';
+
+export default [
+  {
+    files: ['**/*.schema.ts', '**/schemas/**/*.ts'],
+    plugins: {
+      'zod-schema': zodSchemaPlugin,
+    },
+    rules: {
+      'zod-schema/require-description': 'warn',
+      'zod-schema/consistent-naming': ['error', { case: 'camelCase' }],
+      'zod-schema/no-unsafe-defaults': 'warn',
+    },
+  },
+];
+```
+
+Or use the recommended preset:
+
+```javascript
+import zodSchemaPlugin from './eslint-plugin-zod-schema/index.js';
+
+export default [
+  {
+    files: ['**/*.schema.ts'],
+    ...zodSchemaPlugin.configs.recommended,
+  },
+];
+```
+
+### 4. Available Configs
+
+- `recommended` - Balanced rules for most projects
+- `strict` - All rules enabled for maximum safety
+
+---
+
+## Plugin Implementation Reference
+
+For reference, here's the core plugin structure (full implementation in `templates/eslint-plugin-zod-schema/index.js`):
 
 ```javascript
 module.exports = {

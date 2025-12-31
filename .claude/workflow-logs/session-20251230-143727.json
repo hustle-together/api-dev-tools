@@ -1,0 +1,100 @@
+{
+  "workflow_id": "session-20251230-143727",
+  "started_at": "2025-12-30T14:37:27.686881",
+  "events": [
+    {
+      "timestamp": "2025-12-30T14:37:27.686883",
+      "type": "session_start",
+      "directories_created": [
+        ".claude/workflow-logs",
+        ".claude/adrs"
+      ],
+      "registry_created": true
+    },
+    {
+      "timestamp": "2025-12-30T14:50:12.196714",
+      "type": "session_start",
+      "directories_created": [],
+      "registry_created": false
+    },
+    {
+      "timestamp": "2025-12-30T15:07:01.110692",
+      "type": "session_start",
+      "directories_created": [],
+      "registry_created": false
+    },
+    {
+      "timestamp": "2025-12-30T15:29:13.991468",
+      "type": "session_start",
+      "directories_created": [],
+      "registry_created": false
+    },
+    {
+      "timestamp": "2025-12-30T16:17:49.753967",
+      "type": "session_start",
+      "directories_created": [],
+      "registry_created": false
+    },
+    {
+      "timestamp": "2025-12-30T17:09:14.175522",
+      "type": "session_start",
+      "directories_created": [],
+      "registry_created": false
+    },
+    {
+      "timestamp": "2025-12-30T17:17:54.527338",
+      "type": "session_start",
+      "directories_created": [],
+      "registry_created": false
+    },
+    {
+      "timestamp": "2025-12-30T17:44:21.434629",
+      "type": "session_start",
+      "directories_created": [],
+      "registry_created": false
+    },
+    {
+      "timestamp": "2025-12-30T18:07:24.057087",
+      "type": "session_start",
+      "directories_created": [],
+      "registry_created": false
+    },
+    {
+      "timestamp": "2025-12-30T18:19:02.627702",
+      "type": "session_start",
+      "directories_created": [],
+      "registry_created": false
+    },
+    {
+      "timestamp": "2025-12-30T21:11:02.689606",
+      "type": "session_start",
+      "directories_created": [],
+      "registry_created": false
+    },
+    {
+      "timestamp": "2025-12-30T22:36:41.675022",
+      "type": "session_start",
+      "directories_created": [],
+      "registry_created": false
+    },
+    {
+      "timestamp": "2025-12-30T23:18:37.288618",
+      "type": "session_start",
+      "directories_created": [],
+      "registry_created": false
+    },
+    {
+      "timestamp": "2025-12-30T23:18:43.802291",
+      "type": "session_start",
+      "directories_created": [],
+      "registry_created": false
+    },
+    {
+      "timestamp": "2025-12-30T23:21:10.084416",
+      "type": "session_start",
+      "directories_created": [],
+      "registry_created": false
+    }
+  ],
+  "last_activity": "2025-12-30T23:21:10.084424"
+}

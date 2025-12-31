@@ -150,3 +150,62 @@ This phase is **not part of the regular TDD workflow** and must only be applied 
      - Testing notes
    - Document expected behavior and edge cases
    - Include real-world output examples
+
+## Autonomous Loop Completion (Ralph Wiggum Pattern)
+
+When running in autonomous mode (`--auto` flag or `/ralph-loop`), this skill supports
+self-terminating loops for iterative refactoring cycles.
+
+### Promise Signal
+
+After completing refactoring and verifying tests still pass, output:
+
+```
+<promise>REFACTORED</promise>
+```
+
+This signal is detected by the `completion-promise-detector.py` hook, which:
+1. Records the promise in `.claude/completion-promises.json`
+2. Allows graceful workflow termination
+3. Prevents infinite refactoring loops
+
+### When to Output the Promise
+
+Output `<promise>REFACTORED</promise>` when:
+- All identified refactoring opportunities have been addressed
+- Tests are still passing (verify with `pnpm test`)
+- No additional cleanup is needed
+- Code meets project quality standards
+
+### Iterative Refactor Loop
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                   REFACTOR LOOP (Ralph Wiggum)                  │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  1. Identify refactoring opportunities                          │
+│     └─ Code smells, duplication, complexity                     │
+│                                                                 │
+│  2. Apply refactoring                                           │
+│     └─ Run tests → Failing? → Fix before continuing             │
+│                                                                 │
+│  3. Review result                                               │
+│     └─ More opportunities? → Loop back to step 1                │
+│                                                                 │
+│  4. All clean?                                                  │
+│     └─ Output: <promise>REFACTORED</promise>                    │
+│     └─ Hook detects → Workflow terminates gracefully            │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Credit:** Ralph Wiggum pattern by [Geoffrey Huntley](https://ghuntley.com/ralph/)
+
+## See Also
+
+- `/red` - Write failing tests
+- `/green` - Minimal implementation
+- `/cycle` - Full TDD cycle
+- `/ralph-loop` - Autonomous loop execution
+- [docs/AUTONOMOUS_LOOPS.md](../../docs/AUTONOMOUS_LOOPS.md) - Pattern documentation

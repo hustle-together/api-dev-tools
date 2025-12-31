@@ -1,6 +1,6 @@
 # Re-Grounding System Reference
 
-**Version:** 4.0.0
+**Version:** 4.1.0
 **Last Updated:** 2025-12-29
 
 > **The Problem**
@@ -216,6 +216,62 @@ Every 7 turns, the following is injected:
 | **Brand Guide** | Styling reminder | Ensures consistent UI |
 | **Orchestrated Build** | Multi-workflow progress | Context for sub-workflows |
 | **Remember** | Core principles | Quick principle refresh |
+
+---
+
+## Registry Integration (v4.1.0)
+
+### Full Registry Awareness
+
+The re-grounding system now integrates with the expanded registry schema (v1.3.0+) to provide comprehensive infrastructure awareness:
+
+```markdown
+## Re-Grounding Reminder (Turn 21)
+
+**Active Endpoint:** `stripe-checkout`
+**Current Phase:** tdd_green
+**Completed:** 9/14 phases
+
+**Key Decisions:**
+  - authentication: Bearer token
+  - error_handling: Partial success
+
+**Existing Elements (don't recreate):**
+  - APIs: user-auth, stripe-checkout
+  - Components: Hero, PaymentForm
+  - Pages: Dashboard, Checkout
+  - Routes: /api/users, /api/payments, /dashboard
+
+**External Services:** stripe, supabase, openai
+**Webhooks:** /api/webhooks/stripe
+**Env Vars Tracked:** 8 variables
+
+**Remember:** Research-first | Questions FROM findings | Verify after green
+```
+
+### Registry Categories Tracked
+
+| Category | Example | Purpose |
+|----------|---------|---------|
+| `apis` | stripe-checkout | Prevent duplicate API implementations |
+| `components` | PaymentForm | Prevent duplicate UI components |
+| `pages` | /checkout | Show existing page routes |
+| `routes` | /api/payments | All API and page routes |
+| `services` | stripe, supabase | External dependencies |
+| `webhooks` | /api/webhooks/stripe | Incoming webhook endpoints |
+| `env_vars` | STRIPE_SECRET_KEY | Required environment variables |
+
+### Why This Matters
+
+Without registry integration:
+- Claude might create a new `/api/checkout` route when `/api/payments` already exists
+- Claude might add Stripe SDK when it's already configured in services
+- Claude might forget to add webhook signature validation
+
+With registry integration:
+- All existing infrastructure visible in every re-ground
+- External service dependencies tracked
+- Environment variables validated against registry
 
 ---
 

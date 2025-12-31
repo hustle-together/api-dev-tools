@@ -4,11 +4,13 @@ import { useState, useMemo } from "react";
 import { HeroHeader } from "../../shared/HeroHeader";
 import { PreviewCard } from "./PreviewCard";
 import { PreviewModal } from "./PreviewModal";
+import { VisualTestingDashboard } from "./VisualTestingDashboard";
 
 // Import registry - this will be updated by the CLI when components are created
 // Note: In production, this could be fetched from an API route
 import registry from "@/../.claude/registry.json";
 
+type ViewType = "gallery" | "visual-testing";
 type FilterType = "all" | "components" | "pages";
 
 interface RegistryItem {
@@ -48,6 +50,7 @@ interface Registry {
  * Created with Hustle API Dev Tools (v3.9.2)
  */
 export function UIShowcase() {
+  const [view, setView] = useState<ViewType>("gallery");
   const [filter, setFilter] = useState<FilterType>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedItem, setSelectedItem] = useState<{
@@ -106,8 +109,52 @@ export function UIShowcase() {
   const componentCount = Object.keys(typedRegistry.components || {}).length;
   const pageCount = Object.keys(typedRegistry.pages || {}).length;
 
+  // If viewing visual testing dashboard, render that instead
+  if (view === "visual-testing") {
+    return (
+      <div className="min-h-screen bg-white dark:bg-[#050505]">
+        {/* View Switcher */}
+        <div className="border-b-2 border-black bg-gray-100 dark:border-gray-600 dark:bg-gray-900">
+          <div className="container mx-auto flex gap-0 px-4">
+            <button
+              onClick={() => setView("gallery")}
+              className="border-b-4 border-transparent px-6 py-3 font-bold text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white"
+            >
+              Gallery View
+            </button>
+            <button
+              onClick={() => setView("visual-testing")}
+              className="border-b-4 border-[#BA0C2F] px-6 py-3 font-bold text-[#BA0C2F]"
+            >
+              Visual Testing
+            </button>
+          </div>
+        </div>
+        <VisualTestingDashboard />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white dark:bg-[#050505]">
+      {/* View Switcher */}
+      <div className="border-b-2 border-black bg-gray-100 dark:border-gray-600 dark:bg-gray-900">
+        <div className="container mx-auto flex gap-0 px-4">
+          <button
+            onClick={() => setView("gallery")}
+            className="border-b-4 border-[#BA0C2F] px-6 py-3 font-bold text-[#BA0C2F]"
+          >
+            Gallery View
+          </button>
+          <button
+            onClick={() => setView("visual-testing")}
+            className="border-b-4 border-transparent px-6 py-3 font-bold text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white"
+          >
+            Visual Testing
+          </button>
+        </div>
+      </div>
+
       {/* Hero Header */}
       <HeroHeader
         title="UI Showcase"

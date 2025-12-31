@@ -17,6 +17,10 @@ v3.6.7 Enhancement:
 - Research cache location
 - Summary statistics
 
+v3.12.13 Fix:
+- Skip enforcement when running in source repository (developing the package)
+- Detect via package.json name = @hustle-together/api-dev-tools
+
 Returns:
   - {"decision": "approve"} - Allow stopping
   - {"decision": "block", "reason": "..."} - Prevent stopping with explanation
@@ -27,6 +31,34 @@ import subprocess
 import re
 from datetime import datetime
 from pathlib import Path
+
+
+def is_source_repository() -> bool:
+    """
+    Check if we're running in the api-dev-tools source repository.
+    If so, hooks should NOT enforce workflow - we're developing, not using.
+    """
+    try:
+        package_json = Path.cwd() / "package.json"
+        if package_json.exists():
+            data = json.loads(package_json.read_text())
+            # If this is the source repo, skip enforcement
+            if data.get("name") == "@hustle-together/api-dev-tools":
+                return True
+
+        # Also check for templates/ folder (only exists in source repo)
+        if (Path.cwd() / "templates").is_dir():
+            return True
+
+    except Exception:
+        pass
+    return False
+
+
+# Skip enforcement in source repository
+if is_source_repository():
+    print(json.dumps({"decision": "approve"}))
+    sys.exit(0)
 
 # State file is in .claude/ directory (sibling to hooks/)
 STATE_FILE = Path(__file__).parent.parent / "api-dev-state.json"

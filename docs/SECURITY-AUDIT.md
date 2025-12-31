@@ -12,7 +12,28 @@ Security auditing includes:
 
 ## Quick Setup
 
-### 1. Dependency Audit
+### 1. Copy the GitHub Workflow
+
+Copy the security workflow from api-dev-tools templates:
+
+```bash
+# Create workflows directory
+mkdir -p .github/workflows
+
+# Copy from api-dev-tools
+cp node_modules/@anthropic-ai/api-dev-tools/templates/github-workflows/security.yml .github/workflows/
+```
+
+Or if installed globally:
+```bash
+cp ~/.claude/api-dev-tools/templates/github-workflows/security.yml .github/workflows/
+```
+
+The workflow template is at: `templates/github-workflows/security.yml`
+
+### 2. Local Dependency Audit
+
+Run audits locally before pushing:
 
 ```bash
 # npm
@@ -25,9 +46,22 @@ pnpm audit --audit-level=high
 yarn audit --level high
 ```
 
-### 2. Add to CI
+### 3. What the Workflow Does
 
-Create `.github/workflows/security.yml`:
+The workflow runs on push, PR, and weekly schedule:
+
+| Job | Description | Blocks PR |
+|-----|-------------|-----------|
+| `dependency-audit` | Scans for vulnerable packages | Yes (critical/high) |
+| `license-check` | Verifies approved licenses | Yes |
+| `secret-scan` | Detects committed secrets | Yes |
+| `sast` | Static code analysis | Yes |
+
+---
+
+## Workflow Reference
+
+For reference, here's the workflow structure (full implementation in `templates/github-workflows/security.yml`):
 
 ```yaml
 name: Security Audit

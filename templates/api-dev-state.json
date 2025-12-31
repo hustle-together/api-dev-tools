@@ -1,5 +1,5 @@
 {
-  "version": "3.10.0",
+  "version": "3.11.0",
   "created_at": null,
   "workflow": null,
   "_workflow_options": [
@@ -12,6 +12,38 @@
   "active_element": null,
   "endpoints": {},
   "elements": {},
+
+  "session_archives": {
+    "_description": "Completed workflow sessions archived for reference and learning",
+    "_archive_policy": "Sessions archived on workflow completion or manual archival",
+    "completed": [],
+    "interrupted": [],
+    "_archive_template": {
+      "id": "uuid",
+      "workflow": "api-create",
+      "element_name": "stripe-subscriptions",
+      "status": "completed",
+      "started_at": "2025-12-29T10:00:00Z",
+      "completed_at": "2025-12-29T14:30:00Z",
+      "duration_minutes": 270,
+      "phases_completed": 14,
+      "total_turns": 45,
+      "research_sources_count": 8,
+      "interview_decisions_count": 5,
+      "files_created": ["src/app/api/stripe/route.ts", "src/lib/stripe.ts"],
+      "files_modified": ["registry.json"],
+      "test_coverage": 92,
+      "learnings": ["stripe webhooks require idempotency keys", "always validate signature first"],
+      "archived_at": "2025-12-29T14:31:00Z",
+      "archive_reason": "workflow_completed"
+    },
+    "_learnings_aggregated": {
+      "_description": "Patterns learned across all archived sessions - used for re-grounding",
+      "common_pitfalls": [],
+      "successful_patterns": [],
+      "service_specific": {}
+    }
+  },
   "combine_config": {
     "_comment": "Configuration for combine-api workflow",
     "mode": null,

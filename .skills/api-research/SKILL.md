@@ -42,6 +42,103 @@ Run 2-3 targeted searches:
 - WebSearch: "site:[domain] api reference" (if known domain)
 ```
 
+### Table of Contents Scraping (CRITICAL)
+
+**Always fetch and parse the documentation Table of Contents first!**
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    TOC DISCOVERY FLOW                           │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  Step 1: Find Docs Root                                        │
+│  ├─ WebSearch: "[name] documentation"                          │
+│  └─ Extract: docs.example.com or example.com/docs              │
+│                                                                 │
+│  Step 2: Fetch TOC Page                                        │
+│  ├─ WebFetch: docs.example.com + look for sidebar/nav          │
+│  ├─ WebFetch: docs.example.com/api-reference                   │
+│  └─ WebFetch: docs.example.com/sitemap.xml (if available)      │
+│                                                                 │
+│  Step 3: Extract All Sections                                  │
+│  ├─ Getting Started                                            │
+│  ├─ Authentication                                             │
+│  ├─ API Reference                                              │
+│  │   ├─ Endpoints                                              │
+│  │   ├─ Parameters                                             │
+│  │   ├─ Response Codes                                         │
+│  │   └─ Webhooks                                               │
+│  ├─ SDKs & Libraries                                           │
+│  ├─ Rate Limits                                                │
+│  ├─ Errors                                                     │
+│  └─ Changelog                                                  │
+│                                                                 │
+│  Step 4: Prioritize for Interview                              │
+│  ├─ Which sections have parameters we need to ask about?       │
+│  ├─ Which sections have optional features?                     │
+│  └─ Which sections have configuration options?                 │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Comprehensive Discovery Checklist
+
+Before proceeding to interview, ensure we've discovered:
+
+```markdown
+## Pre-Interview Discovery Checklist
+
+### Authentication & Authorization
+- [ ] Auth method (API key, OAuth, Bearer token, Basic)
+- [ ] Where to get credentials (dashboard URL)
+- [ ] Token refresh mechanism
+- [ ] Scopes/permissions available
+
+### Endpoints
+- [ ] All available endpoints listed
+- [ ] HTTP methods for each
+- [ ] Path parameters identified
+- [ ] Query parameters with types
+- [ ] Request body schemas
+
+### Parameters (CRITICAL for Interview)
+- [ ] Required vs optional distinction
+- [ ] Parameter types (string, number, enum, array)
+- [ ] Enum values listed
+- [ ] Default values documented
+- [ ] Validation rules/constraints
+- [ ] Continuous parameters (ranges for testing)
+
+### Response Schemas
+- [ ] Success response structure
+- [ ] Error response format
+- [ ] HTTP status codes used
+- [ ] Pagination format
+
+### Rate Limits & Quotas
+- [ ] Requests per minute/hour/day
+- [ ] Rate limit headers
+- [ ] Retry behavior
+- [ ] Quota types (per key, per user)
+
+### Webhooks (if applicable)
+- [ ] Available webhook events
+- [ ] Payload structure
+- [ ] Signature verification
+- [ ] Retry behavior
+
+### SDKs & Libraries
+- [ ] Official SDK availability
+- [ ] npm/pip/cargo package names
+- [ ] TypeScript types available?
+- [ ] Version compatibility
+
+### Errors
+- [ ] Error code catalog
+- [ ] Error message format
+- [ ] Troubleshooting steps
+```
+
 Present initial summary:
 
 ```
@@ -367,4 +464,37 @@ All research is tracked in `.claude/api-dev-state.json`:
 - Phase 5 uses adaptive proposal flow
 - Phase 10 (Verify) triggers re-research
 - Freshness check prevents stale data
+
+## ADR Integration (Automatic)
+
+When research discovers **multiple options for a significant decision**, the
+`generate-adr-options.py` hook automatically:
+
+1. Detects significant decisions (database, auth, cache, hosting, etc.)
+2. Creates a research request in `.claude/adr-requests/pending-{category}.json`
+3. Injects context telling you to run `/adr-deep-research {category}`
+
+**You should then run the deep research skill to:**
+
+- Spawn parallel agents to research each option
+- Fetch official documentation for each technology
+- Extract real pros, cons, pricing, and best-use cases
+- Create a substantive ADR before the interview phase
+
+```
+Example Flow:
+1. /api-research supabase
+   → Hook detects: database options (supabase, firebase, postgres)
+   → Creates: .claude/adr-requests/pending-database.json
+   → Injects: "Run /adr-deep-research database"
+
+2. /adr-deep-research database
+   → Spawns 3 parallel agents (one per option)
+   → Each agent fetches docs, extracts pros/cons
+   → Creates: .claude/adrs/ADR-0001-database-choice.md (with real content)
+
+3. Interview phase references ADR for informed decision
+```
+
+See `/adr-deep-research` skill and `docs/ARCHITECTURE_DECISION_RECORDS.md`.
   </claude-commands-template>
