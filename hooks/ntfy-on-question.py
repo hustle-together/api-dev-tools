@@ -44,13 +44,26 @@ def load_state():
 
 
 def get_ntfy_config():
-    """Get NTFY configuration from environment or .env file"""
+    """Get NTFY configuration from environment, .env file, or hustle-build-defaults.json"""
     topic = os.environ.get("NTFY_TOPIC")
     server = os.environ.get("NTFY_SERVER", "https://ntfy.sh")
+    project_dir = os.environ.get("CLAUDE_PROJECT_DIR", ".")
+
+    if not topic:
+        # Try loading from hustle-build-defaults.json first
+        defaults_file = Path(project_dir) / ".claude" / "hustle-build-defaults.json"
+        if defaults_file.exists():
+            try:
+                defaults = json.loads(defaults_file.read_text())
+                ntfy_config = defaults.get("ntfy", {})
+                if ntfy_config.get("enabled", False):
+                    topic = ntfy_config.get("topic")
+                    server = ntfy_config.get("server", server)
+            except Exception:
+                pass
 
     if not topic:
         # Try loading from .env
-        project_dir = os.environ.get("CLAUDE_PROJECT_DIR", ".")
         env_file = Path(project_dir) / ".env"
 
         if env_file.exists():

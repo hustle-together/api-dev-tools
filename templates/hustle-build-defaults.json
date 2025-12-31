@@ -121,5 +121,16 @@
       "Click 'Enable' in dashboard header for browser notifications",
       "Set wait_mode=true to block until remote answer is received"
     ]
+  },
+
+  "ntfy": {
+    "enabled": true,
+    "topic": "api-dev-tools-test",
+    "server": "https://ntfy.sh",
+    "notify_on": ["questions", "phase_complete", "errors", "completion"],
+    "_instructions": [
+      "Subscribe at ntfy.sh/<topic> on your phone",
+      "Notifications sent for: questions needing input, phase completions, errors, workflow completion"
+    ]
   }
 }

@@ -531,3 +531,79 @@ def skip_if_source_repo() -> bool:
             sys.exit(0)
     """
     return is_source_repository()
+
+
+# =============================================================================
+# NTFY NOTIFICATIONS (v4.6.0)
+# =============================================================================
+
+def get_ntfy_config():
+    """
+    Get NTFY configuration from multiple sources (priority order):
+    1. Environment variables (NTFY_TOPIC, NTFY_SERVER)
+    2. hustle-build-defaults.json ntfy section
+    3. .env file
+
+    Returns:
+        tuple: (topic, server) - topic is None if not configured
+    """
+    topic = os.environ.get("NTFY_TOPIC")
+    server = os.environ.get("NTFY_SERVER", "https://ntfy.sh")
+    project_dir = get_project_dir()
+
+    if not topic:
+        # Try loading from hustle-build-defaults.json
+        config = load_config()
+        ntfy_config = config.get("ntfy", {})
+        if ntfy_config.get("enabled", False):
+            topic = ntfy_config.get("topic")
+            server = ntfy_config.get("server", server)
+
+    if not topic:
+        # Try loading from .env
+        env_file = Path(project_dir) / ".env"
+        if env_file.exists():
+            try:
+                for line in env_file.read_text().splitlines():
+                    if line.startswith("NTFY_TOPIC="):
+                        topic = line.split("=", 1)[1].strip().strip('"\'')
+                    elif line.startswith("NTFY_SERVER="):
+                        server = line.split("=", 1)[1].strip().strip('"\'')
+            except Exception:
+                pass
+
+    return topic, server
+
+
+def send_ntfy_notification(title, message, priority="default", tags=None):
+    """
+    Send a notification via NTFY.
+
+    Args:
+        title: Notification title
+        message: Notification body
+        priority: "min", "low", "default", "high", "urgent"
+        tags: List of emoji tags (e.g., ["robot", "warning"])
+
+    Returns:
+        bool: True if notification sent successfully
+    """
+    import subprocess
+
+    topic, server = get_ntfy_config()
+    if not topic:
+        return False
+
+    try:
+        headers = ["-H", f"Title: {title}", "-H", f"Priority: {priority}"]
+        if tags:
+            headers.extend(["-H", f"Tags: {','.join(tags)}"])
+
+        result = subprocess.run(
+            ["curl", "-s", "-d", message, *headers, f"{server}/{topic}"],
+            capture_output=True,
+            timeout=5
+        )
+        return result.returncode == 0
+    except Exception:
+        return False

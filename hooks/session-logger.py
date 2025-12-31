@@ -23,6 +23,13 @@ from datetime import datetime
 from pathlib import Path
 import shutil
 
+# Import shared utilities for NTFY
+try:
+    from hook_utils import send_ntfy_notification
+    HAS_NTFY = True
+except ImportError:
+    HAS_NTFY = False
+
 STATE_FILE = Path(__file__).parent.parent / "api-dev-state.json"
 SESSIONS_DIR = Path(__file__).parent.parent / "api-sessions"
 RESEARCH_DIR = Path(__file__).parent.parent / "research"
@@ -270,12 +277,31 @@ def main():
     try:
         session_dir = save_session(endpoint, endpoint_data, state)
 
+        # Send NTFY notification on session end
+        if HAS_NTFY:
+            status = endpoint_data.get("status", "unknown")
+            if status == "complete":
+                send_ntfy_notification(
+                    title=f"✅ Session Complete: {endpoint}",
+                    message=f"Completed {len(completed)}/13 phases. Session saved.",
+                    priority="default",
+                    tags=["white_check_mark", "robot"]
+                )
+            else:
+                send_ntfy_notification(
+                    title=f"📋 Session Ended: {endpoint}",
+                    message=f"Completed {len(completed)}/13 phases. Status: {status}",
+                    priority="low",
+                    tags=["clipboard", "robot"]
+                )
+
         output = {
             "hookSpecificOutput": {
                 "sessionSaved": True,
                 "endpoint": endpoint,
                 "sessionDir": str(session_dir),
-                "phasesCompleted": len(completed)
+                "phasesCompleted": len(completed),
+                "notificationSent": HAS_NTFY
             }
         }
 
