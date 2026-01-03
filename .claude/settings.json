@@ -29,11 +29,23 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/research-gate.py"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/research-gate.py",
+            "description": "Blocks code changes without completed research phase"
           },
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/tdd-gate.py"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/interview-gate.py",
+            "description": "Blocks implementation without interview decisions"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/schema-gate.py",
+            "description": "Blocks implementation without approved schema"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/tdd-gate.py",
+            "description": "Enforces tests-before-implementation for TDD"
           }
         ]
       },
@@ -42,7 +54,18 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/validate-bash.py"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/validate-bash.py",
+            "description": "Validates bash commands for safety"
+          }
+        ]
+      },
+      {
+        "matcher": "AskUserQuestion",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-answer.py",
+            "description": "Auto-selects comprehensive options in autonomous mode"
           }
         ]
       }
@@ -53,15 +76,28 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/format.py"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/format.py",
+            "description": "Auto-formats code after changes"
           },
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/registry-manager.py"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/state-manager.py",
+            "description": "Updates workflow state after file changes"
           },
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/visual-qa-hook.py"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/registry-manager.py",
+            "description": "Updates artifact registry with checksums"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/code-review.py",
+            "description": "Queues files for AI code review"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/visual-qa.py",
+            "description": "Queues UI files for visual testing"
           }
         ]
       }
@@ -71,11 +107,28 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/verify-gate.py"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/verify-gate.py",
+            "description": "Blocks completion without verification"
           },
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/ralph-loop.py"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/docs-gate.py",
+            "description": "Blocks completion without documentation"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/ralph-loop.py",
+            "description": "Forces continuation until completion promise detected"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/reground.py",
+            "description": "Re-injects state context every 7 turns"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/capacity-warning.py",
+            "description": "Warns at 50/75/90% context capacity"
           }
         ]
       }
@@ -85,7 +138,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/subagent-verify.py"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/subagent-verify.py",
+            "description": "Verifies subagent deliverables match spec"
           }
         ]
       }
@@ -95,7 +149,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-manager.py"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-manager.py",
+            "description": "Initializes state and injects workflow context"
           }
         ]
       }
@@ -105,7 +160,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "notify-send 'Devkit' 'Awaiting input'"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/notify.py",
+            "description": "Sends NTFY push notification when awaiting input"
           }
         ]
       }
