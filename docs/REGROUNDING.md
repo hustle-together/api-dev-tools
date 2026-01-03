@@ -56,13 +56,13 @@ The initial instructions (CLAUDE.md, system prompts) get pushed to the "middle" 
 
 ### Real-World Symptoms
 
-| Symptom | Cause |
-|---------|-------|
-| Claude forgets the endpoint name | Original scope diluted |
-| Re-asks questions already answered | Interview decisions lost |
-| Recreates existing components | Registry not in attention |
-| Suggests deferred features again | Deferred list forgotten |
-| Ignores brand guide | Style instructions diluted |
+| Symptom                            | Cause                      |
+| ---------------------------------- | -------------------------- |
+| Claude forgets the endpoint name   | Original scope diluted     |
+| Re-asks questions already answered | Interview decisions lost   |
+| Recreates existing components      | Registry not in attention  |
+| Suggests deferred features again   | Deferred list forgotten    |
+| Ignores brand guide                | Style instructions diluted |
 
 ---
 
@@ -107,12 +107,12 @@ We apply the same principle: **periodically inject critical state at the END of 
 
 ### Hook Details
 
-| Property | Value |
-|----------|-------|
-| Hook File | `hooks/periodic-reground.py` |
-| Event Type | `PostToolUse` |
-| Trigger | Every 7th turn (configurable) |
-| Condition | Only if `endpoint` is set in state |
+| Property   | Value                              |
+| ---------- | ---------------------------------- |
+| Hook File  | `hooks/periodic-reground.py`       |
+| Event Type | `PostToolUse`                      |
+| Trigger    | Every 7th turn (configurable)      |
+| Condition  | Only if `endpoint` is set in state |
 
 ### Execution Flow
 
@@ -156,12 +156,12 @@ We apply the same principle: **periodically inject critical state at the END of 
 
 ### State Files Read
 
-| File | Purpose |
-|------|---------|
-| `.claude/api-dev-state.json` | Workflow state, phases, decisions |
-| `.claude/registry.json` | Existing APIs, components, pages |
-| `.claude/hustle-build-state.json` | Orchestrator progress |
-| `.claude/BRAND_GUIDE.md` | Brand guide existence check |
+| File                              | Purpose                           |
+| --------------------------------- | --------------------------------- |
+| `.claude/api-dev-state.json`      | Workflow state, phases, decisions |
+| `.claude/registry.json`           | Existing APIs, components, pages  |
+| `.claude/hustle-build-state.json` | Orchestrator progress             |
+| `.claude/BRAND_GUIDE.md`          | Brand guide existence check       |
 
 ---
 
@@ -179,16 +179,18 @@ Every 7 turns, the following is injected:
 **Completed:** 9/14 phases
 
 **Key Decisions:**
-  - authentication: Bearer token
-  - error_handling: Partial success
-  - pagination: Enabled
-  - caching: 5 minutes
-  - rate_limiting: 100 req/min
+
+- authentication: Bearer token
+- error_handling: Partial success
+- pagination: Enabled
+- caching: 5 minutes
+- rate_limiting: 100 req/min
 
 **Existing Elements (don't recreate):**
-  - APIs: user-auth, unsplash-search, geocoding
-  - Components: Hero, StatCard, ChartWidget
-  - Pages: Dashboard, Settings
+
+- APIs: user-auth, unsplash-search, geocoding
+- Components: Hero, StatCard, ChartWidget
+- Pages: Dashboard, Settings
 
 **Deferred (don't re-suggest):** webhooks, batch-processing, admin-panel
 
@@ -197,25 +199,26 @@ Every 7 turns, the following is injected:
 **Brand Guide:** Active - use `.claude/BRAND_GUIDE.md` for styling
 
 **Orchestrated Build:** build-2025-12-29-dashboard
-  - Progress: 3/7 workflows
-  - Active: [component] ChartWidget
+
+- Progress: 3/7 workflows
+- Active: [component] ChartWidget
 
 **Remember:** Research-first | Questions FROM findings | Verify after green
 ```
 
 ### Field Explanations
 
-| Field | Purpose | Why It Matters |
-|-------|---------|----------------|
-| **Active Endpoint** | Current work target | Prevents confusion about what we're building |
-| **Current Phase** | Progress indicator | Ensures we don't skip phases |
-| **Key Decisions** | Top 5 interview answers | Prevents re-asking same questions |
-| **Existing Elements** | Registry summary | Prevents recreating existing work |
-| **Deferred** | Explicitly postponed features | Prevents re-suggesting declined features |
-| **Last Tests** | Test suite status | Shows if we're GREEN or RED |
-| **Brand Guide** | Styling reminder | Ensures consistent UI |
-| **Orchestrated Build** | Multi-workflow progress | Context for sub-workflows |
-| **Remember** | Core principles | Quick principle refresh |
+| Field                  | Purpose                       | Why It Matters                               |
+| ---------------------- | ----------------------------- | -------------------------------------------- |
+| **Active Endpoint**    | Current work target           | Prevents confusion about what we're building |
+| **Current Phase**      | Progress indicator            | Ensures we don't skip phases                 |
+| **Key Decisions**      | Top 5 interview answers       | Prevents re-asking same questions            |
+| **Existing Elements**  | Registry summary              | Prevents recreating existing work            |
+| **Deferred**           | Explicitly postponed features | Prevents re-suggesting declined features     |
+| **Last Tests**         | Test suite status             | Shows if we're GREEN or RED                  |
+| **Brand Guide**        | Styling reminder              | Ensures consistent UI                        |
+| **Orchestrated Build** | Multi-workflow progress       | Context for sub-workflows                    |
+| **Remember**           | Core principles               | Quick principle refresh                      |
 
 ---
 
@@ -232,12 +235,12 @@ REGROUND_INTERVAL = 7  # Re-ground every N turns
 
 **Recommendations:**
 
-| Context Size | Recommended Interval |
-|--------------|---------------------|
-| Short tasks (<20 turns) | 10 turns |
-| Medium tasks (20-50 turns) | 7 turns (default) |
-| Long tasks (50+ turns) | 5 turns |
-| Complex orchestrated builds | 5 turns |
+| Context Size                | Recommended Interval |
+| --------------------------- | -------------------- |
+| Short tasks (<20 turns)     | 10 turns             |
+| Medium tasks (20-50 turns)  | 7 turns (default)    |
+| Long tasks (50+ turns)      | 5 turns              |
+| Complex orchestrated builds | 5 turns              |
 
 ### Disabling Re-Grounding
 
@@ -309,7 +312,8 @@ Source: [Boris Cherny Interview](https://www.developing.dev/p/boris-cherny-creat
 **Completed:** 3/14 phases
 
 **Key Decisions:**
-  - (gathering in progress)
+
+- (gathering in progress)
 
 **Remember:** Research-first | Questions FROM findings | Verify after green
 ```
@@ -324,12 +328,14 @@ Source: [Boris Cherny Interview](https://www.developing.dev/p/boris-cherny-creat
 **Completed:** 9/14 phases
 
 **Key Decisions:**
-  - authentication: Bearer token
-  - error_handling: Partial success
-  - supported_currencies: USD, EUR, GBP
+
+- authentication: Bearer token
+- error_handling: Partial success
+- supported_currencies: USD, EUR, GBP
 
 **Existing Elements (don't recreate):**
-  - APIs: user-auth
+
+- APIs: user-auth
 
 **Deferred (don't re-suggest):** subscription-billing
 
@@ -348,13 +354,15 @@ Source: [Boris Cherny Interview](https://www.developing.dev/p/boris-cherny-creat
 **Completed:** 12/14 phases
 
 **Key Decisions:**
-  - authentication: Bearer token
-  - error_handling: Partial success
-  - supported_currencies: USD, EUR, GBP
-  - webhook_events: checkout.session.completed
+
+- authentication: Bearer token
+- error_handling: Partial success
+- supported_currencies: USD, EUR, GBP
+- webhook_events: checkout.session.completed
 
 **Existing Elements (don't recreate):**
-  - APIs: user-auth, stripe-checkout
+
+- APIs: user-auth, stripe-checkout
 
 **Last Tests:** GREEN (15 passed, 0 failed)
 
@@ -367,21 +375,21 @@ Source: [Boris Cherny Interview](https://www.developing.dev/p/boris-cherny-creat
 
 ### Without Re-Grounding
 
-| Turn | Issue |
-|------|-------|
-| 15 | Claude asks "what authentication method should we use?" (already answered) |
-| 22 | Claude creates a new `UserCard` component (one already exists) |
-| 28 | Claude suggests adding webhooks (explicitly deferred) |
-| 35 | Claude forgets we're building `stripe-checkout`, references wrong endpoint |
+| Turn | Issue                                                                      |
+| ---- | -------------------------------------------------------------------------- |
+| 15   | Claude asks "what authentication method should we use?" (already answered) |
+| 22   | Claude creates a new `UserCard` component (one already exists)             |
+| 28   | Claude suggests adding webhooks (explicitly deferred)                      |
+| 35   | Claude forgets we're building `stripe-checkout`, references wrong endpoint |
 
 ### With Re-Grounding
 
-| Turn | Behavior |
-|------|----------|
-| 7 | Reminder injected - phase and scope refreshed |
-| 14 | Reminder injected - decisions and registry visible |
-| 21 | Reminder injected - deferred features explicit |
-| 28 | Reminder injected - all context maintained |
+| Turn | Behavior                                           |
+| ---- | -------------------------------------------------- |
+| 7    | Reminder injected - phase and scope refreshed      |
+| 14   | Reminder injected - decisions and registry visible |
+| 21   | Reminder injected - deferred features explicit     |
+| 28   | Reminder injected - all context maintained         |
 
 ---
 
@@ -400,6 +408,7 @@ Adjust `REGROUND_INTERVAL` in the hook file.
 ### Missing Information
 
 The hook reads from multiple state files. Ensure they exist:
+
 - `.claude/api-dev-state.json`
 - `.claude/registry.json`
 

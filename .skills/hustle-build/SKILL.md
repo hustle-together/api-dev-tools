@@ -40,6 +40,7 @@ Parse the user's natural language request to identify required elements.
 **Input:** $ARGUMENTS
 
 **Look for:**
+
 - Data requirements (implies APIs)
 - UI elements mentioned (implies components)
 - Page/route requirements (implies pages)
@@ -90,6 +91,7 @@ Does this look correct?
 ```
 
 Use AskUserQuestion with options:
+
 - "Yes, proceed with this plan"
 - "Add more elements"
 - "Remove elements"
@@ -104,25 +106,33 @@ Ask HIGH-LEVEL questions that apply to ALL sub-workflows.
 **These questions are asked ONCE and shared:**
 
 ### Q1: Authentication
+
 "What's the authentication requirement for this feature?"
+
 - Protected (requires login) - DEFAULT
 - Public (no auth)
 - Mixed (specify per element)
 
 ### Q2: Error Handling
+
 "How should errors be handled across APIs?"
+
 - Partial success (show what works) - DEFAULT
 - Fail-fast (one fails = all fail)
 - Retry with fallback
 
 ### Q3: Brand Guide
+
 "Use project brand guide for styling?"
+
 - Yes, use .claude/BRAND_GUIDE.md - DEFAULT
 - No, custom theme
 - Match existing page
 
 ### Q4: Testing Level
+
 "What level of testing?"
+
 - Full TDD (all 14 phases per element) - DEFAULT
 - Essential tests only
 - Smoke tests only
@@ -159,15 +169,13 @@ Create `.claude/hustle-build-state.json`:
   },
 
   "decomposition": {
-    "apis": [
-      {"name": "user-stats", "status": "pending", "depends_on": []}
-    ],
+    "apis": [{ "name": "user-stats", "status": "pending", "depends_on": [] }],
     "components": [
-      {"name": "StatCard", "status": "pending", "depends_on": ["user-stats"]}
+      { "name": "StatCard", "status": "pending", "depends_on": ["user-stats"] }
     ],
     "combined_apis": [],
     "pages": [
-      {"name": "Dashboard", "status": "pending", "depends_on": ["StatCard"]}
+      { "name": "Dashboard", "status": "pending", "depends_on": ["StatCard"] }
     ]
   },
 
@@ -192,6 +200,7 @@ For each workflow in execution order:
 ### 5.1 Set Active Workflow
 
 Update state:
+
 ```json
 "active_sub_workflow": {
   "type": "api",
@@ -204,22 +213,24 @@ Update state:
 ### 5.2 Invoke Sub-Workflow
 
 The orchestrator hooks will automatically:
+
 1. Inject `shared_decisions` into `api-dev-state.json`
 2. Mark workflow as `orchestrated: true`
 3. Pass mode (interactive/auto)
 
 Run the appropriate skill:
 
-| Element Type | Skill to Run |
-|--------------|--------------|
-| api | `/api-create [name]` |
-| component | `/hustle-ui-create [name]` |
-| combined_api | `/hustle-combine api` |
-| page | `/hustle-ui-create-page [name]` |
+| Element Type | Skill to Run                    |
+| ------------ | ------------------------------- |
+| api          | `/api-create [name]`            |
+| component    | `/hustle-ui-create [name]`      |
+| combined_api | `/hustle-combine api`           |
+| page         | `/hustle-ui-create-page [name]` |
 
 ### 5.3 Sub-Workflow Behavior
 
 When `orchestrated: true`:
+
 - Skip questions answered in `shared_decisions`
 - Only ask element-specific questions
 - Report completion back to orchestrator
@@ -227,6 +238,7 @@ When `orchestrated: true`:
 ### 5.4 On Completion
 
 The `orchestrator-completion.py` hook will:
+
 1. Mark workflow as complete in state
 2. Find next pending workflow
 3. Inject context for next workflow
@@ -243,9 +255,9 @@ For pages that use components and APIs:
 
 ```typescript
 // Auto-generated imports based on registry
-import { UserStatsResponse } from '@/lib/schemas/user-stats.schema';
-import { StatCard } from '@/components/StatCard';
-import { ChartWidget } from '@/components/ChartWidget';
+import { UserStatsResponse } from "@/lib/schemas/user-stats.schema";
+import { StatCard } from "@/components/StatCard";
+import { ChartWidget } from "@/components/ChartWidget";
 ```
 
 ### 6.2 Prop Wiring
@@ -284,6 +296,7 @@ pnpm test:integration
 ```
 
 Report results:
+
 - Total tests passed/failed
 - Coverage percentage
 - Performance metrics
@@ -419,6 +432,7 @@ If a workflow fails:
 ## Integration Points
 
 ### Hooks Used:
+
 - `orchestrator-session-startup.py` - Inject build context
 - `orchestrator-handoff.py` - Pass shared decisions
 - `orchestrator-completion.py` - Track progress
@@ -426,11 +440,13 @@ If a workflow fails:
 - `ntfy-on-question.py` - Push notifications
 
 ### State Files:
+
 - `.claude/hustle-build-state.json` - Orchestration state
 - `.claude/api-dev-state.json` - Sub-workflow state
 - `.claude/registry.json` - Completed elements
 
 ### Log Files:
+
 - `.claude/workflow-logs/[build-id].json` - Build log
 - `.claude/workflow-logs/ntfy-log.json` - Notification log
 
@@ -439,21 +455,25 @@ If a workflow fails:
 ## Example Usage
 
 **Interactive:**
+
 ```
 /hustle-build dashboard page with user stats, activity charts, and notifications
 ```
 
 **Autonomous:**
+
 ```
 /hustle-build --auto e-commerce checkout flow with Stripe payments
 ```
 
 **Resume:**
+
 ```
 /hustle-build --resume build-2025-12-28-dashboard
 ```
 
 **Dry Run:**
+
 ```
 /hustle-build --dry-run blog system with posts, comments, and author profiles
 ```

@@ -33,13 +33,13 @@ Agents are Claude instances specialized for specific tasks:
 
 ### When to Use Agents
 
-| Situation | Agent Type |
-|-----------|------------|
+| Situation                              | Agent Type            |
+| -------------------------------------- | --------------------- |
 | Need to research multiple docs at once | `parallel-researcher` |
-| Need schema generated from research | `schema-generator` |
-| Need tests written from schema | `test-writer` |
-| Need code review | `code-reviewer` |
-| Need docs generated | `docs-generator` |
+| Need schema generated from research    | `schema-generator`    |
+| Need tests written from schema         | `test-writer`         |
+| Need code review                       | `code-reviewer`       |
+| Need docs generated                    | `docs-generator`      |
 
 ---
 
@@ -49,11 +49,12 @@ Agents are Claude instances specialized for specific tasks:
 
 **Purpose:** Fast parallel documentation scraper
 **Model:** Haiku (for speed)
-**Tools:** Read, WebSearch, WebFetch, mcp__context7
+**Tools:** Read, WebSearch, WebFetch, mcp\_\_context7
 
 Used during Phase 3 (Initial Research) and Phase 5 (Deep Research) to scrape multiple documentation pages simultaneously.
 
 **Input:**
+
 ```json
 {
   "url": "https://docs.example.com/api",
@@ -63,6 +64,7 @@ Used during Phase 3 (Initial Research) and Phase 5 (Deep Research) to scrape mul
 ```
 
 **Output:**
+
 ```json
 {
   "source_url": "https://docs.example.com/api",
@@ -71,9 +73,7 @@ Used during Phase 3 (Initial Research) and Phase 5 (Deep Research) to scrape mul
     "endpoints": [
       { "method": "GET", "path": "/users", "description": "List users" }
     ],
-    "parameters": [
-      { "name": "limit", "type": "number", "required": false }
-    ],
+    "parameters": [{ "name": "limit", "type": "number", "required": false }],
     "webhooks": [],
     "code_examples": []
   }
@@ -81,8 +81,10 @@ Used during Phase 3 (Initial Research) and Phase 5 (Deep Research) to scrape mul
 ```
 
 **Usage in Skills:**
+
 ```markdown
 Launch 3 parallel-researcher agents:
+
 1. Official API reference
 2. SDK documentation
 3. Webhook documentation
@@ -99,16 +101,19 @@ Launch 3 parallel-researcher agents:
 Takes research summary and interview decisions, produces Zod schema.
 
 **Input:**
+
 - Research findings (endpoints, parameters)
 - Interview decisions (which params to include)
 - Error handling preferences
 
 **Output:**
+
 - `src/lib/schemas/[endpoint].schema.ts`
 - Zod schema with full validation
 - TypeScript types exported
 
 **Example Output:**
+
 ```typescript
 import { z } from "zod";
 
@@ -132,16 +137,19 @@ export type SearchRequest = z.infer<typeof SearchRequestSchema>;
 Creates test files during TDD Red phase.
 
 **Input:**
+
 - Zod schema file
 - Endpoint details
 - Test scenarios from interview
 
 **Output:**
+
 - `src/app/api/[endpoint]/__tests__/route.test.ts`
 - Vitest test file
 - Covers success and error cases
 
 **Example Output:**
+
 ```typescript
 import { describe, it, expect } from "vitest";
 import { GET } from "../route";
@@ -170,16 +178,19 @@ describe("GET /api/search", () => {
 **Tools:** Read, Grep
 
 Reviews code for:
+
 - Bugs and logic errors
 - Security vulnerabilities
 - Performance issues
 - Best practices
 
 **Input:**
+
 - File paths to review
 - Review focus (bugs, security, performance, all)
 
 **Output:**
+
 ```json
 {
   "summary": "Found 2 issues",
@@ -210,23 +221,25 @@ Reviews code for:
 
 **Purpose:** Compare implementation to documentation
 **Model:** Sonnet
-**Tools:** Read, WebSearch, WebFetch, mcp__context7
+**Tools:** Read, WebSearch, WebFetch, mcp\_\_context7
 
 Used in Phase 10 (Verify) to catch implementation gaps.
 
 **Input:**
+
 - Implementation file paths
 - Original research cache
 - Schema file
 
 **Output:**
+
 ```markdown
-| Feature | Documented | Implemented | Status |
-|---------|------------|-------------|--------|
-| query param | Yes | Yes | Match |
-| page param | Yes | Yes | Match |
-| color filter | Yes | No | MISSING |
-| safe_search | Yes | No | MISSING |
+| Feature      | Documented | Implemented | Status  |
+| ------------ | ---------- | ----------- | ------- |
+| query param  | Yes        | Yes         | Match   |
+| page param   | Yes        | Yes         | Match   |
+| color filter | Yes        | No          | MISSING |
+| safe_search  | Yes        | No          | MISSING |
 
 Recommendation: Add missing color and safe_search params
 ```
@@ -240,16 +253,19 @@ Recommendation: Add missing color and safe_search params
 **Tools:** Read, Write
 
 Creates documentation artifacts:
+
 - TSDoc comments
 - README sections
 - Manifest entries
 - Changelog entries
 
 **Input:**
+
 - Source file paths
 - Documentation type (tsdoc, readme, manifest)
 
 **Output:**
+
 - Formatted documentation strings
 - Ready to insert into files
 
@@ -262,12 +278,14 @@ Creates documentation artifacts:
 **Tools:** Read
 
 Checks research findings before proceeding:
+
 - Source authority (official vs blog)
 - Completeness (all endpoints found)
 - Freshness (recent documentation)
 - Consistency (no contradictions)
 
 **Output:**
+
 ```json
 {
   "quality_score": 85,
@@ -316,11 +334,11 @@ Return your findings as...
 
 ### Model Selection
 
-| Model | Use Case | Speed | Cost |
-|-------|----------|-------|------|
-| **Haiku** | Fast scraping, simple tasks | Fastest | Lowest |
-| **Sonnet** | Schema generation, code writing | Medium | Medium |
-| **Opus** | Complex reasoning, code review | Slower | Highest |
+| Model      | Use Case                        | Speed   | Cost    |
+| ---------- | ------------------------------- | ------- | ------- |
+| **Haiku**  | Fast scraping, simple tasks     | Fastest | Lowest  |
+| **Sonnet** | Schema generation, code writing | Medium  | Medium  |
+| **Opus**   | Complex reasoning, code review  | Slower  | Highest |
 
 ### Tool Restrictions
 
@@ -368,6 +386,7 @@ You are a specialized agent for [specific task].
 ## Input Format
 
 You will receive:
+
 - Thing 1
 - Thing 2
 
@@ -377,8 +396,8 @@ Return structured JSON:
 
 \`\`\`json
 {
-  "result": "...",
-  "metadata": {}
+"result": "...",
+"metadata": {}
 }
 \`\`\`
 
@@ -395,6 +414,7 @@ Reference the agent in your skill:
 
 ```markdown
 Launch the my-agent agent with:
+
 - Input 1
 - Input 2
 

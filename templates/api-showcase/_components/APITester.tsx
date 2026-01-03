@@ -124,53 +124,71 @@ export function APITester({
   const [selectedExample, setSelectedExample] = useState<string | null>(null);
 
   // Interactive parameter builder state
-  const [paramStates, setParamStates] = useState<Record<string, ParamState>>({});
+  const [paramStates, setParamStates] = useState<Record<string, ParamState>>(
+    {},
+  );
 
   // Initialize param states from endpointParams
-  const initializeParamStates = useCallback((params: ParameterDoc[] | undefined) => {
-    if (!params) return {};
-    const states: Record<string, ParamState> = {};
-    for (const param of params) {
-      // Default value: example > default > empty
-      const defaultValue = param.example ||
-        (param.default !== undefined ? String(param.default) : "") ||
-        (param.enum?.[0] || "");
+  const initializeParamStates = useCallback(
+    (params: ParameterDoc[] | undefined) => {
+      if (!params) return {};
+      const states: Record<string, ParamState> = {};
+      for (const param of params) {
+        // Default value: example > default > empty
+        const defaultValue =
+          param.example ||
+          (param.default !== undefined ? String(param.default) : "") ||
+          param.enum?.[0] ||
+          "";
 
-      // Required params are enabled by default
-      states[param.name] = {
-        enabled: param.required || false,
-        value: defaultValue,
-      };
-    }
-    return states;
-  }, []);
+        // Required params are enabled by default
+        states[param.name] = {
+          enabled: param.required || false,
+          value: defaultValue,
+        };
+      }
+      return states;
+    },
+    [],
+  );
 
   // Build query string from param states
-  const buildQueryFromStates = useCallback((states: Record<string, ParamState>) => {
-    const parts: string[] = [];
-    for (const [name, state] of Object.entries(states)) {
-      if (state.enabled && state.value) {
-        parts.push(`${name}=${encodeURIComponent(state.value)}`);
+  const buildQueryFromStates = useCallback(
+    (states: Record<string, ParamState>) => {
+      const parts: string[] = [];
+      for (const [name, state] of Object.entries(states)) {
+        if (state.enabled && state.value) {
+          parts.push(`${name}=${encodeURIComponent(state.value)}`);
+        }
       }
-    }
-    return parts.join("&");
-  }, []);
+      return parts.join("&");
+    },
+    [],
+  );
 
   // Update param states from query string (for example buttons)
-  const updateStatesFromQuery = useCallback((query: string, params: ParameterDoc[] | undefined) => {
-    if (!params) return;
-    const searchParams = new URLSearchParams(query);
-    const newStates: Record<string, ParamState> = {};
+  const updateStatesFromQuery = useCallback(
+    (query: string, params: ParameterDoc[] | undefined) => {
+      if (!params) return;
+      const searchParams = new URLSearchParams(query);
+      const newStates: Record<string, ParamState> = {};
 
-    for (const param of params) {
-      const value = searchParams.get(param.name);
-      newStates[param.name] = {
-        enabled: value !== null,
-        value: value || param.example || (param.default !== undefined ? String(param.default) : "") || (param.enum?.[0] || ""),
-      };
-    }
-    setParamStates(newStates);
-  }, []);
+      for (const param of params) {
+        const value = searchParams.get(param.name);
+        newStates[param.name] = {
+          enabled: value !== null,
+          value:
+            value ||
+            param.example ||
+            (param.default !== undefined ? String(param.default) : "") ||
+            param.enum?.[0] ||
+            "",
+        };
+      }
+      setParamStates(newStates);
+    },
+    [],
+  );
 
   // Get default body for this API/endpoint
   const getDefaultBody = () => {
@@ -204,7 +222,9 @@ export function APITester({
           queryParts.push(`${param.name}=${encodeURIComponent(param.example)}`);
         } else if (param.required && param.default !== undefined) {
           // Add required params with defaults
-          queryParts.push(`${param.name}=${encodeURIComponent(String(param.default))}`);
+          queryParts.push(
+            `${param.name}=${encodeURIComponent(String(param.default))}`,
+          );
         }
       }
       return queryParts.join("&");
@@ -429,47 +449,54 @@ export function APITester({
         </div>
 
         {/* Example Selector (for GET requests with examples) */}
-        {request.method === "GET" && examples && Object.keys(examples).length > 0 && (
-          <div>
-            <label className="mb-1 block text-sm font-bold text-black dark:text-white">
-              Example Requests
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {Object.entries(examples).map(([key, example]) => (
-                <button
-                  key={key}
-                  onClick={() => {
-                    setSelectedExample(key);
-                    updateStatesFromQuery(example.query, endpointParams || schema?.queryParams);
-                  }}
-                  className={`border-2 px-3 py-1.5 text-xs font-medium transition-colors ${
-                    selectedExample === key
-                      ? "border-[#BA0C2F] bg-[#BA0C2F] text-white"
-                      : "border-black bg-white text-black hover:border-[#BA0C2F] dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-                  }`}
-                  title={example.description}
-                >
-                  {key.replace(/_/g, " ")}
-                </button>
-              ))}
-            </div>
-            {selectedExample && examples[selectedExample] && (
-              <div className="mt-2 flex items-center gap-2">
-                <p className="text-xs text-gray-600 dark:text-gray-400">
-                  {examples[selectedExample].description}
-                </p>
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(examples[selectedExample].curl);
-                  }}
-                  className="shrink-0 border border-gray-300 bg-gray-100 px-2 py-0.5 text-xs text-gray-600 hover:bg-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
-                >
-                  Copy curl
-                </button>
+        {request.method === "GET" &&
+          examples &&
+          Object.keys(examples).length > 0 && (
+            <div>
+              <label className="mb-1 block text-sm font-bold text-black dark:text-white">
+                Example Requests
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {Object.entries(examples).map(([key, example]) => (
+                  <button
+                    key={key}
+                    onClick={() => {
+                      setSelectedExample(key);
+                      updateStatesFromQuery(
+                        example.query,
+                        endpointParams || schema?.queryParams,
+                      );
+                    }}
+                    className={`border-2 px-3 py-1.5 text-xs font-medium transition-colors ${
+                      selectedExample === key
+                        ? "border-[#BA0C2F] bg-[#BA0C2F] text-white"
+                        : "border-black bg-white text-black hover:border-[#BA0C2F] dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                    }`}
+                    title={example.description}
+                  >
+                    {key.replace(/_/g, " ")}
+                  </button>
+                ))}
               </div>
-            )}
-          </div>
-        )}
+              {selectedExample && examples[selectedExample] && (
+                <div className="mt-2 flex items-center gap-2">
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                    {examples[selectedExample].description}
+                  </p>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(
+                        examples[selectedExample].curl,
+                      );
+                    }}
+                    className="shrink-0 border border-gray-300 bg-gray-100 px-2 py-0.5 text-xs text-gray-600 hover:bg-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                  >
+                    Copy curl
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
 
         {/* Query Parameters (for GET requests) */}
         {request.method === "GET" && (
@@ -482,13 +509,17 @@ export function APITester({
               value={request.queryParams}
               onChange={(e) => {
                 setSelectedExample(null); // Clear example selection when manually editing
-                setRequest((prev) => ({ ...prev, queryParams: e.target.value }));
+                setRequest((prev) => ({
+                  ...prev,
+                  queryParams: e.target.value,
+                }));
               }}
               className="w-full border-2 border-black bg-white px-3 py-2 font-mono text-sm focus:border-[#BA0C2F] focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-white"
               placeholder="key1=value1&key2=value2"
             />
             <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
-              Add query string parameters (without the ?) - or select an example above
+              Add query string parameters (without the ?) - or select an example
+              above
             </p>
           </div>
         )}
@@ -521,21 +552,17 @@ export function APITester({
         )}
 
         {/* Interactive Parameter Builder (for GET requests with params) */}
-        {request.method === "GET" && (endpointParams?.length || schema?.queryParams?.length) ? (
+        {request.method === "GET" &&
+        (endpointParams?.length || schema?.queryParams?.length) ? (
           <InteractiveParamBuilder
             params={endpointParams || schema?.queryParams || []}
             paramStates={paramStates}
             setParamStates={setParamStates}
           />
-        ) : (
-          /* Static Parameter Documentation (for non-GET requests) */
-          (schema && schema.request?.length) ? (
-            <ParameterDocs
-              requestParams={schema?.request}
-              isGetRequest={false}
-            />
-          ) : null
-        )}
+        ) : /* Static Parameter Documentation (for non-GET requests) */
+        schema && schema.request?.length ? (
+          <ParameterDocs requestParams={schema?.request} isGetRequest={false} />
+        ) : null}
 
         {/* Headers */}
         <div>
@@ -646,7 +673,9 @@ function InteractiveParamBuilder({
 }: {
   params: ParameterDoc[];
   paramStates: Record<string, ParamState>;
-  setParamStates: React.Dispatch<React.SetStateAction<Record<string, ParamState>>>;
+  setParamStates: React.Dispatch<
+    React.SetStateAction<Record<string, ParamState>>
+  >;
 }) {
   const [isExpanded, setIsExpanded] = useState(true);
 
@@ -701,10 +730,16 @@ function InteractiveParamBuilder({
       {isExpanded && (
         <div className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
           {params.map((param) => {
-            const state = paramStates[param.name] || { enabled: false, value: "" };
+            const state = paramStates[param.name] || {
+              enabled: false,
+              value: "",
+            };
 
             return (
-              <div key={param.name} className="flex items-start gap-3 px-3 py-2">
+              <div
+                key={param.name}
+                className="flex items-start gap-3 px-3 py-2"
+              >
                 {/* Checkbox */}
                 <label className="flex h-8 cursor-pointer items-center">
                   <input
@@ -744,7 +779,9 @@ function InteractiveParamBuilder({
                     /* Dropdown for enum types */
                     <select
                       value={state.value}
-                      onChange={(e) => handleValueChange(param.name, e.target.value)}
+                      onChange={(e) =>
+                        handleValueChange(param.name, e.target.value)
+                      }
                       className="w-full border border-gray-300 bg-white px-2 py-1.5 text-sm focus:border-[#BA0C2F] focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-white"
                     >
                       <option value="">-- none --</option>
@@ -759,10 +796,17 @@ function InteractiveParamBuilder({
                     <input
                       type="number"
                       value={state.value}
-                      onChange={(e) => handleValueChange(param.name, e.target.value)}
+                      onChange={(e) =>
+                        handleValueChange(param.name, e.target.value)
+                      }
                       min={param.min}
                       max={param.max}
-                      placeholder={param.example || (param.default !== undefined ? String(param.default) : "")}
+                      placeholder={
+                        param.example ||
+                        (param.default !== undefined
+                          ? String(param.default)
+                          : "")
+                      }
                       className="w-full border border-gray-300 bg-white px-2 py-1.5 text-sm focus:border-[#BA0C2F] focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-white"
                     />
                   ) : (
@@ -770,8 +814,15 @@ function InteractiveParamBuilder({
                     <input
                       type="text"
                       value={state.value}
-                      onChange={(e) => handleValueChange(param.name, e.target.value)}
-                      placeholder={param.example || (param.default !== undefined ? String(param.default) : "")}
+                      onChange={(e) =>
+                        handleValueChange(param.name, e.target.value)
+                      }
+                      placeholder={
+                        param.example ||
+                        (param.default !== undefined
+                          ? String(param.default)
+                          : "")
+                      }
                       className="w-full border border-gray-300 bg-white px-2 py-1.5 text-sm focus:border-[#BA0C2F] focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-white"
                     />
                   )}

@@ -2,7 +2,7 @@
 
 **Version 1.0 — December 2025**
 
-*A living document for Mirror Factory / Layers development*
+_A living document for Mirror Factory / Layers development_
 
 > **The Problem**
 >
@@ -20,14 +20,14 @@ This guide synthesizes knowledge from official documentation, creator insights, 
 
 ### Primary Sources
 
-| Contributor | Resource | Why It Matters |
-|-------------|----------|----------------|
-| **Boris Cherny** ([@bcherny](https://x.com/bcherny)) | Creator of Claude Code | Shipped 259 PRs with 40,000+ lines in one month using hooks |
-| **Sankalp** ([@dejavucoder](https://x.com/dejavucoder)) | [Claude Code 2.0 Deep Dive](https://sankalp.bearblog.dev/my-experience-with-claude-code-20-and-how-to-get-better-at-using-coding-agents/) | Most comprehensive practitioner's guide with context engineering insights |
-| **Andrej Karpathy** ([@karpathy](https://x.com/karpathy)) | [2025 LLM Year in Review](https://karpathy.bearblog.dev/year-in-review-2025/) | Philosophy on AI-assisted coding workflows |
-| **McKay Wrigley** ([@mckaywrigley](https://x.com/mckaywrigley)) | X/Twitter threads | Speculative branching and Opus 4.5 patterns |
-| **Geoffrey Huntley** | [Ralph Wiggum Technique](https://ghuntley.com/ralph/) | Original autonomous loop methodology |
-| **Anthropic Engineering** | [Best Practices Guide](https://www.anthropic.com/engineering/claude-code-best-practices) | Official patterns and recommendations |
+| Contributor                                                     | Resource                                                                                                                                  | Why It Matters                                                            |
+| --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| **Boris Cherny** ([@bcherny](https://x.com/bcherny))            | Creator of Claude Code                                                                                                                    | Shipped 259 PRs with 40,000+ lines in one month using hooks               |
+| **Sankalp** ([@dejavucoder](https://x.com/dejavucoder))         | [Claude Code 2.0 Deep Dive](https://sankalp.bearblog.dev/my-experience-with-claude-code-20-and-how-to-get-better-at-using-coding-agents/) | Most comprehensive practitioner's guide with context engineering insights |
+| **Andrej Karpathy** ([@karpathy](https://x.com/karpathy))       | [2025 LLM Year in Review](https://karpathy.bearblog.dev/year-in-review-2025/)                                                             | Philosophy on AI-assisted coding workflows                                |
+| **McKay Wrigley** ([@mckaywrigley](https://x.com/mckaywrigley)) | X/Twitter threads                                                                                                                         | Speculative branching and Opus 4.5 patterns                               |
+| **Geoffrey Huntley**                                            | [Ralph Wiggum Technique](https://ghuntley.com/ralph/)                                                                                     | Original autonomous loop methodology                                      |
+| **Anthropic Engineering**                                       | [Best Practices Guide](https://www.anthropic.com/engineering/claude-code-best-practices)                                                  | Official patterns and recommendations                                     |
 
 ### Community Resources
 
@@ -72,9 +72,10 @@ Use these tools regularly and keep up with releases. Weekly or monthly reviews o
 
 ### Pillar 2: Upskill in Your Domain
 
-Domain knowledge leads to better prompts. Boris Cherny: *"Better judgement helps find shorter paths, acting as a multiplier."*
+Domain knowledge leads to better prompts. Boris Cherny: _"Better judgement helps find shorter paths, acting as a multiplier."_
 
 Since implementation is faster now, spend more time on:
+
 - Taste refinement and design decisions
 - System design and planning
 - Understanding requirements deeply
@@ -130,12 +131,12 @@ The tool call results can quickly fill your context—this is why agents get exp
 
 ### Context Management Strategies
 
-| Strategy | When to Use | Command |
-|----------|-------------|---------|
-| **Clear** | Between unrelated tasks | `/clear` |
-| **Compact** | At ~60% capacity for complex work | `/compact` |
-| **Handoff** | Session transitions | Custom `/handoff` command |
-| **Check Usage** | Periodically during complex tasks | `/context` |
+| Strategy        | When to Use                       | Command                   |
+| --------------- | --------------------------------- | ------------------------- |
+| **Clear**       | Between unrelated tasks           | `/clear`                  |
+| **Compact**     | At ~60% capacity for complex work | `/compact`                |
+| **Handoff**     | Session transitions               | Custom `/handoff` command |
+| **Check Usage** | Periodically during complex tasks | `/context`                |
 
 ### System Reminders: How Claude Code Manages Attention
 
@@ -161,16 +162,16 @@ Hooks are callback functions that execute at specific lifecycle events during Cl
 
 ### Hook Events Reference
 
-| Event | When It Fires | Primary Use Cases |
-|-------|---------------|-------------------|
-| **PreToolUse** | Before processing a tool call | Validation, blocking dangerous operations |
-| **PostToolUse** | After tool completes successfully | Auto-formatting, logging, quality checks |
-| **Stop** | When main agent finishes responding | Continue workflows, run tests, notifications |
-| **SubagentStop** | When subagent finishes | Validate subagent results |
-| **PermissionRequest** | When permission dialog shown | Auto-approve/deny permissions |
-| **UserPromptSubmit** | Before Claude processes prompt | Context injection, prompt validation |
-| **SessionStart/End** | Session lifecycle | Environment setup, cleanup, logging |
-| **Notification** | When Claude needs input | Desktop notifications, webhooks |
+| Event                 | When It Fires                       | Primary Use Cases                            |
+| --------------------- | ----------------------------------- | -------------------------------------------- |
+| **PreToolUse**        | Before processing a tool call       | Validation, blocking dangerous operations    |
+| **PostToolUse**       | After tool completes successfully   | Auto-formatting, logging, quality checks     |
+| **Stop**              | When main agent finishes responding | Continue workflows, run tests, notifications |
+| **SubagentStop**      | When subagent finishes              | Validate subagent results                    |
+| **PermissionRequest** | When permission dialog shown        | Auto-approve/deny permissions                |
+| **UserPromptSubmit**  | Before Claude processes prompt      | Context injection, prompt validation         |
+| **SessionStart/End**  | Session lifecycle                   | Environment setup, cleanup, logging          |
+| **Notification**      | When Claude needs input             | Desktop notifications, webhooks              |
 
 ### Configuration Locations
 
@@ -189,12 +190,16 @@ Boris Cherny's breakthrough came from **test-driven stop hooks** that make Claud
 ```json
 {
   "hooks": {
-    "Stop": [{
-      "hooks": [{
-        "type": "command",
-        "command": "npm test || echo 'Tests failed, please fix'"
-      }]
-    }]
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npm test || echo 'Tests failed, please fix'"
+          }
+        ]
+      }
+    ]
   }
 }
 ```
@@ -206,59 +211,79 @@ When tests fail, Claude receives the error output and automatically continues fi
 ### Production Hook Examples
 
 **Auto-format after edits:**
+
 ```json
 {
   "hooks": {
-    "PostToolUse": [{
-      "matcher": "Write|Edit",
-      "hooks": [{
-        "type": "command",
-        "command": "prettier --write \"$CLAUDE_FILE_PATHS\" && eslint --fix \"$CLAUDE_FILE_PATHS\""
-      }]
-    }]
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "prettier --write \"$CLAUDE_FILE_PATHS\" && eslint --fix \"$CLAUDE_FILE_PATHS\""
+          }
+        ]
+      }
+    ]
   }
 }
 ```
 
 **Block dangerous operations:**
+
 ```json
 {
   "hooks": {
-    "PreToolUse": [{
-      "matcher": "Bash",
-      "hooks": [{
-        "type": "command",
-        "command": "if [[ \"$CLAUDE_TOOL_INPUT\" == *\"rm -rf\"* ]]; then echo 'Blocked' && exit 2; fi"
-      }]
-    }]
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [[ \"$CLAUDE_TOOL_INPUT\" == *\"rm -rf\"* ]]; then echo 'Blocked' && exit 2; fi"
+          }
+        ]
+      }
+    ]
   }
 }
 ```
 
 **Desktop notifications when attention needed:**
+
 ```json
 {
   "hooks": {
-    "Notification": [{
-      "hooks": [{
-        "type": "command",
-        "command": "osascript -e 'display notification \"Claude needs attention\" with title \"Claude Code\"'"
-      }]
-    }]
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "osascript -e 'display notification \"Claude needs attention\" with title \"Claude Code\"'"
+          }
+        ]
+      }
+    ]
   }
 }
 ```
 
 **Play sound when Claude stops (Sankalp's first hook):**
+
 ```json
 {
   "hooks": {
-    "Stop": [{
-      "hooks": [{
-        "type": "command",
-        "command": "afplay /path/to/notification.mp3"
-      }]
-    }]
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /path/to/notification.mp3"
+          }
+        ]
+      }
+    ]
   }
 }
 ```
@@ -267,14 +292,14 @@ When tests fail, Claude receives the error output and automatically continues fi
 
 Hooks receive context through environment variables:
 
-| Variable | Description |
-|----------|-------------|
-| `$CLAUDE_TOOL_NAME` | Name of the tool being called |
-| `$CLAUDE_TOOL_INPUT` | Input parameters to the tool |
-| `$CLAUDE_FILE_PATHS` | Files being operated on |
-| `$CLAUDE_TOOL_OUTPUT` | Tool output (PostToolUse only) |
-| `$CLAUDE_PROJECT_DIR` | Current project directory |
-| `$CLAUDE_NOTIFICATION` | Notification content |
+| Variable               | Description                    |
+| ---------------------- | ------------------------------ |
+| `$CLAUDE_TOOL_NAME`    | Name of the tool being called  |
+| `$CLAUDE_TOOL_INPUT`   | Input parameters to the tool   |
+| `$CLAUDE_FILE_PATHS`   | Files being operated on        |
+| `$CLAUDE_TOOL_OUTPUT`  | Tool output (PostToolUse only) |
+| `$CLAUDE_PROJECT_DIR`  | Current project directory      |
+| `$CLAUDE_NOTIFICATION` | Notification content           |
 
 ---
 
@@ -290,12 +315,12 @@ while :; do cat PROMPT.md | claude ; done
 
 This deceptively simple loop embodies profound principles:
 
-| Principle | Meaning |
-|-----------|---------|
-| **Iteration > Perfection** | Don't aim for perfect on first try. Let the loop refine. |
-| **Failures Are Data** | Deterministic failures are predictable and informative. |
+| Principle                  | Meaning                                                                |
+| -------------------------- | ---------------------------------------------------------------------- |
+| **Iteration > Perfection** | Don't aim for perfect on first try. Let the loop refine.               |
+| **Failures Are Data**      | Deterministic failures are predictable and informative.                |
 | **Operator Skill Matters** | Success depends on writing good prompts, not just having a good model. |
-| **Persistence Wins** | Keep trying until success. The loop handles retry logic. |
+| **Persistence Wins**       | Keep trying until success. The loop handles retry logic.               |
 
 ### Real-World Results
 
@@ -315,19 +340,21 @@ This deceptively simple loop embodies profound principles:
 
 ### Command Options
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `--max-iterations <n>` | Stop after N iterations (safety net) | unlimited |
-| `--completion-promise "<text>"` | Phrase that signals completion | required |
+| Option                          | Description                          | Default   |
+| ------------------------------- | ------------------------------------ | --------- |
+| `--max-iterations <n>`          | Stop after N iterations (safety net) | unlimited |
+| `--completion-promise "<text>"` | Phrase that signals completion       | required  |
 
 ### Prompt Writing Best Practices for Ralph
 
 **Bad prompt:**
+
 ```
 Build a todo API and make it good.
 ```
 
 **Good prompt:**
+
 ```
 Build a REST API for todos.
 
@@ -342,6 +369,7 @@ When complete:
 ### Ready-to-Use Templates
 
 **TDD Development Loop:**
+
 ```bash
 /ralph-loop "Implement [FEATURE] using TDD.
 
@@ -359,6 +387,7 @@ Output <promise>DONE</promise> when all tests green." --max-iterations 50 --comp
 ```
 
 **Bug Fixing Loop:**
+
 ```bash
 /ralph-loop "Fix bug: [DESCRIPTION]
 
@@ -379,6 +408,7 @@ Output <promise>FIXED</promise> when resolved." --max-iterations 20 --completion
 ```
 
 **Refactoring Loop:**
+
 ```bash
 /ralph-loop "Refactor [COMPONENT] for [GOAL].
 
@@ -424,6 +454,7 @@ cd ../project-feature2
 ### When to Use Ralph
 
 **Good For:**
+
 - Well-defined tasks with clear success criteria
 - Tasks requiring iteration (getting tests to pass)
 - Greenfield projects where you can walk away
@@ -431,6 +462,7 @@ cd ../project-feature2
 - Overnight/weekend automated development
 
 **Not Good For:**
+
 - Tasks requiring human judgment or design decisions
 - One-shot operations needing immediate results
 - Tasks with unclear or subjective success criteria
@@ -448,6 +480,7 @@ Subagents are separate Claude instances spawned by the main agent with their own
 They solve **context pollution**—loading too much into one conversation.
 
 Boris Cherny uses a sophisticated **multi-subagent code review pattern**:
+
 1. **First pass (5+ subagents)**: One checks style, another combs history, another flags bugs
 2. **Second pass (5 more subagents)**: Specifically poke holes in findings to eliminate false positives
 
@@ -459,12 +492,12 @@ Subagents are spawned via the Task tool. The schema:
 
 ```json
 {
-  "description": "string",     // 3-5 word task description
-  "prompt": "string",          // Task for agent to perform
-  "subagent_type": "string",   // Explore, Plan, general-purpose, etc.
-  "model": "string",           // sonnet, opus, haiku (optional)
+  "description": "string", // 3-5 word task description
+  "prompt": "string", // Task for agent to perform
+  "subagent_type": "string", // Explore, Plan, general-purpose, etc.
+  "model": "string", // sonnet, opus, haiku (optional)
   "run_in_background": "boolean",
-  "resume": "string"           // Agent ID for continuation
+  "resume": "string" // Agent ID for continuation
 }
 ```
 
@@ -472,16 +505,17 @@ When you say "Use Explore with Sonnet", the model makes the tool call with `mode
 
 ### Built-in Subagent Types
 
-| Type | Tools | Context | Use Case |
-|------|-------|---------|----------|
-| **Explore** | Read, Grep, Glob, limited Bash | Fresh (no inheritance) | Fast codebase searching |
-| **Plan** | All tools | Full inheritance | Implementation planning |
-| **general-purpose** | All tools | Full inheritance | Complex multi-step tasks |
-| **claude-code-guide** | Glob, Grep, Read, WebFetch, WebSearch | Fresh | Documentation lookup |
+| Type                  | Tools                                 | Context                | Use Case                 |
+| --------------------- | ------------------------------------- | ---------------------- | ------------------------ |
+| **Explore**           | Read, Grep, Glob, limited Bash        | Fresh (no inheritance) | Fast codebase searching  |
+| **Plan**              | All tools                             | Full inheritance       | Implementation planning  |
+| **general-purpose**   | All tools                             | Full inheritance       | Complex multi-step tasks |
+| **claude-code-guide** | Glob, Grep, Read, WebFetch, WebSearch | Fresh                  | Documentation lookup     |
 
 ### The Explore Agent Deep Dive
 
 Explore is read-only and optimized for speed. Key behaviors:
+
 - Uses Haiku by default for fast responses
 - Can spawn multiple parallel tool calls
 - Returns summaries (which are lossy—see context engineering section)
@@ -505,6 +539,7 @@ permissionMode: default
 You are a senior code reviewer specializing in security and performance.
 
 When reviewing code:
+
 1. Check for security vulnerabilities (injection, XSS, auth issues)
 2. Identify performance bottlenecks and N+1 queries
 3. Flag violations of project conventions in CLAUDE.md
@@ -515,15 +550,16 @@ Or use `/agents` to manage and create subagents automatically.
 
 ### Tool Access Patterns
 
-| Subagent Type | Recommended Tools |
-|---------------|-------------------|
-| Read-only reviewers | `Read, Grep, Glob` |
-| Research agents | `Read, Grep, Glob, WebFetch, WebSearch` |
-| Code writers | `Read, Write, Edit, Bash, Glob, Grep` |
+| Subagent Type       | Recommended Tools                       |
+| ------------------- | --------------------------------------- |
+| Read-only reviewers | `Read, Grep, Glob`                      |
+| Research agents     | `Read, Grep, Glob, WebFetch, WebSearch` |
+| Code writers        | `Read, Write, Edit, Bash, Glob, Grep`   |
 
 ### Background Agents for Debugging
 
 The `run_in_background` parameter sends tasks to run asynchronously. Super helpful for:
+
 - Monitoring log outputs
 - Long-running scripts
 - Debugging processes
@@ -561,11 +597,13 @@ description: Extract text and tables from PDF files. Use when working with PDF d
 ---
 
 ## Instructions
+
 1. Use `pdftotext` for text extraction
 2. Use `tabula-py` for table extraction
 3. Output structured data as JSON
 
 ## Example usage
+
 [Include concrete examples Claude can follow]
 ```
 
@@ -573,15 +611,16 @@ description: Extract text and tables from PDF files. Use when working with PDF d
 
 ### Skill Locations and Precedence
 
-| Location | Scope | Priority |
-|----------|-------|----------|
-| `.claude/skills/skill-name/SKILL.md` | Project | Highest |
-| `~/.claude/skills/skill-name/SKILL.md` | User | Medium |
-| Plugin skills | Installed | Lowest |
+| Location                               | Scope     | Priority |
+| -------------------------------------- | --------- | -------- |
+| `.claude/skills/skill-name/SKILL.md`   | Project   | Highest  |
+| `~/.claude/skills/skill-name/SKILL.md` | User      | Medium   |
+| Plugin skills                          | Installed | Lowest   |
 
 ### Pre-built Skills from Anthropic
 
 Install via plugins:
+
 - **PDF processing**
 - **DOCX with tracked changes**
 - **PPTX presentations**
@@ -616,12 +655,14 @@ MCP is an open standard for AI-tool integrations. MCP servers give Claude Code a
 ### Adding MCP Servers
 
 **HTTP/Remote servers (recommended for cloud services):**
+
 ```bash
 claude mcp add --transport http notion https://mcp.notion.com/mcp
 claude mcp add --transport sse asana https://mcp.asana.com/sse
 ```
 
 **Local stdio servers:**
+
 ```bash
 claude mcp add --transport stdio github \
   --env GITHUB_PERSONAL_ACCESS_TOKEN=ghp_xxx \
@@ -630,22 +671,22 @@ claude mcp add --transport stdio github \
 
 ### Essential MCP Servers
 
-| Server | Purpose | Why Essential |
-|--------|---------|---------------|
-| **GitHub** | PR management, issues, CI/CD | "The most essential server" for dev workflows |
-| **Puppeteer/Playwright** | Browser automation, screenshots | Visual testing, UI iteration loops |
-| **Context7** | Real-time documentation | Up-to-date library info |
-| **Sentry** | Error monitoring | Production debugging |
-| **Sequential Thinking** | Complex reasoning | Methodical problem breakdown |
-| **Perplexity/Brave Search** | Web research | Information gathering |
+| Server                      | Purpose                         | Why Essential                                 |
+| --------------------------- | ------------------------------- | --------------------------------------------- |
+| **GitHub**                  | PR management, issues, CI/CD    | "The most essential server" for dev workflows |
+| **Puppeteer/Playwright**    | Browser automation, screenshots | Visual testing, UI iteration loops            |
+| **Context7**                | Real-time documentation         | Up-to-date library info                       |
+| **Sentry**                  | Error monitoring                | Production debugging                          |
+| **Sequential Thinking**     | Complex reasoning               | Methodical problem breakdown                  |
+| **Perplexity/Brave Search** | Web research                    | Information gathering                         |
 
 ### MCP Scopes
 
-| Scope | Location | Use Case |
-|-------|----------|----------|
-| `local` | `~/.claude.json` (project path) | Default, private to you |
-| `project` | `.mcp.json` | Shared with team (version controlled) |
-| `user` | `~/.claude.json` | Available across all projects |
+| Scope     | Location                        | Use Case                              |
+| --------- | ------------------------------- | ------------------------------------- |
+| `local`   | `~/.claude.json` (project path) | Default, private to you               |
+| `project` | `.mcp.json`                     | Shared with team (version controlled) |
+| `user`    | `~/.claude.json`                | Available across all projects         |
 
 ### Project .mcp.json for Team Sharing
 
@@ -680,12 +721,12 @@ CLAUDE.md is Claude's primary source of truth for how your repository works. It'
 
 ### File Hierarchy and Loading
 
-| Location | Scope | Loading Behavior |
-|----------|-------|------------------|
-| `~/.claude/CLAUDE.md` | Global | Always loaded |
-| `./CLAUDE.md` | Project root | Loaded for project |
-| `./src/CLAUDE.md` | Subdirectory | Loaded when working in that directory |
-| `.claude/rules/*.md` | Modular rules | All files loaded |
+| Location              | Scope         | Loading Behavior                      |
+| --------------------- | ------------- | ------------------------------------- |
+| `~/.claude/CLAUDE.md` | Global        | Always loaded                         |
+| `./CLAUDE.md`         | Project root  | Loaded for project                    |
+| `./src/CLAUDE.md`     | Subdirectory  | Loaded when working in that directory |
+| `.claude/rules/*.md`  | Modular rules | All files loaded                      |
 
 ### The Critical Insight: Less Is More
 
@@ -697,24 +738,29 @@ Claude can reliably follow ~150-200 instructions. Community consensus and Anthro
 # Project Context
 
 ## About
+
 FastAPI REST API for user authentication. SQLAlchemy + PostgreSQL.
 
 ## Key Directories
+
 - `app/models/` - Database models
-- `app/api/` - Route handlers  
+- `app/api/` - Route handlers
 - `app/core/` - Configuration, utilities
 
 ## Commands
+
 - `pnpm dev` - Start development
 - `pnpm test` - Run tests
 - `pnpm lint` - ESLint check
 
 ## Code Standards
+
 - Type hints required on all functions
 - pytest conventions for testing
 - 2-space indentation for TypeScript
 
 ## Repository Etiquette
+
 - Branch: `feature/TICKET-123-description`
 - Commits: conventional commits format
 ```
@@ -726,6 +772,7 @@ From a Reddit power user with 6 months of Claude Code usage:
 > "Anthropic recommends keeping skill.md under 500 lines so we divided it into separate files and combined with hooks."
 
 Pattern:
+
 1. Keep CLAUDE.md minimal (core context only)
 2. Move domain expertise to skill files
 3. Use hooks to remind the model about skills when relevant
@@ -749,36 +796,39 @@ This remains an open challenge—treat it as living documentation requiring peri
 
 ### Essential Slash Commands
 
-| Command | Purpose |
-|---------|---------|
-| `/help` | Show all available commands |
-| `/clear` | Clear conversation history (use between unrelated tasks) |
-| `/compact` | Compress context when reaching capacity |
-| `/init` | Auto-generate initial CLAUDE.md |
-| `/model` | Switch models interactively |
-| `/mcp` | Check MCP server status |
-| `/agents` | Manage subagents |
-| `/permissions` | Manage tool permissions |
-| `/resume` | Resume previous sessions |
-| `/rename` | Name current session for later resumption |
-| `/context` | See current context usage |
-| `/usage` | See API usage |
-| `/stats` | See session statistics |
-| `/rewind` | Go back to a checkpoint (also `Esc` + `Esc`) |
+| Command        | Purpose                                                  |
+| -------------- | -------------------------------------------------------- |
+| `/help`        | Show all available commands                              |
+| `/clear`       | Clear conversation history (use between unrelated tasks) |
+| `/compact`     | Compress context when reaching capacity                  |
+| `/init`        | Auto-generate initial CLAUDE.md                          |
+| `/model`       | Switch models interactively                              |
+| `/mcp`         | Check MCP server status                                  |
+| `/agents`      | Manage subagents                                         |
+| `/permissions` | Manage tool permissions                                  |
+| `/resume`      | Resume previous sessions                                 |
+| `/rename`      | Name current session for later resumption                |
+| `/context`     | See current context usage                                |
+| `/usage`       | See API usage                                            |
+| `/stats`       | See session statistics                                   |
+| `/rewind`      | Go back to a checkpoint (also `Esc` + `Esc`)             |
 
 ### Custom Slash Commands
 
 Create in `.claude/commands/` (project) or `~/.claude/commands/` (personal):
 
 **Fix GitHub issue command:**
+
 ```markdown
-<!-- .claude/commands/fix-issue.md -->
----
+## <!-- .claude/commands/fix-issue.md -->
+
 description: Fix a GitHub issue
-allowed-tools: Bash(gh *), Read, Write, Edit
+allowed-tools: Bash(gh \*), Read, Write, Edit
+
 ---
 
 Fix issue #$ARGUMENTS:
+
 1. Use `gh issue view $ARGUMENTS` to get details
 2. Search codebase for relevant files
 3. Implement the fix
@@ -790,13 +840,14 @@ Fix issue #$ARGUMENTS:
 Usage: `/project:fix-issue 1234`
 
 **Handoff command (Sankalp's pattern):**
+
 ```markdown
-<!-- .claude/commands/handoff.md -->
----
-description: Create handoff document for session transition
----
+## <!-- .claude/commands/handoff.md -->
+
+## description: Create handoff document for session transition
 
 Create a handoff document summarizing:
+
 1. What we accomplished this session
 2. Current state of the work
 3. Next steps and open questions
@@ -813,16 +864,16 @@ Save to `HANDOFF.md` in the project root.
 
 ### Keyboard Shortcuts
 
-| Shortcut | Action |
-|----------|--------|
-| `Ctrl+R` | Search prompt history (across project conversations) |
-| `Ctrl+C` | Cancel current operation |
-| `Shift+Tab` | Toggle plan mode |
-| `Tab` | Accept prompt suggestions |
-| `Esc` | Interrupt and redirect Claude |
-| `Esc` + `Esc` | Rewind to checkpoint |
-| `Alt/Option+P` | Quick model switch |
-| `Shift+?` | Show all shortcuts |
+| Shortcut       | Action                                               |
+| -------------- | ---------------------------------------------------- |
+| `Ctrl+R`       | Search prompt history (across project conversations) |
+| `Ctrl+C`       | Cancel current operation                             |
+| `Shift+Tab`    | Toggle plan mode                                     |
+| `Tab`          | Accept prompt suggestions                            |
+| `Esc`          | Interrupt and redirect Claude                        |
+| `Esc` + `Esc`  | Rewind to checkpoint                                 |
+| `Alt/Option+P` | Quick model switch                                   |
+| `Shift+?`      | Show all shortcuts                                   |
 
 ### The Universal Workflow
 
@@ -877,23 +928,24 @@ claude --add-dir /path                    # Add directories to context
 
 ### Model Selection
 
-| Alias | Model | Best For |
-|-------|-------|----------|
-| `sonnet` | Claude Sonnet 4.5 | Default, balanced |
-| `opus` | Claude Opus 4.5 | Complex tasks, best quality |
-| `haiku` | Claude Haiku 4.5 | Fast, lightweight |
+| Alias    | Model             | Best For                    |
+| -------- | ----------------- | --------------------------- |
+| `sonnet` | Claude Sonnet 4.5 | Default, balanced           |
+| `opus`   | Claude Opus 4.5   | Complex tasks, best quality |
+| `haiku`  | Claude Haiku 4.5  | Fast, lightweight           |
 
 ### Environment Variables
 
-| Variable | Purpose |
-|----------|---------|
-| `ANTHROPIC_API_KEY` | API authentication |
-| `CLAUDE_CODE_SHELL` | Override shell detection |
+| Variable                | Purpose                           |
+| ----------------------- | --------------------------------- |
+| `ANTHROPIC_API_KEY`     | API authentication                |
+| `CLAUDE_CODE_SHELL`     | Override shell detection          |
 | `MAX_MCP_OUTPUT_TOKENS` | MCP output limit (default: 25000) |
 
 ### Shared Configuration Checklist
 
 **Version control these files:**
+
 - `CLAUDE.md` — Project guidelines
 - `.mcp.json` — MCP server configs
 - `.claude/commands/` — Custom slash commands
@@ -902,6 +954,7 @@ claude --add-dir /path                    # Add directories to context
 - `.claude/skills/` — Project skills
 
 **Keep local (gitignored):**
+
 - `CLAUDE.local.md`
 - `.claude/settings.local.json`
 
@@ -930,6 +983,7 @@ For bugs Claude Code can't solve after 10 minutes—deep literature reviews, com
 **Setup:** Claude Code as main driver, Codex for review and difficult tasks, Cursor for reading code and manual edits.
 
 **The "Throw-away First Draft" Pattern:**
+
 1. Create a new branch and let Claude write the feature end-to-end while observing
 2. Compare against mental model—where did it diverge?
 3. Learn Claude's biases from context
@@ -938,6 +992,7 @@ For bugs Claude Code can't solve after 10 minutes—deep literature reviews, com
 > "Kinda like Tenet."
 
 **Two-Model Review Strategy:**
+
 > "For reviewing code and finding bugs, I find GPT-5.2-Codex to be superior. Just use `/review`."
 
 The "Claude for execution, GPT/o-series for review" dynamic has been consistent.
@@ -949,6 +1004,7 @@ The "Claude for execution, GPT/o-series for review" dynamic has been consistent.
 ### Multi-Instance Workflow
 
 Run multiple Claude Code instances in different terminal tabs:
+
 - Use "cascade" method: oldest tasks left, newest right, sweep left-to-right
 - Focus on **3-4 tasks maximum**
 - Use git worktrees for parallel branch work
@@ -973,18 +1029,18 @@ Run multiple Claude Code instances in different terminal tabs:
 
 ### Specificity Is Critical
 
-| Poor Prompt | Good Prompt |
-|-------------|-------------|
-| "add tests for foo.py" | "write test case for foo.py covering edge case where user is logged out, avoid mocks" |
+| Poor Prompt             | Good Prompt                                                                                                                   |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| "add tests for foo.py"  | "write test case for foo.py covering edge case where user is logged out, avoid mocks"                                         |
 | "add a calendar widget" | "look at HotDogWidget.php pattern, then implement calendar widget with month selection and pagination, no external libraries" |
 
 ### Thinking Mode Triggers
 
 These phrases map to increasing thinking budgets:
 
-| Phrase | Token Budget |
-|--------|--------------|
-| `"think"` | 4,000 tokens |
+| Phrase                            | Token Budget  |
+| --------------------------------- | ------------- |
+| `"think"`                         | 4,000 tokens  |
 | `"think hard"` / `"think deeply"` | 10,000 tokens |
 | `"think harder"` / `"ultrathink"` | 31,999 tokens |
 
@@ -993,6 +1049,7 @@ Don't default to ultrathink—it wastes tokens on simple tasks.
 ### Plan Mode Philosophy
 
 Boris Cherny:
+
 > "People new to coding with AI agents often start with the assumption that Claude Code can one-shot anything, but that's not realistic. You can **double or triple your chances of success** on complex tasks by switching to plan mode."
 
 Toggle with `Shift+Tab` or use `--permission-mode plan`.
@@ -1000,6 +1057,7 @@ Toggle with `Shift+Tab` or use `--permission-mode plan`.
 ### The Pseudocode Technique
 
 McKay Wrigley:
+
 > "Sometimes writing in pseudocode in the actual codebase can be unbelievably helpful. Opus 4.5 is astonishingly good at inferring what you mean when you write in pseudocode and building it out."
 
 ### Opus 4.5 Strengths
@@ -1070,6 +1128,7 @@ Use `/sandbox` command for OS-level sandboxing. Reduces permission prompts by **
 **Problem:** Long conversations lead to degraded performance ("context pollution").
 
 **Solutions:**
+
 - Use `/clear` frequently between tasks
 - Create handoff documents for session transitions
 - Use subagents for token-heavy operations
@@ -1080,6 +1139,7 @@ Use `/sandbox` command for OS-level sandboxing. Reduces permission prompts by **
 **Problem:** Constant interruptions asking "Can I edit this file?"
 
 **Solutions:**
+
 - Configure `allowedTools` in settings
 - Use auto-accept mode (Shift+Tab) for trusted operations
 - Use sandboxing to reduce prompts by 84%
@@ -1146,20 +1206,20 @@ Use `/sandbox` command for OS-level sandboxing. Reduces permission prompts by **
 
 Recent additions that change workflows:
 
-| Feature | Version | Impact |
-|---------|---------|--------|
-| **Named sessions** | 2.0.70+ | `/rename` and resume by name for project continuity |
-| **Prompt suggestions** | 2.0.73 | Tab to accept context-aware suggestions |
-| **Prompt history search** | 2.0.74 | `Ctrl+R` searches across project conversations |
-| **Syntax highlighting** | 2.0.71 | Code diffs rendered with syntax colors |
-| **Checkpointing** | 2.0.60+ | `/rewind` or `Esc+Esc` to restore previous states |
-| **Background agents** | 2.0.60+ | Async operations with wake-up messaging |
-| **VS Code Extension** | - | Native IDE integration with inline diffs |
-| **Claude in Chrome (Beta)** | - | Browser control via Chrome extension |
-| **Modular rules** | - | `.claude/rules/*.md` directory support |
-| **Wildcard MCP permissions** | - | `mcp__server__*` syntax for flexible access |
-| **LSP support** | - | Access via plugins |
-| **Cursor cycling** | 2.0.73 | Navigate at prompt boundaries |
+| Feature                      | Version | Impact                                              |
+| ---------------------------- | ------- | --------------------------------------------------- |
+| **Named sessions**           | 2.0.70+ | `/rename` and resume by name for project continuity |
+| **Prompt suggestions**       | 2.0.73  | Tab to accept context-aware suggestions             |
+| **Prompt history search**    | 2.0.74  | `Ctrl+R` searches across project conversations      |
+| **Syntax highlighting**      | 2.0.71  | Code diffs rendered with syntax colors              |
+| **Checkpointing**            | 2.0.60+ | `/rewind` or `Esc+Esc` to restore previous states   |
+| **Background agents**        | 2.0.60+ | Async operations with wake-up messaging             |
+| **VS Code Extension**        | -       | Native IDE integration with inline diffs            |
+| **Claude in Chrome (Beta)**  | -       | Browser control via Chrome extension                |
+| **Modular rules**            | -       | `.claude/rules/*.md` directory support              |
+| **Wildcard MCP permissions** | -       | `mcp__server__*` syntax for flexible access         |
+| **LSP support**              | -       | Access via plugins                                  |
+| **Cursor cycling**           | 2.0.73  | Navigate at prompt boundaries                       |
 
 ---
 
@@ -1167,90 +1227,90 @@ Recent additions that change workflows:
 
 ### Official Documentation
 
-| Resource | URL |
-|----------|-----|
-| Claude Code Docs | https://code.claude.com/docs/en/ |
-| Best Practices Guide | https://www.anthropic.com/engineering/claude-code-best-practices |
-| Context Engineering | https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents |
-| Building Effective Agents | https://www.anthropic.com/engineering/building-effective-agents |
-| Code Execution with MCP | https://www.anthropic.com/engineering/code-execution-with-mcp |
-| Sandboxing Guide | https://www.anthropic.com/engineering/claude-code-sandboxing |
-| GitHub Repository | https://github.com/anthropics/claude-code |
-| Changelog | https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md |
-| Skills Repository | https://github.com/anthropics/skills |
-| GitHub Action | https://github.com/anthropics/claude-code-action |
+| Resource                  | URL                                                                               |
+| ------------------------- | --------------------------------------------------------------------------------- |
+| Claude Code Docs          | https://code.claude.com/docs/en/                                                  |
+| Best Practices Guide      | https://www.anthropic.com/engineering/claude-code-best-practices                  |
+| Context Engineering       | https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents |
+| Building Effective Agents | https://www.anthropic.com/engineering/building-effective-agents                   |
+| Code Execution with MCP   | https://www.anthropic.com/engineering/code-execution-with-mcp                     |
+| Sandboxing Guide          | https://www.anthropic.com/engineering/claude-code-sandboxing                      |
+| GitHub Repository         | https://github.com/anthropics/claude-code                                         |
+| Changelog                 | https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md                  |
+| Skills Repository         | https://github.com/anthropics/skills                                              |
+| GitHub Action             | https://github.com/anthropics/claude-code-action                                  |
 
 ### Key Blog Posts & Guides
 
-| Author | Resource | URL |
-|--------|----------|-----|
-| Sankalp | Claude Code 2.0 Guide | https://sankalp.bearblog.dev/my-experience-with-claude-code-20-and-how-to-get-better-at-using-coding-agents/ |
-| Sankalp | July 2025 Guide | https://sankalp.bearblog.dev/my-claude-code-experience-after-2-weeks-of-usage/ |
-| Sankalp | Prompt Caching Deep Dive | https://sankalp.bearblog.dev/how-prompt-caching-works/ |
-| Karpathy | 2025 LLM Year in Review | https://karpathy.bearblog.dev/year-in-review-2025/ |
-| Geoffrey Huntley | Ralph Wiggum Original | https://ghuntley.com/ralph/ |
-| Armin Ronacher | What is Plan Mode? | https://lucumr.pocoo.org/2025/12/17/what-is-plan-mode/ |
-| Manus | Context Engineering Lessons | https://manus.im/blog/Context-Engineering-for-AI-Agents-Lessons-from-Building-Manus |
-| HumanLayer | Writing a Good CLAUDE.md | https://www.humanlayer.dev/blog/writing-a-good-claude-md |
-| Chroma | Context Rot Research | https://research.trychroma.com/context-rot |
+| Author           | Resource                    | URL                                                                                                          |
+| ---------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Sankalp          | Claude Code 2.0 Guide       | https://sankalp.bearblog.dev/my-experience-with-claude-code-20-and-how-to-get-better-at-using-coding-agents/ |
+| Sankalp          | July 2025 Guide             | https://sankalp.bearblog.dev/my-claude-code-experience-after-2-weeks-of-usage/                               |
+| Sankalp          | Prompt Caching Deep Dive    | https://sankalp.bearblog.dev/how-prompt-caching-works/                                                       |
+| Karpathy         | 2025 LLM Year in Review     | https://karpathy.bearblog.dev/year-in-review-2025/                                                           |
+| Geoffrey Huntley | Ralph Wiggum Original       | https://ghuntley.com/ralph/                                                                                  |
+| Armin Ronacher   | What is Plan Mode?          | https://lucumr.pocoo.org/2025/12/17/what-is-plan-mode/                                                       |
+| Manus            | Context Engineering Lessons | https://manus.im/blog/Context-Engineering-for-AI-Agents-Lessons-from-Building-Manus                          |
+| HumanLayer       | Writing a Good CLAUDE.md    | https://www.humanlayer.dev/blog/writing-a-good-claude-md                                                     |
+| Chroma           | Context Rot Research        | https://research.trychroma.com/context-rot                                                                   |
 
 ### Community Resources
 
-| Resource | URL |
-|----------|-----|
-| Awesome Claude | https://awesomeclaude.ai |
-| Ralph Wiggum Plugin | https://awesomeclaude.ai/ralph-wiggum |
-| Awesome Claude Code (GitHub) | https://github.com/hesreallyhim/awesome-claude-code |
-| Claude Code Hooks Mastery | https://github.com/disler/claude-code-hooks-mastery |
-| Claude Squad (Multi-instance) | https://github.com/smtg-ai/claude-squad |
-| Neovim Integration | https://github.com/greggh/claude-code.nvim |
+| Resource                            | URL                                                      |
+| ----------------------------------- | -------------------------------------------------------- |
+| Awesome Claude                      | https://awesomeclaude.ai                                 |
+| Ralph Wiggum Plugin                 | https://awesomeclaude.ai/ralph-wiggum                    |
+| Awesome Claude Code (GitHub)        | https://github.com/hesreallyhim/awesome-claude-code      |
+| Claude Code Hooks Mastery           | https://github.com/disler/claude-code-hooks-mastery      |
+| Claude Squad (Multi-instance)       | https://github.com/smtg-ai/claude-squad                  |
+| Neovim Integration                  | https://github.com/greggh/claude-code.nvim               |
 | System Prompts (Reverse Engineered) | https://github.com/Piebald-AI/claude-code-system-prompts |
-| Ralph Orchestrator | https://github.com/mikeyobrien/ralph-orchestrator |
+| Ralph Orchestrator                  | https://github.com/mikeyobrien/ralph-orchestrator        |
 
 ### Usage Monitoring Tools
 
-| Tool | URL |
-|------|-----|
+| Tool    | URL                                  |
+| ------- | ------------------------------------ |
 | ccusage | https://github.com/ryoppippi/ccusage |
 | ccflare | https://github.com/snipeship/ccflare |
 
 ### X/Twitter Accounts to Follow
 
-| Person | Handle | Known For |
-|--------|--------|-----------|
-| Boris Cherny | [@bcherny](https://x.com/bcherny) | Claude Code creator |
-| Andrej Karpathy | [@karpathy](https://x.com/karpathy) | AI workflow philosophy |
-| McKay Wrigley | [@mckaywrigley](https://x.com/mckaywrigley) | Speculative branching, tips |
-| Sankalp | [@dejavucoder](https://x.com/dejavucoder) | Practitioner insights |
-| Amanda Askell | [@AmandaAskell](https://x.com/AmandaAskell) | Claude personality training |
+| Person          | Handle                                      | Known For                   |
+| --------------- | ------------------------------------------- | --------------------------- |
+| Boris Cherny    | [@bcherny](https://x.com/bcherny)           | Claude Code creator         |
+| Andrej Karpathy | [@karpathy](https://x.com/karpathy)         | AI workflow philosophy      |
+| McKay Wrigley   | [@mckaywrigley](https://x.com/mckaywrigley) | Speculative branching, tips |
+| Sankalp         | [@dejavucoder](https://x.com/dejavucoder)   | Practitioner insights       |
+| Amanda Askell   | [@AmandaAskell](https://x.com/AmandaAskell) | Claude personality training |
 
 ### Community Hubs
 
-| Platform | URL |
-|----------|-----|
-| r/ClaudeAI | https://reddit.com/r/ClaudeAI |
-| r/ClaudeCode | https://reddit.com/r/ClaudeCode |
-| Claude Developers Discord | (Official community) |
+| Platform                  | URL                             |
+| ------------------------- | ------------------------------- |
+| r/ClaudeAI                | https://reddit.com/r/ClaudeAI   |
+| r/ClaudeCode              | https://reddit.com/r/ClaudeCode |
+| Claude Developers Discord | (Official community)            |
 
 ### Key X/Twitter Threads
 
-| Topic | URL |
-|-------|-----|
-| Boris on Domain Knowledge | https://x.com/bcherny/status/2004626064187031831 |
-| Karpathy on Keeping Up | https://x.com/karpathy/status/2004607146781278521 |
-| Karpathy on Workflows | https://x.com/karpathy/status/1959703967694545296 |
-| McKay on Opus 4.5 | https://x.com/mckaywrigley/status/1997403303161024895 |
-| Boris on Claude Code Origins | https://x.com/i/status/2004887829252317325 |
+| Topic                        | URL                                                   |
+| ---------------------------- | ----------------------------------------------------- |
+| Boris on Domain Knowledge    | https://x.com/bcherny/status/2004626064187031831      |
+| Karpathy on Keeping Up       | https://x.com/karpathy/status/2004607146781278521     |
+| Karpathy on Workflows        | https://x.com/karpathy/status/1959703967694545296     |
+| McKay on Opus 4.5            | https://x.com/mckaywrigley/status/1997403303161024895 |
+| Boris on Claude Code Origins | https://x.com/i/status/2004887829252317325            |
 
 ### Podcasts & Interviews
 
-| Resource | URL |
-|----------|-----|
+| Resource                                 | URL                                                                          |
+| ---------------------------------------- | ---------------------------------------------------------------------------- |
 | How to Use Claude Code Like the Builders | https://every.to/podcast/how-to-use-claude-code-like-the-people-who-built-it |
-| Boris Cherny Career Interview | https://www.developing.dev/p/boris-cherny-creator-of-claude-code |
+| Boris Cherny Career Interview            | https://www.developing.dev/p/boris-cherny-creator-of-claude-code             |
 
 ---
 
-*This document will continue evolving as Claude Code receives updates. Last updated: December 2025.*
+_This document will continue evolving as Claude Code receives updates. Last updated: December 2025._
 
-*Maintained by Mirror Factory / Layers team.*
+_Maintained by Mirror Factory / Layers team._

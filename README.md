@@ -192,6 +192,7 @@ Interactive documentation and testing UI for all your APIs:
 ```
 
 **Features:**
+
 - Grid view of all registered APIs with search and filtering
 - Click any API to open interactive testing modal
 - **Example Requests** - Pre-built, runnable examples that auto-fill query params
@@ -233,6 +234,7 @@ pnpm typedoc:watch     # Watch mode for development
 ```
 
 TypeDoc runs during **Phase 13 (Documentation)** and generates Markdown documentation from:
+
 - `src/lib/schemas/*.ts` - Zod schemas with TSDoc comments
 - `src/app/api/**/*.ts` - API route handlers
 
@@ -273,31 +275,31 @@ Configuration: `typedoc.json` (installed by the CLI)
 
 ### Core Reference
 
-| Document | Purpose |
-| -------- | ------- |
-| **[docs/SKILLS.md](./docs/SKILLS.md)** | Complete slash command reference - all 24+ skills with usage and examples |
-| **[docs/HOOKS.md](./docs/HOOKS.md)** | All 45+ enforcement hooks - what they do and when they run |
-| **[docs/AGENTS.md](./docs/AGENTS.md)** | Specialized subagents - parallel-researcher, schema-generator, etc. |
-| **[docs/ORCHESTRATOR.md](./docs/ORCHESTRATOR.md)** | Master workflow controller - /hustle-build, decomposition, shared decisions |
-| **[docs/REGROUNDING.md](./docs/REGROUNDING.md)** | 7-turn context refresh system - prevents "lost in the middle" problem |
-| **[docs/PLUGIN_ARCHITECTURE.md](./docs/PLUGIN_ARCHITECTURE.md)** | How the plugin system works - installation, state, lifecycle |
+| Document                                                                       | Purpose                                                                         |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| **[docs/SKILLS.md](./docs/SKILLS.md)**                                         | Complete slash command reference - all 24+ skills with usage and examples       |
+| **[docs/HOOKS.md](./docs/HOOKS.md)**                                           | All 45+ enforcement hooks - what they do and when they run                      |
+| **[docs/AGENTS.md](./docs/AGENTS.md)**                                         | Specialized subagents - parallel-researcher, schema-generator, etc.             |
+| **[docs/ORCHESTRATOR.md](./docs/ORCHESTRATOR.md)**                             | Master workflow controller - /hustle-build, decomposition, shared decisions     |
+| **[docs/REGROUNDING.md](./docs/REGROUNDING.md)**                               | 7-turn context refresh system - prevents "lost in the middle" problem           |
+| **[docs/PLUGIN_ARCHITECTURE.md](./docs/PLUGIN_ARCHITECTURE.md)**               | How the plugin system works - installation, state, lifecycle                    |
 | **[docs/CLAUDE_CODE_BEST_PRACTICES.md](./docs/CLAUDE_CODE_BEST_PRACTICES.md)** | Industry best practices for Claude Code - hooks, subagents, context engineering |
-| **[docs/GAP_ANALYSIS.md](./docs/GAP_ANALYSIS.md)** | How api-dev-tools implements best practices and what gaps remain |
+| **[docs/GAP_ANALYSIS.md](./docs/GAP_ANALYSIS.md)**                             | How api-dev-tools implements best practices and what gaps remain                |
 
 ### Guides
 
-| Document | Purpose |
-| -------- | ------- |
-| **[INSTALLATION_GUIDE.md](./INSTALLATION_GUIDE.md)** | Step-by-step setup including MCP config, environment variables, troubleshooting |
-| **[BEST_PRACTICES_ANALYSIS.md](./BEST_PRACTICES_ANALYSIS.md)** | Phase documentation with workflow diagrams and enforcement logic |
-| **[.skills/README.md](./.skills/README.md)** | Agent Skills format compatibility and cross-platform notes |
+| Document                                                       | Purpose                                                                         |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| **[INSTALLATION_GUIDE.md](./INSTALLATION_GUIDE.md)**           | Step-by-step setup including MCP config, environment variables, troubleshooting |
+| **[BEST_PRACTICES_ANALYSIS.md](./BEST_PRACTICES_ANALYSIS.md)** | Phase documentation with workflow diagrams and enforcement logic                |
+| **[.skills/README.md](./.skills/README.md)**                   | Agent Skills format compatibility and cross-platform notes                      |
 
 ### Project Info
 
-| Document | Purpose |
-| -------- | ------- |
+| Document                           | Purpose                                         |
+| ---------------------------------- | ----------------------------------------------- |
 | **[CHANGELOG.md](./CHANGELOG.md)** | Version history with features and release notes |
-| **[ROADMAP.md](./ROADMAP.md)** | Future features and enhancement plans |
+| **[ROADMAP.md](./ROADMAP.md)**     | Future features and enhancement plans           |
 
 ---
 

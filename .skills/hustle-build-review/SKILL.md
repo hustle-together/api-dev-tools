@@ -36,11 +36,13 @@ Review and analyze the results of a `/hustle-build` execution. Essential for und
 ### 1.1 Find Build Log
 
 If `--list`:
+
 ```bash
 ls -la .claude/workflow-logs/build-*.json
 ```
 
 Display table:
+
 ```
 Available Builds:
 | Build ID                    | Date       | Status   | Elements |
@@ -51,12 +53,14 @@ Available Builds:
 ```
 
 If `--latest`:
+
 - Find most recent `build-*.json` file
 - Load that build ID
 
 ### 1.2 Load Files
 
 Load from `.claude/`:
+
 - `hustle-build-state.json` - Orchestration state
 - `workflow-logs/[build-id].json` - Detailed log
 - `registry.json` - Created elements
@@ -468,6 +472,7 @@ AVAILABLE ACTIONS
 ```
 
 Ask user:
+
 ```
 What would you like to do?
 - View more details on a specific element

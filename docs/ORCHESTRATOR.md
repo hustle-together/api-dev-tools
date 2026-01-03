@@ -39,13 +39,13 @@ The Orchestrator is a meta-workflow that:
 
 ### Why Use the Orchestrator?
 
-| Without Orchestrator | With Orchestrator |
-|---------------------|-------------------|
-| Run `/api-create` manually for each API | Single `/hustle-build` command |
-| Answer same questions repeatedly | Shared decisions asked once |
-| Manual dependency ordering | Automatic topological sort |
-| Forget to wire components together | Auto-generates imports and types |
-| No unified test run | Runs all tests at completion |
+| Without Orchestrator                    | With Orchestrator                |
+| --------------------------------------- | -------------------------------- |
+| Run `/api-create` manually for each API | Single `/hustle-build` command   |
+| Answer same questions repeatedly        | Shared decisions asked once      |
+| Manual dependency ordering              | Automatic topological sort       |
+| Forget to wire components together      | Auto-generates imports and types |
+| No unified test run                     | Runs all tests at completion     |
 
 ---
 
@@ -71,12 +71,12 @@ The primary entry point for orchestrated builds.
 
 ### Arguments
 
-| Argument | Description |
-|----------|-------------|
-| `[description]` | Natural language description of what to build |
-| `--auto` | Fully autonomous mode, auto-answers all questions |
-| `--resume [id]` | Resume an interrupted build by ID |
-| `--dry-run` | Show decomposition plan without executing |
+| Argument        | Description                                       |
+| --------------- | ------------------------------------------------- |
+| `[description]` | Natural language description of what to build     |
+| `--auto`        | Fully autonomous mode, auto-answers all questions |
+| `--resume [id]` | Resume an interrupted build by ID                 |
+| `--dry-run`     | Show decomposition plan without executing         |
 
 ### Example
 
@@ -109,12 +109,12 @@ Pages (Tier 3):
 
 The orchestrator analyzes natural language for:
 
-| Pattern | Implies |
-|---------|---------|
-| "get data from...", "fetch...", "API for..." | API workflow |
-| "button", "card", "widget", "input" | Component workflow |
-| "page", "route", "dashboard", "view" | Page workflow |
-| "combine", "orchestrate", "aggregate" | Combined API workflow |
+| Pattern                                      | Implies               |
+| -------------------------------------------- | --------------------- |
+| "get data from...", "fetch...", "API for..." | API workflow          |
+| "button", "card", "widget", "input"          | Component workflow    |
+| "page", "route", "dashboard", "view"         | Page workflow         |
+| "combine", "orchestrate", "aggregate"        | Combined API workflow |
 
 ### Step 2: Build Dependency Graph
 
@@ -160,12 +160,12 @@ The orchestrator asks high-level questions **once** and shares answers across al
 
 ### Orchestrator Interview Questions
 
-| Question | Options | Applied To |
-|----------|---------|------------|
-| Authentication | Protected / Public / Mixed | All API routes |
+| Question       | Options                             | Applied To           |
+| -------------- | ----------------------------------- | -------------------- |
+| Authentication | Protected / Public / Mixed          | All API routes       |
 | Error Handling | Partial success / Fail-fast / Retry | All error boundaries |
-| Brand Guide | Use .claude/BRAND_GUIDE.md / Custom | All components |
-| Testing Level | Full TDD / Essential / Smoke | All test phases |
+| Brand Guide    | Use .claude/BRAND_GUIDE.md / Custom | All components       |
+| Testing Level  | Full TDD / Essential / Smoke        | All test phases      |
 
 ### How Sharing Works
 
@@ -252,6 +252,7 @@ Three hooks manage orchestration state across sub-workflows:
 **Purpose:** Inject build context at session start
 
 When a session starts with an active build:
+
 - Injects current progress (X/Y workflows complete)
 - Shows active workflow name
 - Lists remaining workflows
@@ -263,6 +264,7 @@ When a session starts with an active build:
 **Purpose:** Pass shared decisions to sub-workflows
 
 When a workflow skill is invoked:
+
 - Checks if build is in progress
 - Injects `shared_decisions` into `api-dev-state.json`
 - Marks workflow as `orchestrated: true`
@@ -275,6 +277,7 @@ When a workflow skill is invoked:
 **Purpose:** Track progress and trigger next workflow
 
 When a workflow skill completes:
+
 - Marks workflow as complete
 - Finds next pending workflow with satisfied dependencies
 - Updates active workflow
@@ -314,16 +317,28 @@ When a workflow skill completes:
 
   "decomposition": {
     "apis": [
-      {"name": "weather-current", "status": "complete", "depends_on": []},
-      {"name": "weather-forecast", "status": "in_progress", "depends_on": []}
+      { "name": "weather-current", "status": "complete", "depends_on": [] },
+      { "name": "weather-forecast", "status": "in_progress", "depends_on": [] }
     ],
     "components": [
-      {"name": "CurrentWeather", "status": "pending", "depends_on": ["weather-current"]},
-      {"name": "ForecastChart", "status": "pending", "depends_on": ["weather-forecast"]}
+      {
+        "name": "CurrentWeather",
+        "status": "pending",
+        "depends_on": ["weather-current"]
+      },
+      {
+        "name": "ForecastChart",
+        "status": "pending",
+        "depends_on": ["weather-forecast"]
+      }
     ],
     "combined_apis": [],
     "pages": [
-      {"name": "WeatherDashboard", "status": "pending", "depends_on": ["CurrentWeather", "ForecastChart"]}
+      {
+        "name": "WeatherDashboard",
+        "status": "pending",
+        "depends_on": ["CurrentWeather", "ForecastChart"]
+      }
     ]
   },
 
@@ -342,7 +357,11 @@ When a workflow skill completes:
   },
 
   "completed_sub_workflows": [
-    {"type": "api", "name": "weather-current", "completed_at": "2025-12-29T10:25:00Z"}
+    {
+      "type": "api",
+      "name": "weather-current",
+      "completed_at": "2025-12-29T10:25:00Z"
+    }
   ]
 }
 ```
@@ -362,8 +381,12 @@ When a workflow skill completes:
     }
   ],
   "events": [
-    {"type": "decomposition_approved", "timestamp": "..."},
-    {"type": "workflow_complete", "name": "weather-current", "timestamp": "..."}
+    { "type": "decomposition_approved", "timestamp": "..." },
+    {
+      "type": "workflow_complete",
+      "name": "weather-current",
+      "timestamp": "..."
+    }
   ]
 }
 ```
@@ -375,6 +398,7 @@ When a workflow skill completes:
 ### Automatic Retry
 
 When a workflow fails:
+
 1. Retry up to 3 times with exponential backoff
 2. If still failing, mark as `failed`
 3. Continue with non-dependent workflows
@@ -391,6 +415,7 @@ ls .claude/workflow-logs/
 ```
 
 Resume behavior:
+
 1. Loads state from `.claude/hustle-build-state.json`
 2. Finds last incomplete workflow
 3. Continues from that point
@@ -399,6 +424,7 @@ Resume behavior:
 ### Manual Recovery
 
 If automatic retry fails:
+
 1. Fix the underlying issue (missing API key, syntax error, etc.)
 2. Run `/hustle-build --resume [build-id]`
 3. Orchestrator continues from failed workflow
@@ -409,22 +435,22 @@ If automatic retry fails:
 
 ### Related Skills
 
-| Skill | Relationship |
-|-------|-------------|
-| `/api-create` | Invoked for each API workflow |
-| `/hustle-ui-create` | Invoked for each component workflow |
-| `/hustle-ui-create-page` | Invoked for each page workflow |
-| `/hustle-combine` | Invoked for combined API workflows |
-| `/hustle-build-review` | Review build decisions and results |
+| Skill                    | Relationship                        |
+| ------------------------ | ----------------------------------- |
+| `/api-create`            | Invoked for each API workflow       |
+| `/hustle-ui-create`      | Invoked for each component workflow |
+| `/hustle-ui-create-page` | Invoked for each page workflow      |
+| `/hustle-combine`        | Invoked for combined API workflows  |
+| `/hustle-build-review`   | Review build decisions and results  |
 
 ### Related State Files
 
-| File | Purpose |
-|------|---------|
-| `.claude/hustle-build-state.json` | Orchestration state |
-| `.claude/api-dev-state.json` | Sub-workflow state |
-| `.claude/registry.json` | Completed elements registry |
-| `.claude/hustle-build-defaults.json` | Auto mode defaults |
+| File                                 | Purpose                     |
+| ------------------------------------ | --------------------------- |
+| `.claude/hustle-build-state.json`    | Orchestration state         |
+| `.claude/api-dev-state.json`         | Sub-workflow state          |
+| `.claude/registry.json`              | Completed elements registry |
+| `.claude/hustle-build-defaults.json` | Auto mode defaults          |
 
 ---
 

@@ -182,7 +182,8 @@ export default function HustleDevDashboard() {
             />
           </div>
           <p className="mt-4 text-xs text-gray-500 dark:text-gray-400">
-            Most commands run automatically during workflows. Manual items require server startup.
+            Most commands run automatically during workflows. Manual items
+            require server startup.
           </p>
         </div>
       </main>
@@ -273,15 +274,11 @@ function DashboardLink({
         <div>
           <p
             className={`font-medium ${
-              primary
-                ? "text-[#BA0C2F]"
-                : "text-black dark:text-white"
+              primary ? "text-[#BA0C2F]" : "text-black dark:text-white"
             }`}
           >
             {title}
-            {external && (
-              <span className="ml-1 text-xs text-gray-400">↗</span>
-            )}
+            {external && <span className="ml-1 text-xs text-gray-400">↗</span>}
           </p>
           <p className="text-xs text-gray-600 dark:text-gray-400">
             {description}

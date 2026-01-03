@@ -50,6 +50,7 @@ When `--auto` flag is used:
    - Review with `/api-create-review [workflow-id]`
 
 **Example:**
+
 ```bash
 /api-create brandfetch --auto
 ```
@@ -66,6 +67,7 @@ When `--resume [workflow-id]` is used:
 4. Preserve all previous decisions
 
 **Example:**
+
 ```bash
 /api-create --resume wf-brandfetch-2025-12-28
 ```
@@ -82,6 +84,7 @@ When running as part of `/hustle-build`:
 4. Only workflow-specific questions are asked
 
 Check for orchestration at startup:
+
 ```python
 if state.get("orchestrated"):
     # Skip questions in shared_decisions_applied

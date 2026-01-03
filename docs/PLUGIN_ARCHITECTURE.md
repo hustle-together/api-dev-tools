@@ -31,14 +31,14 @@ Hustle API Dev Tools is a **plugin/extension** for AI coding assistants that enf
 
 ### What It Provides
 
-| Component | Purpose |
-|-----------|---------|
-| **Skills** | Slash commands (`/api-create`, `/red`, `/commit`) |
-| **Hooks** | Lifecycle enforcement (block writes until research done) |
-| **Agents** | Specialized sub-processors (parallel-researcher, schema-generator) |
-| **Templates** | UI components, pages, configs |
-| **Scripts** | Programmatic manifest generation |
-| **State** | Persistent workflow tracking |
+| Component     | Purpose                                                            |
+| ------------- | ------------------------------------------------------------------ |
+| **Skills**    | Slash commands (`/api-create`, `/red`, `/commit`)                  |
+| **Hooks**     | Lifecycle enforcement (block writes until research done)           |
+| **Agents**    | Specialized sub-processors (parallel-researcher, schema-generator) |
+| **Templates** | UI components, pages, configs                                      |
+| **Scripts**   | Programmatic manifest generation                                   |
+| **State**     | Persistent workflow tracking                                       |
 
 ### How It Works
 
@@ -185,6 +185,7 @@ Skills are markdown files that define slash commands.
 **Location:** `.claude/commands/` or `commands/`
 
 **Format:**
+
 ```markdown
 ---
 name: skill-name
@@ -207,6 +208,7 @@ Hooks are Python scripts that run at lifecycle events.
 **Location:** `hooks/`
 
 **Events:**
+
 - `SessionStart` - Session begins
 - `UserPromptSubmit` - User sends message
 - `PreToolUse` - Before tool executes (can block)
@@ -214,6 +216,7 @@ Hooks are Python scripts that run at lifecycle events.
 - `Stop` - Session ends
 
 **Registration (settings.json):**
+
 ```json
 {
   "hooks": {
@@ -239,6 +242,7 @@ Agents are sub-Claude instances for specific tasks.
 **Location:** `.claude/agents/`
 
 **Format:**
+
 ```markdown
 ---
 name: agent-name
@@ -259,6 +263,7 @@ State persists across sessions.
 **Location:** `.claude/api-dev-state.json`
 
 **Structure:**
+
 ```json
 {
   "version": "3.12.12",
@@ -284,6 +289,7 @@ Research findings are cached for freshness tracking.
 **Location:** `.claude/research/`
 
 **Structure:**
+
 ```
 .claude/research/
 ├── index.json           # Freshness tracking
@@ -299,6 +305,7 @@ Pre-built UI components and pages.
 **Location:** `templates/`
 
 Includes:
+
 - API Showcase (interactive API testing)
 - UI Showcase (component gallery)
 - Dashboard (dev tools hub)
@@ -320,6 +327,7 @@ npx @hustle-together/api-dev-tools
 ```
 
 The wizard:
+
 1. Copies hooks to `hooks/`
 2. Creates `.claude/settings.json`
 3. Installs skills to `.claude/commands/`
@@ -358,11 +366,15 @@ cd api-dev-tools
 
 ```typescript
 interface APIDevState {
-  version: string;                    // Plugin version
-  workflow: "api-create" | "ui-create-component" | "ui-create-page" | "combine-api";
-  active_endpoint?: string;           // Current endpoint being developed
-  active_element?: string;            // Current UI element
-  turn_count: number;                 // Turns since last re-ground
+  version: string; // Plugin version
+  workflow:
+    | "api-create"
+    | "ui-create-component"
+    | "ui-create-page"
+    | "combine-api";
+  active_endpoint?: string; // Current endpoint being developed
+  active_element?: string; // Current UI element
+  turn_count: number; // Turns since last re-ground
 
   endpoints: {
     [name: string]: {
@@ -371,20 +383,22 @@ interface APIDevState {
           status: "not_started" | "in_progress" | "complete";
           started_at?: string;
           completed_at?: string;
-          sources?: string[];         // Research sources
-          decisions?: object;         // Interview decisions
-        }
-      }
-    }
+          sources?: string[]; // Research sources
+          decisions?: object; // Interview decisions
+        };
+      };
+    };
   };
 
-  combine_config?: {                  // For combined APIs
+  combine_config?: {
+    // For combined APIs
     source_elements: string[];
     flow_type: "sequential" | "parallel";
     error_strategy: "fail-fast" | "continue";
   };
 
-  ui_config?: {                       // For UI workflows
+  ui_config?: {
+    // For UI workflows
     mode: "component" | "page";
     use_brand_guide: boolean;
     component_type?: string;
@@ -472,12 +486,12 @@ interface APIDevState {
 
 ### Partial Support (Other Platforms)
 
-| Platform | Skills | Hooks | Agents | State |
-|----------|--------|-------|--------|-------|
-| VS Code + Copilot | Yes | Manual | No | Manual |
-| Cursor | Yes | Manual | No | Manual |
-| ChatGPT | Yes | No | No | No |
-| Other Agent Skills | Yes | Varies | Varies | Varies |
+| Platform           | Skills | Hooks  | Agents | State  |
+| ------------------ | ------ | ------ | ------ | ------ |
+| VS Code + Copilot  | Yes    | Manual | No     | Manual |
+| Cursor             | Yes    | Manual | No     | Manual |
+| ChatGPT            | Yes    | No     | No     | No     |
+| Other Agent Skills | Yes    | Varies | Varies | Varies |
 
 ### Minimal Installation (Skills Only)
 
@@ -529,10 +543,11 @@ This project uses @hustle-together/api-dev-tools...
 
 ### Available Commands
 
-| Command | Purpose |
-|---------|---------|
-| `/api-create` | Full workflow |
-| `/red` | Write failing test |
+| Command       | Purpose            |
+| ------------- | ------------------ |
+| `/api-create` | Full workflow      |
+| `/red`        | Write failing test |
+
 ...
 ```
 

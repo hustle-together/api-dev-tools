@@ -28,6 +28,7 @@ Ensures documentation stays in sync with code changes. Run after implementing fe
 ### 1. Analyze Recent Changes
 
 First, examine what changed:
+
 - Read git diff or recent file modifications
 - Identify new hooks, skills, agents, or features
 - Detect removed or deprecated functionality
@@ -36,14 +37,14 @@ First, examine what changed:
 
 For each affected area, update the relevant doc:
 
-| Change Type | Doc to Update |
-|-------------|---------------|
-| New hook | `docs/HOOKS.md` |
-| New skill | `docs/SKILLS.md` |
-| New agent | `docs/AGENTS.md` |
-| Orchestrator change | `docs/ORCHESTRATOR.md` |
-| Re-grounding change | `docs/REGROUNDING.md` |
-| Gap fixed | `docs/GAP_ANALYSIS.md` |
+| Change Type         | Doc to Update                        |
+| ------------------- | ------------------------------------ |
+| New hook            | `docs/HOOKS.md`                      |
+| New skill           | `docs/SKILLS.md`                     |
+| New agent           | `docs/AGENTS.md`                     |
+| Orchestrator change | `docs/ORCHESTRATOR.md`               |
+| Re-grounding change | `docs/REGROUNDING.md`                |
+| Gap fixed           | `docs/GAP_ANALYSIS.md`               |
 | Best practice added | `docs/CLAUDE_CODE_BEST_PRACTICES.md` |
 
 ### 3. Create New Documentation
@@ -82,8 +83,8 @@ Add any new docs to the appropriate section in README.md:
 ```markdown
 ### Core Reference
 
-| Document | Purpose |
-| -------- | ------- |
+| Document                                 | Purpose           |
+| ---------------------------------------- | ----------------- |
 | **[docs/NEW_DOC.md](./docs/NEW_DOC.md)** | Brief description |
 ```
 
@@ -102,16 +103,19 @@ Use this exact format for all documentation:
 > **The Problem**
 >
 > [Describe the specific pain point, frustration, or gap this addresses.
-> Be concrete - what goes wrong without this? What do users struggle with?]
+>
+> > Be concrete - what goes wrong without this? What do users struggle with?]
 
 > **The Solution**
 >
 > [Explain how this document/feature solves the problem.
-> What improvements does it provide? What's the benefit?]
+>
+> > What improvements does it provide? What's the benefit?]
 
 ---
 
 ## Table of Contents
+
 ...
 ```
 
@@ -131,6 +135,7 @@ ls -la docs/
 ```
 
 Look for:
+
 - New `.py` files in `hooks/`
 - New folders in `.skills/`
 - New `.md` files in `.claude/agents/`
@@ -144,14 +149,17 @@ Create a checklist:
 ## Documentation Updates Needed
 
 ### Existing Docs to Update
+
 - [ ] docs/HOOKS.md - Add [hook name]
 - [ ] docs/SKILLS.md - Add [skill name]
 - [ ] docs/GAP_ANALYSIS.md - Mark [gap] as fixed
 
 ### New Docs to Create
+
 - [ ] docs/[FEATURE].md - New feature documentation
 
 ### README Updates
+
 - [ ] Add link to [new doc]
 ```
 
@@ -177,6 +185,7 @@ For genuinely new features that need their own doc:
 ### Step 5: Verify Links
 
 Check all links work:
+
 - Internal doc links (`[text](./OTHER_DOC.md)`)
 - README links to docs
 - See Also sections
@@ -245,16 +254,20 @@ After running this skill, report:
 ## Documentation Sync Complete
 
 ### Updated
+
 - docs/HOOKS.md - Added auto-format hook
 - docs/GAP_ANALYSIS.md - Marked 3 gaps as fixed
 
 ### Created
+
 - docs/NEW_FEATURE.md - New feature documentation
 
 ### README
+
 - Added link to NEW_FEATURE.md
 
 ### Headers Added
+
 - docs/SKILLS.md - Added Problem/Solution header
 - docs/AGENTS.md - Added Problem/Solution header
 ```

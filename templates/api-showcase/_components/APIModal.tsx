@@ -70,7 +70,9 @@ export function APIModal({ id, type, data, onClose }: APIModalProps) {
     "try-it",
   );
   const [selectedEndpoint, setSelectedEndpoint] = useState<string | null>(null);
-  const [submitRequest, setSubmitRequest] = useState<(() => Promise<void>) | null>(null);
+  const [submitRequest, setSubmitRequest] = useState<
+    (() => Promise<void>) | null
+  >(null);
   const [isLoading, setIsLoading] = useState(false);
 
   // Close on Escape key
@@ -113,8 +115,7 @@ export function APIModal({ id, type, data, onClose }: APIModalProps) {
   // Handle both methods array and single method string
   const methods = currentEndpoint?.methods ||
     (currentEndpoint?.method ? [currentEndpoint.method] : null) ||
-    data.methods ||
-    ["POST"];
+    data.methods || ["POST"];
   const baseUrl =
     typeof window !== "undefined"
       ? window.location.origin
@@ -124,7 +125,9 @@ export function APIModal({ id, type, data, onClose }: APIModalProps) {
   // Actions are passed as query parameters, not sub-paths
   const getEndpointPath = () => {
     // Check if this API uses action-based routing (has params with action)
-    const hasActionParam = currentEndpoint?.params?.some(p => p.name === "action");
+    const hasActionParam = currentEndpoint?.params?.some(
+      (p) => p.name === "action",
+    );
     if (hasActionParam) {
       // Action-based APIs use query params, not path segments
       return `/api/v2/${id}`;
@@ -323,9 +326,15 @@ export function APIModal({ id, type, data, onClose }: APIModalProps) {
               methods={methods}
               selectedEndpoint={selectedEndpoint}
               schemaPath={data.schemas}
-              endpointParams={data.endpoints?.[selectedEndpoint || "default"]?.params || data.endpoints?.[Object.keys(data.endpoints || {})[0]]?.params}
+              endpointParams={
+                data.endpoints?.[selectedEndpoint || "default"]?.params ||
+                data.endpoints?.[Object.keys(data.endpoints || {})[0]]?.params
+              }
               apiRoute={data.routeFile || data.route}
-              examples={data.endpoints?.[selectedEndpoint || "default"]?.examples || data.endpoints?.[Object.keys(data.endpoints || {})[0]]?.examples}
+              examples={
+                data.endpoints?.[selectedEndpoint || "default"]?.examples ||
+                data.endpoints?.[Object.keys(data.endpoints || {})[0]]?.examples
+              }
               onSubmitRef={(fn) => setSubmitRequest(() => fn)}
               onLoadingChange={setIsLoading}
             />

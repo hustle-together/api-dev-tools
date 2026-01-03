@@ -5,6 +5,7 @@ This project uses **@hustle-together/api-dev-tools** for interview-driven, resea
 ### Project Context
 
 <!-- INSTALLER: Replace these with actual project values -->
+
 **Tech Stack:** [Framework] + [Language] + [Database]
 **UI Library:** [UI framework or component library]
 **Testing:** [Test framework] + [E2E framework]
@@ -12,24 +13,25 @@ This project uses **@hustle-together/api-dev-tools** for interview-driven, resea
 ### Existing Elements
 
 <!-- AUTO-POPULATED: Updated by registry hooks -->
+
 **APIs:** (check `.claude/registry.json`)
 **Components:** (check `.claude/registry.json`)
 **Pages:** (check `.claude/registry.json`)
 
 ### Available Commands
 
-| Command                            | Purpose                               |
-| ---------------------------------- | ------------------------------------- |
-| `/hustle-build [description]`      | Orchestrated multi-workflow build     |
-| `/api-create [endpoint]`           | Complete 14-phase API workflow        |
-| `/hustle-ui-create [component]`    | Component with Storybook              |
-| `/hustle-ui-create-page [page]`    | Page with Playwright E2E             |
-| `/hustle-combine [name]`           | Combine multiple APIs                 |
-| `/api-research [library]`          | Adaptive propose-approve research     |
-| `/api-interview [endpoint]`        | Questions FROM research findings      |
-| `/api-verify [endpoint]`           | Re-research and verify implementation |
-| `/api-env [endpoint]`              | Check API keys                        |
-| `/api-status [endpoint]`           | Track progress                        |
+| Command                         | Purpose                               |
+| ------------------------------- | ------------------------------------- |
+| `/hustle-build [description]`   | Orchestrated multi-workflow build     |
+| `/api-create [endpoint]`        | Complete 14-phase API workflow        |
+| `/hustle-ui-create [component]` | Component with Storybook              |
+| `/hustle-ui-create-page [page]` | Page with Playwright E2E              |
+| `/hustle-combine [name]`        | Combine multiple APIs                 |
+| `/api-research [library]`       | Adaptive propose-approve research     |
+| `/api-interview [endpoint]`     | Questions FROM research findings      |
+| `/api-verify [endpoint]`        | Re-research and verify implementation |
+| `/api-env [endpoint]`           | Check API keys                        |
+| `/api-status [endpoint]`        | Track progress                        |
 
 ### 14-Phase Flow
 
@@ -114,13 +116,13 @@ If `.claude/BRAND_GUIDE.md` exists:
 
 ### Hooks (45+ Automatic Enforcement)
 
-| Category | Hooks | Purpose |
-| -------- | ----- | ------- |
-| SessionStart | 4 | Inject state, detect interruptions, check updates |
-| UserPromptSubmit | 1 | Require research before API questions |
-| PreToolUse | 22 | Phase enforcement, schema validation |
-| PostToolUse | 12 | Tracking, re-grounding, registry updates |
-| Stop | 2 | Workflow completion, session logging |
+| Category         | Hooks | Purpose                                           |
+| ---------------- | ----- | ------------------------------------------------- |
+| SessionStart     | 4     | Inject state, detect interruptions, check updates |
+| UserPromptSubmit | 1     | Require research before API questions             |
+| PreToolUse       | 22    | Phase enforcement, schema validation              |
+| PostToolUse      | 12    | Tracking, re-grounding, registry updates          |
+| Stop             | 2     | Workflow completion, session logging              |
 
 ### Usage
 

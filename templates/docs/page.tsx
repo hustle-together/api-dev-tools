@@ -89,7 +89,11 @@ function DocsContent() {
           Documentation has been generated. Browse the API reference:
         </p>
         <div className="space-y-2">
-          <DocLink href="/docs/api" title="API Reference" description="Full API documentation" />
+          <DocLink
+            href="/docs/api"
+            title="API Reference"
+            description="Full API documentation"
+          />
         </div>
       </div>
 
