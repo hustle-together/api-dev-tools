@@ -1,112 +1,39 @@
 {
+  "model": "claude-sonnet-4-20250514",
   "permissions": {
     "allow": [
+      "Bash(npm *)",
+      "Bash(pnpm *)",
+      "Bash(git *)",
+      "Bash(npx prettier:*)",
+      "Bash(claude mcp:*)",
+      "Bash(ccusage:*)",
+      "Bash(curl:*)",
+      "Read",
+      "Task",
       "WebSearch",
       "WebFetch",
       "mcp__context7",
       "mcp__context7__resolve-library-id",
       "mcp__context7__get-library-docs",
       "mcp__github",
-      "mcp__playwright__*",
-      "Bash(claude mcp:*)",
-      "Bash(pnpm test:*)",
-      "Bash(npm test:*)",
-      "Bash(pnpm lint:*)",
-      "Bash(pnpm format:*)",
-      "Bash(pnpm typedoc:*)",
-      "Bash(git status:*)",
-      "Bash(git diff:*)",
-      "Bash(git log:*)",
-      "Bash(ccusage:*)",
-      "Bash(curl:*)"
+      "mcp__playwright__*"
     ],
-    "deny": ["Read(./.env*)", "Bash(rm -rf:*)"]
+    "deny": ["Read(./.env*)", "Read(./secrets/**)", "Bash(rm -rf:*)"],
+    "defaultMode": "default"
   },
   "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/hooks/session-startup.py"
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/hooks/enforce-external-research.py"
-          }
-        ]
-      }
-    ],
     "PreToolUse": [
       {
-        "matcher": "Write|Edit",
+        "matcher": "Edit|Write|MultiEdit",
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/hooks/enforce-research.py"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/research-gate.py"
           },
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/hooks/enforce-interview.py"
-          },
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/hooks/verify-implementation.py"
-          },
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/hooks/enforce-component-type-confirm.py"
-          }
-        ]
-      },
-      {
-        "matcher": "AskUserQuestion",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/hooks/notify-input-needed.py"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "prettier --write \"$CLAUDE_FILE_PATHS\" 2>/dev/null || true"
-          },
-          {
-            "type": "command",
-            "command": "eslint --fix \"$CLAUDE_FILE_PATHS\" 2>/dev/null || true"
-          },
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/hooks/notify-phase-complete.py"
-          },
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/hooks/track-token-usage.py"
-          }
-        ]
-      },
-      {
-        "matcher": "WebSearch|WebFetch|mcp__context7.*|AskUserQuestion",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/hooks/track-tool-use.py"
-          },
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/hooks/periodic-reground.py"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/tdd-gate.py"
           }
         ]
       },
@@ -115,17 +42,26 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/hooks/verify-after-green.py"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/validate-bash.py"
           }
         ]
       }
     ],
-    "Notification": [
+    "PostToolUse": [
       {
+        "matcher": "Edit|Write|MultiEdit",
         "hooks": [
           {
             "type": "command",
-            "command": "echo \"Claude Code: $CLAUDE_NOTIFICATION\" | head -c 100"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/format.py"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/registry-manager.py"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/visual-qa-hook.py"
           }
         ]
       }
@@ -135,7 +71,41 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/hooks/api-workflow-check.py"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/verify-gate.py"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/ralph-loop.py"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/subagent-verify.py"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-manager.py"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "notify-send 'Devkit' 'Awaiting input'"
           }
         ]
       }

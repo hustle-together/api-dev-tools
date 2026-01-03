@@ -38,12 +38,14 @@
 ## 10-Phase Workflow
 
 ### Phase 1: Document Intake & Parsing
+
 - Prompts for project document (PRD, spec, requirements)
 - Parses document to extract pages, components, APIs
 - Builds dependency graph
 - User approves decomposition
 
 ### Phase 2: Decomposition
+
 - Analyzes request to identify:
   - **APIs** needed (Tier 1 - no dependencies)
   - **Components** needed (Tier 2 - depend on APIs)
@@ -51,6 +53,7 @@
 - Determines execution order based on dependencies
 
 ### Phase 3: Orchestrator Interview
+
 - Single interview for shared decisions:
   - Authentication method
   - Error handling strategy
@@ -59,6 +62,7 @@
 - Answers propagate to ALL sub-workflows
 
 ### Phases 4-6: Sub-Workflow Execution
+
 - Executes each workflow with injected context
 - Uses `/api-create` for APIs
 - Uses `/hustle-ui-create` for components
@@ -66,21 +70,25 @@
 - Ralph Wiggum loops ensure quality
 
 ### Phase 7: Integration & Wiring
+
 - Connects components to API data
 - Wires up state management
 - Creates data flow patterns
 
 ### Phase 8: Unified Testing
+
 - Runs full test suite across all created elements
 - Integration tests for API → Component → Page flow
 - Visual regression tests
 
 ### Phase 9: Documentation
+
 - Updates registry with all new elements
 - Generates API documentation
 - Creates component Storybook stories
 
 ### Phase 10: Completion
+
 - Final verification
 - Commits all changes
 - Summary of created elements
@@ -151,12 +159,12 @@ When `--parallel` flag is used:
 
 Each quality gate loops until passing:
 
-| Phase | Loop Until | Promise Signal |
-|-------|-----------|----------------|
-| TDD Green | All tests pass | `<promise>TESTS_PASSING</promise>` |
-| Code Review | Greptile clean | `<promise>REVIEW_CLEAN</promise>` |
-| Visual QA | Haiku approves | `<promise>VISUAL_CLEAN</promise>` |
-| Verification | Docs match code | `<promise>VERIFIED</promise>` |
+| Phase        | Loop Until      | Promise Signal                     |
+| ------------ | --------------- | ---------------------------------- |
+| TDD Green    | All tests pass  | `<promise>TESTS_PASSING</promise>` |
+| Code Review  | Greptile clean  | `<promise>REVIEW_CLEAN</promise>`  |
+| Visual QA    | Haiku approves  | `<promise>VISUAL_CLEAN</promise>`  |
+| Verification | Docs match code | `<promise>VERIFIED</promise>`      |
 
 ---
 
@@ -198,6 +206,7 @@ python hooks/remote-question-server.py
 Access at `http://localhost:8765` or `http://YOUR_COMPUTER_IP:8765` on same network.
 
 Features:
+
 - Real-time phase progress
 - Answer questions remotely
 - Browser notifications for new questions
@@ -208,11 +217,13 @@ Features:
 ## Examples
 
 ### Example 1: Weather Dashboard
+
 ```
 /hustle-build weather dashboard with city search, current conditions, and 5-day forecast
 ```
 
 Creates:
+
 - `weather-geocoding` API (Open-Meteo)
 - `weather-forecast` API (Open-Meteo)
 - `SearchBar` component
@@ -221,11 +232,13 @@ Creates:
 - `WeatherDashboard` page
 
 ### Example 2: E-commerce Checkout
+
 ```
 /hustle-build --auto checkout flow with cart summary, payment form, and order confirmation
 ```
 
 Creates:
+
 - `cart` API
 - `payments` API (Stripe)
 - `orders` API
@@ -235,11 +248,13 @@ Creates:
 - `CheckoutPage` page
 
 ### Example 3: User Dashboard
+
 ```
 /hustle-build --parallel user dashboard with profile, stats, activity feed, and settings
 ```
 
 Creates (in parallel):
+
 - `user-profile` API
 - `user-stats` API
 - `activity-feed` API

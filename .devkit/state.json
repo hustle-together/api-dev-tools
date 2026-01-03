@@ -1,0 +1,33 @@
+{
+  "version": "1.0.0",
+  "workflowId": "devkit-init-001",
+  "createdAt": "2026-01-03T20:00:00Z",
+  "updatedAt": "2026-01-03T20:00:00Z",
+  "status": "initialized",
+  "progress": {
+    "currentPhase": "setup",
+    "completedSteps": 0,
+    "totalSteps": 14
+  },
+  "phases": {
+    "research": { "complete": false },
+    "interview": { "complete": false },
+    "schema": { "complete": false },
+    "tdd-red": { "complete": false },
+    "tdd-green": { "complete": false },
+    "tdd-refactor": { "complete": false },
+    "integration": { "complete": false },
+    "visual-test": { "complete": false },
+    "code-review": { "complete": false },
+    "docs": { "complete": false },
+    "registry-update": { "complete": false },
+    "verification": { "complete": false },
+    "commit-prep": { "complete": false },
+    "completion": { "complete": false }
+  },
+  "checkpoints": [],
+  "research": {
+    "cache": {}
+  },
+  "subagent_outputs": {}
+}
