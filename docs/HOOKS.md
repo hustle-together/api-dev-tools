@@ -20,6 +20,8 @@
 - [Complete Hook Reference](#complete-hook-reference)
 - [Configuration](#configuration)
 - [Writing Custom Hooks](#writing-custom-hooks)
+- [State Files](#state-files)
+- [Testing Hooks](#testing-hooks)
 
 ---
 
@@ -508,6 +510,165 @@ def main():
 
 if __name__ == "__main__":
     main()
+```
+
+---
+
+## State Files
+
+Hooks read from and write to state files in `.devkit/`:
+
+### state.json
+
+Ephemeral workflow state tracking current session progress:
+
+```json
+{
+  "version": "1.0.0",
+  "status": "in_progress",
+  "progress": {
+    "currentPhase": "tdd-green",
+    "currentPhaseName": "TDD Green",
+    "completedSteps": 8,
+    "totalSteps": 14
+  },
+  "phases": {
+    "research": { "complete": true, "cacheKey": "stripe-2024-01" },
+    "interview": { "complete": true, "answers": { "errorHandling": "retry-with-backoff" } },
+    "schema": { "complete": true },
+    "tdd-red": { "complete": true },
+    "tdd-green": { "complete": false },
+    "verify": { "complete": false },
+    "docs": { "complete": false }
+  },
+  "metrics": {
+    "turnCount": 15,
+    "researchQueries": 8,
+    "testsWritten": 5,
+    "filesCreated": 12
+  },
+  "updatedAt": "2024-01-15T10:30:00Z"
+}
+```
+
+### registry.json
+
+Persistent artifact registry across sessions:
+
+```json
+{
+  "artifacts": {
+    "apis": [
+      { "name": "stripe-checkout", "path": "src/app/api/stripe/route.ts", "checksum": "abc123" }
+    ],
+    "components": [],
+    "pages": []
+  },
+  "patterns": {},
+  "adrs": []
+}
+```
+
+### How Hooks Use State
+
+| Hook | Reads | Writes |
+|------|-------|--------|
+| `research-gate.py` | `phases.research.complete` | - |
+| `interview-gate.py` | `phases.interview.complete` | - |
+| `state-manager.py` | All state | `metrics`, `updatedAt` |
+| `reground.py` | `phases`, `metrics.turnCount` | - |
+| `registry-manager.py` | - | `artifacts` |
+
+---
+
+## Testing Hooks
+
+A comprehensive pytest test suite is included for validating hook behavior.
+
+### Installation
+
+```bash
+pip install -r .claude/hooks/tests/requirements.txt
+```
+
+### Running Tests
+
+```bash
+# Run all tests
+python -m pytest .claude/hooks/tests/ -v
+
+# Run specific hook category
+python -m pytest .claude/hooks/tests/ -k gate -v
+python -m pytest .claude/hooks/tests/ -k state -v
+python -m pytest .claude/hooks/tests/ -k autonomous -v
+
+# Run with coverage report
+python .claude/hooks/tests/run_tests.py --coverage
+```
+
+### Test Structure
+
+```
+.claude/hooks/tests/
+├── conftest.py              # Test fixtures and HookRunner class
+├── requirements.txt         # pytest, pytest-cov
+├── run_tests.py             # Test runner script
+├── test_gate_hooks.py       # Gate hook tests (research, interview, schema, tdd, verify, docs)
+├── test_state_hooks.py      # State management tests (state-manager, session-manager, reground)
+├── test_quality_hooks.py    # Quality hook tests (format, code-review, visual-qa)
+├── test_autonomous_hooks.py # Autonomous hook tests (ralph-loop, auto-answer, notify)
+└── test_utility_hooks.py    # Utility hook tests (validate-bash, subagent-verify)
+```
+
+### HookRunner API
+
+The `HookRunner` class simulates Claude Code's hook invocation:
+
+```python
+from conftest import HookRunner
+
+# Create runner with temp project directory
+runner = HookRunner(hooks_dir, temp_project_dir)
+
+# Set workflow state
+runner.set_state({
+    "phases": {"research": {"complete": True}},
+    "metrics": {"turnCount": 5}
+})
+
+# Run a hook with mock input
+result = runner.run("research-gate.py", {
+    "tool_name": "Edit",
+    "tool_input": {"file_path": "src/api.ts"},
+    "cwd": "/project"
+})
+
+# Check result
+assert result.allowed      # Exit code 0
+assert result.blocked      # Exit code 2
+assert "research" in result.stderr.lower()
+```
+
+### Test Fixtures
+
+| Fixture | Purpose |
+|---------|---------|
+| `runner` | HookRunner instance with temp project |
+| `mock_pretool_input` | Factory for PreToolUse payloads |
+| `mock_posttool_input` | Factory for PostToolUse payloads |
+| `mock_stop_input` | Factory for Stop event payloads |
+| `complete_state` | State with all phases complete |
+| `incomplete_state` | State with phases incomplete |
+
+### Writing New Tests
+
+```python
+def test_my_hook_blocks_without_research(self, runner, mock_pretool_input, incomplete_state):
+    """Should block when research not complete."""
+    runner.set_state(incomplete_state)
+    result = runner.run("my-hook.py", mock_pretool_input("Edit"))
+    assert result.blocked
+    assert "expected message" in result.stderr.lower()
 ```
 
 ---

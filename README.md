@@ -308,10 +308,31 @@ Configuration: `typedoc.json` (installed by the CLI)
 | File                         | Purpose                                      |
 | ---------------------------- | -------------------------------------------- |
 | `.claude/settings.json`      | Hook registration, tool permissions          |
-| `.claude/api-dev-state.json` | Current workflow state, phase progress       |
+| `.devkit/state.json`         | Current workflow state, phase progress       |
+| `.devkit/registry.json`      | All created APIs, components, pages          |
 | `.claude/research/`          | Cached documentation with freshness tracking |
-| `.claude/registry.json`      | All created APIs, components, pages          |
 | `templates/.env.example`     | Environment variable template                |
+
+---
+
+## Testing Hooks
+
+All hooks include a comprehensive pytest test suite (52 tests):
+
+```bash
+# Install test dependencies
+pip install -r .claude/hooks/tests/requirements.txt
+
+# Run all tests
+python -m pytest .claude/hooks/tests/ -v
+
+# Run specific categories
+python -m pytest .claude/hooks/tests/ -k gate      # Gate hooks
+python -m pytest .claude/hooks/tests/ -k state     # State management
+python -m pytest .claude/hooks/tests/ -k autonomous # Ralph loop, auto-answer
+```
+
+See [docs/HOOKS.md#testing-hooks](./docs/HOOKS.md#testing-hooks) for test framework details.
 
 ---
 
