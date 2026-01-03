@@ -6,5 +6,7 @@
     "apis": [],
     "components": [],
     "pages": []
-  }
+  },
+  "patterns": {},
+  "adrs": []
 }

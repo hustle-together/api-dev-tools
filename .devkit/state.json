@@ -6,28 +6,36 @@
   "status": "initialized",
   "progress": {
     "currentPhase": "setup",
+    "currentPhaseName": "setup",
+    "completedPhases": [],
     "completedSteps": 0,
     "totalSteps": 14
   },
   "phases": {
+    "disambiguation": { "complete": false },
+    "scope": { "complete": false },
     "research": { "complete": false },
     "interview": { "complete": false },
+    "deep-research": { "complete": false },
     "schema": { "complete": false },
+    "environment": { "complete": false },
     "tdd-red": { "complete": false },
     "tdd-green": { "complete": false },
-    "tdd-refactor": { "complete": false },
-    "integration": { "complete": false },
-    "visual-test": { "complete": false },
+    "verify": { "complete": false },
     "code-review": { "complete": false },
+    "tdd-refactor": { "complete": false },
     "docs": { "complete": false },
-    "registry-update": { "complete": false },
-    "verification": { "complete": false },
-    "commit-prep": { "complete": false },
     "completion": { "complete": false }
   },
   "checkpoints": [],
   "research": {
     "cache": {}
   },
-  "subagent_outputs": {}
+  "subagent_outputs": {},
+  "metrics": {
+    "turnCount": 0,
+    "researchQueries": 0,
+    "testsWritten": 0,
+    "filesCreated": 0
+  }
 }
