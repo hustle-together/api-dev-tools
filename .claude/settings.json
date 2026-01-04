@@ -91,6 +91,11 @@
           },
           {
             "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/registry-update.py",
+            "description": "Adds APIs/components/pages to registry.json"
+          },
+          {
+            "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/code-review.py",
             "description": "Queues files for AI code review"
           },
@@ -98,6 +103,11 @@
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/visual-qa.py",
             "description": "Queues UI files for visual testing"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/showcase-gen.py",
+            "description": "Regenerates showcase pages from registry"
           }
         ]
       }
@@ -129,6 +139,11 @@
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/capacity-warning.py",
             "description": "Warns at 50/75/90% context capacity"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/completion-links.py",
+            "description": "Shows dashboard and showcase links at workflow completion"
           }
         ]
       }
