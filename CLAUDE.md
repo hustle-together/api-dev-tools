@@ -8,7 +8,7 @@ This project provides a **hook-enforced, interview-driven development workflow**
 
 ```
 .claude/
-  hooks/           # 17 enforcement hooks (Python scripts)
+  hooks/           # 22 enforcement hooks (Python scripts)
   commands/        # Slash commands (/api-create, /test-hooks, etc.)
   subagents/       # 6 specialized agents (researcher, builder, reviewer, etc.)
   workflows/       # 5 orchestrated workflows

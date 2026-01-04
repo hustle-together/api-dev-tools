@@ -3,12 +3,16 @@
 Showcase Generation Hook
 
 Trigger: PostToolUse for Write (when registry.json is updated)
-Action: Regenerate showcase pages from templates
+Action: Copy showcase templates to user's project
 
-Generates:
+Templates include:
 - /hustle-dev-tools/page.tsx - Main dashboard
-- /hustle-dev-tools/api/page.tsx - API showcase
-- /hustle-dev-tools/ui/page.tsx - UI showcase
+- /hustle-dev-tools/api/ - Full interactive API showcase with APITester, APIModal
+- /hustle-dev-tools/ui/ - Full interactive UI showcase with Sandpack editor
+- /hustle-dev-tools/tests/ - Test results display
+- /hustle-dev-tools/visual-qa/ - Visual QA results
+
+Template components import from .devkit/registry.json dynamically.
 """
 
 import json
@@ -16,21 +20,42 @@ import sys
 import os
 import shutil
 from pathlib import Path
+from datetime import datetime
 
 def get_project_root():
     """Get the project root directory."""
     return os.environ.get("CLAUDE_PROJECT_DIR", os.getcwd())
 
+def get_devkit_root():
+    """Get the devkit installation directory (where templates are)."""
+    # First check if we're in the devkit repo itself
+    project_root = Path(get_project_root())
+    if (project_root / "templates" / "api-showcase").exists():
+        return project_root
+
+    # Check common installation locations
+    possible_locations = [
+        project_root / "node_modules" / "@hustle-together" / "api-dev-tools",
+        project_root / ".devkit" / "templates",
+        Path.home() / ".claude" / "api-dev-tools",
+    ]
+
+    for loc in possible_locations:
+        if (loc / "templates" / "api-showcase").exists():
+            return loc
+
+    # Fallback to project root
+    return project_root
+
 def get_template_dir():
     """Get the templates directory."""
-    return Path(get_project_root()) / "templates"
+    return get_devkit_root() / "templates"
 
 def get_target_dir():
     """Get the target directory for showcase pages."""
-    # Look for Next.js app directory
     project_root = Path(get_project_root())
 
-    # Try common locations
+    # Try common Next.js app directory locations
     for app_dir in ["app", "src/app"]:
         target = project_root / app_dir / "hustle-dev-tools"
         if (project_root / app_dir).exists():
@@ -49,43 +74,96 @@ def load_registry():
 
 def should_regenerate(registry: dict) -> bool:
     """Check if we should regenerate showcases."""
-    # Regenerate if there are any entries
     return bool(registry.get("apis") or registry.get("components") or registry.get("pages"))
 
-def copy_template(template_name: str, target_path: Path):
-    """Copy a template directory to target location."""
-    template_path = get_template_dir() / template_name
+def copy_template_tree(source: Path, target: Path, registry: dict):
+    """
+    Copy template directory to target, updating registry imports.
 
-    if not template_path.exists():
+    Templates import from '@/../.devkit/registry.json' which works
+    because Next.js resolves from the app directory.
+    """
+    if not source.exists():
+        print(f"Warning: Template source not found: {source}")
         return False
 
     # Create target directory
-    target_path.mkdir(parents=True, exist_ok=True)
+    target.mkdir(parents=True, exist_ok=True)
 
-    # Copy all files
-    if template_path.is_dir():
-        for item in template_path.iterdir():
-            if item.is_file():
-                shutil.copy2(item, target_path / item.name)
-            elif item.is_dir():
-                shutil.copytree(item, target_path / item.name, dirs_exist_ok=True)
+    # Copy all files and directories
+    for item in source.iterdir():
+        target_item = target / item.name
+
+        if item.is_file():
+            # Copy file
+            shutil.copy2(item, target_item)
+        elif item.is_dir():
+            # Recursively copy directory
+            shutil.copytree(item, target_item, dirs_exist_ok=True)
 
     return True
 
+def copy_shared_components(target_dir: Path):
+    """Copy shared components (HeroHeader, etc.) to showcase directories."""
+    template_dir = get_template_dir()
+    shared_source = template_dir / "shared"
+
+    if not shared_source.exists():
+        return
+
+    # Copy to API showcase
+    api_shared = target_dir / "api" / "_components" / "shared"
+    if (target_dir / "api" / "_components").exists():
+        api_shared.mkdir(parents=True, exist_ok=True)
+        for item in shared_source.iterdir():
+            if item.is_file():
+                shutil.copy2(item, api_shared / item.name)
+
+    # Copy to UI showcase
+    ui_shared = target_dir / "ui" / "_components" / "shared"
+    if (target_dir / "ui" / "_components").exists():
+        ui_shared.mkdir(parents=True, exist_ok=True)
+        for item in shared_source.iterdir():
+            if item.is_file():
+                shutil.copy2(item, ui_shared / item.name)
+
 def generate_dashboard(target_dir: Path, registry: dict):
-    """Generate the main dashboard page."""
+    """Generate the main dashboard page with dynamic counts."""
     api_count = len(registry.get("apis", {}))
     component_count = len(registry.get("components", {}))
     page_count = len(registry.get("pages", {}))
 
+    # Dashboard reads counts dynamically
     dashboard_content = f'''import Link from "next/link";
+import {{ readFileSync, existsSync }} from "fs";
+import {{ join }} from "path";
 
 export const metadata = {{
   title: "Hustle Dev Tools",
   description: "Developer dashboard for APIs, components, and pages",
 }};
 
+function getRegistryCounts() {{
+  try {{
+    const registryPath = join(process.cwd(), ".devkit", "registry.json");
+    if (existsSync(registryPath)) {{
+      const content = readFileSync(registryPath, "utf-8");
+      const registry = JSON.parse(content);
+      return {{
+        apis: Object.keys(registry.apis || {{}}).length,
+        components: Object.keys(registry.components || {{}}).length,
+        pages: Object.keys(registry.pages || {{}}).length,
+      }};
+    }}
+  }} catch (e) {{
+    console.error("Error reading registry:", e);
+  }}
+  return {{ apis: 0, components: 0, pages: 0 }};
+}}
+
 export default function HustleDevToolsPage() {{
+  const counts = getRegistryCounts();
+
   return (
     <div className="min-h-screen bg-gray-950 text-white p-8">
       <div className="max-w-6xl mx-auto">
@@ -99,7 +177,7 @@ export default function HustleDevToolsPage() {{
           >
             <h2 className="text-xl font-semibold mb-2">API Showcase</h2>
             <p className="text-gray-400 text-sm mb-4">Interactive API documentation and testing</p>
-            <span className="text-2xl font-bold text-[#BA0C2F]">{api_count}</span>
+            <span className="text-2xl font-bold text-[#BA0C2F]">{{counts.apis}}</span>
             <span className="text-gray-500 ml-2">endpoints</span>
           </Link>
 
@@ -109,7 +187,7 @@ export default function HustleDevToolsPage() {{
           >
             <h2 className="text-xl font-semibold mb-2">UI Showcase</h2>
             <p className="text-gray-400 text-sm mb-4">Component library with live preview</p>
-            <span className="text-2xl font-bold text-[#BA0C2F]">{component_count}</span>
+            <span className="text-2xl font-bold text-[#BA0C2F]">{{counts.components}}</span>
             <span className="text-gray-500 ml-2">components</span>
           </Link>
 
@@ -119,7 +197,7 @@ export default function HustleDevToolsPage() {{
           >
             <h2 className="text-xl font-semibold mb-2">Test Results</h2>
             <p className="text-gray-400 text-sm mb-4">Unit, E2E, and visual test results</p>
-            <span className="text-2xl font-bold text-[#BA0C2F]">{page_count}</span>
+            <span className="text-2xl font-bold text-[#BA0C2F]">{{counts.pages}}</span>
             <span className="text-gray-500 ml-2">pages</span>
           </Link>
         </div>
@@ -153,223 +231,58 @@ export default function HustleDevToolsPage() {{
     with open(target_dir / "page.tsx", "w") as f:
         f.write(dashboard_content)
 
-def generate_api_showcase(target_dir: Path, registry: dict):
-    """Generate the API showcase page."""
-    apis = registry.get("apis", {})
+def copy_api_showcase(target_dir: Path, registry: dict):
+    """Copy the full interactive API showcase templates."""
+    template_dir = get_template_dir()
+    api_source = template_dir / "api-showcase"
+    api_target = target_dir / "api"
 
-    # Generate API cards JSON
-    api_data = json.dumps(apis, indent=2)
+    if api_source.exists():
+        copy_template_tree(api_source, api_target, registry)
+        print(f"  Copied API showcase templates to {api_target}")
+    else:
+        print(f"  Warning: API showcase templates not found at {api_source}")
 
-    api_showcase_content = f'''import {{ Suspense }} from "react";
+def copy_ui_showcase(target_dir: Path, registry: dict):
+    """Copy the full interactive UI showcase templates."""
+    template_dir = get_template_dir()
+    ui_source = template_dir / "ui-showcase"
+    ui_target = target_dir / "ui"
 
-export const metadata = {{
-  title: "API Showcase | Hustle Dev Tools",
-  description: "Interactive API documentation and testing",
-}};
+    if ui_source.exists():
+        copy_template_tree(ui_source, ui_target, registry)
+        print(f"  Copied UI showcase templates to {ui_target}")
+    else:
+        print(f"  Warning: UI showcase templates not found at {ui_source}")
 
-const apiRegistry = {api_data};
+def copy_test_pages(target_dir: Path, registry: dict):
+    """Copy test result display templates."""
+    template_dir = get_template_dir()
 
-function APICard({{ name, api }}: {{ name: string; api: any }}) {{
-  return (
-    <div className="p-6 bg-gray-900 rounded-lg border border-gray-800 hover:border-[#BA0C2F] transition-colors">
-      <div className="flex items-center gap-2 mb-2">
-        {{api.methods?.map((method: string) => (
-          <span
-            key={{method}}
-            className={{`px-2 py-1 text-xs font-mono rounded ${{
-              method === "GET" ? "bg-green-900 text-green-300" :
-              method === "POST" ? "bg-blue-900 text-blue-300" :
-              method === "PUT" ? "bg-yellow-900 text-yellow-300" :
-              method === "DELETE" ? "bg-red-900 text-red-300" :
-              "bg-gray-800 text-gray-300"
-            }}`}}
-          >
-            {{method}}
-          </span>
-        ))}}
-      </div>
-      <h3 className="text-lg font-semibold text-white mb-1">{{name}}</h3>
-      <code className="text-sm text-gray-400 font-mono">{{api.route}}</code>
-      {{api.schema && (
-        <p className="text-xs text-gray-500 mt-2">Schema: {{api.schema}}</p>
-      )}}
-    </div>
-  );
-}}
+    # Test results page
+    test_source = template_dir / "test-results"
+    test_target = target_dir / "tests"
+    if test_source.exists():
+        copy_template_tree(test_source, test_target, registry)
 
-export default function APIShowcasePage() {{
-  const apis = Object.entries(apiRegistry);
+    # Playwright report page
+    playwright_source = template_dir / "playwright-report"
+    playwright_target = target_dir / "tests" / "playwright"
+    if playwright_source.exists():
+        copy_template_tree(playwright_source, playwright_target, registry)
 
-  return (
-    <div className="min-h-screen bg-gray-950 text-white p-8">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold mb-2">API Showcase</h1>
-        <p className="text-gray-400 mb-8">{{apis.length}} endpoints registered</p>
+def copy_visual_qa_page(target_dir: Path):
+    """Copy visual QA results display template."""
+    template_dir = get_template_dir()
+    visual_qa_source = template_dir / "visual-qa"
+    visual_qa_target = target_dir / "visual-qa"
 
-        {{apis.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
-            <p>No APIs registered yet.</p>
-            <p className="text-sm mt-2">Run /api-create to add your first endpoint.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {{apis.map(([name, api]) => (
-              <APICard key={{name}} name={{name}} api={{api}} />
-            ))}}
-          </div>
-        )}}
-      </div>
-    </div>
-  );
-}}
-'''
-
-    api_dir = target_dir / "api"
-    api_dir.mkdir(parents=True, exist_ok=True)
-    with open(api_dir / "page.tsx", "w") as f:
-        f.write(api_showcase_content)
-
-def generate_ui_showcase(target_dir: Path, registry: dict):
-    """Generate the UI showcase page."""
-    components = registry.get("components", {})
-
-    component_data = json.dumps(components, indent=2)
-
-    ui_showcase_content = f'''export const metadata = {{
-  title: "UI Showcase | Hustle Dev Tools",
-  description: "Component library with live preview",
-}};
-
-const componentRegistry = {component_data};
-
-function ComponentCard({{ name, component }}: {{ name: string; component: any }}) {{
-  return (
-    <div className="p-6 bg-gray-900 rounded-lg border border-gray-800 hover:border-[#BA0C2F] transition-colors">
-      <h3 className="text-lg font-semibold text-white mb-2">{{name}}</h3>
-
-      {{component.props?.length > 0 && (
-        <div className="mb-2">
-          <span className="text-xs text-gray-500">Props: </span>
-          <span className="text-xs text-gray-400">{{component.props.join(", ")}}</span>
-        </div>
-      )}}
-
-      {{component.variants?.length > 0 && (
-        <div className="flex flex-wrap gap-1 mt-2">
-          {{component.variants.map((variant: string) => (
-            <span
-              key={{variant}}
-              className="px-2 py-1 text-xs bg-gray-800 text-gray-300 rounded"
-            >
-              {{variant}}
-            </span>
-          ))}}
-        </div>
-      )}}
-
-      <div className="mt-4 flex gap-2">
-        {{component.stories && (
-          <a
-            href={{`http://localhost:6006/?path=/docs/${{name.toLowerCase()}}`}}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-[#BA0C2F] hover:underline"
-          >
-            Storybook
-          </a>
-        )}}
-      </div>
-    </div>
-  );
-}}
-
-export default function UIShowcasePage() {{
-  const components = Object.entries(componentRegistry);
-
-  return (
-    <div className="min-h-screen bg-gray-950 text-white p-8">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold mb-2">UI Showcase</h1>
-        <p className="text-gray-400 mb-8">{{components.length}} components registered</p>
-
-        {{components.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
-            <p>No components registered yet.</p>
-            <p className="text-sm mt-2">Run /hustle-ui-create to add your first component.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {{components.map(([name, component]) => (
-              <ComponentCard key={{name}} name={{name}} component={{component}} />
-            ))}}
-          </div>
-        )}}
-      </div>
-    </div>
-  );
-}}
-'''
-
-    ui_dir = target_dir / "ui"
-    ui_dir.mkdir(parents=True, exist_ok=True)
-    with open(ui_dir / "page.tsx", "w") as f:
-        f.write(ui_showcase_content)
-
-def generate_tests_page(target_dir: Path, registry: dict):
-    """Generate the test results page."""
-    tests_content = '''export const metadata = {
-  title: "Test Results | Hustle Dev Tools",
-  description: "Unit, E2E, and visual test results",
-};
-
-export default function TestResultsPage() {
-  return (
-    <div className="min-h-screen bg-gray-950 text-white p-8">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold mb-2">Test Results</h1>
-        <p className="text-gray-400 mb-8">View test execution results</p>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="p-6 bg-gray-900 rounded-lg border border-gray-800">
-            <h2 className="text-xl font-semibold mb-4">Unit Tests (Vitest)</h2>
-            <p className="text-gray-400 text-sm mb-4">Run: pnpm test:unit</p>
-            <a
-              href="http://localhost:51204/__vitest__"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[#BA0C2F] hover:underline"
-            >
-              Open Vitest UI
-            </a>
-          </div>
-
-          <div className="p-6 bg-gray-900 rounded-lg border border-gray-800">
-            <h2 className="text-xl font-semibold mb-4">E2E Tests (Playwright)</h2>
-            <p className="text-gray-400 text-sm mb-4">Run: pnpm test:e2e</p>
-            <a
-              href="./playwright-report/index.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[#BA0C2F] hover:underline"
-            >
-              View Report
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-'''
-
-    tests_dir = target_dir / "tests"
-    tests_dir.mkdir(parents=True, exist_ok=True)
-    with open(tests_dir / "page.tsx", "w") as f:
-        f.write(tests_content)
-
-def generate_visual_qa_page(target_dir: Path):
-    """Generate the visual QA results page."""
-    visual_qa_content = '''import { readFileSync, existsSync } from "fs";
+    if visual_qa_source.exists():
+        copy_template_tree(visual_qa_source, visual_qa_target, {})
+    else:
+        # Generate basic visual QA page if template doesn't exist
+        visual_qa_target.mkdir(parents=True, exist_ok=True)
+        visual_qa_content = '''import { readFileSync, existsSync } from "fs";
 import { join } from "path";
 
 export const metadata = {
@@ -377,13 +290,59 @@ export const metadata = {
   description: "AI-powered visual analysis results",
 };
 
-async function getVisualQAResults() {
-  const resultsPath = join(process.cwd(), ".devkit", "visual-qa-results.json");
-  if (existsSync(resultsPath)) {
-    const content = readFileSync(resultsPath, "utf-8");
-    return JSON.parse(content);
+interface VisualQAIssue {
+  severity: "error" | "warning" | "info";
+  category: string;
+  description: string;
+  suggestion?: string;
+}
+
+interface ComponentAnalysis {
+  timestamp: string;
+  results: {
+    status: string;
+    issues?: VisualQAIssue[];
+    summary?: {
+      total_issues: number;
+      errors: number;
+      warnings: number;
+    };
+  };
+}
+
+async function getVisualQAResults(): Promise<Record<string, ComponentAnalysis> | null> {
+  try {
+    const resultsPath = join(process.cwd(), ".devkit", "visual-qa-results.json");
+    if (existsSync(resultsPath)) {
+      const content = readFileSync(resultsPath, "utf-8");
+      return JSON.parse(content);
+    }
+  } catch (e) {
+    console.error("Error reading visual QA results:", e);
   }
   return null;
+}
+
+function getSeverityStyles(severity: string) {
+  switch (severity) {
+    case "error":
+      return "bg-red-900/30 border-red-700 text-red-300";
+    case "warning":
+      return "bg-yellow-900/30 border-yellow-700 text-yellow-300";
+    default:
+      return "bg-blue-900/30 border-blue-700 text-blue-300";
+  }
+}
+
+function getSeverityIcon(severity: string) {
+  switch (severity) {
+    case "error":
+      return "❌";
+    case "warning":
+      return "⚠️";
+    default:
+      return "ℹ️";
+  }
 }
 
 export default async function VisualQAPage() {
@@ -397,17 +356,63 @@ export default async function VisualQAPage() {
 
         {!results ? (
           <div className="text-center py-12 text-gray-500">
+            <p className="text-6xl mb-4">🔍</p>
             <p>No visual QA results yet.</p>
-            <p className="text-sm mt-2">Run /visual-qa to analyze your UI components.</p>
+            <p className="text-sm mt-2">Run <code className="bg-gray-800 px-2 py-1 rounded">/visual-qa</code> to analyze your UI components.</p>
           </div>
         ) : (
           <div className="space-y-6">
-            {Object.entries(results).map(([component, analysis]: [string, any]) => (
+            {Object.entries(results).map(([component, analysis]) => (
               <div key={component} className="p-6 bg-gray-900 rounded-lg border border-gray-800">
-                <h3 className="text-lg font-semibold mb-4">{component}</h3>
-                <pre className="text-sm text-gray-400 whitespace-pre-wrap">
-                  {JSON.stringify(analysis, null, 2)}
-                </pre>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold">{component}</h3>
+                  {analysis.results?.summary && (
+                    <div className="flex gap-2">
+                      {analysis.results.summary.errors > 0 && (
+                        <span className="px-2 py-1 text-xs bg-red-900/50 text-red-300 rounded">
+                          {analysis.results.summary.errors} errors
+                        </span>
+                      )}
+                      {analysis.results.summary.warnings > 0 && (
+                        <span className="px-2 py-1 text-xs bg-yellow-900/50 text-yellow-300 rounded">
+                          {analysis.results.summary.warnings} warnings
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {analysis.results?.issues?.length ? (
+                  <div className="space-y-3">
+                    {analysis.results.issues.map((issue, i) => (
+                      <div
+                        key={i}
+                        className={`p-3 rounded border ${getSeverityStyles(issue.severity)}`}
+                      >
+                        <div className="flex items-start gap-2">
+                          <span>{getSeverityIcon(issue.severity)}</span>
+                          <div>
+                            <p className="font-medium">{issue.description}</p>
+                            {issue.suggestion && (
+                              <p className="text-sm opacity-80 mt-1">
+                                💡 {issue.suggestion}
+                              </p>
+                            )}
+                            <span className="text-xs opacity-60 mt-1 block">
+                              {issue.category}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-green-400">✅ No issues found</p>
+                )}
+
+                <p className="text-xs text-gray-500 mt-4">
+                  Analyzed: {new Date(analysis.timestamp).toLocaleString()}
+                </p>
               </div>
             ))}
           </div>
@@ -417,11 +422,8 @@ export default async function VisualQAPage() {
   );
 }
 '''
-
-    visual_qa_dir = target_dir / "visual-qa"
-    visual_qa_dir.mkdir(parents=True, exist_ok=True)
-    with open(visual_qa_dir / "page.tsx", "w") as f:
-        f.write(visual_qa_content)
+        with open(visual_qa_target / "page.tsx", "w") as f:
+            f.write(visual_qa_content)
 
 def main():
     # Read hook input from stdin
@@ -431,14 +433,10 @@ def main():
         sys.exit(0)
 
     tool_name = hook_input.get("tool_name", "")
-    tool_input = hook_input.get("tool_input", {})
 
     # Only process Write tool
     if tool_name != "Write":
         sys.exit(0)
-
-    # Check if registry was updated (this runs after registry-update.py)
-    file_path = tool_input.get("file_path", "")
 
     # Load registry
     registry = load_registry()
@@ -450,14 +448,21 @@ def main():
     # Get target directory
     target_dir = get_target_dir()
 
-    # Generate all showcase pages
-    generate_dashboard(target_dir, registry)
-    generate_api_showcase(target_dir, registry)
-    generate_ui_showcase(target_dir, registry)
-    generate_tests_page(target_dir, registry)
-    generate_visual_qa_page(target_dir)
+    print(f"Generating showcase pages at {target_dir}")
 
-    print(f"Showcase pages regenerated at {target_dir}")
+    # Generate dashboard (always custom to show counts)
+    generate_dashboard(target_dir, registry)
+
+    # Copy full interactive templates
+    copy_api_showcase(target_dir, registry)
+    copy_ui_showcase(target_dir, registry)
+    copy_test_pages(target_dir, registry)
+    copy_visual_qa_page(target_dir)
+
+    # Copy shared components
+    copy_shared_components(target_dir)
+
+    print(f"Showcase pages generated at {target_dir}")
     sys.exit(0)
 
 if __name__ == "__main__":

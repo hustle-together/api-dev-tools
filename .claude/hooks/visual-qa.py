@@ -3,18 +3,23 @@
 Visual QA Hook
 
 Trigger: PostToolUse for Write (UI files during Phase 11)
-Action: Run Haiku subagent for visual analysis
+Action: Create task specs for Haiku visual analysis subagent
 
 Analyzes:
-- Brand guide compliance
-- Accessibility issues (contrast, touch targets)
+- Brand guide compliance (colors, typography, spacing)
+- Accessibility issues (contrast, touch targets, focus states)
 - Responsive breakpoint issues
-- Visual consistency
+- Visual consistency across viewports
+- Dark mode support
+
+Task specs are created in .devkit/tasks/visual-qa/ and processed by
+the /visual-qa slash command which spawns Haiku subagents.
 """
 
 import json
 import sys
 import os
+import uuid
 from datetime import datetime
 from pathlib import Path
 
@@ -41,6 +46,7 @@ def load_brand_guide():
 def save_visual_qa_results(component_name: str, results: dict):
     """Save visual QA results to file."""
     results_path = Path(get_project_root()) / ".devkit" / "visual-qa-results.json"
+    results_path.parent.mkdir(parents=True, exist_ok=True)
 
     # Load existing results
     existing = {}
@@ -97,18 +103,143 @@ def check_storybook_running() -> bool:
     except Exception:
         return False
 
-def queue_visual_test(file_path: str, component_name: str):
-    """Queue a visual test for later execution."""
-    pending_file = Path(get_project_root()) / ".devkit" / "pending-visual-tests.json"
-    pending_file.parent.mkdir(parents=True, exist_ok=True)
+def get_storybook_url(component_name: str) -> str:
+    """Get the Storybook URL for a component."""
+    # Convert PascalCase to kebab-case for Storybook URLs
+    kebab = ""
+    for i, c in enumerate(component_name):
+        if c.isupper() and i > 0:
+            kebab += "-"
+        kebab += c.lower()
+    return f"http://localhost:6006/?path=/story/{kebab}--default"
 
-    with open(pending_file, "a") as f:
-        f.write(json.dumps({
-            "file": file_path,
-            "component": component_name,
-            "viewports": ["375x667", "768x1024", "1920x1080"],
-            "queued_at": datetime.now().isoformat()
-        }) + "\n")
+def create_task_spec(
+    component_name: str,
+    file_path: str,
+    storybook_available: bool,
+    brand_guide: str | None
+) -> dict:
+    """Create a visual QA task specification for Haiku subagent."""
+    task_id = str(uuid.uuid4())[:8]
+
+    viewports = [
+        {"name": "mobile", "width": 375, "height": 667},
+        {"name": "tablet", "width": 768, "height": 1024},
+        {"name": "desktop", "width": 1920, "height": 1080}
+    ]
+
+    checks = [
+        {
+            "id": "brand",
+            "name": "Brand Compliance",
+            "description": "Check colors, typography, and spacing against brand guide",
+            "severity_if_fail": "warning"
+        },
+        {
+            "id": "contrast",
+            "name": "Color Contrast",
+            "description": "Verify WCAG AA contrast ratios (4.5:1 for text, 3:1 for large text)",
+            "severity_if_fail": "error"
+        },
+        {
+            "id": "touch_targets",
+            "name": "Touch Targets",
+            "description": "Ensure interactive elements are at least 44x44px",
+            "severity_if_fail": "error"
+        },
+        {
+            "id": "focus_states",
+            "name": "Focus States",
+            "description": "Verify visible focus indicators on interactive elements",
+            "severity_if_fail": "error"
+        },
+        {
+            "id": "responsive",
+            "name": "Responsive Layout",
+            "description": "Check layout adapts properly across breakpoints",
+            "severity_if_fail": "warning"
+        },
+        {
+            "id": "dark_mode",
+            "name": "Dark Mode",
+            "description": "Verify dark mode styling if supported",
+            "severity_if_fail": "info"
+        },
+        {
+            "id": "visual_consistency",
+            "name": "Visual Consistency",
+            "description": "Check alignment, spacing, and visual hierarchy",
+            "severity_if_fail": "warning"
+        }
+    ]
+
+    return {
+        "id": task_id,
+        "type": "visual-qa",
+        "component": component_name,
+        "file": file_path,
+        "status": "pending",
+        "created_at": datetime.now().isoformat(),
+        "storybook": {
+            "available": storybook_available,
+            "url": get_storybook_url(component_name) if storybook_available else None
+        },
+        "viewports": viewports,
+        "checks": checks,
+        "brand_guide": brand_guide[:2000] if brand_guide else None,  # Truncate if too long
+        "screenshots_dir": f".devkit/screenshots/{component_name}",
+        "analysis_prompt": f"""Analyze the UI component "{component_name}" for visual quality.
+
+IMPORTANT: You are a visual QA specialist. Analyze the screenshots carefully.
+
+For each check, provide:
+1. status: "pass", "fail", or "warning"
+2. description: What you observed
+3. suggestion: How to fix (if applicable)
+
+Focus on:
+- Color contrast (WCAG AA: 4.5:1 for normal text, 3:1 for large text/UI)
+- Touch target sizes (minimum 44x44px)
+- Focus state visibility
+- Responsive behavior across viewports
+- Visual alignment and consistency
+
+Return structured JSON with your analysis."""
+    }
+
+def save_task_spec(task_spec: dict):
+    """Save task spec to tasks directory."""
+    tasks_dir = Path(get_project_root()) / ".devkit" / "tasks" / "visual-qa"
+    tasks_dir.mkdir(parents=True, exist_ok=True)
+
+    task_file = tasks_dir / f"{task_spec['id']}-{task_spec['component']}.json"
+    with open(task_file, "w") as f:
+        json.dump(task_spec, f, indent=2)
+
+    return task_file
+
+def queue_visual_test(file_path: str, component_name: str, storybook_available: bool, brand_guide: str | None):
+    """Create and save a visual QA task spec."""
+    task_spec = create_task_spec(component_name, file_path, storybook_available, brand_guide)
+    task_file = save_task_spec(task_spec)
+    return task_spec, task_file
+
+def get_pending_tasks_count() -> int:
+    """Get count of pending visual QA tasks."""
+    tasks_dir = Path(get_project_root()) / ".devkit" / "tasks" / "visual-qa"
+    if not tasks_dir.exists():
+        return 0
+
+    count = 0
+    for task_file in tasks_dir.glob("*.json"):
+        try:
+            with open(task_file) as f:
+                task = json.load(f)
+                if task.get("status") == "pending":
+                    count += 1
+        except:
+            pass
+    return count
 
 def main():
     # Read hook input from stdin
@@ -133,47 +264,48 @@ def main():
     # Load state
     state = load_state()
 
-    # Check if we're in Phase 11 (Code Review)
-    # Or if workflow is UI-related (component/page creation)
+    # Check if we're in Phase 11 (Code Review) or UI workflow
     workflow = state.get("workflow", "")
     is_ui_workflow = workflow in ["hustle-ui-create", "hustle-ui-create-page"]
 
     # Get component name
     component_name = get_component_name(file_path)
 
-    # Queue the visual test
-    queue_visual_test(file_path, component_name)
-
-    # Check if Storybook is available for screenshots
+    # Check if Storybook is available
     storybook_available = check_storybook_running()
 
-    # If in Phase 11 or UI workflow, trigger immediate analysis
-    if is_phase_11(state) or is_ui_workflow:
-        # Save placeholder results (to be updated by subagent)
-        save_visual_qa_results(component_name, {
-            "status": "pending",
-            "file": file_path,
-            "storybook_available": storybook_available,
-            "requested_at": datetime.now().isoformat()
-        })
+    # Load brand guide if available
+    brand_guide = load_brand_guide()
 
-        # Output instructions for the visual QA subagent
-        output = {
-            "action": "visual_qa_required",
-            "component": component_name,
-            "file": file_path,
-            "storybook_available": storybook_available,
-            "viewports": ["mobile (375px)", "tablet (768px)", "desktop (1920px)"],
-            "checks": [
-                "Brand guide compliance (colors, typography, spacing)",
-                "Accessibility (contrast ratios, touch targets, focus states)",
-                "Responsive design (breakpoints, flexible layouts)",
-                "Dark mode support"
-            ]
-        }
+    # Create task spec for visual QA
+    task_spec, task_file = queue_visual_test(
+        file_path,
+        component_name,
+        storybook_available,
+        brand_guide
+    )
 
-        print(f"Visual QA queued for {component_name}")
-        print(json.dumps(output, indent=2))
+    # Save placeholder results
+    save_visual_qa_results(component_name, {
+        "status": "pending",
+        "task_id": task_spec["id"],
+        "file": file_path,
+        "storybook_available": storybook_available,
+        "requested_at": datetime.now().isoformat()
+    })
+
+    # Get pending tasks count
+    pending_count = get_pending_tasks_count()
+
+    # Output status
+    print(f"Visual QA task created for {component_name}")
+    print(f"  Task ID: {task_spec['id']}")
+    print(f"  Task file: {task_file}")
+    print(f"  Storybook: {'Available' if storybook_available else 'Not running'}")
+    print(f"  Pending tasks: {pending_count}")
+
+    if pending_count >= 1:
+        print(f"\nRun /visual-qa to process pending visual QA tasks with Haiku analysis.")
 
     sys.exit(0)
 
