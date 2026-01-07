@@ -192,7 +192,7 @@ Claude asks: "Which Stripe checkout approach?
   C) Custom integration"
 ```
 
-**Hook:** `disambiguation-gate.py` blocks until user confirms
+**Gate:** `research-gate.py` blocks code changes until clarification complete
 
 ---
 
@@ -210,7 +210,7 @@ Claude asks: "Which Stripe checkout approach?
 }
 ```
 
-**Hook:** `scope-gate.py` blocks until scope confirmed
+**Gate:** `research-gate.py` blocks code changes until scope confirmed
 
 ---
 
@@ -268,7 +268,7 @@ Deep research:
 4. Update research cache
 ```
 
-**Hook:** `deep-research-gate.py` validates targeted research complete
+**Gate:** `research-gate.py` ensures all research phases complete before coding
 
 ---
 
@@ -306,7 +306,7 @@ export const CheckoutSessionSchema = z.object({
 ✓ API route structure ready
 ```
 
-**Hook:** `environment-gate.py` blocks if requirements missing
+**Gate:** `schema-gate.py` blocks implementation until environment verified
 
 ---
 
@@ -348,7 +348,7 @@ describe('POST /api/checkout', () => {
 - Don't add features not covered by tests
 - Don't optimize yet
 
-**Hook:** `verify-green.py` confirms tests now pass
+**Hook:** `tdd-gate.py` confirms tests now pass
 
 ---
 
@@ -396,7 +396,7 @@ PERFORMANCE:
 ☐ Bundle size reasonable
 ```
 
-**Hook:** `review-gate.py` blocks if critical issues found
+**Gate:** `verify-gate.py` blocks completion if critical issues found
 
 ---
 
@@ -409,7 +409,7 @@ PERFORMANCE:
 - Improve naming
 - Add inline documentation
 
-**Hook:** `refactor-gate.py` blocks if tests fail after changes
+**Gate:** `verify-gate.py` blocks if tests fail after refactoring
 
 ---
 
@@ -442,7 +442,7 @@ PERFORMANCE:
 ☐ All scope items addressed
 ```
 
-**Hook:** `completion-gate.py` + `ralph-loop.py` for final verification
+**Gate:** `docs-gate.py` + `ralph-loop.py` for final verification
 
 ---
 
@@ -2141,7 +2141,7 @@ my-project/
 │   │   ├── docs-generator.md
 │   │   ├── visual-analyzer.md
 │   │   └── orchestrator.md
-│   └── hooks/             # Python enforcement hooks
+│   └── hooks/             # 22 Python enforcement hooks
 │       ├── research-gate.py
 │       ├── interview-gate.py
 │       ├── schema-gate.py
@@ -2150,34 +2150,26 @@ my-project/
 │       ├── docs-gate.py
 │       ├── state-manager.py
 │       ├── registry-manager.py
+│       ├── registry-update.py
 │       ├── session-manager.py
 │       ├── format.py
 │       ├── code-review.py
 │       ├── visual-qa.py
+│       ├── showcase-gen.py
+│       ├── completion-links.py
 │       ├── ralph-loop.py
 │       ├── auto-answer.py
 │       ├── notify.py
 │       ├── reground.py
-│       └── capacity-warning.py
+│       ├── capacity-warning.py
+│       ├── subagent-verify.py
+│       └── validate-bash.py
 ├── .devkit/
 │   ├── state.json         # Workflow state
 │   ├── registry.json      # Artifact registry
 │   └── research/          # Research cache
 ├── .mcp.json              # MCP server config
 └── CLAUDE.md              # Project instructions
-```
-
-### Configuration
-
-```bash
-# Add visual testing
-npx @hustle/devkit add playwright
-
-# Add Storybook integration
-npx @hustle/devkit add storybook
-
-# Configure autonomous mode
-npx @hustle/devkit config --auto-answer --max-iterations=30
 ```
 
 ---
