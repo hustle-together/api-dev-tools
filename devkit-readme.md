@@ -15,8 +15,8 @@
 5. [Interactive Showcase System](#interactive-showcase-system)
 6. [Visual QA with Haiku](#visual-qa-with-haiku)
 7. [All 22 Hooks Explained](#all-22-hooks-explained)
-8. [All 6 Subagents Explained](#all-6-subagents-explained)
-9. [All 5 Workflows Explained](#all-5-workflows-explained)
+8. [All 12 Agents Explained](#all-12-agents-explained)
+9. [Workflows & Commands](#workflows--commands)
 10. [MCP Integrations](#mcp-integrations)
 11. [State Management](#state-management)
 12. [Registry System](#registry-system)
@@ -925,47 +925,62 @@ CLAUDE: "I've completed the checkout API. DONE."
 
 ---
 
-## All 6 Subagents Explained
+## All 12 Agents Explained
 
-### Subagent Architecture
+### Agent Architecture
+
+Agents are spawned via the Task tool with `subagent_type` parameter. All agent definitions live in `.claude/agents/`.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    SUBAGENT HIERARCHY                                │
+│                       12 AGENTS BY CATEGORY                          │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                      │
-│  ORCHESTRATOR (Sonnet) ─────────────────────────────────────────────┤
-│  │ Role: Coordinate workflows, manage state, delegate tasks         │
-│  │ Spawns: All other subagents via Task tool                        │
-│  │                                                                   │
-│  ├── RESEARCHER (Haiku) ────────────────────────────────────────────┤
-│  │   Role: Gather documentation before implementation               │
-│  │   Tools: WebSearch, WebFetch, Context7 MCP, Read, Grep           │
-│  │   Phases: 3, 4, 5 (research phases)                              │
-│  │                                                                   │
-│  ├── BUILDER (Sonnet) ──────────────────────────────────────────────┤
-│  │   Role: TDD implementation with isolated context                 │
-│  │   Tools: Read, Edit, Write, Bash (npm test)                      │
-│  │   Phases: 8, 9, 12 (TDD phases)                                  │
-│  │   Note: Cannot see researcher's findings (prevents cheating)     │
-│  │                                                                   │
-│  ├── REVIEWER (Sonnet) ─────────────────────────────────────────────┤
-│  │   Role: Code review, security scan, pattern validation           │
-│  │   Tools: Read, Grep, Glob, Bash (linting)                        │
-│  │   Phases: 10, 11 (verification phases)                           │
-│  │                                                                   │
-│  ├── DOCS-GENERATOR (Haiku) ────────────────────────────────────────┤
-│  │   Role: Generate documentation, update registry                  │
-│  │   Tools: Read, Write, Glob                                       │
-│  │   Phases: 13 (documentation phase)                               │
-│  │                                                                   │
-│  └── VISUAL-ANALYZER (Haiku) ───────────────────────────────────────┤
-│      Role: Screenshot testing, visual regression detection          │
-│      Tools: Playwright MCP, Read                                    │
-│      Phases: Visual QA (UI workflows only)                          │
+│  ORCHESTRATION (1)                                                   │
+│  └── orchestrator        Coordinate workflows, delegate to others   │
+│                                                                      │
+│  RESEARCH (3)                                                        │
+│  ├── researcher          Gather docs before implementation          │
+│  ├── parallel-researcher Fast parallel documentation scraping       │
+│  └── research-validator  Deep dive API endpoint discovery           │
+│                                                                      │
+│  IMPLEMENTATION (2)                                                  │
+│  ├── builder             TDD implementation (Red-Green-Refactor)    │
+│  └── schema-generator    Generate Zod schemas from research         │
+│                                                                      │
+│  TESTING (1)                                                         │
+│  └── test-writer         Write failing tests before implementation  │
+│                                                                      │
+│  REVIEW (3)                                                          │
+│  ├── reviewer            General code review and pattern check      │
+│  ├── code-reviewer       Security and performance focused review    │
+│  └── implementation-reviewer  Compare implementation vs docs        │
+│                                                                      │
+│  DOCUMENTATION (1)                                                   │
+│  └── docs-generator      Generate API docs, update registry         │
+│                                                                      │
+│  VISUAL (1)                                                          │
+│  └── visual-analyzer     Screenshot testing, visual QA with Haiku   │
 │                                                                      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
+
+### All 12 Agents
+
+| Agent | Model | Purpose | Tools |
+|-------|-------|---------|-------|
+| `orchestrator` | Sonnet | Coordinate workflows, manage state, delegate | All |
+| `researcher` | Haiku | Gather documentation before implementation | WebSearch, WebFetch, Context7, Read, Grep |
+| `parallel-researcher` | Haiku | Fast parallel doc scraping for Phase 3/5 | WebSearch, WebFetch, Context7, Read |
+| `research-validator` | Sonnet | Deep dive to discover ALL API endpoints | Read, WebSearch, WebFetch, Context7 |
+| `builder` | Sonnet | TDD implementation with isolated context | Read, Edit, Write, Grep, Glob, Bash |
+| `schema-generator` | Sonnet | Generate Zod schemas from research/interview | Read, Write, Grep, Glob |
+| `test-writer` | Sonnet | Write comprehensive failing tests (TDD Red) | Read, Write, Grep, Glob |
+| `reviewer` | Sonnet | General code review, pattern validation | Read, Grep, Glob, Bash |
+| `code-reviewer` | Sonnet | Security vulnerabilities, performance issues | Read, Grep, Glob |
+| `implementation-reviewer` | Sonnet | Compare implementation against documentation | Read, Grep, Glob |
+| `docs-generator` | Haiku | Generate documentation, update registry | Read, Write, Glob |
+| `visual-analyzer` | Haiku | Screenshot testing, visual regression | Playwright MCP, Read |
 
 ### Why Isolated Subagents Matter
 
@@ -1009,17 +1024,48 @@ CLAUDE: "I've completed the checkout API. DONE."
 
 ---
 
-## All 5 Workflows Explained
+## Workflows & Commands
 
-### Workflow Commands
+The Devkit includes **38 slash commands** organized into categories. All commands are defined in `.claude/commands/`.
 
-| Command | Purpose | Primary Subagents |
-|---------|---------|-------------------|
+### Command Categories
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                       38 SLASH COMMANDS                              │
+├─────────────────────────────────────────────────────────────────────┤
+│  Main Workflows (5)    │ /create api, component, page, orchestration│
+│  API Commands (6)      │ /api-create, research, interview, verify...│
+│  TDD Commands (6)      │ /red, /green, /refactor, /cycle, /tdd...   │
+│  Git Commands (3)      │ /commit, /busycommit, /pr                  │
+│  Hustle Commands (4)   │ /hustle-build, combine, ui-create...       │
+│  Utility Commands (14) │ /plan, /gap, /summarize, /test-hooks...    │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Main Workflow Commands
+
+| Command | Purpose | Primary Agents |
+|---------|---------|----------------|
 | `/create api <name>` | Create API endpoint | researcher → builder → reviewer |
 | `/create component <Name>` | Create React component | researcher → builder → visual-analyzer |
 | `/create page <path>` | Create Next.js page | researcher → builder → visual-analyzer |
 | `/create orchestration <name>` | Combine existing APIs | orchestrator |
 | `/build <description>` | Full feature (decomposed) | orchestrator → all others |
+
+### All Commands Reference
+
+| Category | Commands |
+|----------|----------|
+| **API Development** | `/api-create`, `/api-research`, `/api-interview`, `/api-verify`, `/api-env`, `/api-status` |
+| **TDD Workflow** | `/red`, `/green`, `/refactor`, `/cycle`, `/tdd`, `/spike` |
+| **Git & PR** | `/commit`, `/busycommit`, `/pr` |
+| **Hustle Suite** | `/hustle-build`, `/hustle-combine`, `/hustle-ui-create`, `/hustle-ui-create-page` |
+| **Planning** | `/plan`, `/issue`, `/gap`, `/summarize` |
+| **Testing** | `/test-hooks`, `/visual-qa` |
+| **Worktree** | `/worktree-add`, `/worktree-cleanup` |
+| **Notifications** | `/ntfy-setup`, `/ntfy-test` |
+| **Utilities** | `/add-command`, `/beepboop`, `/publish` |
 
 ### Workflow 1: `/create api`
 
