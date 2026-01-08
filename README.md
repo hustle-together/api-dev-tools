@@ -24,19 +24,15 @@ A hook-enforced, interview-driven development system for Claude Code.
 
 ```bash
 # From your project root
-git clone https://github.com/hustle-together/api-dev-tools.git .devkit-temp
-cp -r .devkit-temp/.claude .
-cp -r .devkit-temp/.devkit .
-cp -r .devkit-temp/templates .
-cp .devkit-temp/CLAUDE.md .
-rm -rf .devkit-temp
+git clone https://github.com/hustle-together/api-dev-tools.git
 ```
 
 ### Option B: Install from local copy
 
 ```bash
-# From your project root (adjust source path as needed)
-cp -r /path/to/api-dev-tools/{.claude,.devkit,templates,CLAUDE.md} .
+# Copy entire devkit to your project
+cp -r /path/to/api-dev-tools/* /path/to/your-project/
+cp -r /path/to/api-dev-tools/.* /path/to/your-project/  # Hidden files
 ```
 
 ### 2. Install hook dependencies
