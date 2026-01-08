@@ -27,6 +27,7 @@ A hook-enforced, interview-driven development system for Claude Code.
 git clone https://github.com/hustle-together/api-dev-tools.git .devkit-temp
 cp -r .devkit-temp/.claude .
 cp -r .devkit-temp/.devkit .
+cp -r .devkit-temp/templates .
 cp .devkit-temp/CLAUDE.md .
 rm -rf .devkit-temp
 ```
@@ -35,7 +36,7 @@ rm -rf .devkit-temp
 
 ```bash
 # From your project root (adjust source path as needed)
-cp -r /path/to/api-dev-tools/{.claude,.devkit,CLAUDE.md} .
+cp -r /path/to/api-dev-tools/{.claude,.devkit,templates,CLAUDE.md} .
 ```
 
 ### 2. Install hook dependencies
@@ -111,6 +112,12 @@ your-project/
 │   ├── state.json       # Current workflow state
 │   ├── registry.json    # Artifact registry
 │   └── research/        # Research cache (7-day)
+├── templates/
+│   ├── api-showcase/    # API testing pages
+│   ├── ui-showcase/     # Component gallery
+│   ├── component/       # Component scaffold
+│   ├── page/            # Page scaffold
+│   └── hustle-dev-dashboard/  # Main dashboard
 └── CLAUDE.md            # Project instructions
 ```
 
