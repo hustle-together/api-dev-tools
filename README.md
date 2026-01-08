@@ -109,12 +109,50 @@ your-project/
 │   ├── registry.json    # Artifact registry
 │   └── research/        # Research cache (7-day)
 ├── templates/
-│   ├── api-showcase/    # API testing pages
-│   ├── ui-showcase/     # Component gallery
-│   ├── component/       # Component scaffold
-│   ├── page/            # Page scaffold
-│   └── hustle-dev-dashboard/  # Main dashboard
+│   ├── hustle-dev-dashboard/  # Main dashboard
+│   ├── api-showcase/          # API testing UI
+│   ├── ui-showcase/           # Component gallery
+│   ├── test-results/          # Test results page
+│   ├── playwright-report/     # E2E test reports
+│   ├── docs/                  # Generated TypeDoc
+│   ├── component/             # Component scaffold
+│   ├── page/                  # Page scaffold
+│   └── shared/                # Shared utilities
 └── CLAUDE.md            # Project instructions
+```
+
+---
+
+## Generated Outputs
+
+After completing a workflow, you get a full developer dashboard:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    /hustle-dev-tools                            │
+│                      (Main Dashboard)                           │
+├──────────┬──────────┬──────────┬──────────┬────────────────────┤
+│          │          │          │          │                    │
+▼          ▼          ▼          ▼          ▼                    │
+/api       /ui        /tests     /reports   /docs                │
+API        UI         Test       Playwright  TypeDoc             │
+Showcase   Showcase   Results    Reports     Docs                │
+│          │                                                     │
+│          └──────────────► Storybook :6006                      │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Completion links:**
+```
+✅ Workflow Complete: stripe-checkout
+
+📊 Dashboard:      http://localhost:3000/hustle-dev-tools
+🔌 API Showcase:   http://localhost:3000/hustle-dev-tools/api
+🎨 UI Showcase:    http://localhost:3000/hustle-dev-tools/ui
+🧪 Test Results:   http://localhost:3000/hustle-dev-tools/tests
+📋 Playwright:     http://localhost:3000/hustle-dev-tools/reports
+📚 Docs:           http://localhost:3000/hustle-dev-tools/docs
+📖 Storybook:      http://localhost:6006
 ```
 
 ---

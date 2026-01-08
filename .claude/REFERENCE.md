@@ -142,6 +142,23 @@
 
 ---
 
+## Generated Outputs
+
+After completing workflows, you get a full developer dashboard:
+
+| Route | Purpose |
+|-------|---------|
+| `/hustle-dev-tools` | Main dashboard |
+| `/hustle-dev-tools/api` | API Showcase - test endpoints interactively |
+| `/hustle-dev-tools/ui` | UI Showcase - component gallery |
+| `/hustle-dev-tools/tests` | Test Results - Vitest, Playwright, Visual |
+| `/hustle-dev-tools/reports` | Playwright Reports - HTML with screenshots |
+| `/hustle-dev-tools/docs` | TypeDoc - auto-generated API docs |
+| `/hustle-dev-tools/visual-qa` | Visual QA - Haiku analysis results |
+| `localhost:6006` | Storybook - component stories |
+
+---
+
 ## Quick Start
 
 ```bash

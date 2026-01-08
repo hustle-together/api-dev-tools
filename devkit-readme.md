@@ -473,10 +473,36 @@ The Showcase System provides **full interactive testing interfaces** for all cre
 │  │   ├── E2E results (Playwright)                                   │
 │  │   └── Visual regression (Storybook)                              │
 │  │                                                                   │
+│  ├── /reports/                        ← Playwright Reports           │
+│  │   └── Full HTML reports with screenshots & traces                │
+│  │                                                                   │
+│  ├── /docs/                           ← TypeDoc Documentation        │
+│  │   └── Auto-generated API documentation                           │
+│  │                                                                   │
 │  └── /visual-qa/                      ← Visual QA Results            │
 │      └── Haiku analysis with severity icons                         │
 │                                                                      │
+│  External:                                                           │
+│  └── Storybook :6006                  ← Component Stories            │
+│                                                                      │
 └─────────────────────────────────────────────────────────────────────┘
+```
+
+### Completion Links
+
+When a workflow completes, you get links to all outputs:
+
+```
+✅ Workflow Complete: stripe-checkout
+
+📊 Dashboard:      http://localhost:3000/hustle-dev-tools
+🔌 API Showcase:   http://localhost:3000/hustle-dev-tools/api
+🎨 UI Showcase:    http://localhost:3000/hustle-dev-tools/ui
+🧪 Test Results:   http://localhost:3000/hustle-dev-tools/tests
+📋 Playwright:     http://localhost:3000/hustle-dev-tools/reports
+📚 Docs:           http://localhost:3000/hustle-dev-tools/docs
+🔍 Visual QA:      http://localhost:3000/hustle-dev-tools/visual-qa
+📖 Storybook:      http://localhost:6006
 ```
 
 ### How It Works
