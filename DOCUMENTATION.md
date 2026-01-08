@@ -1052,7 +1052,7 @@ Agents are spawned via the Task tool with `subagent_type` parameter. All agent d
 
 ## Workflows & Commands
 
-The Devkit includes **38 slash commands** organized into categories. All commands are defined in `.claude/commands/`.
+The Devkit includes **37 slash commands** organized into categories. All commands are defined in `.claude/commands/`.
 
 ### Command Categories
 
@@ -2148,7 +2148,7 @@ claude
 ```bash
 cd your-project
 git clone https://github.com/hustle-together/api-dev-tools.git .devkit-temp
-cp -r .devkit-temp/{.claude,.devkit,templates,docs,CLAUDE.md,devkit-readme.md} .
+cp -r .devkit-temp/{.claude,.devkit,templates,docs,CLAUDE.md,DOCUMENTATION.md} .
 rm -rf .devkit-temp
 claude
 ```
@@ -2160,7 +2160,7 @@ your-project/
 ├── .claude/
 │   ├── settings.json      # Hook configuration
 │   ├── REFERENCE.md       # Quick reference (all commands/hooks/agents)
-│   ├── commands/          # 38 slash commands
+│   ├── commands/          # 37 slash commands
 │   ├── agents/            # 12 specialized agents
 │   └── hooks/             # 22 Python enforcement hooks
 │       ├── tests/         # Hook test suite
@@ -2184,7 +2184,7 @@ your-project/
 ├── docs/                  # Reference documentation
 ├── CLAUDE.md              # Project instructions
 ├── README.md              # Quick start guide
-└── devkit-readme.md       # Full documentation (this file)
+└── DOCUMENTATION.md       # Full documentation (this file)
 ```
 
 ---

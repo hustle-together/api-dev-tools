@@ -1,6 +1,6 @@
 # Claude Code Devkit
 
-**22 hooks | 12 agents | 38 commands | 14-phase TDD workflow**
+**22 hooks | 12 agents | 37 commands | 14-phase TDD workflow**
 
 A hook-enforced, interview-driven development system for Claude Code.
 
@@ -90,7 +90,7 @@ Hooks enforce each phase - you can't skip steps.
 | `/commit` | Git commit with standards |
 | `/pr` | Create pull request |
 
-See all 38 commands: [.claude/REFERENCE.md](.claude/REFERENCE.md)
+See all 37 commands: [.claude/REFERENCE.md](.claude/REFERENCE.md)
 
 ---
 
@@ -102,7 +102,7 @@ your-project/
 │   ├── hooks/           # 22 enforcement hooks
 │   │   ├── tests/       # Hook test suite
 │   │   └── lib/         # Shared utilities (ntfy, greptile)
-│   ├── commands/        # 38 slash commands
+│   ├── commands/        # 37 slash commands
 │   ├── agents/          # 12 specialized agents
 │   ├── settings.json    # Hook configuration
 │   └── REFERENCE.md     # Quick reference
@@ -129,7 +129,7 @@ your-project/
 │   └── ...
 ├── CLAUDE.md            # Project instructions
 ├── README.md            # Quick start guide
-└── devkit-readme.md     # Full documentation
+└── DOCUMENTATION.md     # Full documentation
 ```
 
 ---
@@ -184,7 +184,7 @@ cd .claude/hooks && python3 -m pytest tests/ -v
 
 For complete details on all phases, hooks, agents, and workflows:
 
-**[devkit-readme.md](./devkit-readme.md)** - Full 2400-line documentation
+**[DOCUMENTATION.md](./DOCUMENTATION.md)** - Comprehensive guide (~2400 lines)
 
 ---
 

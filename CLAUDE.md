@@ -4,14 +4,14 @@
 
 This project provides a **hook-enforced, interview-driven development workflow** for building APIs, UI components, and pages with Claude Code.
 
-> **Full Reference:** Read `.claude/REFERENCE.md` for complete list of all 38 commands, 22 hooks, and 12 agents.
+> **Full Reference:** Read `.claude/REFERENCE.md` for complete list of all 37 commands, 22 hooks, and 12 agents.
 
 ## Architecture
 
 ```
 .claude/
   hooks/           # 22 enforcement hooks (Python scripts)
-  commands/        # 38 slash commands (/api-create, /red, /commit, etc.)
+  commands/        # 37 slash commands (/api-create, /red, /commit, etc.)
   agents/          # 12 specialized agents (researcher, builder, reviewer, etc.)
   settings.json    # Hook configuration
 

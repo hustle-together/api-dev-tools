@@ -2,7 +2,7 @@
 
 > Read this file to understand all available commands, hooks, and agents.
 
-## 38 Slash Commands
+## 37 Slash Commands
 
 ### API Development (14-Phase Workflow)
 | Command | Purpose |
