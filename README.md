@@ -20,7 +20,7 @@ A hook-enforced, interview-driven development system for Claude Code.
 
 ## Quick Start
 
-### 1. Clone to your project
+### Option A: Install from GitHub
 
 ```bash
 # From your project root
@@ -29,6 +29,13 @@ cp -r .devkit-temp/.claude .
 cp -r .devkit-temp/.devkit .
 cp .devkit-temp/CLAUDE.md .
 rm -rf .devkit-temp
+```
+
+### Option B: Install from local copy
+
+```bash
+# From your project root (adjust source path as needed)
+cp -r /path/to/api-dev-tools/{.claude,.devkit,CLAUDE.md} .
 ```
 
 ### 2. Install hook dependencies
