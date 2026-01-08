@@ -100,6 +100,8 @@ See all 38 commands: [.claude/REFERENCE.md](.claude/REFERENCE.md)
 your-project/
 ├── .claude/
 │   ├── hooks/           # 22 enforcement hooks
+│   │   ├── tests/       # Hook test suite
+│   │   └── lib/         # Shared utilities (ntfy, greptile)
 │   ├── commands/        # 38 slash commands
 │   ├── agents/          # 12 specialized agents
 │   ├── settings.json    # Hook configuration
@@ -117,8 +119,17 @@ your-project/
 │   ├── docs/                  # Generated TypeDoc
 │   ├── component/             # Component scaffold
 │   ├── page/                  # Page scaffold
+│   ├── api-test/              # API test scaffold
+│   ├── dev-tools/             # Dev tools landing
 │   └── shared/                # Shared utilities
-└── CLAUDE.md            # Project instructions
+├── docs/                # Reference documentation
+│   ├── HOOKS.md
+│   ├── AGENTS.md
+│   ├── SKILLS.md
+│   └── ...
+├── CLAUDE.md            # Project instructions
+├── README.md            # Quick start guide
+└── devkit-readme.md     # Full documentation
 ```
 
 ---

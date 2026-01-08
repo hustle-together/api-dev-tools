@@ -1,0 +1,3566 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hustle Dev Tools 5.0 - The Scientific Method Applied to Software Development</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    /* ============================================
+       HUSTLE DEV TOOLS 5.0 - DARK THEME WITH RED ACCENTS
+       ============================================ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #ffffff;
+      --bg-secondary: #f8f8f8;
+      --bg-tertiary: #f0f0f0;
+      --text: #000000;
+      --text-muted: #666666;
+      --text-light: #888888;
+      --border: #000000;
+      --border-light: #cccccc;
+      --accent: #BA0C2F;
+      --accent-light: rgba(186, 12, 47, 0.1);
+      --accent-glow: rgba(186, 12, 47, 0.3);
+      --success: #22c55e;
+      --warning: #eab308;
+      --error: #ef4444;
+      --grey-dark: #222222;
+      --grey-mid: #888888;
+      --grey-light: #dddddd;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0a0a0a;
+      --bg-secondary: #111111;
+      --bg-tertiary: #1a1a1a;
+      --text: #f0f0f0;
+      --text-muted: #999999;
+      --text-light: #666666;
+      --border: #333333;
+      --border-light: #444444;
+      --grey-light: #333333;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Background Grid for sections */
+    section {
+      position: relative;
+    }
+
+    section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background-image:
+        linear-gradient(var(--grey-light) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grey-light) 1px, transparent 1px);
+      background-size: 120px 120px;
+      background-position: calc(50vw) 0;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    section::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      pointer-events: none;
+    }
+
+    /* ============================================
+       NAVIGATION - GLASSMORPHIC
+       ============================================ */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      padding: 12px 40px;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      gap: 24px;
+    }
+
+    .nav.scrolled {
+      background: rgba(0, 0, 0, 0.85);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-brand {
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      font-weight: 700;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.95rem;
+    }
+
+    .nav-brand .hustle {
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .nav-spacer {
+      flex: 1;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 8px 12px;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      border-radius: 6px;
+    }
+
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+    }
+
+    .nav-btn.primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .nav-btn.primary:hover {
+      opacity: 0.9;
+    }
+
+    .version-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+    }
+
+    .version-badge .tag {
+      background: var(--accent);
+      color: white;
+      padding: 2px 6px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      border-radius: 3px;
+    }
+
+    .version-badge .version {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Dropdown */
+    .nav-dropdown {
+      position: relative;
+    }
+
+    .nav-dropdown-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-dropdown-toggle i {
+      font-size: 0.6rem;
+      transition: transform 0.2s ease;
+    }
+
+    .nav-dropdown:hover .nav-dropdown-toggle i {
+      transform: rotate(180deg);
+    }
+
+    .nav-dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      min-width: 200px;
+      background: rgba(20, 20, 20, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.2s ease;
+      z-index: 100;
+      padding: 8px 0;
+      margin-top: 8px;
+    }
+
+    .nav-dropdown:hover .nav-dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .nav-dropdown-item {
+      display: block;
+      padding: 8px 16px;
+      color: var(--text);
+      text-decoration: none;
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.75rem;
+      transition: all 0.15s ease;
+    }
+
+    .nav-dropdown-item:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    /* ============================================
+       SECTIONS
+       ============================================ */
+    section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 120px 40px 80px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    section:last-of-type {
+      border-bottom: none;
+    }
+
+    .section-inner {
+      max-width: 1400px;
+      width: 100%;
+    }
+
+    /* Typography */
+    h1 {
+      font-size: 4.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      line-height: 1.1;
+    }
+
+    h2 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      margin-bottom: 30px;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .mono {
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+    }
+
+    .text-muted {
+      color: var(--text-muted);
+    }
+
+    .text-accent {
+      color: var(--accent);
+    }
+
+    /* ============================================
+       HERO SECTION
+       ============================================ */
+    #hero {
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      padding-top: 200px;
+      padding-bottom: 250px;
+      min-height: 100vh;
+    }
+
+    #hero::before {
+      opacity: 0.15;
+    }
+
+    .hero-canvas-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    #hero-grid {
+      width: 100%;
+      height: 100%;
+    }
+
+    #hero .section-inner {
+      position: relative;
+      z-index: 10;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 20px;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-light);
+      border-radius: 50px;
+      margin-bottom: 30px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .hero-badge .tag {
+      background: var(--accent);
+      color: white;
+      padding: 2px 8px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      border-radius: 3px;
+    }
+
+    .hero-badge .text {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .hero-main-title {
+      font-size: 5rem;
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .hero-main-title .hustle {
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    .hero-main-title .tools {
+      color: var(--text);
+    }
+
+    .hero-tagline {
+      font-size: 1.35rem;
+      color: var(--text-muted);
+      max-width: 800px;
+      margin: 0 auto 20px;
+      line-height: 1.6;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .hero-scientific {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .hero-scientific .step {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      padding: 6px 14px;
+      background: rgba(186, 12, 47, 0.1);
+      border: 1px solid rgba(186, 12, 47, 0.3);
+      border-radius: 4px;
+    }
+
+    .hero-scientific .arrow {
+      color: var(--accent);
+    }
+
+    .hero-install-box {
+      max-width: 480px;
+      margin: 0 auto 40px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .hero-install-box .label {
+      text-transform: uppercase;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .hero-install-box .command-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(12px) saturate(150%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 14px 24px;
+      border-radius: 8px;
+    }
+
+    .hero-install-box .command-box code {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 1rem;
+    }
+
+    .hero-install-box .command-box code .npx {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .hero-install-box .command-box code .pkg {
+      color: var(--text);
+    }
+
+    .hero-install-box .command-box .copy-btn {
+      margin-left: 16px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .hero-install-box .command-box .copy-btn:hover {
+      color: var(--accent);
+      transform: scale(1.1);
+    }
+
+    .hero-cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 60px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .cta-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 2px solid var(--border);
+      background: transparent;
+      color: var(--text);
+    }
+
+    .cta-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 4px 4px 0 var(--accent-glow);
+    }
+
+    .cta-btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .cta-btn.primary:hover {
+      opacity: 0.9;
+      box-shadow: 4px 4px 0 rgba(186, 12, 47, 0.4);
+    }
+
+    /* Hero Terminal Preview */
+    .hero-terminal-preview {
+      max-width: 850px;
+      margin: 0 auto;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .terminal-window {
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(16px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+      text-align: left;
+    }
+
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: rgba(13, 13, 13, 0.5);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .terminal-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .terminal-dot.red { background: #ff5f56; }
+    .terminal-dot.yellow { background: #ffbd2e; }
+    .terminal-dot.green { background: #27c93f; }
+
+    .terminal-title {
+      flex: 1;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-family: 'SF Mono', 'Monaco', monospace;
+    }
+
+    .terminal-content {
+      padding: 20px;
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.85rem;
+      line-height: 1.7;
+    }
+
+    .terminal-content .prompt { color: var(--text-muted); }
+    .terminal-content .dollar { color: #22c55e; }
+    .terminal-content .cmd { color: var(--accent); }
+    .terminal-content .output { color: var(--text); }
+    .terminal-content .success { color: #22c55e; }
+    .terminal-content .warning { color: #eab308; }
+    .terminal-content .error { color: #ef4444; }
+    .terminal-content .dim { color: var(--text-light); }
+    .terminal-content .phase { color: var(--accent); }
+
+    .cursor-blink {
+      display: inline-block;
+      width: 8px;
+      height: 16px;
+      background: var(--accent);
+      animation: blink 1s infinite;
+      vertical-align: middle;
+      margin-left: 2px;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-family: 'SF Mono', 'Monaco', monospace;
+      animation: bounce 2s infinite;
+      opacity: 0;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(10px); }
+    }
+
+    /* ============================================
+       SECTION HEADERS
+       ============================================ */
+    .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section-header h2 {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .section-header p {
+      margin-top: 15px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .section-label {
+      display: inline-block;
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 12px;
+      opacity: 0;
+    }
+
+    /* ============================================
+       STATS ROW
+       ============================================ */
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      margin-bottom: 60px;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .stat .number {
+      font-size: 4rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat .label {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 8px;
+    }
+
+    /* ============================================
+       CARD GRIDS
+       ============================================ */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .card-grid.two-col {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .card-grid.four-col {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .card {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      background: rgba(20, 20, 20, 0.7);
+      backdrop-filter: blur(20px) saturate(180%);
+      border-radius: 12px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+      border-color: rgba(186, 12, 47, 0.3);
+    }
+
+    .card .card-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(186, 12, 47, 0.15);
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 1.25rem;
+      color: var(--accent);
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .card .hook-badge {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 6px 12px;
+      background: rgba(186, 12, 47, 0.1);
+      border: 1px solid rgba(186, 12, 47, 0.3);
+      border-radius: 4px;
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+    }
+
+    /* Problem/Solution cards */
+    .problem-card .card-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 16px;
+    }
+
+    .problem-card .icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(186, 12, 47, 0.15);
+      border-radius: 8px;
+      font-size: 1rem;
+      color: var(--accent);
+    }
+
+    .problem-card .issue-label,
+    .problem-card .why-label {
+      display: block;
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 12px;
+      margin-bottom: 6px;
+    }
+
+    .problem-card .issue-label { color: var(--text-light); }
+    .problem-card .why-label { color: var(--accent); }
+
+    .problem-card .issue-text,
+    .problem-card .why-text {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ============================================
+       ARCHITECTURE DIAGRAM
+       ============================================ */
+    .architecture-diagram {
+      background: rgba(20, 20, 20, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 40px;
+      margin-bottom: 60px;
+      opacity: 0;
+      transform: translateY(30px);
+      overflow-x: auto;
+    }
+
+    .architecture-diagram pre {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.75rem;
+      line-height: 1.5;
+      color: var(--text);
+      white-space: pre;
+      margin: 0;
+    }
+
+    .architecture-diagram .highlight {
+      color: var(--accent);
+    }
+
+    .architecture-diagram .dim {
+      color: var(--text-muted);
+    }
+
+    /* ============================================
+       PHASE CARDS
+       ============================================ */
+    .phases-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .phase-group {
+      margin-bottom: 40px;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .phase-group-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .phase-group-header .group-icon {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+      border-radius: 10px;
+      font-size: 1.25rem;
+      color: white;
+    }
+
+    .phase-group-header h3 {
+      margin: 0;
+      font-size: 1.3rem;
+    }
+
+    .phase-group-header .scientific {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-left: auto;
+    }
+
+    .phase-card {
+      background: rgba(20, 20, 20, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .phase-card:hover {
+      border-color: rgba(186, 12, 47, 0.4);
+    }
+
+    .phase-card-main {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      min-height: 140px;
+    }
+
+    .phase-info {
+      padding: 24px;
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .phase-number {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+
+    .phase-info h4 {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+
+    .phase-info p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .phase-hook {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+    }
+
+    .phase-terminal {
+      padding: 20px;
+      background: rgba(10, 10, 10, 0.5);
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .phase-terminal pre {
+      margin: 0;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .expand-btn {
+      width: 100%;
+      padding: 10px;
+      background: rgba(186, 12, 47, 0.1);
+      border: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .expand-btn:hover {
+      background: rgba(186, 12, 47, 0.2);
+      color: var(--text);
+    }
+
+    .expand-btn .arrow {
+      transition: transform 0.3s ease;
+    }
+
+    .expand-btn.expanded .arrow {
+      transform: rotate(180deg);
+    }
+
+    .phase-details {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+
+    .phase-details.expanded {
+      max-height: 500px;
+    }
+
+    .phase-details-inner {
+      padding: 24px;
+      background: rgba(10, 10, 10, 0.5);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .phase-details h5 {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+
+    .phase-details ul {
+      list-style: none;
+      margin-bottom: 20px;
+    }
+
+    .phase-details li {
+      padding: 6px 0 6px 20px;
+      position: relative;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .phase-details li::before {
+      content: '+';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-family: 'SF Mono', 'Monaco', monospace;
+    }
+
+    .state-fields {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.8rem;
+      background: rgba(186, 12, 47, 0.1);
+      padding: 12px 16px;
+      border-radius: 6px;
+      color: var(--accent);
+    }
+
+    /* ============================================
+       HOOK CATEGORIES
+       ============================================ */
+    .hook-category {
+      margin-bottom: 50px;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .hook-category-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .hook-category-header .category-icon {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+      border-radius: 8px;
+      font-size: 1.1rem;
+      color: white;
+    }
+
+    .hook-category-header h3 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    .hook-category-header .count {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-left: 8px;
+    }
+
+    .hook-category-header p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .hooks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .hook-card {
+      background: rgba(20, 20, 20, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .hook-card:hover {
+      border-color: rgba(186, 12, 47, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .hook-card .hook-name {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.9rem;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .hook-card p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ============================================
+       SUBAGENT SECTION
+       ============================================ */
+    .subagent-hierarchy {
+      background: rgba(20, 20, 20, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 40px;
+      margin-bottom: 50px;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .subagent-row {
+      display: flex;
+      align-items: stretch;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .subagent-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .subagent-card {
+      flex: 1;
+      background: rgba(30, 30, 30, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 24px;
+      transition: all 0.3s ease;
+    }
+
+    .subagent-card:hover {
+      border-color: rgba(186, 12, 47, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .subagent-card.orchestrator {
+      background: linear-gradient(135deg, rgba(186, 12, 47, 0.2), rgba(30, 30, 30, 0.8));
+      border-color: rgba(186, 12, 47, 0.4);
+    }
+
+    .subagent-card .agent-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .subagent-card .agent-model {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.7rem;
+      padding: 4px 8px;
+      background: rgba(186, 12, 47, 0.2);
+      border-radius: 4px;
+      color: var(--accent);
+    }
+
+    .subagent-card h4 {
+      font-size: 1.1rem;
+      margin: 0;
+    }
+
+    .subagent-card .role {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .subagent-card .tools-list,
+    .subagent-card .phases-list {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.75rem;
+      color: var(--text-light);
+      margin-bottom: 8px;
+    }
+
+    .subagent-card .tools-list span,
+    .subagent-card .phases-list span {
+      color: var(--text-muted);
+    }
+
+    .subagent-connector {
+      width: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-light);
+    }
+
+    /* ============================================
+       WORKFLOW CARDS
+       ============================================ */
+    .workflow-card {
+      background: rgba(20, 20, 20, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 24px;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .workflow-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 24px;
+      background: rgba(186, 12, 47, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .workflow-header .command {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 1.1rem;
+      color: var(--accent);
+    }
+
+    .workflow-header .description {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .workflow-header .subagents {
+      margin-left: auto;
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.75rem;
+      color: var(--text-light);
+    }
+
+    .workflow-content {
+      padding: 24px;
+    }
+
+    .workflow-phases {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .workflow-phases .phase-pill {
+      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .workflow-phases .phase-pill.active {
+      background: rgba(186, 12, 47, 0.15);
+      border-color: rgba(186, 12, 47, 0.4);
+      color: var(--accent);
+    }
+
+    .workflow-output {
+      background: rgba(10, 10, 10, 0.5);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .workflow-output h5 {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.75rem;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+
+    .workflow-output .file-tree {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    .workflow-output .file-tree .folder {
+      color: var(--accent);
+    }
+
+    /* ============================================
+       STATE MANAGEMENT
+       ============================================ */
+    .state-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .state-file {
+      background: rgba(20, 20, 20, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .state-file-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      background: rgba(186, 12, 47, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .state-file-header i {
+      color: var(--accent);
+    }
+
+    .state-file-header h4 {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.9rem;
+      margin: 0;
+    }
+
+    .state-file-header span {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-left: auto;
+    }
+
+    .state-file-content {
+      padding: 20px;
+    }
+
+    .state-file-content pre {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.8rem;
+      line-height: 1.6;
+      color: var(--text);
+      margin: 0;
+      overflow-x: auto;
+    }
+
+    .state-file-content .key { color: #9cdcfe; }
+    .state-file-content .string { color: #ce9178; }
+    .state-file-content .number { color: #b5cea8; }
+    .state-file-content .boolean { color: #569cd6; }
+
+    /* ============================================
+       INSTALL SECTION
+       ============================================ */
+    #install {
+      text-align: center;
+    }
+
+    .install-command-large {
+      background: var(--grey-dark);
+      border: 2px solid var(--border);
+      padding: 30px 50px;
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 1.2rem;
+      color: #f0f0f0;
+      display: inline-block;
+      margin: 20px 0 40px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .install-command-large .prompt { color: #888; }
+    .install-command-large .cmd { color: var(--accent); }
+
+    .install-structure {
+      background: rgba(20, 20, 20, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 30px;
+      text-align: left;
+      max-width: 800px;
+      margin: 0 auto 40px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .install-structure h4 {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.85rem;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .install-structure pre {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.8rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    .install-structure .folder { color: var(--accent); }
+    .install-structure .file { color: var(--text); }
+    .install-structure .comment { color: var(--text-light); }
+
+    /* Quick Reference */
+    .quick-ref {
+      background: rgba(20, 20, 20, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 30px;
+      margin-top: 40px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .quick-ref h3 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .quick-ref-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+
+    .quick-ref-col h4 {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .quick-ref-col .cmd-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 10px;
+      font-size: 0.85rem;
+    }
+
+    .quick-ref-col .cmd-row code {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      background: rgba(186, 12, 47, 0.1);
+      padding: 4px 8px;
+      border-radius: 4px;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    .quick-ref-col .cmd-row span {
+      color: var(--text-muted);
+    }
+
+    /* ============================================
+       FOOTER
+       ============================================ */
+    .footer {
+      text-align: center;
+      padding: 60px 40px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .footer p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+
+    .footer .hustle {
+      color: var(--accent);
+      font-style: italic;
+      font-weight: 600;
+    }
+
+    /* ============================================
+       INTERACTIVE DEMO
+       ============================================ */
+    .demo-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .demo-terminal {
+      background: rgba(20, 20, 20, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .demo-controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .demo-btn {
+      padding: 10px 20px;
+      background: rgba(186, 12, 47, 0.15);
+      border: 1px solid rgba(186, 12, 47, 0.4);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .demo-btn:hover {
+      background: rgba(186, 12, 47, 0.25);
+    }
+
+    .demo-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    /* ============================================
+       TDD ISOLATION DIAGRAM
+       ============================================ */
+    .tdd-isolation {
+      background: rgba(20, 20, 20, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 40px;
+      margin: 40px 0;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .tdd-phases {
+      display: flex;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .tdd-phase {
+      flex: 1;
+      background: rgba(30, 30, 30, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 24px;
+    }
+
+    .tdd-phase.red { border-color: rgba(239, 68, 68, 0.4); }
+    .tdd-phase.green { border-color: rgba(34, 197, 94, 0.4); }
+    .tdd-phase.refactor { border-color: rgba(234, 179, 8, 0.4); }
+
+    .tdd-phase .phase-label {
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+
+    .tdd-phase.red .phase-label { color: #ef4444; }
+    .tdd-phase.green .phase-label { color: #22c55e; }
+    .tdd-phase.refactor .phase-label { color: #eab308; }
+
+    .tdd-phase h4 {
+      font-size: 1rem;
+      margin-bottom: 12px;
+    }
+
+    .tdd-phase .sees,
+    .tdd-phase .writes {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .tdd-phase .sees span,
+    .tdd-phase .writes span {
+      color: var(--text-light);
+    }
+
+    .tdd-connector {
+      display: flex;
+      align-items: center;
+      color: var(--text-light);
+      font-size: 1.5rem;
+    }
+
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+    @media (max-width: 1200px) {
+      .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .card-grid.four-col {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .phase-card-main {
+        grid-template-columns: 1fr;
+      }
+      .phase-info {
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .demo-container {
+        grid-template-columns: 1fr;
+      }
+      .state-container {
+        grid-template-columns: 1fr;
+      }
+      .subagent-row {
+        flex-direction: column;
+      }
+      .subagent-connector {
+        width: 100%;
+        height: 30px;
+      }
+      .tdd-phases {
+        flex-direction: column;
+      }
+      .tdd-connector {
+        justify-content: center;
+        transform: rotate(90deg);
+        height: 30px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      section {
+        padding: 80px 20px 40px;
+      }
+      h1, .hero-main-title { font-size: 2.5rem; }
+      h2 { font-size: 1.8rem; }
+      .nav {
+        padding: 15px 20px;
+      }
+      .nav-links {
+        display: none;
+      }
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+      .card-grid.two-col,
+      .card-grid.four-col {
+        grid-template-columns: 1fr;
+      }
+      .stats-row {
+        gap: 30px;
+      }
+      .stat .number {
+        font-size: 3rem;
+      }
+      .quick-ref-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero-scientific {
+        flex-direction: column;
+        gap: 8px;
+      }
+      .hero-scientific .arrow {
+        transform: rotate(90deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav">
+    <a href="#" class="nav-brand"><span class="hustle">Hustle</span>&nbsp;Dev Tools</a>
+    <div class="nav-links">
+      <a href="#what" class="nav-btn">What</a>
+      <a href="#philosophy" class="nav-btn">Philosophy</a>
+      <div class="nav-dropdown">
+        <a href="#phases" class="nav-btn nav-dropdown-toggle">14 Phases <i class="fa-solid fa-chevron-down"></i></a>
+        <div class="nav-dropdown-menu">
+          <a href="#phase-clarify" class="nav-dropdown-item">Clarify (1-2)</a>
+          <a href="#phase-research" class="nav-dropdown-item">Research (3-5)</a>
+          <a href="#phase-prepare" class="nav-dropdown-item">Prepare (6-7)</a>
+          <a href="#phase-build" class="nav-dropdown-item">Build (8-9)</a>
+          <a href="#phase-verify" class="nav-dropdown-item">Verify (10-12)</a>
+          <a href="#phase-complete" class="nav-dropdown-item">Complete (13-14)</a>
+        </div>
+      </div>
+      <a href="#hooks" class="nav-btn">17 Hooks</a>
+      <a href="#subagents" class="nav-btn">6 Subagents</a>
+      <a href="#workflows" class="nav-btn">5 Workflows</a>
+    </div>
+    <div class="nav-spacer"></div>
+    <div class="nav-right">
+      <div class="version-badge">
+        <span class="tag">v5.0</span>
+        <span class="version">@hustle/devkit</span>
+      </div>
+      <a href="#install" class="nav-btn primary">Install</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="hero">
+    <div class="hero-canvas-container">
+      <canvas id="hero-grid"></canvas>
+    </div>
+    <div class="section-inner">
+      <div class="hero-badge">
+        <span class="tag">NEW</span>
+        <span class="text">17 Hooks • 6 Subagents • 14 Conditional Phases</span>
+      </div>
+      
+      <h1 class="hero-main-title">
+        <span class="hustle">Hustle</span> <span class="tools">Dev Tools 5.0</span>
+      </h1>
+      
+      <p class="hero-tagline">
+        The Scientific Method Applied to Software Development.<br>
+        Workflow enforcement that prevents Claude from cutting corners.
+      </p>
+
+      <div class="hero-scientific">
+        <span class="step">Research</span>
+        <span class="arrow"><i class="fa-solid fa-arrow-right"></i></span>
+        <span class="step">Hypothesize</span>
+        <span class="arrow"><i class="fa-solid fa-arrow-right"></i></span>
+        <span class="step">Experiment</span>
+        <span class="arrow"><i class="fa-solid fa-arrow-right"></i></span>
+        <span class="step">Verify</span>
+        <span class="arrow"><i class="fa-solid fa-arrow-right"></i></span>
+        <span class="step">Document</span>
+        <span class="arrow"><i class="fa-solid fa-arrow-right"></i></span>
+        <span class="step">Iterate</span>
+      </div>
+      
+      <div class="hero-install-box">
+        <div class="label">Quick Install</div>
+        <div class="command-box">
+          <code><span class="npx">npx</span> <span class="pkg">@hustle/devkit init</span></code>
+          <button class="copy-btn" onclick="copyCommand(this)">
+            <i class="fa-regular fa-copy"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="hero-cta-buttons">
+        <a href="#phases" class="cta-btn primary">
+          <i class="fa-solid fa-play"></i> See the 14 Phases
+        </a>
+        <a href="#hooks" class="cta-btn">
+          <i class="fa-solid fa-lock"></i> Explore 17 Hooks
+        </a>
+        <a href="https://github.com/hustle/devkit" class="cta-btn">
+          <i class="fa-brands fa-github"></i> GitHub
+        </a>
+      </div>
+      
+      <div class="hero-terminal-preview">
+        <div class="terminal-window">
+          <div class="terminal-header">
+            <div class="terminal-dot red"></div>
+            <div class="terminal-dot yellow"></div>
+            <div class="terminal-dot green"></div>
+            <div class="terminal-title">claude ~/my-project</div>
+          </div>
+          <div class="terminal-content">
+            <div><span class="dollar">$</span> <span class="cmd">/create api stripe-checkout</span></div>
+            <br>
+            <div><span class="phase">Phase 1: Disambiguation</span></div>
+            <div class="dim">  Which Stripe checkout approach?</div>
+            <div class="dim">  A) Stripe Checkout (hosted page) ← Recommended</div>
+            <div class="dim">  B) Stripe Elements (embedded form)</div>
+            <br>
+            <div><span class="phase">Phase 3: Research</span></div>
+            <div class="dim">  ✓ Context7: Stripe SDK patterns</div>
+            <div class="dim">  ✓ WebSearch: Official Stripe docs</div>
+            <div class="dim">  ✓ ToC Scrape: 47 webhook events found</div>
+            <br>
+            <div><span class="phase">Phase 8: TDD Red</span></div>
+            <div class="error">  FAIL checkout.test.ts (3 tests)</div>
+            <br>
+            <div><span class="phase">Phase 9: TDD Green</span></div>
+            <div class="success">  PASS checkout.test.ts (3 tests)</div>
+            <br>
+            <div><span class="success">✓ All 14 phases complete</span></div>
+            <div><span class="dim">  Registry updated • Docs generated</span><span class="cursor-blink"></span></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="scroll-indicator">
+        <i class="fa-solid fa-chevron-down"></i> Scroll to explore
+      </div>
+    </div>
+  </section>
+
+  <!-- What is DevKit -->
+  <section id="what">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-label">Introduction</span>
+        <h2>What is Hustle Dev Tools?</h2>
+        <p class="text-muted">A workflow enforcement system for Claude Code that ensures consistent, high-quality development through structured phases.</p>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat">
+          <div class="number">14</div>
+          <div class="label">Phases</div>
+        </div>
+        <div class="stat">
+          <div class="number">17</div>
+          <div class="label">Hooks</div>
+        </div>
+        <div class="stat">
+          <div class="number">6</div>
+          <div class="label">Subagents</div>
+        </div>
+        <div class="stat">
+          <div class="number">5</div>
+          <div class="label">Workflows</div>
+        </div>
+      </div>
+
+      <h3 style="text-align: center; margin-bottom: 30px;">The Problems It Solves</h3>
+      
+      <div class="card-grid">
+        <div class="card problem-card">
+          <div class="card-header">
+            <div class="icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+            <h3>Outdated Documentation</h3>
+          </div>
+          <span class="issue-label">The Issue</span>
+          <p class="issue-text">AI uses training data months or years old. APIs change constantly with new endpoints and deprecated parameters.</p>
+          <span class="why-label">Why It Matters</span>
+          <p class="why-text">Your implementation breaks on day one. The AI confidently writes code for endpoints that no longer exist.</p>
+        </div>
+
+        <div class="card problem-card">
+          <div class="card-header">
+            <div class="icon"><i class="fa-solid fa-brain"></i></div>
+            <h3>Memory-Based Drift</h3>
+          </div>
+          <span class="issue-label">The Issue</span>
+          <p class="issue-text">Even after researching docs, AI "forgets" by implementation time and falls back to training patterns.</p>
+          <span class="why-label">Why It Matters</span>
+          <p class="why-text">Research is wasted. The AI reads correct docs, then writes code based on stale memory instead.</p>
+        </div>
+
+        <div class="card problem-card">
+          <div class="card-header">
+            <div class="icon"><i class="fa-solid fa-comments"></i></div>
+            <h3>Self-Answering Questions</h3>
+          </div>
+          <span class="issue-label">The Issue</span>
+          <p class="issue-text">AI asks "What format?" then immediately answers itself with assumptions. Your requirements never get captured.</p>
+          <span class="why-label">Why It Matters</span>
+          <p class="why-text">You end up with someone else's preferences baked into your code instead of what you actually need.</p>
+        </div>
+
+        <div class="card problem-card">
+          <div class="card-header">
+            <div class="icon"><i class="fa-solid fa-hourglass-half"></i></div>
+            <h3>Context Dilution</h3>
+          </div>
+          <span class="issue-label">The Issue</span>
+          <p class="issue-text">In long sessions, early decisions fade from context. By implementation, the AI has "forgotten" what you agreed on.</p>
+          <span class="why-label">Why It Matters</span>
+          <p class="why-text">Turn 47 doesn't remember Turn 3. That caching strategy you specified? Gone. Replaced with defaults.</p>
+        </div>
+
+        <div class="card problem-card">
+          <div class="card-header">
+            <div class="icon"><i class="fa-solid fa-check-double"></i></div>
+            <h3>Skipped Verification</h3>
+          </div>
+          <span class="issue-label">The Issue</span>
+          <p class="issue-text">AI claims "done!" without checking if implementation matches documentation. Memory-based errors slip through.</p>
+          <span class="why-label">Why It Matters</span>
+          <p class="why-text">Tests pass but API fails in production. The code works for the wrong version of the API.</p>
+        </div>
+
+        <div class="card problem-card">
+          <div class="card-header">
+            <div class="icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <h3>No Enforcement</h3>
+          </div>
+          <span class="issue-label">The Issue</span>
+          <p class="issue-text">Nothing FORCES the AI to follow the workflow. It can skip steps whenever convenient or when context is lost.</p>
+          <span class="why-label">Why It Matters</span>
+          <p class="why-text">Workflows become suggestions. Without hard blocks, the AI takes shortcuts that cause rework.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Philosophy Section -->
+  <section id="philosophy">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-label">Philosophy</span>
+        <h2>Why 14 Phases?</h2>
+        <p class="text-muted">The phases map to the scientific method - observe, research, hypothesize, experiment, analyze, refine, publish.</p>
+      </div>
+
+      <div class="architecture-diagram">
+        <pre>
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                              <span class="highlight">SCIENTIFIC METHOD MAPPING</span>                              │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                     │
+│  <span class="highlight">OBSERVE</span>        →   Phases 1-2: Clarify                                            │
+│  <span class="dim">Understand what we're building</span>                                                    │
+│                                                                                     │
+│  <span class="highlight">RESEARCH</span>       →   Phases 3-5: Research                                           │
+│  <span class="dim">Gather current knowledge (Context7, WebSearch, ToC Scraping)</span>                       │
+│                                                                                     │
+│  <span class="highlight">HYPOTHESIZE</span>    →   Phase 6: Schema                                                 │
+│  <span class="dim">Define expected structure with Zod types</span>                                          │
+│                                                                                     │
+│  <span class="highlight">EXPERIMENT</span>     →   Phases 7-9: TDD                                                 │
+│  <span class="dim">Build with verification (Red → Green → Refactor)</span>                                  │
+│                                                                                     │
+│  <span class="highlight">ANALYZE</span>        →   Phases 10-11: Verify & Review                                   │
+│  <span class="dim">Compare results to expectations, security scan</span>                                    │
+│                                                                                     │
+│  <span class="highlight">REFINE</span>         →   Phase 12: Refactor                                              │
+│  <span class="dim">Improve based on analysis</span>                                                         │
+│                                                                                     │
+│  <span class="highlight">PUBLISH</span>        →   Phases 13-14: Document & Complete                               │
+│  <span class="dim">Share findings, update registry, commit</span>                                           │
+│                                                                                     │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+        </pre>
+      </div>
+
+      <h3 style="text-align: center; margin-bottom: 30px;">Conditional Execution</h3>
+      <p style="text-align: center; color: var(--text-muted); max-width: 700px; margin: 0 auto 40px;">
+        Not every task needs all 14 phases. The system is <strong>registry-aware</strong>:
+      </p>
+
+      <div class="card-grid" style="max-width: 900px; margin: 0 auto;">
+        <div class="card">
+          <div class="card-icon"><i class="fa-solid fa-forward"></i></div>
+          <h3>Skip Research</h3>
+          <p>If registry has fresh pattern (&lt; 7 days) for similar task, phases 3-5 are skipped.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><i class="fa-solid fa-check-circle"></i></div>
+          <h3>Verify Only</h3>
+          <p>If artifact exists with same checksum, skip to verification phases only.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><i class="fa-solid fa-bolt"></i></div>
+          <h3>Skip Refactor</h3>
+          <p>If quick fix (&lt; 50 lines) passes review, phase 12 is skipped.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14 Phases Section -->
+  <section id="phases">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-label">Core Workflow</span>
+        <h2>The 14-Phase Workflow</h2>
+        <p class="text-muted">Each phase is enforced by Python hooks that BLOCK progress until requirements are met.</p>
+      </div>
+
+      <div class="phases-container">
+        <!-- CLARIFY Group -->
+        <div class="phase-group" id="phase-clarify">
+          <div class="phase-group-header">
+            <div class="group-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+            <div>
+              <h3>Clarify</h3>
+              <p class="text-muted">Phases 1-2: Understand what we're building</p>
+            </div>
+            <span class="scientific">Scientific Method: OBSERVE</span>
+          </div>
+
+          <div class="phase-card">
+            <div class="phase-card-main">
+              <div class="phase-info">
+                <span class="phase-number">Phase 1</span>
+                <h4>Disambiguation</h4>
+                <p>Clarify ambiguous terms before proceeding.</p>
+                <span class="phase-hook"><i class="fa-solid fa-lock"></i> disambiguation-gate.py</span>
+              </div>
+              <div class="phase-terminal">
+                <pre><span class="prompt">User:</span> "Create a Stripe checkout"
+
+<span class="output">Claude asks:</span> <span class="dim">"Which Stripe checkout approach?
+  A) Stripe Checkout (hosted page)</span> <span class="success">← Recommended</span>
+  <span class="dim">B) Stripe Elements (embedded form)
+  C) Custom integration"</span></pre>
+              </div>
+            </div>
+            <button class="expand-btn" onclick="toggleExpand(this)">
+              <span class="arrow"><i class="fa-solid fa-chevron-down"></i></span> Expand Details
+            </button>
+            <div class="phase-details">
+              <div class="phase-details-inner">
+                <h5>What Gets Checked</h5>
+                <ul>
+                  <li>All ambiguous terms identified</li>
+                  <li>User confirms specific approach</li>
+                  <li>No assumptions made by Claude</li>
+                </ul>
+                <h5>State Fields Tracked</h5>
+                <div class="state-fields">
+                  <code>phases.disambiguation.term</code><br>
+                  <code>phases.disambiguation.user_choice</code>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-card">
+            <div class="phase-card-main">
+              <div class="phase-info">
+                <span class="phase-number">Phase 2</span>
+                <h4>Scope Definition</h4>
+                <p>Define what's in/out of scope.</p>
+                <span class="phase-hook"><i class="fa-solid fa-lock"></i> scope-gate.py</span>
+              </div>
+              <div class="phase-terminal">
+                <pre><span class="output">{</span>
+  <span class="dim">"scope": {</span>
+    <span class="success">"in":</span> <span class="dim">["Create checkout session",
+          "Handle success/cancel redirects"],</span>
+    <span class="error">"out":</span> <span class="dim">["Subscription management",
+           "Invoice handling"],</span>
+    <span class="warning">"success_criteria":</span> <span class="dim">["User can complete
+                         purchase"]</span>
+  <span class="dim">}</span>
+<span class="output">}</span></pre>
+              </div>
+            </div>
+            <button class="expand-btn" onclick="toggleExpand(this)">
+              <span class="arrow"><i class="fa-solid fa-chevron-down"></i></span> Expand Details
+            </button>
+            <div class="phase-details">
+              <div class="phase-details-inner">
+                <h5>Scope Requirements</h5>
+                <ul>
+                  <li>Explicit "in scope" items defined</li>
+                  <li>Explicit "out of scope" exclusions</li>
+                  <li>Success criteria established</li>
+                  <li>User confirms scope document</li>
+                </ul>
+                <h5>State Fields Tracked</h5>
+                <div class="state-fields">
+                  <code>phases.scope.in[]</code><br>
+                  <code>phases.scope.out[]</code><br>
+                  <code>phases.scope.success_criteria[]</code>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RESEARCH Group -->
+        <div class="phase-group" id="phase-research">
+          <div class="phase-group-header">
+            <div class="group-icon"><i class="fa-solid fa-book-open"></i></div>
+            <div>
+              <h3>Research</h3>
+              <p class="text-muted">Phases 3-5: Gather current knowledge</p>
+            </div>
+            <span class="scientific">Scientific Method: RESEARCH</span>
+          </div>
+
+          <div class="phase-card">
+            <div class="phase-card-main">
+              <div class="phase-info">
+                <span class="phase-number">Phase 3</span>
+                <h4>Initial Research</h4>
+                <p>Context7 + WebSearch + ToC scraping.</p>
+                <span class="phase-hook"><i class="fa-solid fa-lock"></i> research-gate.py</span>
+              </div>
+              <div class="phase-terminal">
+                <pre><span class="success">✓</span> <span class="output">Context7:</span> <span class="dim">Search Stripe library docs</span>
+<span class="success">✓</span> <span class="output">WebSearch:</span> <span class="dim">Official Stripe API docs</span>
+<span class="success">✓</span> <span class="output">ToC Scrape:</span> <span class="dim">Found ALL Stripe features</span>
+    <span class="dim">• 3 checkout modes discovered</span>
+    <span class="dim">• 47 webhook events found</span>
+    <span class="dim">• Idempotency support detected</span>
+
+<span class="warning">Caching to:</span> <span class="dim">.devkit/research/stripe-checkout/</span></pre>
+              </div>
+            </div>
+            <button class="expand-btn" onclick="toggleExpand(this)">
+              <span class="arrow"><i class="fa-solid fa-chevron-down"></i></span> Expand Details
+            </button>
+            <div class="phase-details">
+              <div class="phase-details-inner">
+                <h5>Research Sources</h5>
+                <ul>
+                  <li><strong>Context7 MCP</strong> - Library-specific documentation</li>
+                  <li><strong>WebSearch</strong> - Official docs, changelogs, known issues</li>
+                  <li><strong>ToC Scraping</strong> - Discover ALL features (not just what we search for)</li>
+                </ul>
+                <h5>State Fields Tracked</h5>
+                <div class="state-fields">
+                  <code>phases.research.sources[]</code><br>
+                  <code>phases.research.cache_path</code><br>
+                  <code>research.cache.{topic}.fetchedAt</code>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-card">
+            <div class="phase-card-main">
+              <div class="phase-info">
+                <span class="phase-number">Phase 4</span>
+                <h4>Interview</h4>
+                <p>Questions DERIVED from research findings.</p>
+                <span class="phase-hook"><i class="fa-solid fa-lock"></i> interview-gate.py</span>
+              </div>
+              <div class="phase-terminal">
+                <pre><span class="output">Research found:</span> <span class="dim">3 checkout modes, 47 webhooks</span>
+
+<span class="warning">Interview asks:</span>
+<span class="dim">1. "3 checkout modes found. Which do you need?"</span>
+<span class="dim">2. "47 webhook events available. Which relevant?"</span>
+<span class="dim">3. "Idempotency supported. Enable for retry?"</span>
+
+<span class="success">Key:</span> <span class="dim">Questions come from research, NOT templates</span></pre>
+              </div>
+            </div>
+            <button class="expand-btn" onclick="toggleExpand(this)">
+              <span class="arrow"><i class="fa-solid fa-chevron-down"></i></span> Expand Details
+            </button>
+            <div class="phase-details">
+              <div class="phase-details-inner">
+                <h5>Interview Requirements</h5>
+                <ul>
+                  <li>Questions must reference research findings</li>
+                  <li>Numbered options for each decision</li>
+                  <li>Detects and blocks self-answering</li>
+                  <li>Requires human confirmation</li>
+                </ul>
+                <h5>State Fields Tracked</h5>
+                <div class="state-fields">
+                  <code>phases.interview.questions[]</code><br>
+                  <code>phases.interview.answers[]</code><br>
+                  <code>phases.interview.confirmed</code>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-card">
+            <div class="phase-card-main">
+              <div class="phase-info">
+                <span class="phase-number">Phase 5</span>
+                <h4>Deep Research</h4>
+                <p>Follow-up research based on interview answers.</p>
+                <span class="phase-hook"><i class="fa-solid fa-lock"></i> deep-research-gate.py</span>
+              </div>
+              <div class="phase-terminal">
+                <pre><span class="output">Interview answer:</span> <span class="dim">"Use hosted checkout + refund webhooks"</span>
+
+<span class="warning">Deep research:</span>
+<span class="dim">1. Search specifically for hosted checkout patterns</span>
+<span class="dim">2. Research refund webhook payload structure</span>
+<span class="dim">3. Find edge cases in GitHub issues</span>
+<span class="dim">4. Update research cache</span></pre>
+              </div>
+            </div>
+            <button class="expand-btn" onclick="toggleExpand(this)">
+              <span class="arrow"><i class="fa-solid fa-chevron-down"></i></span> Expand Details
+            </button>
+            <div class="phase-details">
+              <div class="phase-details-inner">
+                <h5>Deep Research Focus</h5>
+                <ul>
+                  <li>Targeted research for chosen options</li>
+                  <li>Edge cases and known issues</li>
+                  <li>Implementation patterns specific to choices</li>
+                  <li>Updates cache with new findings</li>
+                </ul>
+                <h5>State Fields Tracked</h5>
+                <div class="state-fields">
+                  <code>phases.deep_research.topics[]</code><br>
+                  <code>phases.deep_research.findings[]</code>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PREPARE Group -->
+        <div class="phase-group" id="phase-prepare">
+          <div class="phase-group-header">
+            <div class="group-icon"><i class="fa-solid fa-code"></i></div>
+            <div>
+              <h3>Prepare</h3>
+              <p class="text-muted">Phases 6-7: Define structure and verify environment</p>
+            </div>
+            <span class="scientific">Scientific Method: HYPOTHESIZE</span>
+          </div>
+
+          <div class="phase-card">
+            <div class="phase-card-main">
+              <div class="phase-info">
+                <span class="phase-number">Phase 6</span>
+                <h4>Schema</h4>
+                <p>Create Zod schemas from research + interview.</p>
+                <span class="phase-hook"><i class="fa-solid fa-lock"></i> schema-gate.py</span>
+              </div>
+              <div class="phase-terminal">
+                <pre><span class="dim">// src/lib/schemas/stripe-checkout.ts</span>
+<span class="output">import</span> { z } <span class="output">from</span> <span class="dim">'zod'</span>;
+
+<span class="output">export const</span> CheckoutSessionSchema = z.object({
+  <span class="warning">mode:</span> z.enum([<span class="dim">'payment'</span>, <span class="dim">'subscription'</span>]),
+  <span class="warning">lineItems:</span> z.array(LineItemSchema),
+  <span class="warning">successUrl:</span> z.string().url(),
+  <span class="dim">// ... all fields from research</span>
+});</pre>
+              </div>
+            </div>
+            <button class="expand-btn" onclick="toggleExpand(this)">
+              <span class="arrow"><i class="fa-solid fa-chevron-down"></i></span> Expand Details
+            </button>
+            <div class="phase-details">
+              <div class="phase-details-inner">
+                <h5>Schema Requirements</h5>
+                <ul>
+                  <li>All fields from research included</li>
+                  <li>Types match documented API</li>
+                  <li>Validation rules from docs</li>
+                  <li>Schema approved by user</li>
+                </ul>
+                <h5>State Fields Tracked</h5>
+                <div class="state-fields">
+                  <code>phases.schema.file_path</code><br>
+                  <code>phases.schema.approved</code>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-card">
+            <div class="phase-card-main">
+              <div class="phase-info">
+                <span class="phase-number">Phase 7</span>
+                <h4>Environment</h4>
+                <p>Verify everything needed exists before coding.</p>
+                <span class="phase-hook"><i class="fa-solid fa-lock"></i> environment-gate.py</span>
+              </div>
+              <div class="phase-terminal">
+                <pre><span class="output">Checking environment...</span>
+
+<span class="success">✓</span> <span class="output">STRIPE_SECRET_KEY</span> <span class="dim">exists in .env</span>
+<span class="success">✓</span> <span class="output">STRIPE_WEBHOOK_SECRET</span> <span class="dim">exists in .env</span>
+<span class="success">✓</span> <span class="output">stripe package</span> <span class="dim">installed (v14.x)</span>
+<span class="success">✓</span> <span class="output">API route structure</span> <span class="dim">ready</span>
+
+<span class="success">Environment ready</span></pre>
+              </div>
+            </div>
+            <button class="expand-btn" onclick="toggleExpand(this)">
+              <span class="arrow"><i class="fa-solid fa-chevron-down"></i></span> Expand Details
+            </button>
+            <div class="phase-details">
+              <div class="phase-details-inner">
+                <h5>Environment Checks</h5>
+                <ul>
+                  <li>Required API keys exist</li>
+                  <li>Package versions match docs</li>
+                  <li>Directory structure ready</li>
+                  <li>Key format validation</li>
+                </ul>
+                <h5>State Fields Tracked</h5>
+                <div class="state-fields">
+                  <code>phases.environment.required_keys[]</code><br>
+                  <code>phases.environment.verified</code>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BUILD Group -->
+        <div class="phase-group" id="phase-build">
+          <div class="phase-group-header">
+            <div class="group-icon"><i class="fa-solid fa-hammer"></i></div>
+            <div>
+              <h3>Build</h3>
+              <p class="text-muted">Phases 8-9: TDD with isolated subagent contexts</p>
+            </div>
+            <span class="scientific">Scientific Method: EXPERIMENT</span>
+          </div>
+
+          <div class="phase-card">
+            <div class="phase-card-main">
+              <div class="phase-info">
+                <span class="phase-number">Phase 8</span>
+                <h4>TDD Red</h4>
+                <p>Write FAILING tests BEFORE any implementation.</p>
+                <span class="phase-hook"><i class="fa-solid fa-lock"></i> tdd-gate.py</span>
+              </div>
+              <div class="phase-terminal">
+                <pre><span class="prompt">$</span> <span class="cmd">pnpm test:run</span>
+
+<span class="error">FAIL</span> <span class="output">checkout.test.ts</span>
+  <span class="error">✗</span> <span class="dim">creates checkout session with valid items</span>
+  <span class="error">✗</span> <span class="dim">returns 400 for empty cart</span>
+  <span class="error">✗</span> <span class="dim">handles webhook events correctly</span>
+
+<span class="error">3 tests failed</span> <span class="dim">(expected - this is TDD Red)</span></pre>
+              </div>
+            </div>
+            <button class="expand-btn" onclick="toggleExpand(this)">
+              <span class="arrow"><i class="fa-solid fa-chevron-down"></i></span> Expand Details
+            </button>
+            <div class="phase-details">
+              <div class="phase-details-inner">
+                <h5>TDD Red Requirements</h5>
+                <ul>
+                  <li>Tests must FAIL initially</li>
+                  <li>Cover all interview decisions</li>
+                  <li>Test discovered parameters from research</li>
+                  <li>Include error cases from docs</li>
+                </ul>
+                <h5>Subagent Used</h5>
+                <div class="state-fields">
+                  <code>test-writer</code> (Sonnet - isolated context)<br>
+                  <code>Cannot see implementation code</code>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-card">
+            <div class="phase-card-main">
+              <div class="phase-info">
+                <span class="phase-number">Phase 9</span>
+                <h4>TDD Green</h4>
+                <p>MINIMAL code to pass tests.</p>
+                <span class="phase-hook"><i class="fa-solid fa-lock"></i> verify-green.py</span>
+              </div>
+              <div class="phase-terminal">
+                <pre><span class="prompt">$</span> <span class="cmd">pnpm test:run</span>
+
+<span class="success">PASS</span> <span class="output">checkout.test.ts</span>
+  <span class="success">✓</span> <span class="dim">creates checkout session with valid items</span>
+  <span class="success">✓</span> <span class="dim">returns 400 for empty cart</span>
+  <span class="success">✓</span> <span class="dim">handles webhook events correctly</span>
+
+<span class="success">3 tests passed</span>
+<span class="warning">→ Triggering Phase 10: Verify</span></pre>
+              </div>
+            </div>
+            <button class="expand-btn" onclick="toggleExpand(this)">
+              <span class="arrow"><i class="fa-solid fa-chevron-down"></i></span> Expand Details
+            </button>
+            <div class="phase-details">
+              <div class="phase-details-inner">
+                <h5>TDD Green Rules</h5>
+                <ul>
+                  <li>Write MINIMAL code to pass tests</li>
+                  <li>No premature optimization</li>
+                  <li>Interview decisions in comments</li>
+                  <li>When tests pass → triggers Phase 10</li>
+                </ul>
+                <h5>Subagent Used</h5>
+                <div class="state-fields">
+                  <code>implementer</code> (Sonnet - isolated context)<br>
+                  <code>Sees ONLY failing test file</code>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VERIFY Group -->
+        <div class="phase-group" id="phase-verify">
+          <div class="phase-group-header">
+            <div class="group-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+            <div>
+              <h3>Verify</h3>
+              <p class="text-muted">Phases 10-12: Compare results, review, and refine</p>
+            </div>
+            <span class="scientific">Scientific Method: ANALYZE + REFINE</span>
+          </div>
+
+          <div class="phase-card">
+            <div class="phase-card-main">
+              <div class="phase-info">
+                <span class="phase-number">Phase 10</span>
+                <h4>Verification</h4>
+                <p>Re-research docs and compare to implementation.</p>
+                <span class="phase-hook"><i class="fa-solid fa-lock"></i> verify-gate.py</span>
+              </div>
+              <div class="phase-terminal">
+                <pre><span class="output">Verifying implementation...</span>
+
+<span class="dim">Re-fetching Stripe docs (fresh, not cached)...</span>
+<span class="dim">Comparing to route.ts...</span>
+
+<span class="warning">⚠</span> <span class="output">Missing: size parameter</span>
+    <span class="dim">Docs show: 128|256|512</span>
+    <span class="dim">Implementation: not found</span>
+
+<span class="error">→ Loop back to Phase 9</span></pre>
+              </div>
+            </div>
+            <button class="expand-btn" onclick="toggleExpand(this)">
+              <span class="arrow"><i class="fa-solid fa-chevron-down"></i></span> Expand Details
+            </button>
+            <div class="phase-details">
+              <div class="phase-details-inner">
+                <h5>Verification Checks</h5>
+                <ul>
+                  <li>Re-fetch docs (NOT from cache)</li>
+                  <li>Compare all params to implementation</li>
+                  <li>Verify error handling matches docs</li>
+                  <li>If mismatch → loop back to Phase 9</li>
+                </ul>
+                <h5>State Fields Tracked</h5>
+                <div class="state-fields">
+                  <code>phases.verify.mismatches[]</code><br>
+                  <code>phases.verify.passed</code>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-card">
+            <div class="phase-card-main">
+              <div class="phase-info">
+                <span class="phase-number">Phase 11</span>
+                <h4>Code Review</h4>
+                <p>AI-powered security and quality review.</p>
+                <span class="phase-hook"><i class="fa-solid fa-lock"></i> review-gate.py</span>
+              </div>
+              <div class="phase-terminal">
+                <pre><span class="output">SECURITY (OWASP Top 10):</span>
+<span class="success">☑</span> <span class="dim">No SQL injection</span>
+<span class="success">☑</span> <span class="dim">Input validation present</span>
+<span class="success">☑</span> <span class="dim">No exposed credentials</span>
+
+<span class="output">CODE QUALITY:</span>
+<span class="success">☑</span> <span class="dim">Follows project conventions</span>
+<span class="success">☑</span> <span class="dim">Proper error handling</span>
+<span class="warning">☐</span> <span class="dim">TypeScript strict mode warnings</span></pre>
+              </div>
+            </div>
+            <button class="expand-btn" onclick="toggleExpand(this)">
+              <span class="arrow"><i class="fa-solid fa-chevron-down"></i></span> Expand Details
+            </button>
+            <div class="phase-details">
+              <div class="phase-details-inner">
+                <h5>Review Checks</h5>
+                <ul>
+                  <li>OWASP Top 10 security scan</li>
+                  <li>Project convention compliance</li>
+                  <li>Performance analysis</li>
+                  <li>Accessibility audit (for UI)</li>
+                </ul>
+                <h5>Subagent Used</h5>
+                <div class="state-fields">
+                  <code>reviewer</code> (Sonnet)<br>
+                  <code>Tools: Read, Grep, Glob, Bash (linting)</code>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-card">
+            <div class="phase-card-main">
+              <div class="phase-info">
+                <span class="phase-number">Phase 12</span>
+                <h4>Refactor</h4>
+                <p>Improve code while keeping tests green.</p>
+                <span class="phase-hook"><i class="fa-solid fa-lock"></i> refactor-gate.py</span>
+              </div>
+              <div class="phase-terminal">
+                <pre><span class="output">Refactoring targets:</span>
+<span class="dim">• Fix code review issues</span>
+<span class="dim">• Extract shared utilities</span>
+<span class="dim">• Improve naming</span>
+<span class="dim">• Add inline documentation</span>
+
+<span class="warning">Rule:</span> <span class="dim">Tests must stay GREEN</span>
+
+<span class="prompt">$</span> <span class="cmd">pnpm test:run</span>
+<span class="success">✓ All tests still passing</span></pre>
+              </div>
+            </div>
+            <button class="expand-btn" onclick="toggleExpand(this)">
+              <span class="arrow"><i class="fa-solid fa-chevron-down"></i></span> Expand Details
+            </button>
+            <div class="phase-details">
+              <div class="phase-details-inner">
+                <h5>Refactor Rules</h5>
+                <ul>
+                  <li>Fix all code review issues</li>
+                  <li>Tests must stay passing</li>
+                  <li>Improve without changing behavior</li>
+                  <li>Skipped if quick fix &lt; 50 lines</li>
+                </ul>
+                <h5>Subagent Used</h5>
+                <div class="state-fields">
+                  <code>refactorer</code> (Sonnet - fresh context)<br>
+                  <code>Sees: Passing tests + implementation</code>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COMPLETE Group -->
+        <div class="phase-group" id="phase-complete">
+          <div class="phase-group-header">
+            <div class="group-icon"><i class="fa-solid fa-flag-checkered"></i></div>
+            <div>
+              <h3>Complete</h3>
+              <p class="text-muted">Phases 13-14: Document and finalize</p>
+            </div>
+            <span class="scientific">Scientific Method: PUBLISH</span>
+          </div>
+
+          <div class="phase-card">
+            <div class="phase-card-main">
+              <div class="phase-info">
+                <span class="phase-number">Phase 13</span>
+                <h4>Documentation</h4>
+                <p>Update all documentation and registry.</p>
+                <span class="phase-hook"><i class="fa-solid fa-lock"></i> docs-gate.py</span>
+              </div>
+              <div class="phase-terminal">
+                <pre><span class="output">Documentation outputs:</span>
+<span class="success">✓</span> <span class="dim">Registry entry in .devkit/registry.json</span>
+<span class="success">✓</span> <span class="dim">OpenAPI spec in docs/api/</span>
+<span class="success">✓</span> <span class="dim">TypeDoc comments in source</span>
+<span class="success">✓</span> <span class="dim">README updates</span>
+<span class="success">✓</span> <span class="dim">Showcase entry for testing</span></pre>
+              </div>
+            </div>
+            <button class="expand-btn" onclick="toggleExpand(this)">
+              <span class="arrow"><i class="fa-solid fa-chevron-down"></i></span> Expand Details
+            </button>
+            <div class="phase-details">
+              <div class="phase-details-inner">
+                <h5>Documentation Outputs</h5>
+                <ul>
+                  <li>Registry entry with checksum</li>
+                  <li>OpenAPI/TypeDoc specs</li>
+                  <li>Storybook autodocs (for UI)</li>
+                  <li>README updates if needed</li>
+                </ul>
+                <h5>Subagent Used</h5>
+                <div class="state-fields">
+                  <code>docs-generator</code> (Haiku)<br>
+                  <code>Tools: Read, Write, Glob</code>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-card">
+            <div class="phase-card-main">
+              <div class="phase-info">
+                <span class="phase-number">Phase 14</span>
+                <h4>Completion</h4>
+                <p>Final verification and commit.</p>
+                <span class="phase-hook"><i class="fa-solid fa-lock"></i> completion-gate.py + ralph-loop.py</span>
+              </div>
+              <div class="phase-terminal">
+                <pre><span class="output">Final Checklist:</span>
+<span class="success">☑</span> <span class="dim">All tests passing (unit, E2E, visual)</span>
+<span class="success">☑</span> <span class="dim">No TypeScript errors</span>
+<span class="success">☑</span> <span class="dim">No ESLint errors</span>
+<span class="success">☑</span> <span class="dim">Registry updated</span>
+<span class="success">☑</span> <span class="dim">Documentation complete</span>
+<span class="success">☑</span> <span class="dim">All scope items addressed</span>
+
+<span class="success">✓ WORKFLOW COMPLETE</span></pre>
+              </div>
+            </div>
+            <button class="expand-btn" onclick="toggleExpand(this)">
+              <span class="arrow"><i class="fa-solid fa-chevron-down"></i></span> Expand Details
+            </button>
+            <div class="phase-details">
+              <div class="phase-details-inner">
+                <h5>Completion Checklist</h5>
+                <ul>
+                  <li>All tests passing</li>
+                  <li>No TypeScript/ESLint errors</li>
+                  <li>Registry and docs updated</li>
+                  <li>All scope items addressed</li>
+                </ul>
+                <h5>Ralph Wiggum Pattern</h5>
+                <div class="state-fields">
+                  <code>ralph-loop.py</code> - Exit code 2 forces continuation<br>
+                  <code>Blocks stopping until truly complete</code>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 17 Hooks Section -->
+  <section id="hooks">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-label">Enforcement</span>
+        <h2>All 17 Hooks Explained</h2>
+        <p class="text-muted">Python hooks that use exit code 2 to BLOCK progress until requirements are met.</p>
+      </div>
+
+      <!-- Gate Hooks -->
+      <div class="hook-category">
+        <div class="hook-category-header">
+          <div class="category-icon"><i class="fa-solid fa-lock"></i></div>
+          <div>
+            <h3>Gate Hooks <span class="count">(6)</span></h3>
+            <p>Block code changes until phase requirements met</p>
+          </div>
+        </div>
+        <div class="hooks-grid">
+          <div class="hook-card">
+            <div class="hook-name">research-gate.py</div>
+            <p>Blocks Edit/Write/MultiEdit until research phase complete. Checks <code>state.json</code> for <code>phases.research.complete</code>.</p>
+          </div>
+          <div class="hook-card">
+            <div class="hook-name">interview-gate.py</div>
+            <p>Blocks until interview complete. Detects self-answering and requires human confirmation.</p>
+          </div>
+          <div class="hook-card">
+            <div class="hook-name">schema-gate.py</div>
+            <p>Blocks until schema file exists and matches research findings. User must approve schema.</p>
+          </div>
+          <div class="hook-card">
+            <div class="hook-name">tdd-gate.py</div>
+            <p>Blocks implementation until tests exist AND fail. Prevents writing code before tests.</p>
+          </div>
+          <div class="hook-card">
+            <div class="hook-name">verify-gate.py</div>
+            <p>Blocks completion until verification passes. Re-fetches docs and compares to implementation.</p>
+          </div>
+          <div class="hook-card">
+            <div class="hook-name">docs-gate.py</div>
+            <p>Blocks until documentation complete. Registry entry, OpenAPI spec, TypeDoc all required.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- State Hooks -->
+      <div class="hook-category">
+        <div class="hook-category-header">
+          <div class="category-icon"><i class="fa-solid fa-database"></i></div>
+          <div>
+            <h3>State Hooks <span class="count">(3)</span></h3>
+            <p>Manage workflow state and context</p>
+          </div>
+        </div>
+        <div class="hooks-grid">
+          <div class="hook-card">
+            <div class="hook-name">state-manager.py</div>
+            <p>Updates <code>state.json</code> after each action. Tracks phase progress and checkpoints.</p>
+          </div>
+          <div class="hook-card">
+            <div class="hook-name">registry-manager.py</div>
+            <p>Updates <code>registry.json</code> when artifacts created. Auto-categorizes based on file path.</p>
+          </div>
+          <div class="hook-card">
+            <div class="hook-name">session-manager.py</div>
+            <p>Injects context at session start. Loads current phase, registry stats, and git status.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quality Hooks -->
+      <div class="hook-category">
+        <div class="hook-category-header">
+          <div class="category-icon"><i class="fa-solid fa-star"></i></div>
+          <div>
+            <h3>Quality Hooks <span class="count">(3)</span></h3>
+            <p>Ensure code quality and formatting</p>
+          </div>
+        </div>
+        <div class="hooks-grid">
+          <div class="hook-card">
+            <div class="hook-name">format.py</div>
+            <p>Auto-formats after Edit/Write using Prettier. Runs on .ts, .tsx, .js, .jsx files.</p>
+          </div>
+          <div class="hook-card">
+            <div class="hook-name">code-review.py</div>
+            <p>Triggers AI review after implementation. OWASP security scan, pattern validation.</p>
+          </div>
+          <div class="hook-card">
+            <div class="hook-name">visual-qa.py</div>
+            <p>Triggers screenshot testing for UI components. Playwright screenshots at 7 viewports.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Autonomous Hooks -->
+      <div class="hook-category">
+        <div class="hook-category-header">
+          <div class="category-icon"><i class="fa-solid fa-robot"></i></div>
+          <div>
+            <h3>Autonomous Hooks <span class="count">(2)</span></h3>
+            <p>Enable autonomous operation with Ralph Wiggum pattern</p>
+          </div>
+        </div>
+        <div class="hooks-grid">
+          <div class="hook-card">
+            <div class="hook-name">ralph-loop.py</div>
+            <p>Stop hook that forces continuation until done. Exit code 2 blocks stopping and feeds stderr back to Claude.</p>
+          </div>
+          <div class="hook-card">
+            <div class="hook-name">auto-answer.py</div>
+            <p>Selects "(Recommended)" options automatically in autonomous mode. Speeds up unattended workflows.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Context Hooks -->
+      <div class="hook-category">
+        <div class="hook-category-header">
+          <div class="category-icon"><i class="fa-solid fa-brain"></i></div>
+          <div>
+            <h3>Context Hooks <span class="count">(2)</span></h3>
+            <p>Maintain context and prevent drift</p>
+          </div>
+        </div>
+        <div class="hooks-grid">
+          <div class="hook-card">
+            <div class="hook-name">reground.py</div>
+            <p>Re-injects interview decisions and current phase every 7 turns. Prevents context dilution.</p>
+          </div>
+          <div class="hook-card">
+            <div class="hook-name">capacity-warning.py</div>
+            <p>Warns at 50/75/90% context capacity. Suggests checkpoint creation when nearing limit.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notification Hook -->
+      <div class="hook-category">
+        <div class="hook-category-header">
+          <div class="category-icon"><i class="fa-solid fa-bell"></i></div>
+          <div>
+            <h3>Notification Hook <span class="count">(1)</span></h3>
+            <p>Alert user when input needed</p>
+          </div>
+        </div>
+        <div class="hooks-grid">
+          <div class="hook-card">
+            <div class="hook-name">notify.py</div>
+            <p>NTFY push notification when Claude is waiting for input. Enables walk-away workflows.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Subagents Section -->
+  <section id="subagents">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-label">Specialization</span>
+        <h2>All 6 Subagents Explained</h2>
+        <p class="text-muted">Isolated context windows for specialized tasks. Prevents the LLM from "cheating" on TDD.</p>
+      </div>
+
+      <div class="subagent-hierarchy">
+        <!-- Orchestrator Row -->
+        <div class="subagent-row">
+          <div class="subagent-card orchestrator" style="max-width: 100%;">
+            <div class="agent-header">
+              <h4>Orchestrator</h4>
+              <span class="agent-model">Sonnet</span>
+            </div>
+            <p class="role">Coordinates workflows, manages state, delegates to specialized subagents</p>
+            <p class="tools-list"><span>Tools:</span> All tools + Task (to spawn subagents)</p>
+            <p class="phases-list"><span>Phases:</span> All (coordination)</p>
+          </div>
+        </div>
+
+        <!-- Child Subagents Row -->
+        <div class="subagent-row">
+          <div class="subagent-card">
+            <div class="agent-header">
+              <h4>Researcher</h4>
+              <span class="agent-model">Haiku</span>
+            </div>
+            <p class="role">Gather documentation before implementation</p>
+            <p class="tools-list"><span>Tools:</span> WebSearch, WebFetch, Context7, Read, Grep</p>
+            <p class="phases-list"><span>Phases:</span> 3, 4, 5 (research phases)</p>
+          </div>
+
+          <div class="subagent-card">
+            <div class="agent-header">
+              <h4>Builder</h4>
+              <span class="agent-model">Sonnet</span>
+            </div>
+            <p class="role">TDD implementation with isolated context</p>
+            <p class="tools-list"><span>Tools:</span> Read, Edit, Write, Bash (npm test)</p>
+            <p class="phases-list"><span>Phases:</span> 8, 9, 12 (TDD phases)</p>
+          </div>
+
+          <div class="subagent-card">
+            <div class="agent-header">
+              <h4>Reviewer</h4>
+              <span class="agent-model">Sonnet</span>
+            </div>
+            <p class="role">Code review, security scan, pattern validation</p>
+            <p class="tools-list"><span>Tools:</span> Read, Grep, Glob, Bash (linting)</p>
+            <p class="phases-list"><span>Phases:</span> 10, 11 (verification phases)</p>
+          </div>
+        </div>
+
+        <!-- Second Row -->
+        <div class="subagent-row">
+          <div class="subagent-card">
+            <div class="agent-header">
+              <h4>Docs Generator</h4>
+              <span class="agent-model">Haiku</span>
+            </div>
+            <p class="role">Generate documentation, update registry</p>
+            <p class="tools-list"><span>Tools:</span> Read, Write, Glob</p>
+            <p class="phases-list"><span>Phases:</span> 13 (documentation phase)</p>
+          </div>
+
+          <div class="subagent-card">
+            <div class="agent-header">
+              <h4>Visual Analyzer</h4>
+              <span class="agent-model">Haiku</span>
+            </div>
+            <p class="role">Screenshot testing, visual regression detection</p>
+            <p class="tools-list"><span>Tools:</span> Playwright MCP, Read</p>
+            <p class="phases-list"><span>Phases:</span> Visual QA (UI workflows only)</p>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="text-align: center; margin-bottom: 30px;">Why Isolated Subagents Matter</h3>
+
+      <div class="tdd-isolation">
+        <p style="text-align: center; color: var(--text-muted); margin-bottom: 30px;">
+          <strong>The Problem:</strong> If Claude writes tests and implementation in the same context, it "cheats" by designing tests around what it plans to implement.
+        </p>
+        
+        <div class="tdd-phases">
+          <div class="tdd-phase red">
+            <div class="phase-label">Phase 8: TDD Red</div>
+            <h4>test-writer subagent</h4>
+            <p class="sees"><span>Sees:</span> Schema, research, scope</p>
+            <p class="writes"><span>Cannot see:</span> Any implementation code</p>
+            <p class="writes"><span>Writes:</span> Comprehensive failing tests</p>
+          </div>
+          
+          <div class="tdd-connector">
+            <i class="fa-solid fa-arrow-right"></i>
+          </div>
+          
+          <div class="tdd-phase green">
+            <div class="phase-label">Phase 9: TDD Green</div>
+            <h4>implementer subagent</h4>
+            <p class="sees"><span>Sees:</span> ONLY the failing test file</p>
+            <p class="writes"><span>Cannot see:</span> Research, interview, schema rationale</p>
+            <p class="writes"><span>Writes:</span> Minimal code to pass tests</p>
+          </div>
+          
+          <div class="tdd-connector">
+            <i class="fa-solid fa-arrow-right"></i>
+          </div>
+          
+          <div class="tdd-phase refactor">
+            <div class="phase-label">Phase 12: Refactor</div>
+            <h4>refactorer subagent</h4>
+            <p class="sees"><span>Sees:</span> Passing tests + implementation</p>
+            <p class="writes"><span>Goal:</span> Improve without changing behavior</p>
+            <p class="writes"><span>Rule:</span> Tests must stay green</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Workflows Section -->
+  <section id="workflows">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-label">Commands</span>
+        <h2>All 5 Workflows</h2>
+        <p class="text-muted">Slash commands that orchestrate the 14 phases for different artifact types.</p>
+      </div>
+
+      <!-- Workflow 1: /create api -->
+      <div class="workflow-card">
+        <div class="workflow-header">
+          <span class="command">/create api &lt;name&gt;</span>
+          <span class="description">Create API endpoint with full research and TDD</span>
+          <span class="subagents">researcher → builder → reviewer</span>
+        </div>
+        <div class="workflow-content">
+          <div class="workflow-phases">
+            <span class="phase-pill active">Clarify 1-2</span>
+            <span class="phase-pill active">Research 3-5</span>
+            <span class="phase-pill active">Prepare 6-7</span>
+            <span class="phase-pill active">TDD 8-9</span>
+            <span class="phase-pill active">Verify 10-12</span>
+            <span class="phase-pill active">Complete 13-14</span>
+          </div>
+          <div class="workflow-output">
+            <h5>Output Files</h5>
+            <div class="file-tree">
+<span class="folder">src/app/api/</span>&lt;name&gt;/
+├── <span class="file">route.ts</span>
+├── <span class="folder">__tests__/</span>
+│   └── <span class="file">&lt;name&gt;.test.ts</span>
+└── <span class="file">&lt;name&gt;.schema.ts</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Workflow 2: /create component -->
+      <div class="workflow-card">
+        <div class="workflow-header">
+          <span class="command">/create component &lt;name&gt;</span>
+          <span class="description">Create React component with visual testing</span>
+          <span class="subagents">researcher → builder → visual-analyzer</span>
+        </div>
+        <div class="workflow-content">
+          <div class="workflow-phases">
+            <span class="phase-pill active">Clarify 1-2</span>
+            <span class="phase-pill active">Research 3-5</span>
+            <span class="phase-pill active">Prepare 6-7</span>
+            <span class="phase-pill active">TDD 8-9</span>
+            <span class="phase-pill">Visual QA</span>
+            <span class="phase-pill active">Verify 10-12</span>
+            <span class="phase-pill active">Complete 13-14</span>
+          </div>
+          <div class="workflow-output">
+            <h5>Output Files</h5>
+            <div class="file-tree">
+<span class="folder">src/components/</span>&lt;Name&gt;/
+├── <span class="file">&lt;Name&gt;.tsx</span>
+├── <span class="file">&lt;Name&gt;.test.tsx</span>
+├── <span class="file">&lt;Name&gt;.stories.tsx</span>
+├── <span class="file">&lt;Name&gt;.types.ts</span>
+└── <span class="file">index.ts</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Workflow 3: /create page -->
+      <div class="workflow-card">
+        <div class="workflow-header">
+          <span class="command">/create page &lt;path&gt;</span>
+          <span class="description">Create Next.js page with E2E tests</span>
+          <span class="subagents">researcher → builder → visual-analyzer</span>
+        </div>
+        <div class="workflow-content">
+          <div class="workflow-phases">
+            <span class="phase-pill active">Clarify 1-2</span>
+            <span class="phase-pill">Research (registry check)</span>
+            <span class="phase-pill active">Prepare 6-7</span>
+            <span class="phase-pill active">TDD (Playwright E2E)</span>
+            <span class="phase-pill">Visual QA (7 viewports)</span>
+            <span class="phase-pill active">Verify 10-12</span>
+            <span class="phase-pill active">Complete 13-14</span>
+          </div>
+          <div class="workflow-output">
+            <h5>Output Files</h5>
+            <div class="file-tree">
+<span class="folder">src/app/</span>&lt;path&gt;/
+├── <span class="file">page.tsx</span>
+├── <span class="file">layout.tsx</span>
+├── <span class="file">loading.tsx</span>
+├── <span class="file">error.tsx</span>
+├── <span class="folder">__tests__/</span>
+│   └── <span class="file">&lt;path&gt;.e2e.test.ts</span>
+└── <span class="folder">_components/</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Workflow 4: /create orchestration -->
+      <div class="workflow-card">
+        <div class="workflow-header">
+          <span class="command">/create orchestration &lt;name&gt;</span>
+          <span class="description">Combine existing APIs into orchestrated flow</span>
+          <span class="subagents">orchestrator</span>
+        </div>
+        <div class="workflow-content">
+          <div class="workflow-phases">
+            <span class="phase-pill active">Selection</span>
+            <span class="phase-pill active">Interview 4</span>
+            <span class="phase-pill active">Combined Schema 6</span>
+            <span class="phase-pill active">Integration TDD 8-9</span>
+          </div>
+          <div class="workflow-output">
+            <h5>Example: Order Fulfillment</h5>
+            <div class="file-tree">
+<span class="dim">Combines:</span>
+├── ☑ stripe-checkout
+├── ☑ inventory-reserve
+├── ☑ shipping-calculate
+└── ☑ notification-send
+
+<span class="dim">→ Single endpoint that orchestrates all 4 APIs</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Workflow 5: /build -->
+      <div class="workflow-card">
+        <div class="workflow-header">
+          <span class="command">/build &lt;description&gt;</span>
+          <span class="description">Full feature build with decomposition and parallel execution</span>
+          <span class="subagents">orchestrator → all others</span>
+        </div>
+        <div class="workflow-content">
+          <div class="workflow-phases">
+            <span class="phase-pill active">Decompose feature</span>
+            <span class="phase-pill active">Plan dependency order</span>
+            <span class="phase-pill active">Parallel API creation</span>
+            <span class="phase-pill active">Parallel component creation</span>
+            <span class="phase-pill active">Page assembly</span>
+            <span class="phase-pill active">Integration tests</span>
+          </div>
+          <div class="workflow-output">
+            <h5>Example: Magic Link Auth</h5>
+            <div class="file-tree">
+<span class="dim">Decomposition:</span>
+<span class="folder">APIs</span> (parallel): auth/request-link, auth/verify, auth/session
+<span class="folder">Components</span> (parallel): LoginForm, MagicLinkSent, AuthProvider
+<span class="folder">Pages</span> (parallel): /login, /auth/verify, /dashboard
+
+<span class="dim">→ Full feature with E2E tests across all parts</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- State Management Section -->
+  <section id="state">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-label">Persistence</span>
+        <h2>State Management</h2>
+        <p class="text-muted">Two-file architecture for workflow progress and artifact tracking.</p>
+      </div>
+
+      <div class="state-container">
+        <div class="state-file">
+          <div class="state-file-header">
+            <i class="fa-solid fa-file-code"></i>
+            <h4>state.json</h4>
+            <span>Workflow Progress</span>
+          </div>
+          <div class="state-file-content">
+            <pre>{
+  <span class="key">"version"</span>: <span class="string">"1.0.0"</span>,
+  <span class="key">"workflowId"</span>: <span class="string">"uuid"</span>,
+  <span class="key">"status"</span>: <span class="string">"in_progress"</span>,
+  <span class="key">"progress"</span>: {
+    <span class="key">"currentPhase"</span>: <span class="string">"tdd-implement"</span>,
+    <span class="key">"completedSteps"</span>: <span class="number">5</span>,
+    <span class="key">"totalSteps"</span>: <span class="number">14</span>
+  },
+  <span class="key">"checkpoints"</span>: [{
+    <span class="key">"id"</span>: <span class="string">"chk-001"</span>,
+    <span class="key">"phase"</span>: <span class="string">"research"</span>,
+    <span class="key">"resumeInstructions"</span>: <span class="string">"..."</span>
+  }],
+  <span class="key">"research"</span>: {
+    <span class="key">"cache"</span>: {
+      <span class="key">"stripe-checkout"</span>: {
+        <span class="key">"ttlDays"</span>: <span class="number">7</span>
+      }
+    }
+  }
+}</pre>
+          </div>
+        </div>
+
+        <div class="state-file">
+          <div class="state-file-header">
+            <i class="fa-solid fa-database"></i>
+            <h4>registry.json</h4>
+            <span>Created Artifacts</span>
+          </div>
+          <div class="state-file-content">
+            <pre>{
+  <span class="key">"artifacts"</span>: {
+    <span class="key">"apis"</span>: [{
+      <span class="key">"id"</span>: <span class="string">"api-001"</span>,
+      <span class="key">"name"</span>: <span class="string">"stripe-checkout"</span>,
+      <span class="key">"path"</span>: <span class="string">"src/app/api/checkout/..."</span>,
+      <span class="key">"methods"</span>: [<span class="string">"POST"</span>, <span class="string">"GET"</span>],
+      <span class="key">"status"</span>: <span class="string">"complete"</span>,
+      <span class="key">"checksum"</span>: <span class="string">"sha256-abc123"</span>
+    }],
+    <span class="key">"components"</span>: [],
+    <span class="key">"pages"</span>: []
+  }
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-grid two-col" style="margin-top: 40px;">
+        <div class="card">
+          <div class="card-icon"><i class="fa-solid fa-rotate-left"></i></div>
+          <h3>Resume Sessions</h3>
+          <p>Use <code>claude --continue</code> to resume last session or <code>claude --resume</code> for interactive session picker.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><i class="fa-solid fa-forward"></i></div>
+          <h3>Registry-Aware Skipping</h3>
+          <p>Before each phase, check registry for existing artifacts. Skip phases when artifacts exist with matching checksums.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Installation Section -->
+  <section id="install">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-label">Get Started</span>
+        <h2>Installation & Setup</h2>
+        <p class="text-muted">One command to install everything you need.</p>
+      </div>
+
+      <div class="install-command-large">
+        <span class="prompt">$</span> <span class="cmd">npx @hustle/devkit init</span>
+      </div>
+
+      <div class="install-structure">
+        <h4>What Gets Installed</h4>
+        <pre>
+my-project/
+├── <span class="folder">.claude/</span>
+│   ├── <span class="file">settings.json</span>      <span class="comment"># Hook configuration</span>
+│   ├── <span class="folder">commands/</span>          <span class="comment"># Slash commands</span>
+│   │   ├── <span class="file">create-api.md</span>
+│   │   ├── <span class="file">create-component.md</span>
+│   │   ├── <span class="file">create-page.md</span>
+│   │   ├── <span class="file">create-orchestration.md</span>
+│   │   └── <span class="file">build.md</span>
+│   ├── <span class="folder">agents/</span>            <span class="comment"># Subagents</span>
+│   │   ├── <span class="file">researcher.md</span>
+│   │   ├── <span class="file">builder.md</span>
+│   │   ├── <span class="file">reviewer.md</span>
+│   │   └── <span class="file">...</span>
+│   └── <span class="folder">hooks/</span>             <span class="comment"># Python enforcement hooks</span>
+│       ├── <span class="file">research-gate.py</span>
+│       ├── <span class="file">tdd-gate.py</span>
+│       └── <span class="file">... (17 hooks)</span>
+├── <span class="folder">.devkit/</span>
+│   ├── <span class="file">state.json</span>         <span class="comment"># Workflow state</span>
+│   ├── <span class="file">registry.json</span>      <span class="comment"># Artifact registry</span>
+│   └── <span class="folder">research/</span>          <span class="comment"># Research cache</span>
+├── <span class="file">.mcp.json</span>              <span class="comment"># MCP server config</span>
+└── <span class="file">CLAUDE.md</span>              <span class="comment"># Project instructions</span>
+        </pre>
+      </div>
+
+      <div class="quick-ref">
+        <h3>Quick Reference</h3>
+        <div class="quick-ref-grid">
+          <div class="quick-ref-col">
+            <h4>Workflows</h4>
+            <div class="cmd-row"><code>/create api &lt;n&gt;</code> <span>Create API</span></div>
+            <div class="cmd-row"><code>/create component &lt;n&gt;</code> <span>Create component</span></div>
+            <div class="cmd-row"><code>/create page &lt;path&gt;</code> <span>Create page</span></div>
+            <div class="cmd-row"><code>/create orchestration &lt;n&gt;</code> <span>Combine APIs</span></div>
+            <div class="cmd-row"><code>/build &lt;desc&gt;</code> <span>Full feature</span></div>
+          </div>
+          <div class="quick-ref-col">
+            <h4>Modes</h4>
+            <div class="cmd-row"><code>Shift+Tab</code> <span>Cycle modes</span></div>
+            <div class="cmd-row"><code>--permission-mode=plan</code> <span>Plan mode</span></div>
+            <div class="cmd-row"><code>--dangerously-skip-permissions</code> <span>YOLO mode</span></div>
+          </div>
+          <div class="quick-ref-col">
+            <h4>Resume</h4>
+            <div class="cmd-row"><code>claude --continue</code> <span>Resume last</span></div>
+            <div class="cmd-row"><code>claude --resume</code> <span>Pick session</span></div>
+            <div class="cmd-row"><code>cat .devkit/state.json</code> <span>View state</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>Built with ❤️ for developers who believe in rigorous, reproducible software development.</p>
+    <p><span class="hustle">Hustle</span> Dev Tools 5.0 — The Scientific Method Applied to Software</p>
+  </footer>
+
+  <script>
+    // Register GSAP plugins
+    gsap.registerPlugin(ScrollTrigger, TextPlugin);
+
+    // ============================================
+    // HERO GRID ANIMATION
+    // ============================================
+    function initHeroGrid() {
+      const canvas = document.getElementById('hero-grid');
+      if (!canvas) return;
+      
+      const ctx = canvas.getContext('2d');
+      let animationId;
+      let time = 0;
+      
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      
+      function drawGrid() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        const gridSize = 60;
+        const perspective = 800;
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        
+        ctx.strokeStyle = 'rgba(186, 12, 47, 0.15)';
+        ctx.lineWidth = 1;
+        
+        // Draw animated grid lines
+        for (let i = -20; i <= 20; i++) {
+          const x = centerX + i * gridSize;
+          const wave = Math.sin(time * 0.02 + i * 0.2) * 10;
+          
+          ctx.beginPath();
+          ctx.moveTo(x + wave, 0);
+          ctx.lineTo(x + wave, canvas.height);
+          ctx.stroke();
+        }
+        
+        for (let i = -20; i <= 20; i++) {
+          const y = centerY + i * gridSize;
+          const wave = Math.cos(time * 0.02 + i * 0.2) * 10;
+          
+          ctx.beginPath();
+          ctx.moveTo(0, y + wave);
+          ctx.lineTo(canvas.width, y + wave);
+          ctx.stroke();
+        }
+        
+        // Draw floating dots
+        ctx.fillStyle = 'rgba(186, 12, 47, 0.3)';
+        for (let i = 0; i < 20; i++) {
+          const x = (Math.sin(time * 0.01 + i) * 0.5 + 0.5) * canvas.width;
+          const y = (Math.cos(time * 0.01 + i * 1.5) * 0.5 + 0.5) * canvas.height;
+          ctx.beginPath();
+          ctx.arc(x, y, 3, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        
+        time++;
+        animationId = requestAnimationFrame(drawGrid);
+      }
+      
+      resize();
+      drawGrid();
+      
+      window.addEventListener('resize', resize);
+    }
+
+    // ============================================
+    // HERO ANIMATIONS
+    // ============================================
+    function initHeroAnimations() {
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      
+      tl.to('.hero-badge', { opacity: 1, y: 0, duration: 0.8 })
+        .to('.hero-main-title', { opacity: 1, y: 0, duration: 0.8 }, '-=0.4')
+        .to('.hero-tagline', { opacity: 1, y: 0, duration: 0.6 }, '-=0.4')
+        .to('.hero-scientific', { opacity: 1, y: 0, duration: 0.6 }, '-=0.3')
+        .to('.hero-install-box', { opacity: 1, y: 0, duration: 0.6 }, '-=0.3')
+        .to('.hero-cta-buttons', { opacity: 1, y: 0, duration: 0.6 }, '-=0.3')
+        .to('.hero-terminal-preview', { opacity: 1, y: 0, duration: 0.8 }, '-=0.3')
+        .to('.scroll-indicator', { opacity: 1, duration: 0.5 }, '-=0.3');
+    }
+
+    // ============================================
+    // SCROLL ANIMATIONS
+    // ============================================
+    function initScrollAnimations() {
+      // Section headers
+      gsap.utils.toArray('.section-header').forEach(header => {
+        gsap.timeline({
+          scrollTrigger: {
+            trigger: header,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse'
+          }
+        })
+        .to(header.querySelector('.section-label'), { opacity: 1, duration: 0.4 })
+        .to(header.querySelector('h2'), { opacity: 1, y: 0, duration: 0.6 }, '-=0.2')
+        .to(header.querySelector('p'), { opacity: 1, y: 0, duration: 0.5 }, '-=0.3');
+      });
+
+      // Stats
+      gsap.utils.toArray('.stat').forEach((stat, i) => {
+        gsap.to(stat, {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          delay: i * 0.1,
+          scrollTrigger: {
+            trigger: stat,
+            start: 'top 85%'
+          }
+        });
+      });
+
+      // Cards
+      gsap.utils.toArray('.card').forEach((card, i) => {
+        gsap.to(card, {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          delay: (i % 3) * 0.1,
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 85%'
+          }
+        });
+      });
+
+      // Phase groups
+      gsap.utils.toArray('.phase-group').forEach(group => {
+        gsap.to(group, {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          scrollTrigger: {
+            trigger: group,
+            start: 'top 80%'
+          }
+        });
+      });
+
+      // Hook categories
+      gsap.utils.toArray('.hook-category').forEach(cat => {
+        gsap.to(cat, {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          scrollTrigger: {
+            trigger: cat,
+            start: 'top 80%'
+          }
+        });
+      });
+
+      // Workflow cards
+      gsap.utils.toArray('.workflow-card').forEach(card => {
+        gsap.to(card, {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 85%'
+          }
+        });
+      });
+
+      // State files
+      gsap.utils.toArray('.state-file').forEach((file, i) => {
+        gsap.to(file, {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          delay: i * 0.2,
+          scrollTrigger: {
+            trigger: file,
+            start: 'top 85%'
+          }
+        });
+      });
+
+      // Architecture diagram
+      gsap.to('.architecture-diagram', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        scrollTrigger: {
+          trigger: '.architecture-diagram',
+          start: 'top 80%'
+        }
+      });
+
+      // Subagent hierarchy
+      gsap.to('.subagent-hierarchy', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        scrollTrigger: {
+          trigger: '.subagent-hierarchy',
+          start: 'top 80%'
+        }
+      });
+
+      // TDD isolation
+      gsap.to('.tdd-isolation', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        scrollTrigger: {
+          trigger: '.tdd-isolation',
+          start: 'top 80%'
+        }
+      });
+
+      // Install elements
+      gsap.to('.install-command-large', {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        scrollTrigger: {
+          trigger: '.install-command-large',
+          start: 'top 85%'
+        }
+      });
+
+      gsap.to('.install-structure', {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        scrollTrigger: {
+          trigger: '.install-structure',
+          start: 'top 85%'
+        }
+      });
+
+      gsap.to('.quick-ref', {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        scrollTrigger: {
+          trigger: '.quick-ref',
+          start: 'top 85%'
+        }
+      });
+    }
+
+    // ============================================
+    // NAV SCROLL EFFECT
+    // ============================================
+    function initNavScroll() {
+      window.addEventListener('scroll', () => {
+        const nav = document.querySelector('.nav');
+        if (window.scrollY > 50) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      });
+    }
+
+    // ============================================
+    // EXPAND/COLLAPSE PHASE DETAILS
+    // ============================================
+    function toggleExpand(btn) {
+      const card = btn.closest('.phase-card');
+      const details = card.querySelector('.phase-details');
+      
+      btn.classList.toggle('expanded');
+      details.classList.toggle('expanded');
+      
+      if (details.classList.contains('expanded')) {
+        btn.innerHTML = '<span class="arrow"><i class="fa-solid fa-chevron-down"></i></span> Collapse Details';
+      } else {
+        btn.innerHTML = '<span class="arrow"><i class="fa-solid fa-chevron-down"></i></span> Expand Details';
+      }
+    }
+
+    // ============================================
+    // COPY COMMAND
+    // ============================================
+    function copyCommand(btn) {
+      const text = 'npx @hustle/devkit init';
+      navigator.clipboard.writeText(text).then(() => {
+        const icon = btn.querySelector('i');
+        icon.className = 'fa-solid fa-check';
+        btn.classList.add('copied');
+        
+        setTimeout(() => {
+          icon.className = 'fa-regular fa-copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    // ============================================
+    // SMOOTH SCROLL FOR NAV LINKS
+    // ============================================
+    function initSmoothScroll() {
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        });
+      });
+    }
+
+    // ============================================
+    // INITIALIZE
+    // ============================================
+    document.addEventListener('DOMContentLoaded', () => {
+      initHeroGrid();
+      initHeroAnimations();
+      initScrollAnimations();
+      initNavScroll();
+      initSmoothScroll();
+    });
+  </script>
+</body>
+</html>

@@ -2135,67 +2135,56 @@ BUILD_COMPLETE"
 
 ## Installation & Setup
 
-### Quick Install
+### Option A: Clone from GitHub
 
 ```bash
-# Create new project or navigate to existing
-cd my-project
+git clone -b devkit-v4 https://github.com/hustle-together/api-dev-tools.git
+cd api-dev-tools
+claude
+```
 
-# Install Devkit
-npx @hustle/devkit init
+### Option B: Copy to existing project
 
-# Start Claude Code
+```bash
+cd your-project
+git clone https://github.com/hustle-together/api-dev-tools.git .devkit-temp
+cp -r .devkit-temp/{.claude,.devkit,templates,docs,CLAUDE.md,devkit-readme.md} .
+rm -rf .devkit-temp
 claude
 ```
 
 ### What Gets Installed
 
 ```
-my-project/
+your-project/
 ├── .claude/
 │   ├── settings.json      # Hook configuration
-│   ├── commands/          # Slash commands
-│   │   ├── create-api.md
-│   │   ├── create-component.md
-│   │   ├── create-page.md
-│   │   ├── create-orchestration.md
-│   │   └── build.md
-│   ├── agents/            # Subagents
-│   │   ├── researcher.md
-│   │   ├── builder.md
-│   │   ├── reviewer.md
-│   │   ├── docs-generator.md
-│   │   ├── visual-analyzer.md
-│   │   └── orchestrator.md
+│   ├── REFERENCE.md       # Quick reference (all commands/hooks/agents)
+│   ├── commands/          # 38 slash commands
+│   ├── agents/            # 12 specialized agents
 │   └── hooks/             # 22 Python enforcement hooks
-│       ├── research-gate.py
-│       ├── interview-gate.py
-│       ├── schema-gate.py
-│       ├── tdd-gate.py
-│       ├── verify-gate.py
-│       ├── docs-gate.py
-│       ├── state-manager.py
-│       ├── registry-manager.py
-│       ├── registry-update.py
-│       ├── session-manager.py
-│       ├── format.py
-│       ├── code-review.py
-│       ├── visual-qa.py
-│       ├── showcase-gen.py
-│       ├── completion-links.py
-│       ├── ralph-loop.py
-│       ├── auto-answer.py
-│       ├── notify.py
-│       ├── reground.py
-│       ├── capacity-warning.py
-│       ├── subagent-verify.py
-│       └── validate-bash.py
+│       ├── tests/         # Hook test suite
+│       └── lib/           # Shared utilities (ntfy, greptile)
 ├── .devkit/
 │   ├── state.json         # Workflow state
 │   ├── registry.json      # Artifact registry
-│   └── research/          # Research cache
-├── .mcp.json              # MCP server config
-└── CLAUDE.md              # Project instructions
+│   └── research/          # Research cache (7-day freshness)
+├── templates/
+│   ├── hustle-dev-dashboard/  # Main dashboard
+│   ├── api-showcase/          # API testing UI
+│   ├── ui-showcase/           # Component gallery
+│   ├── test-results/          # Test results page
+│   ├── playwright-report/     # E2E reports
+│   ├── docs/                  # TypeDoc output
+│   ├── component/             # Component scaffold
+│   ├── page/                  # Page scaffold
+│   ├── api-test/              # API test scaffold
+│   ├── dev-tools/             # Dev tools landing
+│   └── shared/                # Shared utilities
+├── docs/                  # Reference documentation
+├── CLAUDE.md              # Project instructions
+├── README.md              # Quick start guide
+└── devkit-readme.md       # Full documentation (this file)
 ```
 
 ---
